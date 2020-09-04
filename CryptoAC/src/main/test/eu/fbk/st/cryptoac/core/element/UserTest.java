@@ -84,9 +84,9 @@ class UserTest {
     private static final String testAWSDatabasePort         = "3306";
     private static final String testAWSUploadBucket         = "stefano-cryptoac-files-upload";
     private static final String testAWSDownloadBucket       = "stefano-cryptoac-files-download";
-    private static final String testAWSDatabasePassword     = "W84uxsU50yYv/hjAJf/ED/JE1jhPMG2lzx69npfM";
-    private static final String testAWSAccessKey            = "AKIA3XEGKRKQRGKGCWSV";
-    private static final String testAWSSecretKey            = "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";
+    private static final String testAWSDatabasePassword     = "";
+    private static final String testAWSAccessKey            = "";
+    private static final String testAWSSecretKey            = "";
 
     // general data for tests
     private static final String alice       = "cryptoac_alice";
