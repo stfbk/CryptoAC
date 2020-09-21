@@ -1,0 +1,12 @@
+[main] INFO  - [Application (main)]: Starting server on port 7777, admin ID admin, operation mode proxy  
+[main] INFO  - StaticResourceHandler configured with folder = /server/proxy/public 
+[main] INFO  - External StaticResourceHandler configured with folder = /home/ardasy/Desktop/fbk/cryptorbaccompiler/CryptoAC/CryptoAC/server/proxy/tmp/ 
+[Thread-0] INFO  - Logging initialized @946ms to org.eclipse.jetty.util.log.Slf4jLog 
+[Thread-0] INFO  - == Spark has ignited ... 
+[Thread-0] INFO  - >> Listening on 0.0.0.0:7777 
+[Thread-0] INFO  - jetty-9.4.30.v20200611; built: 2020-06-11T12:34:51.929Z; git: 271836e4c1f4612f12b7bb13ef5a92a927634b0d; jvm 11.0.8+10-post-Ubuntu-0ubuntu118.04.1 
+[Thread-0] INFO  - DefaultSessionIdManager workerName=node0 
+[Thread-0] INFO  - No SessionScavenger set, using defaults 
+[Thread-0] INFO  - node0 Scavenging every 600000ms 
+[Thread-0] INFO  - Started ServerConnector@193e131c{HTTP/1.1, (http/1.1)}{0.0.0.0:7777} 
+[Thread-0] INFO  - Started @1157ms 

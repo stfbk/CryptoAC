@@ -4,9 +4,9 @@
 
 ## Introduction
 
-*CrpytoAC* uses the [**Data Access Object**](https://en.wikipedia.org/wiki/Data_access_object) (DAO) pattern for the storage of metadata and (encrypted) sensitive data. At high level, the DAO pattern expects an interface describing the functionalities needed to interact with the chosen underlying storage system (e.g., AWS, Azure, Openstack, local IaaS, blochckain). The DAO interface is **eu.fbk.st.cryptoac.dao.DAOInterface** and it contains around 40 methods divided into two groups:
-* 35 methods handle metadata (e.g., creation and modification of tuples and encrypted keys);
-* 5 methods handle encrypted data (e.g., upload and download of files).
+*CrpytoAC* uses the [**Data Access Object**](https://en.wikipedia.org/wiki/Data_access_object) (DAO) pattern for the storage of metadata and (encrypted) sensitive data. At high level, the DAO pattern expects an interface describing the functionalities needed to interact with the chosen underlying storage system (e.g., AWS, Azure, Openstack, local IaaS, blochckain). The DAO interface is **eu.fbk.st.cryptoac.dao.DAOInterface** and it contains 53 methods divided into two groups:
+* 49 methods handle metadata (e.g., creation and modification of tuples and encrypted keys);
+* 4 methods handle encrypted data (i.e., CRUD paradigm).
 
 All methods of the DAO interface must be implemented to allow *CryptoAC* to correctly interact with the underlying storage system. The DAO interface contains the documentation needed to implement these methods. In this folder, you can find the implementations of the DAO interface for the currently supported storage systems. 
 

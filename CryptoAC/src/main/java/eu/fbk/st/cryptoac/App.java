@@ -56,7 +56,7 @@ public class App {
     /**
      * (any mode) The logger object through which all logs are written.
      */
-    public static Logger logger;
+    public static Logger logger = null;
 
     /**
      * (any mode) The ID of the admin.
@@ -106,7 +106,7 @@ public class App {
      * (any mode) The name of the log file
      * Note: you can modify it with program parameters
      */
-    public static String logFileName = "CryptoAC-log";
+    public static String logFileName = "CryptoAC.log";
 
 
     /**
@@ -165,7 +165,8 @@ public class App {
         options.addOption(threadsTimeOutMillisOption);
 
         Option logFileNameOption = new Option("l", kCMDLogFileName, true,
-                "The name of the log file [default is \"" + logFileName + "\"]");
+                "The name of the log file to enable file-level logging [default is \"" + logFileName + "\"]. " +
+                        "If this option is not provided, logs will be redirected to the standard output");
         logFileNameOption.setType(String.class);
         logFileNameOption.setRequired(false);
         options.addOption(logFileNameOption);
@@ -208,7 +209,6 @@ public class App {
         symKeyLengthOption.setType(Integer.class);
         symKeyLengthOption.setRequired(false);
         options.addOption(symKeyLengthOption);
-
 
 
         OptionGroup operationModeOptionGroup = new OptionGroup();
@@ -279,10 +279,15 @@ public class App {
                     acquireIntegerOption(cmd, kCMDSymKeyLength, CryptoUtil.getSymKeyLength(), 1, Integer.MAX_VALUE)
             );
 
-
-            logFileName = acquireStringOption(cmd, kCMDLogFileName, logFileName);
             Properties props = System.getProperties();
-            props.setProperty(kLogFileNameSysProperty, logFileName);
+            if (cmd.hasOption(kCMDLogFileName)) {
+                logFileName = acquireStringOption(cmd, kCMDLogFileName, logFileName);
+                props.setProperty(kLogBackFileNameSysProperty, logFileName);
+                props.setProperty(kLogBackConfigFilePathSysProperty, kLogBackConfigFileToFilePath);
+            }
+            else {
+                props.setProperty(kLogBackConfigFilePathSysProperty, kLogBackConfigFileToConsolePath);
+            }
 
 
             // ===== ===== ===== ===== SET UP OF SERVER ===== ===== ===== =====
@@ -440,6 +445,7 @@ public class App {
         // if the user provided a wrong parameter
         catch (ParseException e) {
 
+            logger = logger == null ? LoggerFactory.getLogger(App.class) : logger;
             logger.error("[{}{}{} ", "Application", " (" + "main" + ")]: ", "wrong usage or arguments");
 
             String header = "\nCryptoAC enforces cryptographic access control on data hosted in partially trusted environments\n\n";
@@ -452,6 +458,8 @@ public class App {
         }
         // catch any other exception
         catch (Exception e) {
+
+            logger = logger == null ? LoggerFactory.getLogger(App.class) : logger;
             logger.error("[{}{}{} ", "Application", " (" + "main" + ")]: ", "unexpected exception: ", e);
 
             // exit with status 72 (see the OperationOutcomeCode class)

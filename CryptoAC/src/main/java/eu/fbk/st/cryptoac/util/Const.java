@@ -51,7 +51,22 @@ public class Const {
         /**
          * (any mode) The system property that defines the name of the log file.
          */
-        public static final String kLogFileNameSysProperty = "log_file_name";
+        public static final String kLogBackFileNameSysProperty = "logback.logFile.Name";
+
+        /**
+         * (any mode) The system property that defines the path of the XML configuration file.
+         */
+        public static final String kLogBackConfigFilePathSysProperty = "logback.configurationFile";
+
+        /**
+         * (any mode) The path to the logback configuration file that redirects logs to a log file.
+         */
+        public static final String kLogBackConfigFileToFilePath = "logbackFile.xml";
+
+        /**
+         * (any mode) The path to the logback configuration file that redirects logs to the standard output
+         */
+        public static final String kLogBackConfigFileToConsolePath = "logbackConsole.xml";
 
         /**
          * (proxy mode) The path to the login HTML template.
