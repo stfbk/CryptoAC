@@ -472,49 +472,46 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
                 PreparedStatement insertUserStatement = createInsertStatement(usersTable, usersToInsert)
         ) {
 
-            boolean successfulCreation;
-
+            // REMEMBER that the .execute statements return true if the first
+            // result is a ResultSet object; false if it is an update count
+            // or there are no results. Therefore, the statement may have been
+            // execute correctly even if the query returns false. The only
+            // way to understand if there was any error is through exceptions
             createUser.setString(1, username);
             createUser.setString(2, newUserToInsert.getToken());
-            successfulCreation = createUser.execute();
+            createUser.execute();
 
             grantPrivilegesSelectUsersTable.setString(1, username);
-            successfulCreation = successfulCreation && grantPrivilegesSelectUsersTable.execute();
+            grantPrivilegesSelectUsersTable.execute();
 
             grantPrivilegesSelectRolesTable.setString(1, username);
-            successfulCreation = successfulCreation && grantPrivilegesSelectRolesTable.execute();
+            grantPrivilegesSelectRolesTable.execute();
 
             grantPrivilegesSelectFilesTable.setString(1, username);
-            successfulCreation = successfulCreation && grantPrivilegesSelectFilesTable.execute();
+            grantPrivilegesSelectFilesTable.execute();
 
             grantPrivilegesSelectRoleTuplesView.setString(1, username);
-            successfulCreation = successfulCreation && grantPrivilegesSelectRoleTuplesView.execute();
+            grantPrivilegesSelectRoleTuplesView.execute();
 
             grantPrivilegesSelectPermissionTuplesView.setString(1, username);
-            successfulCreation = successfulCreation && grantPrivilegesSelectPermissionTuplesView.execute();
+            grantPrivilegesSelectPermissionTuplesView.execute();
 
             grantPrivilegesSelectFileTuplesView.setString(1, username);
-            successfulCreation = successfulCreation && grantPrivilegesSelectFileTuplesView.execute();
+            grantPrivilegesSelectFileTuplesView.execute();
 
             grantPrivilegeUpdate.setString(1, username);
-            successfulCreation = successfulCreation && grantPrivilegeUpdate.execute();
+            grantPrivilegeUpdate.execute();
 
-            if (successfulCreation) {
+            int affectedRowCount = insertUserStatement.executeUpdate();
 
-                int affectedRowCount = insertUserStatement.executeUpdate();
+            // if true, probably the name of the user is duplicated
+            if (affectedRowCount != 1) {
 
-                // probably, the name of the user is duplicated
-                if (affectedRowCount != 1) {
-
-                    // check whether the user with the same name was deleted or not
-                    if (checkStatusOfCryptoACElement(username, CryptoACElement.CryptoACElementEnum.User, false) == deleted)
-                        returningCode = code_55;
-                    else
-                        returningCode = code_1;
-                }
-            }
-            else {
-                throw new SQLException("error while creating the user at database level");
+                // check whether the user with the same name was deleted or not
+                if (checkStatusOfCryptoACElement(username, CryptoACElement.CryptoACElementEnum.User, false) == deleted)
+                    returningCode = code_55;
+                else
+                    returningCode = code_1;
             }
         }
         catch (SQLException e) {
