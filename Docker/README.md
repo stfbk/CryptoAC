@@ -14,4 +14,4 @@ A CAC scheme commonly expects four entities: the proxy, the reference monitor (R
 
 > As of now, a simple mySQL8+ docker container can act as the MS.
 
-To try CryptoAC on your machine, just run `docker-compose --env-file .env.dev -f .\docker-compose-staticIP.yml up`
+To try CryptoAC on your machine, just run `docker-compose --env-file .env.dev -f ./docker-compose-staticIP.yml up`
