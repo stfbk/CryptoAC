@@ -1,6 +1,6 @@
 # CryptoAC | CryptoAC | Documentation | Util
 
-> Last Update: 21/07/2020
+> Last Update: 01/10/2020
 
 ## Introduction
 
@@ -12,10 +12,11 @@ Utility methods and constant values for parameters acquisition. Below, the usage
 
 ```bash
 usage: CryptoAC [-a <arg>] [-ca <arg>] [-ch <arg>] [-ck <arg>] [-cp <arg>]
-       [-cs <arg>] [-f <arg>] [-l <arg>] [-m <arg>] -o <arg> [-p <arg>]
-       [-s <arg>] -t <arg>
+       [-cs <arg>] [-f <arg>] [-l <arg>] [-m <arg>] [-n <arg>] -od | -op |
+       -or <arg>   [-p <arg>] [-s <arg>] [-t <arg>]
 
-CryptoAC enforces cryptographic access control on data hosted in partially trusted environments
+CryptoAC enforces cryptographic access control on data hosted in partially
+trusted environments
 
  -a,--adminID <arg>                            The ID of the admin [default is "admin"]
  -ca,--PKCAlgorithm <arg>                      The algorithm used to generate PKC keys [default is "RSA"]
@@ -24,12 +25,20 @@ CryptoAC enforces cryptographic access control on data hosted in partially trust
  -cp,--PKCKeysLength <arg>                     The length of PKC keys [default is "1024"]
  -cs,--PKCSigningAlgorithm <arg>               The algorithm used for signing with PKC private keys/verifying with PKC public keys [default is "SHA512withRSA"]
  -f,--staticFilesExpirationTimeSeconds <arg>   The static files expiration time in seconds [default is "600"]
- -l,--logFileName <arg>                        The name of the log file [default is "CryptoAC-log"]
- -m,--maxThreadsNumber <arg>                   The max number of threads the server will spawn [default is "2"]
- -o,--operationMode <arg>                      The operation mode of this instance of CryptoAC (either "proxy", "RM" or "DS")
+ -l,--logFileName <arg>                        The name of the log file to enable file-level logging [default is "CryptoAC.log"]. If this option 
+                                               is not provided, logs will be redirected to the standard output
+ -m,--maxThreadsNumber <arg>                   The max number of threads the server will spawn [default is "4"]
+ -n,--minThreadsNumber <arg>                   The min number of threads the server will spawn [default is "1"]
+ -od,--operationModeDS                         To launch this instance of CryptoAC as a data storage
+ -op,--operationModeProxy                      To launch this instance of CryptoAC as a proxy
+ -or,--operationModeRM <arg>                   To launch this instance of CryptoAC as a reference monitor. Parameters are the metadata storage URL, 
+                                               metadata storage password, metadata storage port, metadata storage username, data storage URL, data 
+                                               storage port (separator is the white space)
  -p,--port <arg>                               The port the server will use to listen to connections [default is 7777]
  -s,--sessionExpirationTimeSeconds <arg>       The users session expiration time in seconds [default is "300"]
  -t,--threadsTimeoutMilliseconds <arg>         The timeout of idling threads in milliseconds [default is "30000"]
+
+Please report issues to sberlato@fbk.eu
 ```
 
 
