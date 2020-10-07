@@ -136,13 +136,11 @@ public class UserController {
         // get optional parameters
         String givenOffset      = getQueryParameter(request, kOffsetInCryptoAC);
         String givenLimit       = getQueryParameter(request, kLimitInCryptoAC);
-        String givenUsername    = getQueryParameter(request, FormParameters.kUsernameInCryptoAC);
         String givenRoleName    = getQueryParameter(request, kRoleNameInCryptoAC);
 
         // if optional parameters are null, pass the class instead
         invocationResult = executeAPI(request, response, selectedDAO, false,
                 API.GETASSIGNMENTS, HttpMethod.get,
-                givenUsername == null ? String.class : givenUsername,
                 givenRoleName == null ? String.class : givenRoleName,
                 givenOffset == null ? Integer.class : Integer.parseInt(givenOffset),
                 givenLimit == null ? Integer.class : Integer.parseInt(givenLimit));
@@ -163,7 +161,6 @@ public class UserController {
         String givenLimit    = getQueryParameter(request, kLimitInCryptoAC);
         String givenRoleName = getQueryParameter(request, kRoleNameInCryptoAC);
         String givenFileName = getQueryParameter(request, kFileNameInCryptoAC);
-
 
         // if optional parameters are null, pass the class instead
         invocationResult = executeAPI(request, response, selectedDAO, false,

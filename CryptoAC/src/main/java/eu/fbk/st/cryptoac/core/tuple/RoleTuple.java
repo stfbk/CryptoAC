@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class RoleTuple extends CryptoACTuple {
 
     /**
-     * The ID of the role associated to the tuple.
+     * The name of the role associated to the tuple.
      */
     @Expose
     private String associatedRole;

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.unauthorized;
+import static eu.fbk.st.cryptoac.server.util.ErrorUtil.unprocessableEntity;
 import static eu.fbk.st.cryptoac.util.Const.*;
 import static eu.fbk.st.cryptoac.server.util.RequestUtil.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.*;
@@ -83,11 +84,11 @@ public class LoginController {
         else {
 
             // get the credentials from the POST parameters
-            String givenUsername = (String) getQueryParameter(request, kUserLoggingIn);
-            String givenPassword = (String) getQueryParameter(request, kPasswordOfUserLoggingIn);
+            String givenUsername = getQueryParameter(request, kUserLoggingIn);
+            String givenPassword = getQueryParameter(request, kPasswordOfUserLoggingIn);
 
             if (givenUsername.isBlank() || givenPassword.isBlank())
-                return ErrorUtil.unprocessableEntity.handle(request, response);
+                halt(422, (String) unprocessableEntity.handle(request, response));
 
             if (authenticateUser(givenUsername, givenPassword)) {
 
@@ -99,7 +100,6 @@ public class LoginController {
             }
             // it means that the authentication was not successful
             else {
-
                 App.logger.error("[{}{}{}{} ", className, " (" + loginLog + ")]: ",
                         "authentication failed for user ", givenUsername);
                 halt(401, (String) unauthorized.handle(request, response));

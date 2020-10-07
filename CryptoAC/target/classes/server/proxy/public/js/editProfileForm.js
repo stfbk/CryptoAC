@@ -122,12 +122,11 @@ function submitEditProfileForm (editProfileForm) {
 
     // get the form data, action and method
     let formData = extractInputsFromForm(editProfileForm);
-    let formAction = editProfileForm.attr("action");
     let formMethod = editProfileForm.attr("method");
 
-    console.log("submitEditProfileForm - sending " + formMethod + " request to " + formAction);
+    console.log("submitEditProfileForm - sending " + formMethod + " request to " + pathAPIProfile + currentlySelectedDAO + "/");
 
-    invokeAPI(formAction, formMethod, formData, successAfterSubmitEditProfileForm, errorAJAX);
+    invokeAPI(pathAPIProfile + currentlySelectedDAO + "/", formMethod, formData, successAfterSubmitEditProfileForm, errorAJAX);
 
     // collapse the form
     $(editProfileButton).click();
@@ -143,7 +142,6 @@ function successAfterSubmitEditProfileForm () {
 
 // this function shows/hides the relevant part of the Edit Profile form depending on the CSP selected by the user
 function updateEditProfileFormOnDAOSelection (selectedDAO) {
-
 
     // for each part of the form
     $("." + editProfileFormSuffix).each(function() {
@@ -164,7 +162,7 @@ function updateEditProfileFormOnDAOSelection (selectedDAO) {
             // eventually, show the part of the form
             $(this).collapse("show");
         }
-            // otherwise, it means that this part of the form contains parameters that are not related to the selected CSP
+        // otherwise, it means that this part of the form contains parameters that are not related to the selected CSP
         // therefore, we can hide them
         else {
 
@@ -189,7 +187,7 @@ function updateEditProfileFormOnDAOSelection (selectedDAO) {
         currentlySelectedDAO = selectedDAO;
 
         // get the user data of the selected CSP
-        invokeAPI(pathAPIProfile + selectedDAO + "/", "GET", null, successGetUserData, errorGetUserData);
+        invokeAPI(pathAPIProfile + currentlySelectedDAO + "/", "GET", null, successGetUserData, errorGetUserData);
     }
 }
 

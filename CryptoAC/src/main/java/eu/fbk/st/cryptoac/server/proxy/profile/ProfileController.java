@@ -219,7 +219,7 @@ public class ProfileController {
 
             String loggedUser = (String) getSessionParameter(request, kCurrentlyLoggedUser);
             String requestedUsername = getQueryParameter(request, kRequestedUserInServer);
-            DAO selectedDAO = DAO.get(getQueryParameter(request, kDAO));
+            DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
             // it means that the request comes from the administrator.
             // Therefore, we first check that the user that made the
@@ -377,7 +377,7 @@ public class ProfileController {
 
             String loggedUser = (String) getSessionParameter(request, kCurrentlyLoggedUser);
             String requestedUsername = getQueryParameter(request, kRequestedUserInServer);
-            DAO selectedDAO = DAO.get(getQueryParameter(request, kDAO));
+            DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
             String dataKey = kDataOfUserLoggedIn + selectedDAO;
 
             // it means that the request comes from the administrator.

@@ -74,7 +74,7 @@ public class APIFinalizer {
                 "logged user ", loggedUser, " has invoked API (", methodToInvoke, "): storage system is ",
                 selectedDAO, " (admin privileges are", (areAdminPrivilegesRequired ? " " : " not "), "required)");
 
-        APIOutput outputAPI = null;
+        APIOutput outputAPI;
 
         // first, we need to get the method through reflection. Therefore, we need the signature
         // of the method, i.e., the type of the parameters.

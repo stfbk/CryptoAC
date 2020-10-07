@@ -180,7 +180,7 @@ public class Const {
         /**
          * the name of the user in CryptoAC.
          */
-        public static final String kUsernameInCryptoAC = "usernameInCryptoAC";
+        public static final String kUsernameInCryptoAC = DAOInterfaceParameters.kUsernameInCryptoAC;
 
         /**
          * the name of the role in CryptoAC.
@@ -424,7 +424,7 @@ public class Const {
         /**
          * (proxy mode) API for deleting a user (admin only).
          */
-        public static final String DELETEUSER   = BASEUSERS + ":" + FormParameters.kUsernameInCryptoAC + "/";
+        public static final String DELETEUSER   = BASEUSERS + ":" + kUsernameInCryptoAC + "/";
 
 
         /**
@@ -512,13 +512,13 @@ public class Const {
         /**
          * (proxy mode) API for creating the profile of a user (admin or authenticated user only).
          */
-        public static final String POSTPROFILE      = BASEPROFILES;
+        public static final String POSTPROFILE      = BASEPROFILES + ":" + kDAO + "/";
 
 
         /**
          * (proxy mode) API for updating the profile of a user (admin or authenticated user only).
          */
-        public static final String PATCHPROFILE     = BASEPROFILES;
+        public static final String PATCHPROFILE     = BASEPROFILES + ":" + kDAO + "/";
 
         /**
          * (proxy mode) redirect to index.

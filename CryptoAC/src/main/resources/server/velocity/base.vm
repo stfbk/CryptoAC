@@ -541,9 +541,6 @@
                                     <form method="POST" id="editProfileForm" action=$API.POSTPROFILE >
                                         <div class="form-group">
 
-                                            <!-- this variable holds for which storage system the user is updating his profile -->
-                                            <input id=$FormParameters.kDAO name=$FormParameters.kDAO type="hidden" value="" />
-
                                             <!-- READ HERE IF YOU ARE ADDING SUPPORT TO A NEW STORAGE SYSTEM -->
                                             <!-- the form is divided into different sections. Each section has a collection of parameters -->
                                             <!-- that may be needed or not, depending on the chosen storage system. Therefore, each of these -->

@@ -27,7 +27,6 @@ public class JSONUtil {
         response.type("application/json");
 
         try {
-
             objectToJSON = new Gson().toJson(objectToTransform);
             response.status(objectToTransform.getHttpStatus());
         }

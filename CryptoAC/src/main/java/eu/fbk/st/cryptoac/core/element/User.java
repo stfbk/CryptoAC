@@ -1754,7 +1754,6 @@ public final class User extends CryptoACActiveElement {
             }
             // either the file does not exists or the user does not have access to the file
             // in both cases, the most secure response is to say that the file does not exist
-            // so to return a 404 instead of a 403
             else {
                 App.logger.error("[{}{}{}{}{} ", className, " (" + writeFile + ")]: ",
                         "file ", fileName, " does not exist");
@@ -1899,35 +1898,25 @@ public final class User extends CryptoACActiveElement {
     }
 
     /**
-     * This method returns the role tuples associated to the specified user and role. If this user
-     * is not the admin, then this user can only see his role tuples
-     * @param username the name of the user of the role tuples to return, or null if not relevant (not token)
-     * @param roleName the name of the file of the role tuples to return, or null if not relevant (not token)
+     * This method returns the role tuples associated to this user.
+     * @param roleName the name of the role that has to match in the tuples
      * @param offset the offset where to start fetching rows from
      * @param limit the limit of rows to return
      * @return the outcome of the operation. The first element is the outcome code, the second a set of role tuples
      */
-    UserOutput listAssignments (String username, String roleName, Integer offset, Integer limit) {
+    UserOutput listAssignments (String roleName, Integer offset, Integer limit) {
 
         OperationOutcomeCode returningCode = OperationOutcomeCode.code_0;
         Exception exceptionThrown = null;
         HashSet<RoleTuple> associatedAssignments = new HashSet<>();
 
-        App.logger.info("[{}{}{}{}{}{}{}{} ", className, " (" + listAssignments + ")]: ", "user ", getName(),
-                ": getting role tuples with user ", username, " and role ", roleName);
+        App.logger.info("[{}{}{}{}{}{}{} ", className, " (" + listAssignments + ")]: ", "user ", getName(),
+                ": getting role tuples for user ", getName(),
+                (roleName == null ? "" : " and filtered by role " + roleName) );
 
         try {
-
             daoInterface.lockDAOInterfaceStatus();
-
-            if (this.isUserAdmin())
-                associatedAssignments = daoInterface.getRoleTuples(username, roleName, offset, limit);
-            else {
-
-                App.logger.info("{}{}{}{}{}", className, " (" + listAssignments + ")]: ", "user ", getName(),
-                        " is not the admin, filtering role tuples by this user name");
-                associatedAssignments = daoInterface.getMyRoleTuples(getName(), roleName, offset, limit);
-            }
+            associatedAssignments = daoInterface.getMyRoleTuples(getName(), roleName, offset, limit);
         }
         catch (DAOException e) {
             exceptionThrown = e;
