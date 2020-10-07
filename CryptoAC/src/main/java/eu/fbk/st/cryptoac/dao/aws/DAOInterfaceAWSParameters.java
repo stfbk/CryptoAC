@@ -14,8 +14,6 @@ import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceAWSParameters.*;
  */
 public class DAOInterfaceAWSParameters extends DAOInterfaceMySQLParameters {
 
-
-
     /**
      * the ID of the lambda function.
      * Don't apply the expose annotation so it can be excluded from serialization.

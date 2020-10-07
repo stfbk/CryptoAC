@@ -1,5 +1,7 @@
 package eu.fbk.st.cryptoac;
 
+import eu.fbk.st.cryptoac.core.tuple.Permission;
+import eu.fbk.st.cryptoac.server.model.APIOutput;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
 import eu.fbk.st.cryptoac.server.ds.FilesController;
 import eu.fbk.st.cryptoac.server.proxy.users.AdminController;
@@ -12,10 +14,13 @@ import eu.fbk.st.cryptoac.server.proxy.profile.ProfileController;
 import eu.fbk.st.cryptoac.server.model.OperationMode;
 import eu.fbk.st.cryptoac.server.util.RequestUtil;
 import org.apache.commons.cli.*;
+import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.InputStream;
+import java.security.PublicKey;
 import java.util.Properties;
 
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.*;
@@ -24,6 +29,7 @@ import static eu.fbk.st.cryptoac.util.CMDUtil.*;
 import static eu.fbk.st.cryptoac.util.Const.API.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.kDAO;
 import static eu.fbk.st.cryptoac.util.Const.Server.*;
+import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.code_66;
 import static java.lang.System.exit;
 import static spark.Spark.*;
 
@@ -327,7 +333,7 @@ public class App {
                 // ===== SET UP BEFORE FILTERS =====
                 before("*", FiltersUtil.addTrailingSlashes);
                 before("*", FiltersUtil.logRequest);
-                before("*", RequestUtil.checkRequestIsWellFormatted);
+                before("*", RequestUtil.setAttributeForMultipart);
                 before(currentVersion + "/*",               LoginController.authenticateUser);
                 before(BASEPROXY + "/*",                    RequestUtil.checkRequestAcceptJSON);
                 before(BASEPROXY + "/*/:" + kDAO + "/*",    ProfileController.checkProfileCompleteAndLoadIt);
@@ -373,7 +379,7 @@ public class App {
                 // ===== SET UP BEFORE FILTERS =====
                 before("*", FiltersUtil.addTrailingSlashes);
                 before("*", FiltersUtil.logRequest);
-                before("*", RequestUtil.checkRequestIsWellFormatted);
+                before("*", RequestUtil.setAttributeForMultipart);
 
                 // ===== SET UP ROUTES =====
                 // routes for adding and writing files
@@ -412,7 +418,7 @@ public class App {
                 // ===== SET UP BEFORE FILTERS =====
                 before("*", FiltersUtil.addTrailingSlashes);
                 before("*", FiltersUtil.logRequest);
-                before("*", RequestUtil.checkRequestIsWellFormatted);
+                before("*", RequestUtil.setAttributeForMultipart);
 
                 // ===== SET UP ROUTES =====
                 // routes for adding, writing and deleting files
@@ -435,9 +441,6 @@ public class App {
 
             // standard response for requests ending in 404
             notFound(ErrorUtil.notFound);
-
-            // if asked, return the swagger file for version 1
-            get(currentVersion, (request, response) -> {  response.redirect("/other/swagger-v1.yaml"); return null; });
 
             // catch any exception that may be thrown by the APIs
             exception(Exception.class, internalErrorException);

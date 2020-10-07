@@ -102,7 +102,7 @@ public class ChecksController {
 
         try {
 
-            DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+            DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
             // first, acquire the parameters from the request
             FileTuple fileTuple = new Gson()
@@ -300,7 +300,7 @@ public class ChecksController {
 
         try {
 
-            DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+            DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
             // first, acquire the parameters from the request
             FileTuple fileTuple = new Gson()

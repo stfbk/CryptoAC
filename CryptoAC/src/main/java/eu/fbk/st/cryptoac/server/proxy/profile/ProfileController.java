@@ -9,6 +9,7 @@ import eu.fbk.st.cryptoac.dao.DAOException;
 import eu.fbk.st.cryptoac.dao.DAOInterface;
 import eu.fbk.st.cryptoac.dao.DAOInterfaceParameters;
 import eu.fbk.st.cryptoac.server.model.APIOutput;
+import eu.fbk.st.cryptoac.util.Const;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
 import eu.fbk.st.cryptoac.util.FileUtil;
 import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
@@ -27,6 +28,7 @@ import java.nio.file.FileSystemException;
 import java.security.KeyPair;
 import java.util.HashMap;
 
+import static eu.fbk.st.cryptoac.App.admin;
 import static eu.fbk.st.cryptoac.App.usersDataDirectoryProxy;
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.*;
 import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceParameters.*;
@@ -60,7 +62,7 @@ public class ProfileController {
      */
     public static Filter checkProfileCompleteAndLoadIt = (Request request, Response response) -> {
 
-        String selectedDAOString = getMandatoryPathParameter(request, kDAO);
+        String selectedDAOString = getPathParameter(request, kDAO);
         DAO selectedDAO = DAO.get(selectedDAOString);
         String loggedUser = (String) getSessionParameter(request, kCurrentlyLoggedUser);
         String dataKey = kDataOfUserLoggedIn + selectedDAO;
@@ -86,7 +88,7 @@ public class ProfileController {
             else {
                 App.logger.error("[{}{}{}{}{} ", className, " (" + isProfileCompleteLog + ")]: ",
                         "storage system ", selectedDAOString, " is not supported");
-                halt(422, (String) missingParameter.handle(request, response));
+                halt(422, (String) unprocessableEntity.handle(request, response));
             }
 
         }
@@ -135,8 +137,8 @@ public class ProfileController {
         try {
 
             String loggedUser = (String) getSessionParameter(request, kCurrentlyLoggedUser);
-            String requestedUsername = getOptionalQueryParameter(request, kRequestedUserInServer);
-            DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+            String requestedUsername = getQueryParameter(request, kRequestedUserInServer);
+            DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
             // obscure the private keys of the user before returning the profile
             HashMap<String, byte[]> hideKeys = new HashMap<>();
@@ -216,8 +218,8 @@ public class ProfileController {
         try {
 
             String loggedUser = (String) getSessionParameter(request, kCurrentlyLoggedUser);
-            String requestedUsername = getOptionalQueryParameter(request, kRequestedUserInServer);
-            DAO selectedDAO = DAO.get(getOptionalQueryParameter(request, kDAO));
+            String requestedUsername = getQueryParameter(request, kRequestedUserInServer);
+            DAO selectedDAO = DAO.get(getQueryParameter(request, kDAO));
 
             // it means that the request comes from the administrator.
             // Therefore, we first check that the user that made the
@@ -256,6 +258,10 @@ public class ProfileController {
 
                 // this as the raw parameters that come from the multipart HTML form
                 HashMap<String, byte[]> formParameters = getParametersFromMultipart(request);
+
+                // if the user said that he is the admin, then his name is the admin ID
+                if ("true".equals(new String(formParameters.get(Const.DAOInterfaceParameters.kIsAdminInCryptoAC))))
+                    formParameters.put(Const.DAOInterfaceParameters.kUsernameInCryptoAC, admin.getBytes());
 
                 // this is where the user's keys are generated. These keys will
                 // be used by the user for interacting with the given storage system
@@ -370,8 +376,8 @@ public class ProfileController {
         try {
 
             String loggedUser = (String) getSessionParameter(request, kCurrentlyLoggedUser);
-            String requestedUsername = getOptionalQueryParameter(request, kRequestedUserInServer);
-            DAO selectedDAO = DAO.get(getOptionalQueryParameter(request, kDAO));
+            String requestedUsername = getQueryParameter(request, kRequestedUserInServer);
+            DAO selectedDAO = DAO.get(getQueryParameter(request, kDAO));
             String dataKey = kDataOfUserLoggedIn + selectedDAO;
 
             // it means that the request comes from the administrator.

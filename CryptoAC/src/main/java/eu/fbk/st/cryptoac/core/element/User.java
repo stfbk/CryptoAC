@@ -2067,7 +2067,7 @@ public final class User extends CryptoACActiveElement {
         }
         catch (NullPointerException e) {
             App.logger.warn("[{}{}{}{} ", className, " (" + getRandomToken + ")]: ", "The private key is null.",
-                        "The token will be randomly generated");
+                        " The token will be randomly generated");
         }
         return token;
     }

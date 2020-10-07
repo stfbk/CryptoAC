@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.*;
 
 
+import static eu.fbk.st.cryptoac.server.util.ErrorUtil.notAcceptable;
 import static spark.Spark.halt;
 
 /**
@@ -52,18 +53,18 @@ public class RequestUtil {
      * @param parameter the key of the parameter
      * @return the parameter, if any. Null otherwise
      */
-    public static String getMandatoryPathParameter(Request request, String parameter) {
+    public static String getPathParameter(Request request, String parameter) {
         return request.params(parameter);
     }
 
     /**
      * generic getter for query parameters in HTTP requests. The parameters are those
-     * spefified as key:value after the "?" in the URL
+     * specified as key:value after the "?" in the URL
      * @param request the HTTP request
      * @param parameter the key of the parameter
      * @return the parameter, if any. Null otherwise
      */
-    public static String getOptionalQueryParameter(Request request, String parameter) {
+    public static String getQueryParameter(Request request, String parameter) {
         return request.queryParams(parameter);
     }
 
@@ -274,11 +275,9 @@ public class RequestUtil {
 
 
     /**
-     * Utility method to check whether an HTTP request is well formatted or not
-     * (e.g., in a POST request the content type is multipart).
-     * If the request is not well formatted, the method redirects to 400.
+     * Utility method to add the multipart Jetty configuration attribute if the request is multipart
      */
-    public static Filter checkRequestIsWellFormatted = (Request request, Response response) -> {
+    public static Filter setAttributeForMultipart = (Request request, Response response) -> {
 
         String contentType = request.contentType();
         contentType = contentType == null ? "" : contentType;
@@ -300,7 +299,7 @@ public class RequestUtil {
         if (!clientAcceptsJson(request)) {
             App.logger.error("[{}{}{} ", className, " (" + checkRequestAcceptJSONLog + ")]: ",
                     "the HTTP request does not accept JSON as response");
-            halt(406, (String) ErrorUtil.notAcceptable.handle(request, response));
+            halt(406, (String) notAcceptable.handle(request, response));
         }
     };
 }

@@ -25,7 +25,6 @@ While in traditional **RBAC** there is the need of a central entity enforcing AC
 CryptoAC is the subject of a [**master thesis**](https://github.com/StefanoBerlato/Master-Thesis) presented at the university of Trento in 2019. A paper proposing an architectual model for CAC schemes and an optimisation problem to find the best architecture for a scenario was accepted at the [**ACM ASIACCS20 conference**](https://stefanoberlato.it/publications/pdf/CryptoAC.pdf). Other articles are currently being written;
 
 
-
 ## How To Install
 
 Read the instructions in the [**docker folder**](./Docker).

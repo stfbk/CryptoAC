@@ -1,7 +1,6 @@
 package eu.fbk.st.cryptoac.server.proxy.users;
 
 import eu.fbk.st.cryptoac.server.model.APIOutput;
-import eu.fbk.st.cryptoac.util.FileUtil;
 import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import eu.fbk.st.cryptoac.server.util.*;
 import eu.fbk.st.cryptoac.dao.DAO;
@@ -11,17 +10,12 @@ import spark.Route;
 import spark.route.HttpMethod;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import static eu.fbk.st.cryptoac.server.proxy.util.APIFinalizer.*;
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.error;
 import static eu.fbk.st.cryptoac.util.Const.*;
 import static eu.fbk.st.cryptoac.server.util.RequestUtil.*;
-import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceParameters.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.*;
 
 /**
@@ -35,11 +29,11 @@ public class UserController {
     public static Route readFile = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String nameOfTheFile = getMandatoryPathParameter(request, kFileNameInCryptoAC);
+        String nameOfTheFile = getPathParameter(request, kFileNameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, 
+        invocationResult = executeAPI(request, response, selectedDAO,
                 false, API.GETFILE, HttpMethod.get, nameOfTheFile);
 
         // if everything went well, it means that there is a file ready to be downloaded by the user
@@ -103,12 +97,12 @@ public class UserController {
     public static Route addFile = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         String nameOfTheFile = request.raw().getPart(kFileInCryptoAC).getSubmittedFileName();
         InputStream fileInputStream = getStreamParameterNoCheckSizeFromMultipart(request, kFileInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, false,
+        invocationResult = executeAPI(request, response, selectedDAO, false,
                 API.POSTFILE, HttpMethod.post, nameOfTheFile, fileInputStream);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
@@ -120,12 +114,12 @@ public class UserController {
     public static Route writeFile = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         String fileNameToUpload = request.raw().getPart(kFileInCryptoAC).getSubmittedFileName();
         InputStream fileInputStream = getStreamParameterNoCheckSizeFromMultipart(request, kFileInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, false,
+        invocationResult = executeAPI(request, response, selectedDAO, false,
                 API.PATCHFILE, HttpMethod.patch, fileNameToUpload, fileInputStream);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
@@ -137,16 +131,16 @@ public class UserController {
     public static Route listAssignments = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         // get optional parameters
-        String givenOffset      = getOptionalQueryParameter(request, kOffsetInCryptoAC);
-        String givenLimit       = getOptionalQueryParameter(request, kLimitInCryptoAC);
-        String givenUsername    = getOptionalQueryParameter(request, FormParameters.kUsernameInCryptoAC);
-        String givenRoleName    = getOptionalQueryParameter(request, kRoleNameInCryptoAC);
+        String givenOffset      = getQueryParameter(request, kOffsetInCryptoAC);
+        String givenLimit       = getQueryParameter(request, kLimitInCryptoAC);
+        String givenUsername    = getQueryParameter(request, FormParameters.kUsernameInCryptoAC);
+        String givenRoleName    = getQueryParameter(request, kRoleNameInCryptoAC);
 
         // if optional parameters are null, pass the class instead
-        invocationResult = executeAPI(request, selectedDAO, false,
+        invocationResult = executeAPI(request, response, selectedDAO, false,
                 API.GETASSIGNMENTS, HttpMethod.get,
                 givenUsername == null ? String.class : givenUsername,
                 givenRoleName == null ? String.class : givenRoleName,
@@ -162,17 +156,17 @@ public class UserController {
     public static Route listPermissions = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         // get optional parameters
-        String givenOffset   = getOptionalQueryParameter(request, kOffsetInCryptoAC);
-        String givenLimit    = getOptionalQueryParameter(request, kLimitInCryptoAC);
-        String givenRoleName = getOptionalQueryParameter(request, kRoleNameInCryptoAC);
-        String givenFileName = getOptionalQueryParameter(request, kFileNameInCryptoAC);
+        String givenOffset   = getQueryParameter(request, kOffsetInCryptoAC);
+        String givenLimit    = getQueryParameter(request, kLimitInCryptoAC);
+        String givenRoleName = getQueryParameter(request, kRoleNameInCryptoAC);
+        String givenFileName = getQueryParameter(request, kFileNameInCryptoAC);
 
 
         // if optional parameters are null, pass the class instead
-        invocationResult = executeAPI(request, selectedDAO, false,
+        invocationResult = executeAPI(request, response, selectedDAO, false,
                 API.GETPERMISSIONS, HttpMethod.get, 
                 givenRoleName == null ? String.class : givenRoleName,
                 givenFileName == null ? String.class : givenFileName,

@@ -1,1695 +1,1420 @@
 openapi: "3.0.0"
 info:
-  version: 1.0.0
+  version: 0.1.0
   title: "CryptoAC"
-  description: "This documentation relates to the RESTful APIs made available by [CryptoAC](https://gitlab.fbk.eu/st/people/StefanoBerlato/cryptorbaccompiler) in his components. These APIs are divided in different groups depending on the tags assigned. The \"Admin\" tag indicates that the APIs is invokable by the administrator only. The \"CryptoAC\" tag indicates that the API is related to the management of the cryptographic access control policy (e.g., read file, assign permission). The \"Profile\" tag indicates that the API is related to the management of the profile of the user in CryptoAC (e.g., CSP configuration, PKI keys). Each APIs contains also a tag among \"Proxy\", \"RM\" and \"DS\" depending on the role of the CryptoAC instance in the architecture. Indeed, remember that CryptoAC can assume the role of all entities except the DS, that is always a MySQL8+ database in a Docker container. Note: required parameters are rendered as path parameters, while optional parameters are rendered as query parameters"
+  description: "This is the documentation of the RESTful APIs available in [CryptoAC](https://github.com/stfbk/CryptoAC), a tool for enforcing role-based cryptographic access control policies. Role-based Access Control (RBAC) is one of the most widely adopted AC models in which users are assigned to one or more roles. In the context of an organization, a role reflects an internal qualification (e.g., employee). Permissions are assigned to one or more roles by administrators of the policy. Users activate some roles to access the permissions needed to finalize their operations (e.g., read a file). Formally, the state of an RBAC policy can be described by the set of users U , roles R, permissions P and the assignments users-roles UR ⊆ U × R and roles-permissions PA ⊆ R × P. A user u can use a permission p if ∃r : ((u, r) ∈ UR) ∧ ((r, p) ∈ PA). Most of the APIs below allow the administrator to manage the RBAC policy. As CryptoAC can be configured to act as either the proxy, RM or DS, the APIs are divided into three different groups. The \"Proxy\", \"RM\ and \"DS\ tags indicate that the API is available in the proxy, RM and DS entities, respectively. The \"Admin\" tag indicates that only the administrator can invoke the API. The \"CAC\" tag indicates that the API is related to the management of the cryptographic access control policy (e.g., read file, assign permission). The \"Profile\" tag indicates that the API is related to the management of users' profiles (e.g., storage solution configuration, PKI keys). Note that a commonly used parameters is \"Storage_Solution\"; this defines the storage solution to employ (e.g., AWS, Azure, Hyperledger Fabric). As a final remark, required parameters are rendered as path parameters, while optional parameters are rendered as query parameters"
   termsOfService: http://swagger.io/terms/
   contact:
     name: FBK - Security and Trust
     email: sberlato@fbk.eu
-    url: https://ict.fbk.eu/areas/cybersecurity/
+    url: http://stfbk.github.io/
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: http://192.168.56.101:7777/v1
+  - url: http://localhost:7777/v1
 paths:
 
-  /v1/:
-    get:
-      tags: ["CryptoAC"]
-      summary: "Returns the Swagger documentation file for version 1"
-      description: "Returns the Swagger documentation file for version 1"
-      operationId: v1
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      responses:
-        '200':
-          description: The swagger file for version v1
-          content:
-            application/json:
-              schema:
-                  type: object
-                  example: "openapi: '3.0.0' info: version: 1.0.0, ..."
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
 
-  /proxy/users/{Cloud_Service_Provider}/:
-    post: 
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Add a new user"
-      description: "Add a new user with the given username and password in the specified CSP. Note that the given username cannot match the username of a deleted user"
-      operationId: addUser
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                Username:
-                  type: string
-                  description: The username of the user to add
-                Password:
-                  type: string
-                  description: The default password of the user for database access
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-          
-  /proxy/users/{Cloud_Service_Provider}/{Username}/:
-    delete:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Delete the specified user"
-      description: "Delete a user. Note that they are not actually deleted but just flagged. Thus, the ID of the deleted users cannot be reused"
-      operationId: deleteUser
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: Username
-          in: path
-          description: The ID of the user to delete
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-
-  /proxy/roles/{Cloud_Service_Provider}:
-    post:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Add a new role"
-      description: "Add a new role with the given role name in the specified CSP"
-      operationId: addRole
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                Role_Name:
-                  type: string
-                  description: The ID of the role to add
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-          
-  /proxy/roles/{Cloud_Service_Provider}/{Role_Name}/:
-    delete:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Delete the specified role"
-      description: "Delete a role. Every permission and user will be removed from the role"
-      operationId: deleteRole
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: Role_Name
-          in: path
-          description: The ID of the role to delete
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-
-  /proxy/files/{Cloud_Service_Provider}/{File_Name}:
+  /proxy/users/{Storage_Solution}/:
     get:
-      tags: ["User", "CryptoAC", "Proxy"]
-      summary: "Returns the (decrypted) file specified by the given ID."
-      description: "Returns the (decrypted) file specified by the given ID. Regardless of whether the file does not exist or the user does not have access to the file, the API would always return 404 to avoid information disclosure."
-      operationId: readFile
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: File_Name
-          in: path
-          description: The ID of file to read
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/octet-stream:
-             schema:
-               type: string
-               format: binary
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '404':
-          description: "Not found - the requested resource does not exist"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'          
-    delete:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Delete the specified file"
-      description: "Delete a file by removing the related file tuple and permission tuples"
-      operationId: deleteFile
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: File_Name
-          in: path
-          description: The ID of the file to delete
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-       
-  /proxy/assignments/{Cloud_Service_Provider}/{Offset}/{Limit}:
-    get:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Returns the list of assignments the logged user can see. The assignments can be filtered by user and role ID"
-      description: "Returns the list of assignments the logged user can see. The assignments can be filtered by user and role ID"
-      operationId: listAssignments
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: Role_Name
-          in: query
-          description: Filter by role ID
-          required: false
-          schema:
-            type: string
-        - name: Username
-          in: query
-          description: Filter by user ID
-          required: false
-          schema:
-            type: string
-        - name: Offset
-          in: path
-          description: The offset from which start fetching assignments (used for pagination)
-          required: true
-          schema:
-            type: integer
-        - name: Limit
-          in: path
-          description: The limit of assignments to return (used for pagination)
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/listUsers'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-          
-  /proxy/assignments/{Cloud_Service_Provider}:
-    post:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Assign an existing user to an existing role"
-      description: "Assign an existing user to an existing role by creating a new role tuple binding the user and the role"
-      operationId: assignUserToRole
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                Username:
-                  type: string
-                  description: The ID of the user to be assigned to the role
-                Role_Name:
-                  type: string
-                  description: The ID of the role the user is assigned to
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-
-  /proxy/assignments/{Cloud_Service_Provider}/{Role_Name}/{Username}/:
-    delete:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Revoke the user from the role"
-      description: "Revoke the user from the role by deleting the role tuple binding the user and the role"
-      operationId: revokeUserFromRole
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: Role_Name
-          in: path
-          description: The ID of the role to revoke the user from
-          required: true
-          schema:
-            type: string
-        - name: Username
-          in: path
-          description: The ID of the user to revoke from the role
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-      
-  /proxy/permissions/{Cloud_Service_Provider}/{Offset}/{Limit}:
-    get:
-      tags:
-        ["Admin", "CryptoAC", "Proxy"]
-      summary: "Returns the list of permissions the logged user can see. The permissions can be filtered by role ID, file ID, role version number and file version number"
-      description: "Returns the list of permissions the logged user can see. The permissions can be filtered by role ID, file ID, role version number and file version number"
-      operationId: listPermissions
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: File_Name
-          in: query
-          description: Filter by file ID
-          required: false
-          schema:
-            type: string
-        - name: Role_Name
-          in: query
-          description: Filter by role ID
-          required: false
-          schema:
-            type: string
-        - name: Role_Version_Number
-          in: query
-          description: Filter by role version number
-          required: false
-          schema:
-            type: integer
-        - name: File_Version_Number
-          in: query
-          description: Filter by file version number
-          required: false
-          schema:
-            type: integer
-        - name: Offset
-          in: path
-          description: The offset from which start fetching permissions (used for pagination)
-          required: true
-          schema:
-            type: integer
-        - name: Limit
-          in: path
-          description: The limit of permissions to return (used for pagination)
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/listRoles'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'      
-          
-  /proxy/permissions/{Cloud_Service_Provider}:
-    post:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Assign a permission to an existing role over an existing file"
-      description: "Assign a permission to an existing role over an existing file by creating a permission tuple binding the role and the file. The permission can be either \"Read\" or \"Read_and_Write\""
-      operationId: assignPermissionToRole
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                Role_Name:
-                  type: string
-                  description: The ID of the role the permission is assigned to
-                File_Name:
-                  type: string
-                  description: The ID of the file the role is given permission on
-                Permission:
-                  $ref: '#/components/schemas/permissionToGrant'
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-          
-  /proxy/permissions/{Cloud_Service_Provider}/{File_Name}/{Role_Name}/{Permission}/:
-    delete:
-      tags: ["Admin", "CryptoAC", "Proxy"]
-      summary: "Revoke the given permission from the role over the specified file"
-      description: "Revoke the given permission from the role over the specified file by modifying or deleting the permission tuple binding the role and the file. The permission can be either \"Read\" or \"Write\""
-      operationId: revokePermissionFromRole
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: File_Name
-          in: path
-          description: The ID of the file to revoke the permission of the role from
-          required: true
-          schema:
-            type: string
-        - name: Role_Name
-          in: path
-          description: The ID of the role from which revoke the permission over the file
-          required: true
-          schema:
-            type: string
-        - name: Permission
-          in: path
-          description: The permission to remove, either \"Read\" or \"Write\"
-          required: true
-          schema:
-            $ref: '#/components/schemas/permissionToRevoke'
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-       
-  /proxy/files/{Cloud_Service_Provider}:
-    post:
-      tags: ["User", "CryptoAC", "Proxy"]
-      summary: "Add a new file"
-      description: "Add a new file"
-      operationId: addFile
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                File_Name:
-                  type: string
-                  description: The ID of the file to add
-                File:
-                  type: string
-                  format: binary
-                  description: The content of the file to add
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-    patch:
-      tags: ["User", "CryptoAC", "Proxy"]
-      summary: "Update an existing file"
-      description: "Update an existing file. Regardless of whether the file does not exist or the user does not have access to the file, the API would always return 404 to avoid information disclosure."
-      operationId: writeFile
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                File_Name:
-                  type: string
-                  description: The ID of the file to update
-                File:
-                  type: string
-                  format: binary
-                  description: The content of the file to update
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '404':
-          description: "Not found - the requested resource does not exist"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-          
-  /proxy/users/{Cloud_Service_Provider}/{Offset}/{Limit}:
-    get:
-      tags:
-        ["CryptoAC", "Proxy", "Admin"]
-      summary: "Returns all the users in the specified CSP"
-      description: "Returns all the users in the specified CSP"
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Returns the list of the users in the specified storage solution."
+      description: "Returns the list of the users in the specified storage solution. Note that this is not related to the users' profiles. Users can be paginated."
       operationId: listUsers
       security:
         - cookieAuth: []
         - basicAuth: []
       parameters:
-        - name: Cloud_Service_Provider
+        - name: Storage_Solution
           in: path
-          description: The Cloud Service Provider to be used
+          description: "The storage solution to use."
           required: true
           schema:
             type: string
         - name: Offset
-          in: path
-          description: The offset from which start fetching users (used for pagination)
+          in: query
+          description: "The offset from which start fetching users (pagination)."
           required: true
           schema:
             type: integer
         - name: Limit
-          in: path
-          description: The limit of users to return (used for pagination)
+          in: query
+          description: "The limit of users to return (pagination)."
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/listUsers'
+                $ref: '#/components/schemas/listUsers'
         '401':
-          description: "Unauthorized - authentication was not successful"
+          description: "Unauthorized."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
+          description: "Forbidden."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
+          description: "Not Acceptable."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '422':
-          description: "Unprocessable entity - missing or wrong parameters"
+          description: "Unprocessable Entity."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-  
-  /proxy/roles/{Cloud_Service_Provider}/{Offset}/{Limit}:
-    get:
-      tags:
-        ["CryptoAC", "Proxy"]
-      summary: "Returns all the roles in the specified CSP"
-      description: "Returns all the roles in the specified CSP"
-      operationId: listRoles
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post: 
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Add a new user."
+      description: "Add a new user with the given username in the specified storage solution. Note that the given username cannot match the username of an existing or deleted user."
+      operationId: addUser
       security:
         - cookieAuth: []
         - basicAuth: []
       parameters:
-        - name: Cloud_Service_Provider
+        - name: Storage_Solution
           in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: Offset
-          in: path
-          description: The offset from which start fetching roles (used for pagination)
-          required: true
-          schema:
-            type: integer
-        - name: Limit
-          in: path
-          description: The limit of roles to return (used for pagination)
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/listRoles'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-                    
-  /proxy/files/{Cloud_Service_Provider}/{Offset}/{Limit}:
-    get:
-      tags:
-        ["CryptoAC", "Proxy"]
-      summary: "Returns all the files in the specified CSP"
-      description: "Returns all the files in the specified CSP"
-      operationId: listFiles
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The Cloud Service Provider to be used
-          required: true
-          schema:
-            type: string
-        - name: Offset
-          in: path
-          description: The offset from which start fetching files (used for pagination)
-          required: true
-          schema:
-            type: integer
-        - name: Limit
-          in: path
-          description: The limit of files to return (used for pagination)
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/listFiles'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'      
-
-  /profile/{Cloud_Service_Provider}/{Username}/:
-    get:
-      tags: ["CryptoAC", "Proxy", "Profile"]
-      summary: "Returns the configuration data of the requested user related to the given CSP"
-      description: "Returns the configuration data of the requested user related to the given CSP"
-      operationId: getUserData
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The related Cloud Service Provider
-          required: true
-          schema:
-            type: string
-        - name: Username
-          in: path
-          description: The ID of the user of which to retrieve the data 
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                  type: object
-                  example: "see schema for alternatives"
-                  oneOf:
-                    - $ref: '#/components/schemas/LocalUserData'
-                    - $ref: '#/components/schemas/AWSUserData'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-          
-  /profile/{Cloud_Service_Provider}/:
-    get:
-      tags: ["CryptoAC", "Proxy", "Profile"]
-      summary: "Returns the configuration data of the logged user related to the given CSP"
-      description: "Returns the configuration data of the logged user related to the given CSP"
-      operationId: getUserDataNoName
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The related Cloud Service Provider
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                  type: object
-                  example: "see schema for alternatives"
-                  oneOf:
-                    - $ref: '#/components/schemas/LocalUserData'
-                    - $ref: '#/components/schemas/AWSUserData'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-    post:
-      tags: ["CryptoAC", "Proxy", "Profile"]
-      summary: "Create a configuration for the specified user related to the given CSP"
-      description: "Create a configuration for the specified user related to the given CSP Note that is it mandatory to provide all the needed parameters, except for the PKI keys, that are automatically created internally"
-      operationId: createUserData
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The related Cloud Service Provider
+          description: "The storage solution to use."
           required: true
           schema:
             type: string
       requestBody:
         required: true
-        description: Parameters of the user configuration. All parameters are mandatory
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              example: "see schema for alternatives"
-              oneOf:
-                - $ref: '#/components/schemas/LocalUserData'
-                - $ref: '#/components/schemas/AWSUserData'
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '409':
-          description: "Conflict - conflict with the current state of the resource"
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-    patch:
-      tags: ["CryptoAC", "Proxy", "Profile"]
-      summary: "Update a configuration for the specified user related to the given CSP"
-      description: "Update a configuration for the specified user related to the given CSP. Only given parameters will be updated"
-      operationId: updateUserData
-      security:
-        - cookieAuth: []
-        - basicAuth: []
-      parameters:
-        - name: Cloud_Service_Provider
-          in: path
-          description: The related Cloud Service Provider
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: Parameters to update in the user configuration.
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              example: "see schema for alternatives"
-              oneOf:
-                - $ref: '#/components/schemas/LocalUserData'
-                - $ref: '#/components/schemas/AWSUserData'
-      responses:
-        '200':
-          description: The operation concluded successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '401':
-          description: "Unauthorized - authentication was not successful"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-        '409':
-          description: "Conflict - conflict with the current state of the resource"
-        '422':
-          description: "Unprocessable entity - missing or wrong parameters"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-
-  /login/:
-    post:
-      tags: ["CryptoAC", "Proxy", "Login"]
-      summary: "Login the user with the given credentials. Note that authentication can also be done while invoking APIs by setting the credentials in the authentication header"
-      description: "Login the user with the given credentials. Note that authentication can also be done while invoking APIs by setting the credentials in the authentication header"
-      operationId: login
-      requestBody:
-        required: true
-        description: the user's credentials
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
-                Username:
+                usernameInCryptoAC:
                   type: string
-                  description: The username
-                Passowrd:
-                  type: string
-                  description: The password
+                  description: The username of the user to add.
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                  type: object
+                  example: "see schema for alternatives"
+                  oneOf:
+                    - $ref: '#/components/schemas/LocalUserData'
+                    - $ref: '#/components/schemas/AWSUserData'
         '401':
-          description: "Unauthorized - authentication was not successful"
+          description: "Unauthorized."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
         '422':
-          description: "Unprocessable entity - missing or wrong parameters"
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          
+  /proxy/users/{Storage_Solution}/{usernameInCryptoAC}/:
+    delete:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Delete the specified user."
+      description: "Delete the specified user. Note that users are not deleted from the database but instead just flagged."
+      operationId: deleteUser
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: usernameInCryptoAC
+          in: path
+          description: "The username of the user to delete."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+  /proxy/roles/{Storage_Solution}:
+    get:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Returns the list of the roles in the specified storage solution."
+      description: "Returns the list of the roles in the specified storage solution. Roles can be paginated."
+      operationId: listRoles
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: Offset
+          in: query
+          description: "The offset from which start fetching roles (pagination)."
+          required: true
+          schema:
+            type: integer
+        - name: Limit
+          in: query
+          description: "The limit of roles to return (pagination)."
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listRoles'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Add a new role."
+      description: "Add a new role with the given role name in the specified storage solution."
+      operationId: addRole
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Role_Name:
+                  type: string
+                  description: "The name of the role to add."
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          
+  /proxy/roles/{Storage_Solution}/{Role_Name}/:
+    delete:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Delete the specified role."
+      description: "Delete the specified role. Every permission and user will be removed from the role."
+      operationId: deleteRole
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: Role_Name
+          in: path
+          description: "The name of the role to delete."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+  /proxy/files/{Storage_Solution}/{File_Name}:
+    get:
+      tags: ["Proxy", "CAC"]
+      summary: "Return the specified file (decrypted)."
+      description: "Return the specified file (decrypted). Regardless of whether the file does not exist or the user does not have access to the file, the API would always return 404 to avoid information disclosure."
+      operationId: readFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file to read."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/octet-stream:
+             schema:
+               format: binary
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'  
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'  
+    delete:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Delete the specified file."
+      description: "Delete the specified file by removing the related file tuple and permission tuples."
+      operationId: deleteFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file to delete."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+       
+  /proxy/assignments/{Storage_Solution}/:
+    get:
+      tags: ["Proxy", "CAC"]
+      summary: "Return the roles tuples of the roles assigned to the logged user."
+      description: "Return the roles tuples of the roles assigned to the logged user. The role tuples can be filtered by role name and paginated."
+      operationId: listAssignments
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: Role_Name
+          in: query
+          description: "The role name that has to match in the role tuples."
+          required: false
+          schema:
+            type: string
+        - name: Offset
+          in: query
+          description: "The offset from which start fetching role tuples (pagination)."
+          required: true
+          schema:
+            type: integer
+        - name: Limit
+          in: query
+          description: "The limit of role tuples to return (pagination)."
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listAssignments'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          
+  /proxy/assignments/{Storage_Solution}:
+    post:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Assign the specified user to the specified role."
+      description: "Assign the specified user to the specified role. This creates a new role tuple binding the user and the role."
+      operationId: assignUserToRole
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                usernameInCryptoAC:
+                  type: string
+                  description: "The username of the user to assign to the role."
+                Role_Name:
+                  type: string
+                  description: "The name of the role the user is assigned to."
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+  /proxy/assignments/{Storage_Solution}/{Role_Name}/{usernameInCryptoAC}/:
+    delete:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Revoke the specified user from the specified role."
+      description: "Revoke the specified user from the specified role. This deletes the role tuple binding the user and the role."
+      operationId: revokeUserFromRole
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: Role_Name
+          in: path
+          description: "The name of the role from which revoke the user."
+          required: true
+          schema:
+            type: string
+        - name: usernameInCryptoAC
+          in: path
+          description: "The username of the user to revoke from the role."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      
+  /proxy/permissions/{Storage_Solution}:
+    get:
+      tags: ["Proxy", "CAC"]
+      summary: "Return the permission tuples the logged user can use thorugh assigned roles."
+      description: "Return the permission tuples the logged user can use thorugh assigned roles. The permission tuples can be filtered by role and file name and paginated."
+      operationId: listPermissions
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: query
+          description: "The file name that has to match in the permission tuples."
+          required: false
+          schema:
+            type: string
+        - name: Role_Name
+          in: query
+          description: "The role name that has to match in the permission tuples."
+          required: false
+          schema:
+            type: string
+        - name: Offset
+          in: query
+          description: "The offset from which start fetching role tuples (pagination)."
+          required: true
+          schema:
+            type: integer
+        - name: Limit
+          in: query
+          description: "The limit of role tuples to return (pagination)."
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/error'
+                  $ref: '#/components/schemas/listPermissions'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error' 
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Assign the specified role to the specified file."
+      description: "Assign the specified role to the specified file. This creates a permission tuple binding the role and the file. The permission can be either \"Read\" or \"Read_and_Write\""
+      operationId: assignPermissionToRole
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Role_Name:
+                  type: string
+                  description: "The name of the role the permission is assigned to."
+                File_Name:
+                  type: string
+                  description: "The name of the file the role is given permission over."
+                Permission:
+                  $ref: '#/components/schemas/Permission'
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          
+  /proxy/permissions/{Storage_Solution}/{File_Name}/{Role_Name}/{Permission}/:
+    delete:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Revoke the specified permission from the specified role over the specified file."
+      description: "Revoke the specified permission from the specified role over the specified file. This modifies (if revoked permission is \"Write\") or deletes (if revoked permission is \"Read\") the permission tuple binding the role and the file."
+      operationId: revokePermissionFromRole
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file over which the permission is revoked from the role."
+          required: true
+          schema:
+            type: string
+        - name: Role_Name
+          in: path
+          description: "The name of the role from which to revoke the permission over the file."
+          required: true
+          schema:
+            type: string
+        - name: Permission
+          in: path
+          description: "The permission to remove, either \"Read\" or \"Write\"."
+          required: true
+          schema:
+            $ref: '#/components/schemas/permissionToRevoke'
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+       
+  /proxy/files/{Storage_Solution}:
+    get:
+      tags: ["Proxy", "CAC", "Admin"]
+      summary: "Returns the list of the files in the specified storage solution."
+      description: "Returns the list of the files in the specified storage solution. Files can be paginated."
+      operationId: listFiles
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: Offset
+          in: query
+          description: "The offset from which start fetching users (pagination)."
+          required: true
+          schema:
+            type: integer
+        - name: Limit
+          in: query
+          description: "The limit of users to return (pagination)."
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listFiles'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'  
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      tags: ["Proxy", "CAC"]
+      summary: "Add a new file."
+      description: "Add a new file. The file is encrypted in the Proxy and then uploaded in the DS."
+      operationId: addFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                File_Name:
+                  type: string
+                  description: "The name of the file to add."
+                File:
+                  type: string
+                  format: binary
+                  description: "The file to add."
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    patch:
+      tags: ["Proxy", "CAC"]
+      summary: "Write the specified file."
+      description: "Write the specified file. The file is encrypted in the Proxy and then uploaded in the DS."
+      operationId: writeFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                File_Name:
+                  type: string
+                  description: "The name of the file to write."
+                File:
+                  type: string
+                  format: binary
+                  description: "The file to write."
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    
+
+  /profile/{Storage_Solution}:
+    get:
+      tags: ["Proxy", "Profile"]
+      summary: "Return the profile of a user."
+      description: "Return the profile of a user. This user is either the logged user (for users) or the specified user (for admin)."
+      operationId: getUserData
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: usernameInCryptoAC
+          in: query
+          description: "The username of the user whose profile we retrieve."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                  type: object
+                  example: "see schema for alternatives"
+                  oneOf:
+                    - $ref: '#/components/schemas/LocalUserData'
+                    - $ref: '#/components/schemas/AWSUserData'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      tags: ["Proxy", "Profile"]
+      summary: "Create the profile of a user."
+      description: "Create the profile of a user. This user is either the logged user (for users) or the specified user (for admin). Note that is it mandatory to provide all the needed parameters, except for the cryptographic keys which are created in the proxy."
+      operationId: createUserData
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: "Parameters for the user's profile."
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              example: "see schema for alternatives"
+              oneOf:
+                - $ref: '#/components/schemas/LocalUserData'
+                - $ref: '#/components/schemas/AWSUserData'
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    patch:
+      tags: ["Proxy", "Profile"]
+      summary: "Update the profile of a user."
+      description: "Update the profile of a user. This user is either the logged user (for users) or the specified user (for admin). Note that only given parameters are updated."
+      operationId: updateUserData
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: "Parameters for the user's profile"
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              example: "see schema for alternatives"
+              oneOf:
+                - $ref: '#/components/schemas/LocalUserData'
+                - $ref: '#/components/schemas/AWSUserData'
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+  /login/:
+    post:
+      tags: ["Proxy", "Profile"]
+      summary: "Login with the given credentials."
+      description: "Login the given credentials. As of now, any password works for logging in. Note that authentication can also be done while invoking APIs by setting the credentials in the authentication header."
+      operationId: login
+      requestBody:
+        required: true
+        description: "The user's credentials."
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                User:
+                  type: string
+                  description: "The username."
+                Password:
+                  type: string
+                  description: "The password."
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
   
   /logout/:
     get:
-      tags: ["CryptoAC", "Proxy", "Login"]
-      summary: "If previously authenticated, logout the user and terminate the session"
-      description: "If previously authenticated, logout the user and terminate the session"
+      tags: ["Proxy", "Profile"]
+      summary: "Logout the user and close the session."
+      description: "Logout the user and close the session. If the user was not previously authenticated, redirect to login"
       operationId: logout
       security:
         - cookieAuth: []
         - basicAuth: []
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
+                $ref: '#/components/schemas/success'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
 
 
 
-  /rm/files/{Cloud_Service_Provider}:
+  /rm/files/{Storage_Solution}:
     post:
-      tags: ["CryptoAC", "RM"]
-      summary: "Check the adding of a new file"
-      description: "Check the adding of a new file"
+      tags: ["RM"]
+      summary: "Check the adding of a new file."
+      description: "Check the adding of a new file. This implies checking that the user who is adding the file is also giving permissions to the administrator."
       operationId: checkAddFile
       security:
         - cookieAuth: []
         - basicAuth: []
       parameters:
-        - name: Cloud_Service_Provider
+        - name: Storage_Solution
           in: path
-          description: The Cloud Service Provider to be used
+          description: "The storage solution to use."
           required: true
           schema:
             type: string
       requestBody:
+        description: "The file to add along with relevant metadata."
         content: 
           multipart/form-data:
             schema:
@@ -1698,70 +1423,58 @@ paths:
                 $ref: '#/components/schemas/checkAddFile'
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/success'
         '401':
-          description: "Unauthorized - authentication was not successful"
+          description: "Unauthorized."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
+          description: "Forbidden."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
+          description: "Not Acceptable."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '422':
-          description: "Unprocessable entity - missing or wrong parameters"
+          description: "Unprocessable Entity."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
     patch:
-      tags: ["CryptoAC", "RM"]
-      summary: "Check the writing over a file"
-      description: "Check the writing over a file"
+      tags: ["RM"]
+      summary: "Check the writing over a file."
+      description: "Check the writing over a file. This implies checking that the role the user who is adding assumed, has write permission over the file."
       operationId: checkWriteFile
       security:
         - cookieAuth: []
         - basicAuth: []
       parameters:
-        - name: Cloud_Service_Provider
+        - name: Storage_Solution
           in: path
-          description: The Cloud Service Provider to be used
+          description: "The storage solution to use."
           required: true
           schema:
             type: string
       requestBody:
-        description: The file to write to the cloud with relevant metadata
+        description: "The file to wrte along with relevant metadata."
         required: true
         content: 
           multipart/form-data:
@@ -1771,73 +1484,62 @@ paths:
                 $ref: '#/components/schemas/checkWriteFile'
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/success'
         '401':
-          description: "Unauthorized - authentication was not successful"
+          description: "Unauthorized."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
+          description: "Forbidden."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
+          description: "Not Acceptable."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '422':
-          description: "Unprocessable entity - missing or wrong parameters"
+          description: "Unprocessable Entity."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
 
 
 
-  /ds/files/{Cloud_Service_Provider}:
+  /ds/files/{Storage_Solution}:
     post:
-      tags: ["CryptoAC", "DS"]
-      summary: "Store the given file"
-      description: "Store the given file"
+      tags: ["DS"]
+      summary: "Store the given file."
+      description: "Store the given file. The file is stored in the upload folder, so users cannot access it until the RM validates the operation"
       operationId: StoreAddFile
       security:
         - cookieAuth: []
         - basicAuth: []
       parameters:
-        - name: Cloud_Service_Provider
+        - name: Storage_Solution
           in: path
-          description: The Cloud Service Provider to be used
+          description: "The storage solution to use."
           required: true
           schema:
             type: string
       requestBody:
+        description: "The file."
         content:
           application/octet-stream:
             schema:
@@ -1845,65 +1547,61 @@ paths:
               format: binary
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/success'
         '401':
-          description: "Unauthorized - authentication was not successful"
+          description: "Unauthorized."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
+          description: "Forbidden."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
+          description: "Not Acceptable."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '422':
-          description: "Unprocessable entity - missing or wrong parameters"
+          description: "Unprocessable Entity."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-    patch:
-      tags: ["CryptoAC", "DS"]
-      summary: "Overwrite the given file"
-      description: "Overwrite the given file"
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          
+  /ds/files/{Storage_Solution}/{File_Name}/:
+    put:
+      tags: ["DS"]
+      summary: "Overwrite the given file."
+      description: "Overwrite the given file. Only the RM can invoke this API"
       operationId: storeWriteFile
       security:
         - cookieAuth: []
         - basicAuth: []
       parameters:
-        - name: Cloud_Service_Provider
+        - name: Storage_Solution
           in: path
-          description: The Cloud Service Provider to be used
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file to overwrite."
           required: true
           schema:
             type: string
@@ -1915,109 +1613,197 @@ paths:
               format: binary
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/success'
-        '400':
-          description: "Bad  Request - Bad HTTP request"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/success'
         '401':
-          description: "Unauthorized - authentication was not successful"
+          description: "Unauthorized."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
+          description: "Forbidden."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
+          description: "Not Acceptable."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '422':
-          description: "Unprocessable entity - missing or wrong parameters"
+          description: "Unprocessable Entity."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
-
-  /ds/files/{Cloud_Service_Provider}/{File_Name}/:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
     get:
-      tags: ["CryptoAC", "DS"]
-      summary: "Returns the file with the given ID"
-      description: "Returns the file with the given ID"
+      tags: ["DS"]
+      summary: "Returns the specified file (encrypted)."
+      description: "Returns the specified file (encrypted). The file must be located in the download folder."
       operationId: getFile
       security:
         - cookieAuth: []
         - basicAuth: []
       parameters:
-        - name: Cloud_Service_Provider
+        - name: Storage_Solution
           in: path
-          description: The related Cloud Service Provider
+          description: "The storage solution to use."
           required: true
           schema:
             type: string
         - name: File_Name
           in: path
-          description: The ID of the file to download 
+          description: "The name of the file to download."
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: The operation concluded successfully
+          description: "The operation concluded successfully."
           content:
             application/octet-stream:
              schema:
-               type: string
                format: binary
-               example: This is the encrypted file
         '401':
-          description: "Unauthorized - authentication was not successful"
+          description: "Unauthorized."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '403':
-          description: "Forbidden - you do not have the necessary permissions or need to configure an account"
+          description: "Forbidden."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
         '406':
-          description: "Not acceptable - probably missing Accept header for JSON"
+          description: "Not Acceptable."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    patch:
+      tags: ["DS"]
+      summary: "Moves the specified file from the upload folder to the download folder."
+      description: "Moves the specified file from the upload folder to the download folder. Only the RM can invoke this API."
+      operationId: moveFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file to move."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    delete:
+      tags: ["DS"]
+      summary: "Delete the specified file."
+      description: "Delete the specified file. Only the administrator can invoke this API."
+      operationId: deleteFileDS
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: Storage_Solution
+          in: path
+          description: "The storage solution to use."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file to delete."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
 
 components:
   securitySchemes:
@@ -2039,7 +1825,7 @@ components:
       properties:
         outputJSON:
           type: "string"
-          example: "The operation concluded successfully"
+          example: "The operation concluded successfully."
         outcomeCode:
           type: "string"
           example: "code_0"
@@ -2051,20 +1837,20 @@ components:
           
     error:
       required:
-        - outcomeCode
+        - outcomeMessage
         - httpStatus
       type: "object"
       properties:
-        outputJSON:
+        objectToReturnJSONAble:
           type: "string"
-          example: "The error *** occurred"
-        outcomeCode:
+          example: null
+        outcomeMessage:
           type: "string"
-          example: "code_<error_code_nymber>"
+          example: "Unauthorized - you must be authenticated to access this resource"
         httpStatus:
           type: "integer"
           format: "int32"
-          example: 500
+          example: 401
 
 
     listUsers:
@@ -2081,25 +1867,24 @@ components:
             properties:
               isUserAdmin:
                 type: boolean
-                example: "true"
+                example: true
               name:
                 type: string
-                example: "IDOfTheUser"
+                example: "nameOfTheUser"
               currentStatus:
                 type: integer
                 example: 1
               token:
                 type: string
-                example: "TokenOfTheUser"
-              randomTokenSize:
+                example: "tokenOfTheUser"
+              tokenSize:
                 type: integer
                 example: 50  
         outcomeCode:
           type: "string"
-          example: "code_0"
+          example: "The operation concluded successfully."
         httpStatus:
           type: "integer"
-          format: "int32"
           example: 200
 
 
@@ -2117,7 +1902,7 @@ components:
             properties:
               name:
                 type: string
-                example: "IDOfTheRole"
+                example: "nameOfTheRole"
               currentStatus:
                 type: integer
                 example: 1
@@ -2126,16 +1911,15 @@ components:
                 example: 1
               token:
                 type: string
-                example: "TokenOfTheRole"
-              randomTokenSize:
+                example: "tokenOfTheRole"
+              tokenSize:
                 type: integer
                 example: 50  
         outcomeCode:
           type: "string"
-          example: "code_0"
+          example: "The operation concluded successfully."
         httpStatus:
           type: "integer"
-          format: "int32"
           example: 200
 
 
@@ -2153,41 +1937,152 @@ components:
             properties:
               name:
                 type: string
-                example: "IDOfTheFile"
-              fileVersionNumber:
+                example: "nameOfTheFile"
+              encryptingKeyVersionNumber:
                 type: integer
                 example: 1
               token:
                 type: string
-                example: "TokenOfTheFile"
-              randomTokenSize:
+                example: "tokenOfTheFile"
+              tokenSize:
                 type: integer
                 example: 50  
         outcomeCode:
           type: "string"
-          example: "code_0"
+          example: "The operation concluded successfully."
         httpStatus:
           type: "integer"
-          format: "int32"
           example: 200
+          
+          
+    listAssignments:
+      required:
+        - outputJSON
+        - outcomeCode
+        - httpStatus
+      type: "object"
+      properties:
+        outputJSON:
+          type: array
+          items:
+            type: object
+            properties:
+              associatedElement:
+                type: string
+                example: "nameOfTheUser"
+              tupleType:
+                type: string
+                example: "RK"
+              signerOfThisTuple:
+                type: string
+                example: "tokenOfTheSigner"
+              roleVersionNumber:
+                type: integer
+                example: 1
+              encryptingKeys:
+                $ref: '#/components/schemas/EncryptedKeys'
+              signingKeys:
+                $ref: '#/components/schemas/EncryptedKeys'
+              signature:
+                type: array
+                items:
+                  type: integer
+                example: "[-34, 56, 34, 67, ...] (array of bytes)"
+              associatedRole:
+               type: string
+               example: "nameOfTheRole"
+        outcomeCode:
+          type: "string"
+          example: "The operation concluded successfully."
+        httpStatus:
+          type: "integer"
+          example: 200
+          
+          
+          
+    listPermissions:
+      required:
+        - outputJSON
+        - outcomeCode
+        - httpStatus
+      type: "object"
+      properties:
+        outputJSON:
+          type: array
+          items:
+            type: object
+            properties:
+              associatedElement:
+                type: string
+                example: "nameOfTheRole"
+              tupleType:
+                type: string
+                example: "FK"
+              signerOfThisTuple:
+                type: string
+                example: "tokenOfTheSigner"
+              encryptingKeyVersionNumber:
+                type: integer
+                example: 1
+              roleVersionNumber:
+                type: integer
+                example: 1
+              encryptedSymmetricFileKey:
+                type: array
+                items:
+                  type: integer
+                example: "[-34, 56, 34, 67, ...] (array of bytes)"
+              fileToken:
+                type: string
+                example: "tokenOfTheFile"
+              roleToken:
+                type: string
+                example: "tokenOfTheRole"
+              associatedPermission:
+                $ref: '#/components/schemas/Permission'
+              signature:
+                type: array
+                items:
+                  type: integer
+                example: "[-34, 56, 34, 67, ...] (array of bytes)"
+              associatedFile:
+               type: string
+               example: "nameOfTheFile"
+        outcomeCode:
+          type: "string"
+          example: "The operation concluded successfully."
+        httpStatus:
+          type: "integer"
+          example: 200
+          
+          
 
-    permissionToGrant:
+    Permission:
       type: string
       enum:
-        - Read
-        - Read_and_Write
+        - "Read"
+        - "Read_and_Write"
+        
+    EncryptedKeys:
+      type: object
+      properties:
+        encryptedPrivateKey:
+          type: array
+          items:
+            type: integer
+          example: "[-34, 56, 34, 67, ...] (array of bytes)"
+        encryptedPublicKey:
+          type: array
+          items:
+            type: integer
+          example: "[-34, 56, 34, 67, ...] (array of bytes)"
+        
         
     permissionToRevoke:
       type: string
       enum:
-        - Read
-        - Write
-
-    lambdaOperation:
-      type: string
-      enum:
-        - addFile
-        - writeFile
+        - "Read"
+        - "Write"
 
     LocalUserData:
       required:
@@ -2199,24 +2094,48 @@ components:
         outputJSON:
           type: "object"
           properties:
-            mySQLDatabaseURL:
+            dsPort:
               type: string
-              example: "localhost"
-            mySQLDatabasePort:
-              type: integer
-              example: "3306"
+              example: "7779"
+            dsURL:
+              type: string
+              example: "10.1.0.37"
+            encryptingPrivateKey:
+              type: string
+              example: "cHJpdmF0ZSBrZXlzIGRvIG5vdCBsZWF2ZSB0aGUgcHJveHkgZm9yIG5vdw=="
+            encryptingPublicKey:
+              type: string
+              example: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCBdrgXjv/DW2A6OtI5Lk6PVoN54KB8YdXCpLNZp4r5ih70Qz0OzMgcn5eIKkcbGcW4wBqKuEZobShvgUQ2H3oxFz/q/1UiCAcmhZjnCl5nbZ4fwxYlF+Xs8UfCdQnWCH3hDolde09WL8UfT8DS+vWOk3gKNainouKFtQdSKlGn5QIDAQAB"
             isAdminInCryptoAC:
               type: boolean
               example: true
+            mySQLDatabasePassword:
+              type: string
+              example: "password"
+            mySQLDatabasePort:
+              type: string
+              example: "3306"
+            mySQLDatabaseURL:
+              type: string
+              example: "10.1.0.47"
+            rmPort:
+              type: string
+              example: "7778"
+            rmURL:
+              type: string
+              example: "10.1.0.27"
+            signingPrivateKey:
+              type: string
+              example: "cHJpdmF0ZSBrZXlzIGRvIG5vdCBsZWF2ZSB0aGUgcHJveHkgZm9yIG5vdw=="
+            signingPublicKey:
+              type: string
+              example: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZEz7xfXwjNRfdLI7DzyID+1ozr/yliYVIaZvbqY/cIyKraxtoSgE4LdiQDs//cTZm64C1An4Rx5aA6/sZz2kGRSsVYXMtJIh6Qgd0cRS5cdu2Z9v/d8VgRvejbZ2NyJgraW0939Mj4vsJf/bgb/N/J+7qA8ENMSSc4nLXGjgQSQIDAQAB"
             type:
               type: string
-              example: "eu.fbk.st.cryptoac.cloud.local.CloudInterfaceLocalParameters"
+              example: "eu.fbk.st.cryptoac.dao.local.DAOInterfaceLocalParameters"
             usernameInCryptoAC:
               type: string
               example: "admin"
-            passwordInCryptoAC:
-              type: string
-              example: "password"
         outcomeCode:
           type: "string"
           example: "code_0"
@@ -2278,6 +2197,13 @@ components:
           example: 200
 
 
+
+    CryptoACActiveElementEnum:
+      type: string
+      enum:
+        - "User"
+        - "Role"
+    
     
     checkAddFile:
       required:
@@ -2286,19 +2212,18 @@ components:
         - httpStatus
       type: "object"
       properties:
-        fileTuple:
+        FileTuple:
           type: "object"
           properties:
               associatedElement:
                 type: string
-                example: "IDOfTheFile"
+                example: "nameOfTheFile"
               tupleType:
                 type: string
                 example: "F"
-              signerOfThisTuple:
-                type: string
-                example: "TokenOfTheSigner"
-              decryptFileVersionNumber:
+              elementSigner:
+                $ref: '#/components/schemas/CryptoACActiveElementEnum'
+              decryptingKeyVersionNumber:
                 type: integer
                 example: 1
               isSignerAUser:
@@ -2306,25 +2231,25 @@ components:
                 example: true
               fileToken:
                 type: string
-                example: "TokenOfTheFile"
+                example: "tokenOfTheFile"
               signature:
                 type: array
                 items:
                   type: integer
                 example: "[-34, 56, 34, 67, ...] (array of bytes)"
-        permissionTuple:
+        Permissiontuple:
           type: "object"
           properties:
               associatedElement:
                 type: string
-                example: "IDOfTheRole"
+                example: "nameOfTheRole"
               tupleType:
                 type: string
                 example: "FK"
               signerOfThisTuple:
                 type: string
-                example: "TokenOfTheSigner"
-              symmetricFileKeyVersionNumber:
+                example: "tokenOfTheSigner"
+              encryptingKeyVersionNumber:
                 type: integer
                 example: 1
               roleVersionNumber:
@@ -2337,12 +2262,12 @@ components:
                 example: "[-34, 56, 34, 67, ...] (array of bytes)"
               fileToken:
                 type: string
-                example: "TokenOfTheFile"
+                example: "tokenOfTheFile"
               roleToken:
                 type: string
-                example: "TokenOfTheRole"
+                example: "tokenOfTheRole"
               associatedPermission:
-                $ref: '#/components/schemas/permissionToGrant'
+                $ref: '#/components/schemas/Permission'
               signature:
                 type: array
                 items:
@@ -2350,13 +2275,10 @@ components:
                 example: "[-34, 56, 34, 67, ...] (array of bytes)"
               associatedFile:
                type: string
-               example: "IDOfTheFile"
-        lambdaOperation:
-              $ref: '#/components/schemas/lambdaOperation'
-        file:
-              type: string
-              format: binary
-              example: This is the stream of the encrypted file to add to the cloud
+               example: "nameOfTheFile"
+        EncryptingKeyVersionNumber:
+              type: integer
+              example: 1
      
      
     checkWriteFile:
@@ -2366,19 +2288,18 @@ components:
         - httpStatus
       type: "object"
       properties:
-        fileTuple:
+        FileTuple:
           type: "object"
           properties:
               associatedElement:
                 type: string
-                example: "IDOfTheFile"
+                example: "nameOfTheFile"
               tupleType:
                 type: string
                 example: "F"
-              signerOfThisTuple:
-                type: string
-                example: "TokenOfTheSigner"
-              decryptFileVersionNumber:
+              elementSigner:
+                $ref: '#/components/schemas/CryptoACActiveElementEnum'
+              decryptingKeyVersionNumber:
                 type: integer
                 example: 1
               isSignerAUser:
@@ -2386,15 +2307,12 @@ components:
                 example: true
               fileToken:
                 type: string
-                example: "TokenOfTheFile"
+                example: "tokenOfTheFile"
               signature:
                 type: array
                 items:
                   type: integer
                 example: "[-34, 56, 34, 67, ...] (array of bytes)"
-        lambdaOperation:
-              $ref: '#/components/schemas/lambdaOperation'
-        file:
-              type: string
-              format: binary
-              example: This is the stream of the encrypted file to write to the cloud
+        EncryptingKeyVersionNumber:
+              type: integer
+              example: 1

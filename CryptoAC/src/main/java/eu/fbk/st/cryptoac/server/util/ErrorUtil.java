@@ -63,7 +63,7 @@ public class ErrorUtil {
     /**
      * This method returns the 422 error template in HTML or the API output object in JSON.
      */
-    public static Route missingParameter = (Request request, Response response) ->
+    public static Route unprocessableEntity = (Request request, Response response) ->
             error(request, response, HttpStatus.UNPROCESSABLE_ENTITY_422,
                     "Sorry! It seems you missed or wrongly set a parameter", code_422.toString());
 

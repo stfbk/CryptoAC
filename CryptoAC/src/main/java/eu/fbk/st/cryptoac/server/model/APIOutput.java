@@ -27,12 +27,12 @@ public class APIOutput implements Serializable {
 
     /**
      * Constructor with parameters.
-     * @param JSONAbleObjectToReturn the operation result (only if method was GET)
+     * @param objectToReturnJSONAble the operation result (only if method was GET)
      * @param outcomeMessage the outcome message of the operation
      * @param httpStatus the status of the response
      */
-    public APIOutput(Object JSONAbleObjectToReturn, String outcomeMessage, Integer httpStatus) {
-        this.setOutputJSON(JSONAbleObjectToReturn);
+    public APIOutput(Object objectToReturnJSONAble, String outcomeMessage, Integer httpStatus) {
+        this.setOutputJSON(objectToReturnJSONAble);
         this.outcomeMessage = outcomeMessage;
         this.setHttpStatus(httpStatus);
     }

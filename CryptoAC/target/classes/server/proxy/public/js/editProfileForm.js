@@ -21,6 +21,7 @@ let editProfileForm = null;
 // the hidden input element in the edit profile form that indicates the chosen storage system
 let kDAO = null;
 
+
 $(document).ready( function() {
 
     editProfileForm     = $("#" + editProfileFormID);
@@ -36,9 +37,26 @@ $(document).ready( function() {
         submitEditProfileForm($(this));
     });
 
+    $("#" + kIsAdminInCryptoAC).click( function() {
+    console.log("click")
+        if ($("#" + kIsAdminInCryptoAC).is(':checked')) {
+            $("#" + kIsAdminInCryptoAC).val('true');
+            $('#' + kUsernameInCryptoAC).val("")
+            $('#' + kUsernameInCryptoAC).prop('disabled', true);
+            $('#' + kUsernameInCryptoAC).css( "background-color", "#ecf0f1" );
+            $('#' + kUsernameInCryptoAC).css( "border-color", "#ecf0f1" );
+        }
+        else {
+            $("#" + kIsAdminInCryptoAC).val('false');
+            $('#' + kUsernameInCryptoAC).prop('disabled', false);
+            $('#' + kUsernameInCryptoAC).css( "background-color", "" );
+            $('#' + kUsernameInCryptoAC).css( "border-color", "" );
+        }
+    });
+
     $(".field-icon").click( function() {
         $(this).toggleClass("fa-eye fa-eye-slash");
-        var input = $($(this).attr("toggle"));
+        let input = $($(this).attr("toggle"));
         if (input.attr("type") == "password") {
             input.attr("type", "text");
         }
@@ -54,28 +72,42 @@ $(document).ready( function() {
 
         var file = $(this)[0].files[0];
 
-        if (file.name.indexOf(".json") >= 0) {
-            var reader = new FileReader();
-            reader.readAsText(file, "UTF-8");
-            reader.onload = function (e2) {
+        try {
+            if (file.name.indexOf(".json") >= 0) {
+                var reader = new FileReader();
+                reader.readAsText(file, "UTF-8");
+                reader.onload = function (e2) {
 
-                try {
-                    // now this variable holds the content of the file as a JSON object
-                    let configurationFileJSON = $.parseJSON(e2.target.result);
-                    fillEditProfileForm (configurationFileJSON)
-                }
-                // if there was an error in the parsing
-                catch (e) {
+                    try {
+                        // now this variable holds the content of the file as a JSON object
+                        let configurationFileJSON = $.parseJSON(e2.target.result);
+                        fillEditProfileForm (configurationFileJSON)
+                    }
+                    // if there was an error in the parsing
+                    catch (e) {
 
-                    // finally, trigger the alert
-                    Swal.fire({
-                        title: "Error!",
-                        text: "The file you provided is malformed",
-                        type: "error",
-                        confirmButtonText: "Sorry"
-                    });
+                        console.log(e)
+
+                        // finally, trigger the alert
+                        Swal.fire({
+                            title: "Error!",
+                            text: "The file you provided is probably malformed",
+                            type: "error",
+                            confirmButtonText: "Sorry"
+                        });
+                    }
                 }
+
+                $(this)[0].files = null;
             }
+            else {
+                ;
+                // TODO dare errore
+            }
+        }
+        catch (e) {
+            ;
+            // TODO do something
         }
 
         removeLoadingClass();
@@ -98,7 +130,7 @@ function submitEditProfileForm (editProfileForm) {
     invokeAPI(formAction, formMethod, formData, successAfterSubmitEditProfileForm, errorAJAX);
 
     // collapse the form
-    $(editProfileButton).trigger('click');
+    $(editProfileButton).click();
 }
 
 // callback handler for when the AJAX request was successful. It then fetches the user data from CryptoAC
@@ -122,7 +154,7 @@ function updateEditProfileFormOnDAOSelection (selectedDAO) {
             // for each input of that part
             $(this).find("*").filter(':input').each(function() {
 
-                if ($(this).attr("class") !== "configFile") {
+                if ($(this).attr("class") !== "configFile" && $(this).attr("type") !== "checkbox") {
 
                     // enable the required attribute
                     $(this).attr("required", true);
@@ -293,7 +325,10 @@ function errorGetUserData (XMLHttpRequest, textStatus) {
             text: "Configure your profile to start",
             type: "info",
             confirmButtonText: "Ok"
+        }).then((result) => {
+            $(editProfileButton).click(); // TODO fix not with toggle but with show
         });
+
     }
     // else, show usual error
     else {
@@ -334,6 +369,14 @@ function fillEditProfileForm (data) {
 
                         // set value of element
                         elementToFill.attr("value", data);
+                    }
+                    // if the element to fill with the data is a checkbox
+                    else if (typeOfElementToFill === "CHECKBOX") {
+
+                        if (data !== elementToFill[0].checked)
+
+                            // set value of element
+                            elementToFill.click();
                     }
                 }
             }

@@ -34,6 +34,11 @@
               type="text/css"
               href="/css/profile.css" />
 
+        <link rel="stylesheet"
+              type="text/css"
+              href="/css/switch.css" />
+
+
         <!-- Font Awesome -->
         <link rel="stylesheet"
               href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
@@ -555,16 +560,27 @@
                                                 <!-- first row -->
                                                 <div class="row">
 
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label class="switch">
+                                                              <input type="checkbox" id=$DAOInterfaceParameters.kIsAdminInCryptoAC name=$DAOInterfaceParameters.kIsAdminInCryptoAC class=$DAOInterfaceParameters.kIsAdminInCryptoAC value="false">
+                                                              <span id="switchForkIsAdminInCryptoAC" class="slider round"></span>
+                                                            </label>
+                                                            <a data-toggle="tooltip" data-delay='{ "show": "500", "hide": "250"}' title="whether you are the admin or not">
+                                                              <i class="fas fa-question-circle"></i>
+                                                          </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
                                                         <div class="form-group">
                                                             <input id="$DAOInterfaceParameters.kUsernameInCryptoAC" type="text" class="form-hoverable $DAOInterfaceParameters.kUsernameInCryptoAC" name=$DAOInterfaceParameters.kUsernameInCryptoAC autocomplete="off" required/>
                                                             <label class="form-hover-label" for=$DAOInterfaceParameters.kUsernameInCryptoAC>Username</label>
-                                                            <a data-toggle="tooltip" data-delay='{ "show": "500", "hide": "250"}' title="your username in the storage system. If you are an admin, your username should be the admin ID">
+                                                            <a data-toggle="tooltip" data-delay='{ "show": "500", "hide": "250"}' title="your username in the storage system. If you are an admin, this input is disabled">
                                                                 <i class="fas fa-question-circle"></i>
                                                             </a>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-5">
                                                         <div class="form-group">
                                                             <input type="password" id=$DAOInterfaceMySQLParameters.kMySQLDatabasePassword class="form-hoverable $DAOInterfaceMySQLParameters.kMySQLDatabasePassword" name=$DAOInterfaceMySQLParameters.kMySQLDatabasePassword autocomplete="off" required/>
                                                             <label class="form-hover-label" for=$DAOInterfaceMySQLParameters.kMySQLDatabasePassword>Database Password</label>

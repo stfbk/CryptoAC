@@ -83,11 +83,11 @@ public class LoginController {
         else {
 
             // get the credentials from the POST parameters
-            String givenUsername = (String) getOptionalQueryParameter(request, kUserLoggingIn);
-            String givenPassword = (String) getOptionalQueryParameter(request, kPasswordOfUserLoggingIn);
+            String givenUsername = (String) getQueryParameter(request, kUserLoggingIn);
+            String givenPassword = (String) getQueryParameter(request, kPasswordOfUserLoggingIn);
 
             if (givenUsername.isBlank() || givenPassword.isBlank())
-                return ErrorUtil.missingParameter.handle(request, response);
+                return ErrorUtil.unprocessableEntity.handle(request, response);
 
             if (authenticateUser(givenUsername, givenPassword)) {
 

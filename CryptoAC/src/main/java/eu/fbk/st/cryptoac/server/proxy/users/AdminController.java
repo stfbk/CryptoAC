@@ -1,6 +1,5 @@
 package eu.fbk.st.cryptoac.server.proxy.users;
 
-import com.google.gson.Gson;
 import eu.fbk.st.cryptoac.dao.DAO;
 import eu.fbk.st.cryptoac.core.tuple.Permission;
 import eu.fbk.st.cryptoac.dao.DAOInterfaceParameters;
@@ -20,7 +19,6 @@ import static eu.fbk.st.cryptoac.server.proxy.profile.ProfileController.fromStri
 import static eu.fbk.st.cryptoac.server.proxy.util.APIFinalizer.*;
 import static eu.fbk.st.cryptoac.util.Const.API.*;
 import static eu.fbk.st.cryptoac.server.util.RequestUtil.*;
-import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceParameters.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.*;
 import static eu.fbk.st.cryptoac.util.Const.SessionKeys.kDataOfUserLoggedIn;
 
@@ -36,14 +34,14 @@ public class AdminController {
     public static Route listUsers = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         // get optional parameters
-        String givenOffset = getOptionalQueryParameter(request, kOffsetInCryptoAC);
-        String givenLimit  = getOptionalQueryParameter(request, kLimitInCryptoAC);
+        String givenOffset = getQueryParameter(request, kOffsetInCryptoAC);
+        String givenLimit  = getQueryParameter(request, kLimitInCryptoAC);
 
         // if optional parameters are null, pass the class instead
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 GETUSERS, HttpMethod.get,
                 givenOffset == null ? Integer.class : Integer.parseInt(givenOffset),
                 givenLimit == null ? Integer.class : Integer.parseInt(givenLimit));
@@ -57,14 +55,14 @@ public class AdminController {
     public static Route listRoles = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         // get optional parameters
-        String givenOffset = getOptionalQueryParameter(request, kOffsetInCryptoAC);
-        String givenLimit  = getOptionalQueryParameter(request, kLimitInCryptoAC);
+        String givenOffset = getQueryParameter(request, kOffsetInCryptoAC);
+        String givenLimit  = getQueryParameter(request, kLimitInCryptoAC);
 
         // if optional parameters are null, pass the class instead
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 GETROLES, HttpMethod.get,
                 givenOffset == null ? Integer.class : Integer.parseInt(givenOffset),
                 givenLimit == null ? Integer.class : Integer.parseInt(givenLimit));
@@ -78,14 +76,14 @@ public class AdminController {
     public static Route listFiles = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         // get optional parameters
-        String givenOffset = getOptionalQueryParameter(request, kOffsetInCryptoAC);
-        String givenLimit  = getOptionalQueryParameter(request, kLimitInCryptoAC);
+        String givenOffset = getQueryParameter(request, kOffsetInCryptoAC);
+        String givenLimit  = getQueryParameter(request, kLimitInCryptoAC);
 
         // if optional parameters are null, pass the class instead
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 GETFILES, HttpMethod.get,
                 givenOffset == null ? Integer.class : Integer.parseInt(givenOffset),
                 givenLimit == null ? Integer.class : Integer.parseInt(givenLimit));
@@ -99,11 +97,11 @@ public class AdminController {
     public static Route addUser = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         String usernameOfUserToAdd = getStringParameterFromMultipart(request, Const.FormParameters.kUsernameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO,
+        invocationResult = executeAPI(request, response, selectedDAO,
                 true, POSTUSER, HttpMethod.post, usernameOfUserToAdd);
 
         if (invocationResult.getHttpStatus() == HttpStatus.OK_200) {
@@ -128,11 +126,11 @@ public class AdminController {
     public static Route deleteUser = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String usernameOfUserToDelete = getMandatoryPathParameter(request, Const.FormParameters.kUsernameInCryptoAC);
+        String usernameOfUserToDelete = getPathParameter(request, Const.FormParameters.kUsernameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 DELETEUSER, HttpMethod.delete, usernameOfUserToDelete);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
@@ -144,11 +142,11 @@ public class AdminController {
     public static Route addRole = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         String nameOfRoleToAdd = getStringParameterFromMultipart(request, kRoleNameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 POSTROLE, HttpMethod.post, nameOfRoleToAdd);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
@@ -160,11 +158,11 @@ public class AdminController {
     public static Route deleteRole = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String nameOfRoleToDelete = getMandatoryPathParameter(request, kRoleNameInCryptoAC);
+        String nameOfRoleToDelete = getPathParameter(request, kRoleNameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 DELETEROLE, HttpMethod.delete, nameOfRoleToDelete);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
@@ -176,11 +174,11 @@ public class AdminController {
     public static Route deleteFile = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String nameOfFileToDelete = getMandatoryPathParameter(request, kFileNameInCryptoAC);
+        String nameOfFileToDelete = getPathParameter(request, kFileNameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, true, 
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 DELETEFILE, HttpMethod.delete, nameOfFileToDelete);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
@@ -192,12 +190,12 @@ public class AdminController {
     public static Route assignUserToRole = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         String usernameOfTheUserToAssign = getStringParameterFromMultipart(request, Const.FormParameters.kUsernameInCryptoAC);
         String nameOfTheRoleToAssign = getStringParameterFromMultipart(request, kRoleNameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO, true, 
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 POSTASSIGNMENT, HttpMethod.post, usernameOfTheUserToAssign, nameOfTheRoleToAssign);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
@@ -209,12 +207,12 @@ public class AdminController {
     public static Route revokeUserFromRole = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String usernameOfTheUserToRevoke = getMandatoryPathParameter(request, Const.FormParameters.kUsernameInCryptoAC);
-        String nameOfTheRoleToRevokeFrom = getMandatoryPathParameter(request, kRoleNameInCryptoAC);
+        String usernameOfTheUserToRevoke = getPathParameter(request, Const.FormParameters.kUsernameInCryptoAC);
+        String nameOfTheRoleToRevokeFrom = getPathParameter(request, kRoleNameInCryptoAC);
 
-        invocationResult = executeAPI(request, selectedDAO,
+        invocationResult = executeAPI(request, response, selectedDAO,
                 true, DELETEASSIGNMENT, HttpMethod.delete,
                 usernameOfTheUserToRevoke, nameOfTheRoleToRevokeFrom);
 
@@ -227,13 +225,13 @@ public class AdminController {
     public static Route assignPermissionToRole = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         String nameOfTheRelatedRole = getStringParameterFromMultipart(request, kRoleNameInCryptoAC);
         String nameOfTheRelatedFile = getStringParameterFromMultipart(request, kFileNameInCryptoAC);
         Permission permissionToBeGiven = Permission.get(getStringParameterFromMultipart(request, kPermissionInCryptoAC));
 
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 POSTPERMISSION, HttpMethod.post, nameOfTheRelatedRole,
                 nameOfTheRelatedFile, permissionToBeGiven);
 
@@ -246,13 +244,13 @@ public class AdminController {
     public static Route revokePermissionFromRole = (Request request, Response response) -> {
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String nameOfTheRelatedRole  = getMandatoryPathParameter(request, kRoleNameInCryptoAC);
-        String nameOfTheRelatedFile  = getMandatoryPathParameter(request, kFileNameInCryptoAC);
-        Permission permissionToBeRevoked = Permission.get(getMandatoryPathParameter(request, kPermissionInCryptoAC));
+        String nameOfTheRelatedRole  = getPathParameter(request, kRoleNameInCryptoAC);
+        String nameOfTheRelatedFile  = getPathParameter(request, kFileNameInCryptoAC);
+        Permission permissionToBeRevoked = Permission.get(getPathParameter(request, kPermissionInCryptoAC));
 
-        invocationResult = executeAPI(request, selectedDAO, true,
+        invocationResult = executeAPI(request, response, selectedDAO, true,
                 DELETEPERMISSION, HttpMethod.delete, nameOfTheRelatedRole,
                 nameOfTheRelatedFile, permissionToBeRevoked);
 

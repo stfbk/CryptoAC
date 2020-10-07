@@ -9,12 +9,10 @@ import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import spark.resource.UriPath;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
 import java.util.UUID;
 
 import static eu.fbk.st.cryptoac.App.downloadDirectoryDS;
@@ -42,9 +40,9 @@ public class FilesController {
         // TODO check that cryptoac users are those actually downloading the file
 
         APIOutput invocationResult = null;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String fileName = getMandatoryPathParameter(request, kFileNameInCryptoAC);
+        String fileName = getPathParameter(request, kFileNameInCryptoAC);
 
         try {
 
@@ -114,8 +112,8 @@ public class FilesController {
         // TODO check that the RM is the one actually submitting the request
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
-        String fileName = getMandatoryPathParameter(request, kFileNameInCryptoAC);
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
+        String fileName = getPathParameter(request, kFileNameInCryptoAC);
 
         String oldFilPath           = uploadDirectoryDS.getAbsolutePath() + "/" + selectedDAO.toString() + "/" + fileName;
         String newFileDirectoryPath = downloadDirectoryDS.getAbsolutePath() + "/" + selectedDAO.toString();
@@ -172,7 +170,7 @@ public class FilesController {
         // TODO check that a real user is actually the one submitting the request
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         // attachment; filename="theNameOfTheFile"
         // ==> attachment; filename=theNameOfTheFile
@@ -213,9 +211,9 @@ public class FilesController {
 
         // TODO check that the RM is the one actually submitting the request
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
-        String fileName = getMandatoryPathParameter(request, kFileNameInCryptoAC);
+        String fileName = getPathParameter(request, kFileNameInCryptoAC);
 
         App.logger.info("[{}{}{}{} ", className, " (" + overwriteFileLog + ")]: ",
                 "the reference monitor asked to overwrite file ", fileName);
@@ -283,8 +281,8 @@ public class FilesController {
         // TODO check that the administrator is actually the one submitting the request
 
         APIOutput invocationResult;
-        DAO selectedDAO = DAO.get(getMandatoryPathParameter(request, kDAO));
-        String fileName = getMandatoryPathParameter(request, kFileNameInCryptoAC);
+        DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
+        String fileName = getPathParameter(request, kFileNameInCryptoAC);
 
         App.logger.info("[{}{}{}{} ", className, " (" + deleteFileLog + ")]: ", "deleting file ", fileName);
 
