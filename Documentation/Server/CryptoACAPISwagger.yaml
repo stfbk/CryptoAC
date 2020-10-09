@@ -1396,6 +1396,79 @@ paths:
                 $ref: '#/components/schemas/error'
 
 
+  /rm/ping/:
+    get:
+      tags: ["RM"]
+      summary: "Ping to the RM."
+      description: "Ping to the RM. This is to ensure that the service is up and running."
+      operationId: rmping
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/octet-stream:
+             schema:
+               format: binary
+
+
+  /rm/configure/:
+    post:
+      tags: ["RM", "Admin"]
+      summary: "Configure the RM."
+      description: "Configure the RM. This amounts at providing URL and port of the MS and DS and credentials to access the MS."
+      operationId: rmconfigure
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      requestBody:
+        description: "Configuration data."
+        content: 
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/rmconfiguration'
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success'
+        '401':
+          description: "Unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '403':
+          description: "Forbidden."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '406':
+          description: "Not Acceptable."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
 
   /rm/files/{Storage_Solution}:
     post:
@@ -1521,6 +1594,22 @@ paths:
                 $ref: '#/components/schemas/error'
 
 
+  /ds/ping/:
+    get:
+      tags: ["DS"]
+      summary: "Ping to the DS."
+      description: "Ping to the DS. This is to ensure that the service is up and running."
+      operationId: dsping
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      responses:
+        '200':
+          description: "The operation concluded successfully."
+          content:
+            application/octet-stream:
+             schema:
+               format: binary
 
   /ds/files/{Storage_Solution}:
     post:
@@ -2207,9 +2296,9 @@ components:
     
     checkAddFile:
       required:
-        - outputJSON
-        - outcomeCode
-        - httpStatus
+        - FileTuple
+        - Permissiontuple
+        - EncryptingKeyVersionNumber
       type: "object"
       properties:
         FileTuple:
@@ -2283,9 +2372,7 @@ components:
      
     checkWriteFile:
       required:
-        - outputJSON
-        - outcomeCode
-        - httpStatus
+        - FileTuple
       type: "object"
       properties:
         FileTuple:
@@ -2316,3 +2403,25 @@ components:
         EncryptingKeyVersionNumber:
               type: integer
               example: 1
+
+
+    rmconfiguration:
+      required:
+        - JDBUrl
+        - user
+        - password
+        - dsBaseAPI
+      type: "object"
+      properties:
+        JDBUrl:
+          type: string
+          example: "jdbc:mysql://192.168.0.17:3306"
+        user:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "password"
+        dsBaseAPI:
+          type: string
+          example: "192.168.0.18:7779"
