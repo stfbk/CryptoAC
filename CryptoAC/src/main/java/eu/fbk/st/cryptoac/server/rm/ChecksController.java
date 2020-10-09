@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -64,21 +65,29 @@ public class ChecksController {
 
     // variables for logging
     public static final String className = "ChecksController";
+    public static final String configureLog = "configure";
     public static final String addFileLog = "addFile";
     public static final String writeFileLog = "writeFile";
 
 
-    // initialize the values
-    public static void initialize (String mySQLDatabaseURL, String mySQLDatabasePassword, String mySQLDatabasePort,
-                                   String mySQLDatabaseUsername, String dataStorageURL, String dataStoragePort) {
+    /**
+     * Initialise the RM by configuring URL, ports and credentials.
+     * @param jDBUrl the url to contact the DS
+     * @param mySQLUser the name of the RM  in the MS
+     * @param mySQLPassword the password of the RM in the MS
+     * @param dsBaseAPI url + port of the DS
+     */
+    private static void initialize (String jDBUrl, String mySQLUser, String mySQLPassword, String dsBaseAPI) {
 
-        dsBaseAPI = dataStorageURL + ":" + dataStoragePort;
+        ChecksController.dsBaseAPI = dsBaseAPI;
+
+        String[] mySQLBaseAPI = jDBUrl.replace(kJDBC, "").split(":");
 
         HashMap<String, byte[]> parameters = new HashMap<>();
-        parameters.put(kMySQLDatabaseURL, mySQLDatabaseURL.getBytes());
-        parameters.put(kMySQLDatabasePort, mySQLDatabasePort.getBytes());
-        parameters.put(kMySQLDatabasePassword, mySQLDatabasePassword.getBytes());
-        parameters.put(kUsernameInCryptoAC, mySQLDatabaseUsername.getBytes());
+        parameters.put(kMySQLDatabaseURL, mySQLBaseAPI[0].getBytes());
+        parameters.put(kMySQLDatabasePort, mySQLBaseAPI[1].getBytes());
+        parameters.put(kMySQLDatabasePassword, mySQLPassword.getBytes());
+        parameters.put(kUsernameInCryptoAC, mySQLUser.getBytes());
 
         parameters.put(kEncryptingPublicKey,    "PotF".getBytes());
         parameters.put(kEncryptingPrivateKey,   "PotF".getBytes());
@@ -89,6 +98,34 @@ public class ChecksController {
         mySQLHelper = MySQLHelper.getInstance(parameterObject);
     }
 
+
+    /**
+     * POST | configure the RM (credentials, URL, ...)
+     */
+    public static Route configure = (Request request, Response response) -> {
+
+        // TODO check that admin is the one actually requesting the operation
+
+        APIOutput invocationResult;
+
+        App.logger.info("[{}{}{} ", className, " (" + configureLog + ")]: ",
+                "received request to configure RM ");
+
+        // first, acquire the parameters from the request
+        String jDBUrl = getStringParameterFromMultipart(request, kJDBUrl);
+        String mySQLUser = getStringParameterFromMultipart(request, kMySQLPropertyUser);
+        String mySQLPassword = getStringParameterFromMultipart(request, kMySQLPropertyPassword);
+        String dsBaseAPI = getStringParameterFromMultipart(request, KDSBaseAPI);
+
+        invocationResult = new APIOutput(
+                code_0.toString(),
+                code_0.toString(),
+                HttpStatus.OK_200);
+
+        initialize(jDBUrl, mySQLUser, mySQLPassword, dsBaseAPI);
+
+        return JSONUtil.getJSONToReturn(invocationResult, response);
+    };
 
     /**
      * POST | check an add file operation
@@ -286,7 +323,6 @@ public class ChecksController {
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
     };
-
 
     /**
      * PATCH | check a write file operation

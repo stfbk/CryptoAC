@@ -543,6 +543,17 @@ public class Const {
 
 
         /**
+         * (rm mode) API for configuring the RM (admin only).
+         */
+        public static final String RMCONFIGURE = BASERM + "configure/";
+
+        /**
+         * (rm mode) API for pinging the RM so users check
+         * that they have the right configuration data.
+         */
+        public static final String RMPING = BASERM + "ping/";
+
+        /**
          * (rm mode) API for requesting to add a file.
          */
         public static final String ADDFILE = BASERM + "files/:" + kDAO + "/";
@@ -554,6 +565,12 @@ public class Const {
 
 
 
+
+        /**
+         * (ds mode) API for pinging the DS so users check
+         * that they have the right configuration data.
+         */
+        public static final String DSPING = BASEDS + "ping/";
 
         /**
          * (ds mode) API for downloading an encrypted file.

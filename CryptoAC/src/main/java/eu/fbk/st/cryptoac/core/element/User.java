@@ -148,7 +148,7 @@ public final class User extends CryptoACActiveElement {
 
         try {
             daoInterface.lockDAOInterfaceStatus();
-            daoInterface.updateUserData(this);
+            daoInterface.initializeUser(this);
         }
         catch (DAOException e) {
             exceptionThrown = e;

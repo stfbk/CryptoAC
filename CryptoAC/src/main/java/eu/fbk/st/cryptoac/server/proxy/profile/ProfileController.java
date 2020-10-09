@@ -260,6 +260,7 @@ public class ProfileController {
                 HashMap<String, byte[]> formParameters = getParametersFromMultipart(request);
 
                 // if the user said that he is the admin, then his name is the admin ID
+                // do not worry, we will check later that the user is actually the admin
                 if ("true".equals(new String(formParameters.get(Const.DAOInterfaceParameters.kIsAdminInCryptoAC))))
                     formParameters.put(Const.DAOInterfaceParameters.kUsernameInCryptoAC, admin.getBytes());
 

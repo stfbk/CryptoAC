@@ -76,7 +76,7 @@ public interface DAOInterface {
     String deleteRoleTuples = "deleteRoleTuples";
     String deletePermissionTuples = "deletePermissionTuples";
     String deleteFileTuplesByFileName = "deleteFileTuplesByFileName";
-    String updateUserData = "updateUserData";
+    String initialiseUser = "initialiseUser";
     String updateRoleKeys = "updateRoleKeys";
     String updateFileVersionNumber = "updateFileVersionNumber";
     String lockDAOInterfaceStatus = "lockDAOInterfaceStatus";
@@ -90,11 +90,12 @@ public interface DAOInterface {
 
 
     /**
-     * This method is invoked once before starting to interact with the storage system 
-     * and it initializes the administrator by:
-     * - creating a new User named with the admin ID;
-     * - creating a new Role named with the admin ID and the same keys as the admin user;
-     * - creating a new RoleTuple that binds the admin User and the admin Role.
+     * This method is invoked once to initialize the administrator.
+     * This method has to create in the MS:
+     * - a new User named with the admin ID;
+     * - a new Role named with the admin ID and the same keys as the admin user;
+     * - a new RoleTuple that binds the admin User and the admin Role.
+     * Moreover, this method has to initialize the RM and the DS, if needed according to the specific implementation.
      * @param adminEncryptingKeys the encrypting keys of the admin
      * @param adminSigningKeys the signing keys of the admin
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
@@ -585,13 +586,13 @@ public interface DAOInterface {
 
 
     /**
-     * This method updates the public keys, token and status
-     * flag of a new user in the user view in the database.
-     * @param userToUpdate the user object containing the data to update
+     * This method initialises the user (e.g., updates the public keys, token and status
+     * flag in the database and checks the DAO interface parameters).
+     * @param userToInitialise the user object to initialise
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
      * exception along with a proper OperationOutcomeCode code
      */
-    void updateUserData(@NotNull User userToUpdate) throws DAOException;
+    void initializeUser(@NotNull User userToInitialise) throws DAOException;
 
     /**
      * This method updates the public key of the role matching the given role name.

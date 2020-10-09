@@ -2,6 +2,8 @@ package eu.fbk.st.cryptoac.dao.local;
 
 import com.google.gson.Gson;
 import eu.fbk.st.cryptoac.App;
+import eu.fbk.st.cryptoac.core.element.User;
+import eu.fbk.st.cryptoac.core.tuple.RoleTuple;
 import eu.fbk.st.cryptoac.dao.DAO;
 import eu.fbk.st.cryptoac.dao.DAOException;
 import eu.fbk.st.cryptoac.dao.DAOInterfaceMySQL;
@@ -9,20 +11,37 @@ import eu.fbk.st.cryptoac.core.element.File;
 import eu.fbk.st.cryptoac.core.tuple.FileTuple;
 import eu.fbk.st.cryptoac.core.tuple.PermissionTuple;
 import eu.fbk.st.cryptoac.server.model.APIOutput;
+import eu.fbk.st.cryptoac.util.CryptoUtil;
+import eu.fbk.st.cryptoac.util.EncryptedPKCKeyPair;
 import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Base64;
 
+import static eu.fbk.st.cryptoac.core.element.CryptoACElementStatus.operational;
 import static eu.fbk.st.cryptoac.util.Const.API.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.kDAO;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.kFileNameInCryptoAC;
@@ -68,6 +87,17 @@ public class DAOInterfaceLocal extends DAOInterfaceMySQL {
      */
     public static final String kEncryptingKeyVersionNumberKey = "EncryptingKeyVersionNumber";
 
+    /**
+     * the key of the JDB URL in HTTP requests.
+     */
+    public static final String kJDBUrl = "JDBUrl";
+
+    /**
+     * the key of the DS base API URL in HTTP requests.
+     */
+    public static final String KDSBaseAPI = "dsBaseAPI";
+
+
 
     /**
      * Constructor with parameters.
@@ -95,6 +125,159 @@ public class DAOInterfaceLocal extends DAOInterfaceMySQL {
     public static DAOInterfaceLocal getInstance(DAOInterfaceLocalParameters daoInterfaceLocalParameters) {
         return new DAOInterfaceLocal(daoInterfaceLocalParameters);
     }
+
+
+
+    /**
+     * This method is invoked once to initialize the administrator.
+     * This method configures the RM by providing IP and port of the DS and MS and credentials to access the MS.
+     * @param adminEncryptingKeys the encrypting keys of the admin
+     * @param adminSigningKeys the signing keys of the admin
+     * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
+     * exception along with a proper OperationOutcomeCode code
+     */
+    public void initializeAdmin(@NotNull KeyPair adminEncryptingKeys, @NotNull KeyPair adminSigningKeys) throws DAOException {
+
+        super.initializeAdmin(adminEncryptingKeys, adminSigningKeys);
+
+        OperationOutcomeCode returningCode;
+        Exception thrownException = null;
+
+        try {
+
+            App.logger.info("[{}{}{} ", className, " (" + initializeAdmin + ")]: ", "configuring the RM");
+
+            MultipartBodyPublisher publisherForBody = new MultipartBodyPublisher()
+                    .addPart(kJDBUrl, jDBUrl)
+                    .addPart(kMySQLPropertyUser, mySqlProperties.getProperty(kMySQLPropertyUser))
+                    .addPart(kMySQLPropertyPassword, mySqlProperties.getProperty(kMySQLPropertyPassword))
+                    .addPart(KDSBaseAPI, dsBaseAPI);
+
+            // TODO https
+            HttpRequest requestToConfigureRM = HttpRequest.newBuilder()
+                    .uri(new URI("http://" + rmBaseAPI + RMCONFIGURE))
+                    .version(HttpClient.Version.HTTP_2)
+                    .timeout(Duration.ofSeconds(kTimeoutInSeconds))
+                    .header("Content-Type", "multipart/form-data; boundary=" + publisherForBody.getBoundary())
+                    .header("Accept", "application/json")
+                    .POST(publisherForBody.build())
+                    .build();
+
+            HttpResponse<String> responseFromRM = HttpClient.newBuilder()
+                    .build().send(requestToConfigureRM, HttpResponse.BodyHandlers.ofString());
+
+            APIOutput apiOutputFromRM = new Gson().fromJson(responseFromRM.body(), APIOutput.class);
+            returningCode = OperationOutcomeCode.get(apiOutputFromRM.getOutcomeMessage());
+
+            if (responseFromRM.statusCode() != HttpStatus.OK_200) {
+                App.logger.error("[{}{}{}{}{}{}{}{} ", className, " (" + initializeAdmin + ")]: ", "the RM ",
+                        "returned an error code for configuration: " + returningCode.toString(),
+                        "(", apiOutputFromRM.getOutputJSON() , "), status ", apiOutputFromRM.getHttpStatus());
+            }
+        }
+        // thrown when creating the URI
+        catch (URISyntaxException e) {
+            thrownException = e;
+            returningCode = code_77;
+        }
+        // thrown if the HTTP request goes in timeout
+        catch (HttpTimeoutException e) {
+            thrownException = e;
+            returningCode = code_75;
+        }
+        // thrown if the HTTP request has an error while waiting or sending/receiving data
+        catch (InterruptedException | IOException e) {
+            thrownException = e;
+            returningCode = code_76;
+        }
+
+
+        logAtEndOfMethod(returningCode, initializeAdmin, thrownException);
+    }
+
+
+    /**
+     * This method checks the DAO interface parameters by pinging the RM and the DS.
+     * @param userToInitialise the user object to initialise
+     * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
+     * exception along with a proper OperationOutcomeCode code
+     */
+    public void initializeUser(@NotNull User userToInitialise) throws DAOException {
+
+        super.initializeUser(userToInitialise);
+
+        OperationOutcomeCode returningCode;
+        Exception exceptionThrown = null;
+
+        try {
+
+            App.logger.info("[{}{}{} ", className, " (" + initialiseUser + ")]: ", "pinging RM");
+
+            // TODO https
+            HttpRequest pingRM = HttpRequest.newBuilder()
+                    .uri(new URI("http://" + rmBaseAPI + RMPING))
+                    .version(HttpClient.Version.HTTP_2)
+                    .timeout(Duration.ofSeconds(kTimeoutInSeconds))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> responseFromRM = HttpClient.newBuilder()
+                    .build()
+                    .send(pingRM, HttpResponse.BodyHandlers.ofString());
+
+            APIOutput apiOutputFromRM = new Gson().fromJson(responseFromRM.body(), APIOutput.class);
+            returningCode = OperationOutcomeCode.get(apiOutputFromRM.getOutcomeMessage());
+
+            if (returningCode == code_0) {
+
+                App.logger.info("[{}{}{} ", className, " (" + initialiseUser + ")]: ", "pinging DS");
+
+                // TODO https
+                HttpRequest pingDS = HttpRequest.newBuilder()
+                        .uri(new URI("http://" + dsBaseAPI + DSPING))
+                        .version(HttpClient.Version.HTTP_2)
+                        .timeout(Duration.ofSeconds(kTimeoutInSeconds))
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> responseFromDS = HttpClient.newBuilder()
+                        .build()
+                        .send(pingDS, HttpResponse.BodyHandlers.ofString());
+
+                APIOutput apiOutputFromDS = new Gson().fromJson(responseFromDS.body(), APIOutput.class);
+                returningCode = OperationOutcomeCode.get(apiOutputFromDS.getOutcomeMessage());
+
+                if (returningCode != code_0)
+                    App.logger.error("[{}{}{}{} ", className, " (" + initialiseUser + ")]: ",
+                            "DS returned error code: ", returningCode);
+            }
+            else
+                App.logger.error("[{}{}{}{} ", className, " (" + initialiseUser + ")]: ",
+                        "RM returned error code: ", returningCode);
+        }
+        // thrown when creating the URI
+        catch (URISyntaxException e) {
+            exceptionThrown = e;
+            returningCode = code_77;
+        }
+        // thrown if the HTTP request goes in timeout
+        catch (HttpTimeoutException e) {
+            exceptionThrown = e;
+            returningCode = code_75;
+        }
+        // thrown if the HTTP request has an error while waiting or sending/receiving data
+        catch (InterruptedException | IOException e) {
+            exceptionThrown = e;
+            returningCode = code_76;
+        }
+
+        logAtEndOfMethod(returningCode, initialiseUser, exceptionThrown);
+    }
+
+
+
 
     /**
      * This method stores the new file (1), saves the related metadata from the file tuple (2) and

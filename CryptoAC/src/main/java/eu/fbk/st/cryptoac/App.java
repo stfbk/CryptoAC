@@ -1,6 +1,7 @@
 package eu.fbk.st.cryptoac;
 
-import eu.fbk.st.cryptoac.core.tuple.Permission;
+import com.google.gson.Gson;
+import eu.fbk.st.cryptoac.dao.local.MultipartBodyPublisher;
 import eu.fbk.st.cryptoac.server.model.APIOutput;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
 import eu.fbk.st.cryptoac.server.ds.FilesController;
@@ -13,14 +14,20 @@ import eu.fbk.st.cryptoac.server.proxy.login.LoginController;
 import eu.fbk.st.cryptoac.server.proxy.profile.ProfileController;
 import eu.fbk.st.cryptoac.server.model.OperationMode;
 import eu.fbk.st.cryptoac.server.util.RequestUtil;
+import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import org.apache.commons.cli.*;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.InputStream;
-import java.security.PublicKey;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Properties;
 
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.*;
@@ -29,7 +36,6 @@ import static eu.fbk.st.cryptoac.util.CMDUtil.*;
 import static eu.fbk.st.cryptoac.util.Const.API.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.kDAO;
 import static eu.fbk.st.cryptoac.util.Const.Server.*;
-import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.code_66;
 import static java.lang.System.exit;
 import static spark.Spark.*;
 
@@ -223,12 +229,8 @@ public class App {
         Option operationModeOptionProxy = new Option("op", kCMDOperationModeProxy, false,
                 "To launch this instance of CryptoAC as a proxy");
 
-        Option operationModeOptionRM = new Option("or", kCMDOperationModeRM, true,
-                "To launch this instance of CryptoAC as a reference monitor. Parameters are the " +
-                        "metadata storage URL, metadata storage password, metadata storage port, metadata " +
-                        "storage username, data storage URL, data storage port (separator is the white space)");
-        operationModeOptionRM.setArgs(6);
-        operationModeOptionRM.setValueSeparator(' ');
+        Option operationModeOptionRM = new Option("or", kCMDOperationModeRM, false,
+                "To launch this instance of CryptoAC as a reference monitor");
 
         Option operationModeOptionDS = new Option("od", kCMDOperationModeDS, false,
                 "To launch this instance of CryptoAC as a data storage");
@@ -253,9 +255,6 @@ public class App {
                 operationMode = DS;
             else if (cmd.hasOption(kCMDOperationModeRM)) {
                 operationMode = RM;
-                String[] argumentsRM = cmd.getOptionValues(kCMDOperationModeRM);
-                ChecksController.initialize(argumentsRM[0], argumentsRM[1], argumentsRM[2],
-                        argumentsRM[3], argumentsRM[4], argumentsRM[5]);
             }
             else
                 throw new ParseException("Operation mode is missing. You must provide either the -op, -or or -od option");
@@ -383,6 +382,8 @@ public class App {
 
                 // ===== SET UP ROUTES =====
                 // routes for adding and writing files
+                get     (RMPING,            eu.fbk.st.cryptoac.server.rm.PingController.ping);
+                post    (RMCONFIGURE,       ChecksController.configure);
                 post    (ADDFILE,           ChecksController.addFile);
                 patch   (WRITEFILE,         ChecksController.writeFile);
 
@@ -422,6 +423,7 @@ public class App {
 
                 // ===== SET UP ROUTES =====
                 // routes for adding, writing and deleting files
+                get     (DSPING,        eu.fbk.st.cryptoac.server.rm.PingController.ping);
                 get     (DOWNLOADFILE,  FilesController.downloadFile);
                 patch   (MOVEFILE,      FilesController.moveFile);
                 put     (OVERWRITEFILE, FilesController.overwriteFile);

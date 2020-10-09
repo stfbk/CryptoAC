@@ -85,7 +85,7 @@ public enum OperationOutcomeCode implements Serializable {
     code_72("An unexpected error occurred"),
     code_73("There was an error while creating a directory"),
     code_74("You cannot update the username"),
-    code_75("The connection had a timeout"),
+    code_75("The connection had a timeout (check configuration data)"),
     code_76("Error while sending or receiving data"),
     code_77("Error when creating the URI"),
     code_78("There was an error while creating the reference monitor"),

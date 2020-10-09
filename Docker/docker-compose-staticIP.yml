@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: DockerfileCryptoAC
-    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-or", ms, "${CRYPTOACMSPASSWORDFORRM}", "${CRYPTOACMSMSPORT}", "${CRYPTOACMSUSERNAMEFORRM}", ds, "${CRYPTOACDSPORT}", "-p", "${CRYPTOACRMPORT}"]
+    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-or", "-p", "${CRYPTOACRMPORT}"]
   ds:
     networks:
       test:

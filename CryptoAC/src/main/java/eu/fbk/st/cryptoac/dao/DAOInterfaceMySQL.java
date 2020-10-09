@@ -143,6 +143,29 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
      */
     protected String jDBUrl;
 
+    /**
+     * the key of the user in the MySQL properties object.
+     */
+    public static final String kMySQLPropertyUser = "user";
+
+    /**
+     * the key of the password in the MySQL properties object.
+     */
+    public static final String kMySQLPropertyPassword = "password";
+
+    /**
+     * the key of the useSSL configuration in the MySQL properties object.
+     */
+    public static final String kMySQLPropertyUseSSL = "useSSL";
+
+    /**
+     * the key of the JDBC first part of the URL.
+     */
+    public static final String kJDBC = "jdbc:mysql://";
+
+
+
+
 
     /**
      * Constructor with parameters.
@@ -162,21 +185,20 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
         String portOfDatabase       = DAOInterfaceMySQLParameters.getMySQLDatabasePort();
 
         // concatenate parameters to get the URL of the database (JDBC is the driver)
-        jDBUrl = "jdbc:mysql://" + urlOfDatabase + ":" + portOfDatabase;
+        jDBUrl = kJDBC + urlOfDatabase + ":" + portOfDatabase;
 
         mySqlProperties = new Properties();
-        mySqlProperties.setProperty("useSSL",    "true");
-        mySqlProperties.setProperty("user",      username);
-        mySqlProperties.setProperty("password",  passwordForDatabase);
+        mySqlProperties.setProperty(kMySQLPropertyUseSSL,    "true");
+        mySqlProperties.setProperty(kMySQLPropertyUser,      username);
+        mySqlProperties.setProperty(kMySQLPropertyPassword,  passwordForDatabase);
     }
 
     /**
-     * This method is invoked once before starting to interact with the storage system 
-     * and it initializes the administrator by:
-     * - creating a new User named with the admin ID 
-     * - creating a new Role named with the admin ID and the same keys as the admin user;
-     * - creating a new RoleTuple that binds the admin User and the admin Role.
-     * The admin's token is the admin ID.
+     * This method is invoked once to initialize the administrator.
+     * This method creates in the MS:
+     * - a new User named with the admin ID;
+     * - a new Role named with the admin ID and the same keys as the admin user;
+     * - a new RoleTuple that binds the admin User and the admin Role.
      * Also, this method initializes all the needed tables, views and triggers
      * in the database by reading the "mysqldatabase.sql" file in the resources.
      * @param adminEncryptingKeys the encrypting keys of the admin
@@ -1709,23 +1731,23 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     /**
      * This method updates the public keys, token and status
      * flag of a new user in the user view in the database.
-     * @param userToUpdate the user object containing the data to update
+     * @param userToInitialise the user object to initialise
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
      * exception along with a proper OperationOutcomeCode code
      */
-    public void updateUserData(@NotNull User userToUpdate) throws DAOException {
+    public void initializeUser(@NotNull User userToInitialise) throws DAOException {
 
-        App.logger.info("[{}{}{} ", className, " (" + updateUserData + ")]: ", "updating new user's data");
+        App.logger.info("[{}{}{} ", className, " (" + initialiseUser + ")]: ", "updating new user's data");
 
         OperationOutcomeCode returningCode = code_0;
         Exception exceptionThrown = null;
 
         LinkedHashMap<String, Object> updatedValues = new LinkedHashMap<>();
         updatedValues.put(publicEncryptingKeyColumn,
-                Base64.getEncoder().encodeToString(userToUpdate.getEncryptingPublicKey().getEncoded()));
+                Base64.getEncoder().encodeToString(userToInitialise.getEncryptingPublicKey().getEncoded()));
         updatedValues.put(publicSigningKeyColumn,
-                Base64.getEncoder().encodeToString(userToUpdate.getSigningPublicKey().getEncoded()));
-        updatedValues.put(userTokenColumn, userToUpdate.getToken());
+                Base64.getEncoder().encodeToString(userToInitialise.getSigningPublicKey().getEncoded()));
+        updatedValues.put(userTokenColumn, userToInitialise.getToken());
         updatedValues.put(statusFlagColumn, operational.getValue());
 
         try (
@@ -1741,7 +1763,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
             exceptionThrown = e;
         }
 
-        logAtEndOfMethod(returningCode, updateUserData, exceptionThrown);
+        logAtEndOfMethod(returningCode, initialiseUser, exceptionThrown);
     }
 
     /**
