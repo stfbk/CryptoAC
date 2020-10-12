@@ -1,0 +1,46 @@
+version: '3'
+services:
+  proxy:
+    networks:
+      test:
+        ipv4_address: 10.1.0.17
+    build:
+      context: .
+      dockerfile: DockerfileCryptoAC
+    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-op", "-p", "${CRYPTOACPROXYPROXYPORT}"]
+    ports:
+      - "${CRYPTOACPROXYHOSTPORT}:${CRYPTOACPROXYPROXYPORT}"
+  rm:
+    networks:
+      test:
+        ipv4_address: 10.1.0.27
+    build:
+      context: .
+      dockerfile: DockerfileCryptoAC
+    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-or", "-p", "${CRYPTOACRMPORT}"]
+  ds:
+    networks:
+      test:
+        ipv4_address: 10.1.0.37
+    build:
+      context: .
+      dockerfile: DockerfileCryptoAC
+    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-od", "-p", "${CRYPTOACDSPORT}"]
+  ms:
+    networks:
+      test:
+        ipv4_address: 10.1.0.47
+    build:
+      context: .
+      dockerfile: DockerfileMySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: "${CRYPTOACMSPASSWORDFORRM}"
+    ports:
+      - "${CRYPTOACMSHOSTPORT}:${CRYPTOACMSMSPORT}"
+networks:
+  test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.0.0/24
