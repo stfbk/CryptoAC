@@ -114,6 +114,7 @@ public class AdminController {
             DAOInterfaceParameters userDAOParameters = fromStringToDAOInterfaceParameters(adminDAOParameters.toString());
             userDAOParameters.update((HashMap<String, byte[]>) invocationResult.getOutputJSON());
             userDAOParameters.setUsernameInCryptoAC(usernameOfUserToAdd);
+            userDAOParameters.setIsUserAdmin(false);
             invocationResult.setOutputJSON(userDAOParameters);
         }
 
