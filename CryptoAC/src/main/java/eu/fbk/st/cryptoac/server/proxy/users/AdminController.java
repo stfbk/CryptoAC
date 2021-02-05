@@ -6,6 +6,7 @@ import eu.fbk.st.cryptoac.dao.DAOInterfaceParameters;
 import eu.fbk.st.cryptoac.server.util.*;
 import eu.fbk.st.cryptoac.server.model.APIOutput;
 import eu.fbk.st.cryptoac.util.Const;
+import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
 import spark.Response;
@@ -21,6 +22,7 @@ import static eu.fbk.st.cryptoac.util.Const.API.*;
 import static eu.fbk.st.cryptoac.server.util.RequestUtil.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.*;
 import static eu.fbk.st.cryptoac.util.Const.SessionKeys.kDataOfUserLoggedIn;
+import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.code_0;
 
 
 /**
@@ -104,7 +106,7 @@ public class AdminController {
         invocationResult = executeAPI(request, response, selectedDAO,
                 true, POSTUSER, HttpMethod.post, usernameOfUserToAdd);
 
-        if (invocationResult.getHttpStatus() == HttpStatus.OK_200) {
+        if (invocationResult.getOutcomeCode() == code_0) {
 
             // here we return the user's profile by combining public data from the admin's profile (e.g., urls,
             // port numbers, ...) with the user's parameters returned by the DAO interface.

@@ -14,13 +14,18 @@ import eu.fbk.st.cryptoac.core.element.User;
 import eu.fbk.st.cryptoac.core.tuple.FileTuple;
 import eu.fbk.st.cryptoac.core.tuple.PermissionTuple;
 import eu.fbk.st.cryptoac.core.tuple.RoleTuple;
+import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.security.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
-import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.code_39;
+import static eu.fbk.st.cryptoac.core.element.CryptoACElementStatus.operational;
+import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.*;
+import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.code_58;
 
 
 /**
@@ -66,7 +71,7 @@ public interface DAOInterface {
     String deleteRole = "deleteRole";
     String deleteFile = "deleteFile";
     String deleteFileAndFileTuple = "deleteFileAndFileTuple";
-    String updatePermissionTuple = "updatePermissionTuple";
+    String updatePermissionInPermissionTuple = "updatePermissionInPermissionTuple";
     String updateFile = "updateFile";
     String downloadFile = "downloadFile";
     String getPublicKeyOfCryptoACActiveElement = "getPublicKeyOfCryptoACActiveElement";
@@ -136,6 +141,15 @@ public interface DAOInterface {
     void addRole(@NotNull Role newRole, @NotNull RoleTuple newRoleTuple) throws DAOException;
 
     /**
+     * This method adds a new file in database "files" table.
+     * Remember that file names are unique.
+     * @param fileToAdd the file to insert
+     * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
+     * exception along with a proper OperationOutcomeCode code
+     */
+    void addFile(File fileToAdd) throws DAOException;
+
+    /**
      * This method stores the new file (1), saves the related metadata from the file tuple (2) and
      * the permission tuple that gives the admin all permissions over the file (3).
      * Remember that file names are unique.
@@ -153,7 +167,6 @@ public interface DAOInterface {
      * exception along with a proper OperationOutcomeCode code
      */
     void addFile(@NotNull File newFile, @NotNull FileTuple newFileTuple, @NotNull PermissionTuple newPermissionTuple) throws DAOException;
-    
 
 
     /**
@@ -624,7 +637,7 @@ public interface DAOInterface {
 
     /**
      * This method updates the content of the file matching the given file name ("write" operation); it
-     * - replaces (or uses versioning, if supported) the previous file
+     * - (1) replaces (or uses versioning, if supported) the previous file
      * - (2) updates the file tuple with the new one.
      * If the file didn't exist before, throw exception.
      * Remember that the reference monitor has to check the validity of the new data. This means that:

@@ -1,0 +1,63 @@
+version: '3'
+services:
+  proxy:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACPROXYHOSTIP}"
+    build:
+      context: .
+      dockerfile: DockerfileCryptoAC
+    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-op", "-p", "${CRYPTOACPROXYPROXYPORT}"]
+    ports:
+      - "${CRYPTOACPROXYHOSTPORT}:${CRYPTOACPROXYPROXYPORT}"
+  rm:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACRMHOSTIP}"
+    build:
+      context: .
+      dockerfile: DockerfileCryptoAC
+    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-or", "-p", "${CRYPTOACRMPORT}"]
+  ds:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACDSHOSTIP}"
+    build:
+      context: .
+      dockerfile: DockerfileCryptoAC
+    entrypoint: [ "java", "-jar", "/cryptoac/CryptoAC.jar", "-od", "-p", "${CRYPTOACDSPORT}"]
+  ms:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACMSHOSTIP}"
+    build:
+      context: .
+      dockerfile: DockerfileMySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: "${CRYPTOACMSPASSWORDFORRM}"
+    ports:
+      - "${CRYPTOACMSHOSTPORT}:${CRYPTOACMSMSPORT}"
+  opa:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACOPAHOSTIP}"
+    image: openpolicyagent/opa:latest
+    ports:
+      - "${CRYPTOACOPAPORT}:${CRYPTOACOPAPORT}"
+    # WARNING: OPA is NOT running with an authorization policy configured. This
+    # means that clients can read and write policies in OPA. If you are
+    # deploying OPA in an insecure environment, be sure to configure
+    # authentication and authorization on the daemon. See the Security page for
+    # details: https://www.openpolicyagent.org/docs/security.html.
+    command:
+    - "run"
+    - "--server"
+    - "--log-format=json-pretty"
+    - "--set=decision_logs.console=true"
+networks:
+  test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.0.0/24

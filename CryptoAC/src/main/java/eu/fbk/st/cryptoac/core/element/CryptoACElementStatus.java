@@ -28,24 +28,19 @@ public enum CryptoACElementStatus implements Serializable {
         return param;
     }
 
-    public String getValue() { return param; }
+    public String getValue() {
+        return param;
+    }
 
-    //****** Reverse Lookup Implementation************//
-    //Lookup table
     private static final Map<String, CryptoACElementStatus> lookup = new HashMap<>();
 
-    //Populate the lookup table on loading time
-    static
-    {
-        for(CryptoACElementStatus env : CryptoACElementStatus.values())
-        {
+    static {
+        for(CryptoACElementStatus env : CryptoACElementStatus.values()) {
             lookup.put(env.toString(), env);
         }
     }
 
-    //This method can be used for reverse lookup purpose
-    public static CryptoACElementStatus get(String param)
-    {
+    public static CryptoACElementStatus get(String param) {
         return lookup.get(param);
     }
 }

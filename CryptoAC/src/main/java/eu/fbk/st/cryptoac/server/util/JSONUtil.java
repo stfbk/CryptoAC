@@ -27,8 +27,8 @@ public class JSONUtil {
         response.type("application/json");
 
         try {
+            // TODO ".excludeFieldsWithoutExposeAnnotation()"?
             objectToJSON = new Gson().toJson(objectToTransform);
-            response.status(objectToTransform.getHttpStatus());
         }
         // this exception is thrown is the transformation failed
         catch (Exception e) {

@@ -15,11 +15,8 @@ import eu.fbk.st.cryptoac.dao.aws.DAOInterfaceAWS;
 import eu.fbk.st.cryptoac.dao.local.DAOInterfaceLocal;
 import eu.fbk.st.cryptoac.dao.mock.DAOInterfaceMock;
 import eu.fbk.st.cryptoac.core.tuple.*;
-import eu.fbk.st.cryptoac.util.Const;
-import eu.fbk.st.cryptoac.util.FileUtil;
-import eu.fbk.st.cryptoac.util.CryptoUtil;
+import eu.fbk.st.cryptoac.util.*;
 import eu.fbk.st.cryptoac.dao.DAO;
-import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -464,7 +461,7 @@ class UserTest {
     @Test
     void addFile_correct() throws Exception {
 
-        UserOutput addFileResult = adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)));
+        UserOutput addFileResult = adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic);
 
         assertEquals(OperationOutcomeCode.code_0, addFileResult.getReturningCode());
 
@@ -484,8 +481,8 @@ class UserTest {
     @Test
     void addFile_addTwice()  {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_3, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_3, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
     }
 
 
@@ -493,7 +490,7 @@ class UserTest {
     @Test
     void deleteFile_correct() throws Exception {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.deleteFile(fileName1).getReturningCode());
         adminUser.daoInterface.lockDAOInterfaceStatus();
         assertThrows(DAOException.class, () -> adminUser.daoInterface.getFileEncryptingVersionNumberByName(fileName1));
@@ -509,7 +506,7 @@ class UserTest {
     @Test
     void deleteFile_deleteTwice()  {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.deleteFile(fileName1).getReturningCode());
         assertEquals(OperationOutcomeCode.code_6, adminUser.deleteFile(fileName1).getReturningCode());
     }
@@ -652,7 +649,7 @@ class UserTest {
     @Test
     void assignPermissionToRoleOverFile_correct() throws DAOException {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read).getReturningCode());
 
@@ -674,7 +671,7 @@ class UserTest {
     @Test
     void assignPermissionToRoleOverFile_roleWithNoPermission() throws DAOException {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
 
         adminUser.daoInterface.lockDAOInterfaceStatus();
@@ -686,7 +683,7 @@ class UserTest {
     @Test
     void assignPermissionToRoleOverFile_assignTwice()  {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(Objects.requireNonNull(loadFile(filePath1)))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(Objects.requireNonNull(loadFile(filePath1))), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read).getReturningCode());
@@ -696,7 +693,7 @@ class UserTest {
     @Test
     void assignPermissionToRoleOverFile_assignLower()  {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -707,7 +704,7 @@ class UserTest {
     void assignPermissionToRoleOverFile_revokeAndReAssignLower() throws DAOException {
 
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -737,7 +734,7 @@ class UserTest {
     @Test
     void assignPermissionToRoleOverFile_assignDeletedRole()  {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.deleteRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_5, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -746,7 +743,7 @@ class UserTest {
     @Test
     void assignPermissionToRoleOverFile_assignDeletedFile()  {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.deleteFile(fileName1).getReturningCode());
         assertEquals(OperationOutcomeCode.code_6, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -757,7 +754,7 @@ class UserTest {
     void revokePermissionFromRole_correct() throws Exception {
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.revokePermissionFromRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
 
@@ -779,7 +776,7 @@ class UserTest {
     void revokePermissionFromRole_noPermissionGiven() throws Exception {
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.revokePermissionFromRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
         adminUser.daoInterface.lockDAOInterfaceStatus();
@@ -792,7 +789,7 @@ class UserTest {
     void revokePermissionFromRole_revokeTwice()  {
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.revokePermissionFromRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
         assertEquals(OperationOutcomeCode.code_27, adminUser.revokePermissionFromRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -802,7 +799,7 @@ class UserTest {
     void revokePermissionFromRole_revokeDeletedRole()  {
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.deleteRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_27, adminUser.revokePermissionFromRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -813,7 +810,7 @@ class UserTest {
     void revokePermissionFromRole_revokeDeletedFile()  {
 
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.deleteFile(fileName1).getReturningCode());
         assertEquals(OperationOutcomeCode.code_27, adminUser.revokePermissionFromRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -823,7 +820,7 @@ class UserTest {
     @Test
     void readFile_correctAdminDefaultPermission() throws Exception {
 
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         InputStream decryptedFile = (InputStream) adminUser.readFile(fileName1).getRetuningValue();
         assertNotNull(decryptedFile);
 
@@ -838,7 +835,7 @@ class UserTest {
 
         User aliceUser = addUserAndInitializeKey(alice, aliceConfigDAO, aliceEncryptingKeys, aliceSigningKeys);
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignUserToRole(alice, employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read).getReturningCode());
         InputStream decryptedFile = (InputStream) aliceUser.readFile(fileName1).getRetuningValue();
@@ -856,7 +853,7 @@ class UserTest {
 
         User aliceUser = addUserAndInitializeKey(alice, aliceConfigDAO, aliceEncryptingKeys, aliceSigningKeys);
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignUserToRole(alice, employee).getReturningCode());
 
         InputStream decryptedFile = (InputStream) aliceUser.readFile(fileName1).getRetuningValue();
@@ -868,7 +865,7 @@ class UserTest {
 
         User aliceUser = addUserAndInitializeKey(alice, aliceConfigDAO, aliceEncryptingKeys, aliceSigningKeys);
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignUserToRole(alice, employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.revokePermissionFromRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -882,7 +879,7 @@ class UserTest {
     void writeFile_correct() throws Exception {
 
         User aliceUser = addUserAndInitializeKey(alice, aliceConfigDAO, aliceEncryptingKeys, aliceSigningKeys);
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignUserToRole(alice, employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -900,7 +897,7 @@ class UserTest {
     void writeFile_writeANotExistingFile() {
 
         User aliceUser = addUserAndInitializeKey(alice, aliceConfigDAO, aliceEncryptingKeys, aliceSigningKeys);
-        assertEquals(OperationOutcomeCode.code_0,  adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0,  adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0,  adminUser.addRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0,  adminUser.assignUserToRole(alice, employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0,  adminUser.assignPermissionToRole(employee, fileName1, Permission.Read_and_Write).getReturningCode());
@@ -911,7 +908,7 @@ class UserTest {
     void writeFile_writeWithoutPermission() {
 
         User aliceUser = addUserAndInitializeKey(alice, aliceConfigDAO, aliceEncryptingKeys, aliceSigningKeys);
-        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, adminUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.addRole(employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignUserToRole(alice, employee).getReturningCode());
         assertEquals(OperationOutcomeCode.code_0, adminUser.assignPermissionToRole(employee, fileName1, Permission.Read).getReturningCode());
@@ -947,7 +944,7 @@ class UserTest {
 
 
         // ===== STEP 3 ===== user 1 upload file 1
-        assertEquals(OperationOutcomeCode.code_0, aliceUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, aliceUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
 
 
         // ===== STEP 4 ===== assert that user 1 and 2 cannot access file while admin can
@@ -1068,7 +1065,7 @@ class UserTest {
 
 
         // ===== STEP 3 ===== user 1 upload file 1
-        assertEquals(OperationOutcomeCode.code_0, aliceUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1))).getReturningCode());
+        assertEquals(OperationOutcomeCode.code_0, aliceUser.addFile(fileName1, Objects.requireNonNull(loadFile(filePath1)), AccessControlEnforcement.Cryptographic).getReturningCode());
 
 
         // ===== STEP 4 ===== assign user 1 and user 2 to role1 and user 3 to role 3

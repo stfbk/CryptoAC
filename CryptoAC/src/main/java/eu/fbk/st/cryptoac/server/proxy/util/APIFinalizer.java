@@ -5,6 +5,7 @@ import eu.fbk.st.cryptoac.App;
 import eu.fbk.st.cryptoac.dao.DAOInterface;
 import eu.fbk.st.cryptoac.dao.DAOInterfaceParameters;
 import eu.fbk.st.cryptoac.core.element.User;
+import eu.fbk.st.cryptoac.util.AccessControlEnforcement;
 import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import eu.fbk.st.cryptoac.core.tuple.Permission;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
@@ -89,7 +90,7 @@ public class APIFinalizer {
             // a "FileInputStream" or a "ByteArrayInputStream" class type, resulting in an error
             if (args[i] == null) {
                 App.logger.error("[{}{}{} ", className, " (" + executeAPI + ")]: ", "given null parameter");
-                halt(422, (String) unprocessableEntity.handle(request, response));
+                halt(HttpStatus.UNPROCESSABLE_ENTITY_422, (String) unprocessableEntity.handle(request, response));
             }
             else if (args[i] instanceof Class) {
                 signatureOfParameters[i] = (Class<?>) args[i];
@@ -104,12 +105,14 @@ public class APIFinalizer {
                 signatureOfParameters[i] = InputStream.class;
             else if (args[i] instanceof Integer)
                 signatureOfParameters[i] = Integer.class;
+            else if (args[i] instanceof AccessControlEnforcement)
+                signatureOfParameters[i] = AccessControlEnforcement.class;
 
             // error: we are given a type of a parameter we did not expect
             else {
                 App.logger.error("[{}{}{}{}{} ", className, " (" + executeAPI + ")]: ", "given parameter with class (",
                         (args[i] == null ? null : args[i].getClass()), ") is not supported for API execution");
-                halt(422, (String) unprocessableEntity.handle(request, response));
+                halt(HttpStatus.UNPROCESSABLE_ENTITY_422, (String) unprocessableEntity.handle(request, response));
             }
         }
 
@@ -160,19 +163,19 @@ public class APIFinalizer {
                     OperationOutcomeCode outcomeCode = userOutputOfAPI.getReturningCode();
                     outputAPI = new APIOutput(
                             outcomeCode == code_0 ? userOutputOfAPI.getRetuningValue() : outcomeCode.toString(),
-                            outcomeCode.toString(),
-                            outcomeCode == code_0 ? HttpStatus.OK_200 : HttpStatus.INTERNAL_SERVER_ERROR_500
-                    );
+                            outcomeCode);
+                    response.status(outcomeCode == code_0 ? HttpStatus.OK_200 : HttpStatus.INTERNAL_SERVER_ERROR_500);
 
                     App.logger.info("[{}{}{}{} ", className, " (" + executeAPI + ")]: ",
-                            "API executed, the result is: ", outputAPI.getOutcomeMessage());
+                            "API executed, the result is: ", outputAPI.getOutcomeCode());
                 }
                 // it means that the user is trying to execute an operation that
                 // requires administrator privileges (that the user does not have)
                 else {
                     App.logger.error("[{}{}{}{}{} ", className, " (" + executeAPI + ")]: ", "user ",
                             loggedUser, " is trying to invoke an API that requires admin privileges");
-                    outputAPI = new APIOutput(null, code_65.toString(), HttpStatus.FORBIDDEN_403);
+                    outputAPI = new APIOutput(code_65.toString(), code_65);
+                    response.status(HttpStatus.FORBIDDEN_403);
                 }
             }
             // it means that the user is logged in, but there are
@@ -181,21 +184,23 @@ public class APIFinalizer {
                 App.logger.error("[{}{}{}{}{}{}{}{} ", className, " (" + executeAPI + ")]: ",
                         "user ", loggedUser, " for storage system ", selectedDAO, " is logged in, ",
                         "but there are no user's data in the session");
-                outputAPI = new APIOutput(null, code_500.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                outputAPI = new APIOutput(code_500.toString(), code_500);
+                response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
             }
         }
         // this exception is thrown while building back the cryptographic keys
         catch (NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException e) {
             App.logger.error("[{}{}{} ", className, " (" + executeAPI + ")]: ",
                     "exception while building back PKC keys (" + e.getMessage() + ")");
-            outputAPI = new APIOutput(null, code_18.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+            outputAPI = new APIOutput(code_18.toString(), code_18);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         // this exception is thrown while invoking the method through reflection
         catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             App.logger.error("[{}{}{}{}{} ", className, " (" + executeAPI + ")]: ",
                     "exception while invoking the method via reflection (", e.getMessage(), ")");
-            outputAPI = new APIOutput(null, code_39.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500
-            );
+            outputAPI = new APIOutput(code_39.toString(), code_39);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
 
         return outputAPI;

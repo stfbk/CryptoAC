@@ -96,6 +96,7 @@ CREATE TABLE `fileTuples` (
   `elementToken` char(50) NOT NULL,
   `elementSigner` char(50) NOT NULL,
   `decryptFileVersionNumber` int NOT NULL,
+  `accessControlEnforcement` char(50) NOT NULL,
   `signature` char(172) NOT NULL,
   PRIMARY KEY (`fileName`),
   KEY `fk_fileTuples_fileName_idx`  (`fileName`),
@@ -159,7 +160,7 @@ CREATE VIEW `user_specific_permissionTuples`
 
 /* users can access only the files they have permission over */
 CREATE VIEW `user_specific_fileTuples`
-(`fileName`, `fileToken`, `elementToken`, `elementSigner`, `decryptFileVersionNumber`,
+(`fileName`, `fileToken`, `elementToken`, `elementSigner`, `decryptFileVersionNumber`, `accessControlEnforcement`,
  `signature`) AS
     SELECT
         `fileTuples`.`fileName` AS `fileName`,
@@ -167,6 +168,7 @@ CREATE VIEW `user_specific_fileTuples`
         `fileTuples`.`elementToken` AS `elementToken`,
         `fileTuples`.`elementSigner` AS `elementSigner`,
         `fileTuples`.`decryptFileVersionNumber` AS `decryptFileVersionNumber`,
+        `fileTuples`.`accessControlEnforcement` AS `accessControlEnforcement`,
         `fileTuples`.`signature` AS `signature`
     FROM
         `fileTuples`

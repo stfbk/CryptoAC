@@ -10,8 +10,7 @@
         <link rel='stylesheet'
               href='https://fonts.googleapis.com/css?family=Anton|Passion+One|PT+Sans+Caption'
               type='text/css' />
-        <link rel="icon"
-              href="/img/favicon.png" />
+        <link rel="icon" href="/img/favicon.png" />
 
         <script type="text/javascript"
                 src="https://code.jquery.com/jquery-3.3.1.min.js"

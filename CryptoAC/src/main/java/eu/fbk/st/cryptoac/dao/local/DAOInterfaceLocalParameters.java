@@ -7,8 +7,7 @@ import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import java.util.HashMap;
 
 import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceLocalParameters.*;
-import static eu.fbk.st.cryptoac.util.SafeRegex.checkIfMatchesRegex;
-import static eu.fbk.st.cryptoac.util.SafeRegex.safeTextRegex;
+import static eu.fbk.st.cryptoac.util.SafeRegex.*;
 
 /**
  * This class contains the parameters needed to instantiate the Local DAO interface.
@@ -39,6 +38,20 @@ public class DAOInterfaceLocalParameters extends DAOInterfaceMySQLParameters {
     @Expose
     private String dsPort;
 
+    /**
+     * the URL of the OPA server.
+     */
+    @Expose
+    private String opaURL;
+
+    /**
+     * the port of the OPA server.
+     */
+    @Expose
+    private String opaPort;
+
+
+
 
     /**
      * Constructor with parameters. The accepted parameters are the username (kUsernameInCryptoAC),
@@ -52,9 +65,13 @@ public class DAOInterfaceLocalParameters extends DAOInterfaceMySQLParameters {
         super(configurationParameters);
 
         this.rmURL  = new String(configurationParameters.get(kLocalRMURL));
-        this.dsURL  = new String(configurationParameters.get(kLocalDSURL));
         this.rmPort = new String(configurationParameters.get(kLocalRMPort));
+
+        this.dsURL  = new String(configurationParameters.get(kLocalDSURL));
         this.dsPort = new String(configurationParameters.get(kLocalDSPort));
+
+        this.opaURL  = new String(configurationParameters.get(kLocalOPAURL));
+        this.opaPort = new String(configurationParameters.get(kLocalOPAPort));
 
         checkLocalParametersAreValid();
     }
@@ -65,10 +82,12 @@ public class DAOInterfaceLocalParameters extends DAOInterfaceMySQLParameters {
      */
     protected void checkLocalParametersAreValid() {
 
-        if (!(checkIfMatchesRegex(safeTextRegex, rmURL)))
+        if (!(matchRegex(urlOrIPRegex, rmURL)))
             throw new IllegalArgumentException("the reference monitor URL parameter is null or it does not match a safe regular expression");
-        if (!(checkIfMatchesRegex(safeTextRegex, dsURL)))
+        if (!(matchRegex(urlOrIPRegex, dsURL)))
             throw new IllegalArgumentException("the data storage URL parameter is null or it does not match a safe regular expression");
+        if (!(matchRegex(urlOrIPRegex, opaURL)))
+            throw new IllegalArgumentException("the OPA server URL parameter is null or it does not match a safe regular expression");
 
         try {
             if (!((Integer.parseInt(rmPort) > 0) && (Integer.parseInt(rmPort) < 65535)))
@@ -83,6 +102,13 @@ public class DAOInterfaceLocalParameters extends DAOInterfaceMySQLParameters {
         }
         catch (NumberFormatException e) {
             throw new IllegalArgumentException("data storage port is not a number: " + dsPort);
+        }
+        try {
+            if (!((Integer.parseInt(opaPort) > 0) && (Integer.parseInt(opaPort) < 65535)))
+                throw new IllegalArgumentException("OPA server port is minor than 0/greater than 65535");
+        }
+        catch (NumberFormatException e) {
+            throw new IllegalArgumentException("OPA server port is not a number: " + opaPort);
         }
     }
 
@@ -101,12 +127,18 @@ public class DAOInterfaceLocalParameters extends DAOInterfaceMySQLParameters {
 
         if (updatedData.containsKey(kLocalRMURL))
             rmURL = new String(updatedData.get(kLocalRMURL));
-        if (updatedData.containsKey(kLocalDSURL))
-            dsURL = new String(updatedData.get(kLocalDSURL));
         if (updatedData.containsKey(kLocalRMPort))
             rmPort = new String(updatedData.get(kLocalRMPort));
+
+        if (updatedData.containsKey(kLocalDSURL))
+            dsURL = new String(updatedData.get(kLocalDSURL));
         if (updatedData.containsKey(kLocalDSPort))
             dsPort = new String(updatedData.get(kLocalDSPort));
+
+        if (updatedData.containsKey(kLocalOPAURL))
+            opaURL = new String(updatedData.get(kLocalOPAURL));
+        if (updatedData.containsKey(kLocalOPAPort))
+            opaPort = new String(updatedData.get(kLocalOPAPort));
 
         checkLocalParametersAreValid();
 
@@ -143,5 +175,21 @@ public class DAOInterfaceLocalParameters extends DAOInterfaceMySQLParameters {
      */
     public String getDSPort() {
         return dsPort;
+    }
+
+    /**
+     * getter for the URL of the OPA server.
+     * @return the URL of the OPA server
+     */
+    public String getOPAURL() {
+        return opaURL;
+    }
+
+    /**
+     * getter for the port of the OPA server.
+     * @return the port of the OPA server
+     */
+    public String getOPAPort() {
+        return opaPort;
     }
 }

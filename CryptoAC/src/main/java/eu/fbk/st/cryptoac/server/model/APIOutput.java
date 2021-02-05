@@ -1,5 +1,7 @@
 package eu.fbk.st.cryptoac.server.model;
 
+import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
+
 import java.io.Serializable;
 
 
@@ -15,35 +17,36 @@ public class APIOutput implements Serializable {
     private Object outputJSON;
 
     /**
-     * The outcome message of the operation to display to the user.
+     * The outcome code of the operation.
      */
-    private String outcomeMessage;
-
-    /**
-     * The HTTP status of the operation.
-     */
-    private Integer httpStatus;
+    private OperationOutcomeCode outcomeCode;
 
 
     /**
      * Constructor with parameters.
      * @param objectToReturnJSONAble the operation result (only if method was GET)
-     * @param outcomeMessage the outcome message of the operation
-     * @param httpStatus the status of the response
+     * @param outcomeCode the outcome message of the operation
      */
-    public APIOutput(Object objectToReturnJSONAble, String outcomeMessage, Integer httpStatus) {
+    public APIOutput(Object objectToReturnJSONAble, OperationOutcomeCode outcomeCode) {
         this.setOutputJSON(objectToReturnJSONAble);
-        this.outcomeMessage = outcomeMessage;
-        this.setHttpStatus(httpStatus);
+        this.outcomeCode = outcomeCode;
     }
 
 
     /**
-     * getter for the outcome message.
-     * @return the outcome message
+     * getter for the outcome code.
+     * @return the outcome code
      */
-    public String getOutcomeMessage() {
-        return outcomeMessage;
+    public OperationOutcomeCode getOutcomeCode() {
+        return outcomeCode;
+    }
+
+    /**
+     * setter for the outcome code.
+     * @param outcomeCode the outcome code
+     */
+    public void setOutcomeCode(OperationOutcomeCode outcomeCode) {
+        this.outcomeCode = outcomeCode;
     }
 
     /**
@@ -55,35 +58,10 @@ public class APIOutput implements Serializable {
     }
 
     /**
-     * getter for the HTTP status.
-     * @return the HTTP status
-     */
-    public Integer getHttpStatus() {
-        return httpStatus;
-    }
-
-
-    /**
      * setter for the output JSON.
      * @param outputJSON the output JSON
      */
     public void setOutputJSON(Object outputJSON) {
         this.outputJSON = outputJSON;
-    }
-
-    /**
-     * setter for the HTTP status.
-     * @param httpStatus the HTTP status
-     */
-    public void setHttpStatus(Integer httpStatus) {
-        this.httpStatus = httpStatus;
-    }
-
-    /**
-     * setter for the outcome message.
-     * @param outcomeMessage the outcome message
-     */
-    public void setOutcomeMessage(String outcomeMessage) {
-        this.outcomeMessage = outcomeMessage;
     }
 }

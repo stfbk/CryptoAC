@@ -2,6 +2,7 @@ package eu.fbk.st.cryptoac.server.util;
 
 import eu.fbk.st.cryptoac.App;
 import eu.fbk.st.cryptoac.server.model.APIOutput;
+import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.ExceptionHandler;
 import spark.Request;
@@ -22,58 +23,68 @@ import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.*;
  */
 public class ErrorUtil {
 
-
     /**
      * This method returns the 400 error template in HTML or the API output object in JSON.
      */
-    public static Route badRequest = (Request request, Response response) ->
-            error(request, response, HttpStatus.BAD_REQUEST_400,
-                    "Sorry! You sent a bad request", code_400.toString());
+    public static Route badRequest = (Request request, Response response) -> {
+        response.status(HttpStatus.BAD_REQUEST_400);
+        return error(request, response,
+                "Sorry! You sent a bad request", code_400);
+    };
 
     /**
      * This method returns the 401 error template in HTML or the API output object in JSON.
      */
-    public static Route unauthorized = (Request request, Response response) ->
-            error(request, response, HttpStatus.UNAUTHORIZED_401,
-                    "Sorry! You must be authenticated to access this resource", code_401.toString());
+    public static Route unauthorized = (Request request, Response response) -> {
+        response.status(HttpStatus.UNAUTHORIZED_401);
+        return error(request, response,
+                "Sorry! You must be authenticated to access this resource", code_401);
+    };
 
     /**
      * This method returns the 403 error template in HTML or the API output object in JSON.
      */
-    public static Route forbidden = (Request request, Response response) ->
-            error(request, response, HttpStatus.FORBIDDEN_403,
-                "Sorry! You do not have the necessary permissions or need to configure an account", code_403.toString());
+    public static Route forbidden = (Request request, Response response) -> {
+        response.status(HttpStatus.FORBIDDEN_403);
+        return error(request, response,
+                "Sorry! You do not have the necessary permissions or need to configure an account", code_403);
+    };
 
 
     /**
      * This method returns the 404 error template in HTML or the API output object in JSON.
      */
-    public static Route notFound = (Request request, Response response) ->
-            error(request, response, HttpStatus.NOT_FOUND_404,
-                    "Sorry! Resource not found", code_404.toString());
+    public static Route notFound = (Request request, Response response) -> {
+        response.status(HttpStatus.NOT_FOUND_404);
+        return error(request, response, "Sorry! Resource not found", code_404);
+    };
+
 
     /**
      * This method returns the 406 error template in HTML or the API output object in JSON.
      */
-    public static Route notAcceptable = (Request request, Response response) ->
-            error(request, response, HttpStatus.NOT_ACCEPTABLE_406,
-                "Sorry! You made a not acceptable request", code_406.toString());
+    public static Route notAcceptable = (Request request, Response response) -> {
+        response.status(HttpStatus.NOT_ACCEPTABLE_406);
+        return error(request, response, "Sorry! You made a not acceptable request", code_406);
+    };
 
 
     /**
      * This method returns the 422 error template in HTML or the API output object in JSON.
      */
-    public static Route unprocessableEntity = (Request request, Response response) ->
-            error(request, response, HttpStatus.UNPROCESSABLE_ENTITY_422,
-                    "Sorry! It seems you missed or wrongly set a parameter", code_422.toString());
+    public static Route unprocessableEntity = (Request request, Response response) -> {
+        response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
+        return error(request, response, "Sorry! It seems you missed or wrongly set a parameter", code_422);
+    };
 
 
     /**
      * This method returns the 500 error template in HTML or the API output object in JSON.
      */
-    public static Route internalError = (Request request, Response response) ->
-         error(request, response, HttpStatus.INTERNAL_SERVER_ERROR_500,
-                    "Sorry! We had an internal error, please retry", code_500.toString());
+    public static Route internalError = (Request request, Response response) -> {
+        response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
+        return error(request, response, "Sorry! We had an internal error, please retry", code_500);
+    };
 
 
     /**
@@ -82,9 +93,8 @@ public class ErrorUtil {
     public static ExceptionHandler<Exception> internalErrorException = (Exception e, Request request, Response response) -> {
         App.logger.error("[{}{}{} ", "ErrorController", " (" + "internalErrorException" + ")]: ",
                 "Exception while handling request to " + request.uri() + ": " + e.getMessage(), e);
-
-        error(request, response, HttpStatus.INTERNAL_SERVER_ERROR_500,
-                "Sorry! We had an internal error, please retry", code_500.toString());
+        response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
+        error(request, response,"Sorry! We had an internal error, please retry", code_500);
     };
 
 
@@ -115,15 +125,16 @@ public class ErrorUtil {
      * Utility method to generate an error template in HTML or the API output object in JSON given an error code.
      * @param request the HTTP request
      * @param response the HTTP response
-     * @param httpStatus the HTTP error status
-     * @param message the more detailed error message
+     * @param errorMessage the error message to show response
      * @param code operation outcome code
      * @return a string representing the rendered template
      */
-    public static String error(Request request, Response response, Integer httpStatus,
-                                String message, String code) {
+    public static String error(Request request, Response response, String errorMessage, OperationOutcomeCode code) {
 
-        response.status(httpStatus);
+        App.logger.error("[{}{}{}{}{}{}{} ", "ErrorController", " (" + "error" + ")]: ",
+                "Error while handling request to " + request.uri(), ": ", errorMessage, ", code: ", code.toString());
+
+        int httpStatus = response.status();
         String returningValue;
 
         String first, second, third;
@@ -132,10 +143,11 @@ public class ErrorUtil {
         first = String.valueOf((httpStatus/100) % 10);
 
         if (userAcceptsHtml(request))
-            returningValue = render(renderModel(first, second, third, message), kHTMLTemplateError);
+            returningValue = render(renderModel(first, second, third, code.toString()), kHTMLTemplateError);
         // in any other case, answer with a JSON
         else {
-            APIOutput error = new APIOutput(null, code, httpStatus);
+            APIOutput error = new APIOutput(null, code);
+            response.status(httpStatus);
             returningValue = getJSONToReturn(error, response);
         }
 

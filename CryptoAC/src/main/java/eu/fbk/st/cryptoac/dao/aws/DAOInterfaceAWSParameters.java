@@ -77,15 +77,15 @@ public class DAOInterfaceAWSParameters extends DAOInterfaceMySQLParameters {
      */
     protected void checkAWSParametersAreValid() {
 
-        if (!(checkIfMatchesRegex(safeTextRegex, awsS3BucketDownload)))
+        if (!(matchRegex(safeTextRegex, awsS3BucketDownload)))
             throw new IllegalArgumentException("the AWS S3 download bucket is null or it does not match a safe regular expression");
-        if (!(checkIfMatchesRegex(safeTextRegex, awsS3BucketUpload)))
+        if (!(matchRegex(safeTextRegex, awsS3BucketUpload)))
             throw new IllegalArgumentException("the AWS S3 upload bucket is null or it does not match a safe regular expression");
-        if (!(checkIfMatchesRegex(safeTextRegex, awsS3Region)))
+        if (!(matchRegex(safeTextRegex, awsS3Region)))
             throw new IllegalArgumentException("the AWS region is null or it does not match a safe regular expression");
-        if (!(checkIfMatchesRegex(awsAccessKeyRegex, awsAccessKey)))
+        if (!(matchRegex(awsAccessKeyRegex, awsAccessKey)))
             throw new IllegalArgumentException("the AWS access key is null or it does not match the AWS access key regular expression");
-        if (!(checkIfMatchesRegex(awsSecretKeyRegex, awsSecretKey)))
+        if (!(matchRegex(awsSecretKeyRegex, awsSecretKey)))
             throw new IllegalArgumentException("the AWS secret key is null or it does not match the AWS secret key regular expression");
         if (awsS3BucketDownload.equals(awsS3BucketUpload))
             throw new IllegalArgumentException("the upload and download AWS S3 buckets have the same name");

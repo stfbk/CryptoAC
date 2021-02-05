@@ -24,22 +24,15 @@ public enum DAO {
         return param;
     }
 
-    //****** Reverse Lookup Implementation************//
-    //Lookup table
     private static final Map<String, DAO> lookup = new HashMap<>();
 
-    //Populate the lookup table on loading time
-    static
-    {
-        for(DAO env : DAO.values())
-        {
+    static {
+        for(DAO env : DAO.values()) {
             lookup.put(env.toString(), env);
         }
     }
 
-    //This method can be used for reverse lookup purpose
-    public static DAO get(String param)
-    {
+    public static DAO get(String param) {
         return lookup.get(param);
     }
 }

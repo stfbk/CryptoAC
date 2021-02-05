@@ -1,6 +1,8 @@
 package eu.fbk.st.cryptoac.server.proxy.users;
 
+import eu.fbk.st.cryptoac.App;
 import eu.fbk.st.cryptoac.server.model.APIOutput;
+import eu.fbk.st.cryptoac.util.AccessControlEnforcement;
 import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import eu.fbk.st.cryptoac.server.util.*;
 import eu.fbk.st.cryptoac.dao.DAO;
@@ -39,7 +41,7 @@ public class UserController {
         // if everything went well, it means that there is a file ready to be downloaded by the user
         // we return the file to the user piece by piece, we do not want to read the whole file into
         // memory (i.e., we do not want to use streamToReturn.readAllBytes() )
-        if (invocationResult.getOutcomeMessage().equals(OperationOutcomeCode.code_0.toString())) {
+        if (invocationResult.getOutcomeCode().equals(OperationOutcomeCode.code_0)) {
 
             InputStream fileToReturn = ((InputStream) invocationResult.getOutputJSON());
 
@@ -87,8 +89,7 @@ public class UserController {
         }
         // it means that something went wrong while asking to read the file
         else
-            return error(request, response, invocationResult.getHttpStatus(), invocationResult.
-                    getOutcomeMessage(), invocationResult.getOutcomeMessage());
+            return error(request, response, invocationResult.getOutcomeCode().toString(), invocationResult.getOutcomeCode());
     };
 
     /**
@@ -100,10 +101,14 @@ public class UserController {
         DAO selectedDAO = DAO.get(getPathParameter(request, kDAO));
 
         String nameOfTheFile = request.raw().getPart(kFileInCryptoAC).getSubmittedFileName();
+        String accessControlLevel =
+                new String(request.raw().getPart(kAccessControlEnforcement).getInputStream().readAllBytes());
+        AccessControlEnforcement accessControlEnforcement = AccessControlEnforcement.get(accessControlLevel);
+
         InputStream fileInputStream = getStreamParameterNoCheckSizeFromMultipart(request, kFileInCryptoAC);
 
         invocationResult = executeAPI(request, response, selectedDAO, false,
-                API.POSTFILE, HttpMethod.post, nameOfTheFile, fileInputStream);
+                API.POSTFILE, HttpMethod.post, nameOfTheFile, fileInputStream, accessControlEnforcement);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
     };

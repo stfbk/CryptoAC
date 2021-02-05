@@ -85,12 +85,23 @@ public enum OperationOutcomeCode implements Serializable {
     code_72("An unexpected error occurred"),
     code_73("There was an error while creating a directory"),
     code_74("You cannot update the username"),
-    code_75("The connection had a timeout (check configuration data)"),
-    code_76("Error while sending or receiving data"),
+    code_75("The connection had a timeout (ensure service is up and check URL and port)"),
+    code_76("Error while sending or receiving data over HTTP"),
     code_77("Error when creating the URI"),
-    code_78("There was an error while creating the reference monitor"),
+    code_78("There was an error while creating the RM"),
     code_79("Incoherent status in the database, contact system administrator"),
     code_80("There was an error while renaming the file in the file system"),
+    code_81("OPA Error while creating the OPA RBAC policy"),
+    code_82("OPA Error while creating the OPA RBAC document"),
+    code_83("OPA Error while updating the OPA RBAC document"),
+    code_84("OPA Error while downloading the OPA RBAC document"),
+    code_85("Error while pinging service (ensure service is up and check URL and port)"),
+    code_86("Error while configuring the RM"),
+    code_87("The RM returned an error while validating the new file"),
+    code_88("The RM returned an error while validating the updated file"),
+    code_89("Specified Access Control Enforcement is not the same as the old one"),
+    code_90("Error while configuring the DS"),
+    code_91("Error while querying OPA policy"),
 
     code_400("Bad Request - you sent a bad request"),
     code_401("Unauthorized - you must be authenticated to access this resource"),
@@ -113,22 +124,18 @@ public enum OperationOutcomeCode implements Serializable {
         return param;
     }
 
-    //****** Reverse Lookup Implementation************//
-    //Lookup table
     private static final Map<String, OperationOutcomeCode> lookup = new HashMap<>();
 
-    //Populate the lookup table on loading time
-    static
-    {
-        for(OperationOutcomeCode env : OperationOutcomeCode.values())
-        {
+    static {
+        for(OperationOutcomeCode env : OperationOutcomeCode.values()) {
             lookup.put(env.toString(), env);
         }
     }
 
-    //This method can be used for reverse lookup purpose
-    public static OperationOutcomeCode get(String param)
-    {
+    public static OperationOutcomeCode get(String param) {
         return lookup.get(param);
     }
 }
+
+
+

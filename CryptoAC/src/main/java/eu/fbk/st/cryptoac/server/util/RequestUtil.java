@@ -2,6 +2,7 @@ package eu.fbk.st.cryptoac.server.util;
 
 import eu.fbk.st.cryptoac.App;
 import eu.fbk.st.cryptoac.server.model.Credentials;
+import org.eclipse.jetty.http.HttpStatus;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
@@ -12,10 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
+import static eu.fbk.st.cryptoac.server.util.ErrorUtil.badRequest;
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.notAcceptable;
+import static eu.fbk.st.cryptoac.util.SafeRegex.*;
 import static spark.Spark.halt;
 
 /**
@@ -54,6 +58,7 @@ public class RequestUtil {
      * @return the parameter, if any. Null otherwise
      */
     public static String getPathParameter(Request request, String parameter) {
+        // TODO check here against safe regex? or check in any usage of this?
         return request.params(parameter);
     }
 
@@ -65,6 +70,7 @@ public class RequestUtil {
      * @return the parameter, if any. Null otherwise
      */
     public static String getQueryParameter(Request request, String parameter) {
+        // TODO check here against safe regex? or check in any usage of this?
         return request.queryParams(parameter);
     }
 
@@ -79,6 +85,8 @@ public class RequestUtil {
      */
     public static String getStringParameterFromMultipart(Request request, String parameter)
             throws IOException, ServletException, IllegalArgumentException {
+
+        // TODO check here against safe regex? or check in any usage of this?
 
         String returningValue = null;
 
@@ -244,20 +252,54 @@ public class RequestUtil {
 
                 String[] authorizationHeaderSplit = authorizationHeader.split(" ");
                 String authenticationMethod = authorizationHeaderSplit[0];
+                String base64EncodedCredentials = authorizationHeaderSplit[1];
 
                 // if the login is BASIC (https://en.wikipedia.org/wiki/Basic_access_authentication)
                 if ("Basic".equals(authenticationMethod)) {
 
-                    // get the credentials that were encoded in Base64. The first string
-                    // is the username, the second string is the password
-                    String[] credentialsArray = new String(Base64.getDecoder().decode(
-                            authorizationHeaderSplit[1])).split(":");
-                    credentials = new Credentials(credentialsArray[0], credentialsArray[1]);
+                    if (matchRegex(base64Regex, base64EncodedCredentials)) {
+
+                        // get the credentials that were encoded in Base64.
+                        // The first string is the username, the second string is the password
+                        String[] credentialsArray = new String(Base64.getDecoder()
+                                .decode(base64EncodedCredentials)).split(":");
+                        String givenUsername = credentialsArray[0];
+                        String givenPassword = credentialsArray[1];
+
+                        // TODO check also the password against a regex? how?
+                        //  we should first decide a policy wrt passwords, like hashing
+                        if (matchRegex(safeTextRegex, givenUsername)) {
+                            credentials = new Credentials(givenUsername, givenPassword);
+                        }
+                        else {
+                            App.logger.error("Received a request whose username in the authentication header " +
+                                "credentials does not match a safe regex. Printing, encoded in base64, the username ("
+                                + Base64.getEncoder().encodeToString(givenUsername.getBytes(StandardCharsets.UTF_8))
+                                + ")");
+                        }
+                    }
+                    else {
+                        App.logger.error("Received a request whose authentication header credentials does not match"
+                                + " a safe regex. Printing, encoded in base64, the credentials ("
+                                + Base64.getEncoder().encodeToString(base64EncodedCredentials
+                                .getBytes(StandardCharsets.UTF_8))
+                                + ")");
+                        // TODO take further action?
+                    }
                 }
                 // it means that the authentication method is not supported
                 else {
-                    App.logger.error("[{}{}{}{} ", className, " (" + getCredentialsFromAuthnHeaderBasic + ")]: ",
-                            "type of Authentication is not supported: ", authenticationMethod);
+                    if (matchRegex(safeTextRegex, authenticationMethod)) {
+                        App.logger.error("[{}{}{}{} ", className, " (" + getCredentialsFromAuthnHeaderBasic + ")]: ",
+                                "type of authentication is not supported: ", authenticationMethod);
+                    }
+                    else {
+                        App.logger.error("Received a request whose authentication type does not match a safe regex. "
+                                + "Printing, encoded in base64, the authentication type ("
+                                + Base64.getEncoder().encodeToString(authenticationMethod.getBytes(StandardCharsets.UTF_8))
+                                + ")");
+                        // TODO take further action?
+                    }
                 }
             }
             catch (Throwable e) {
@@ -299,7 +341,7 @@ public class RequestUtil {
         if (!clientAcceptsJson(request)) {
             App.logger.error("[{}{}{} ", className, " (" + checkRequestAcceptJSONLog + ")]: ",
                     "the HTTP request does not accept JSON as response");
-            halt(406, (String) notAcceptable.handle(request, response));
+            halt(HttpStatus.NOT_ACCEPTABLE_406, (String) notAcceptable.handle(request, response));
         }
     };
 }

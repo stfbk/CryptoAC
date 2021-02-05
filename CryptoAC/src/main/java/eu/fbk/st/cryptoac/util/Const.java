@@ -223,6 +223,11 @@ public class Const {
          * (role, permission and file tuples) to retrieve from the metadata in CryptoAC.
          */
         public static final String kLimitInCryptoAC = "Limit";
+
+        /**
+         * the access control enforcement level chosen by the user for a new file.
+         */
+        public static final String kAccessControlEnforcement = "Access_Control_Enforcement";
     }
 
 
@@ -342,6 +347,16 @@ public class Const {
          * the port of the DS.
          */
         public static final String kLocalDSPort = "dsPort";
+
+        /**
+         * the url of the OPA server.
+         */
+        public static final String kLocalOPAURL  = "opaURL";
+
+        /**
+         * the port of the OPA server.
+         */
+        public static final String kLocalOPAPort = "opaPort";
     }
 
 
@@ -368,14 +383,19 @@ public class Const {
         public static final String BASEPROXY = currentVersion + "proxy/";
 
         /**
-         * (rm mode)base url for rm APIs.
+         * (rm mode) base url for rm APIs.
          */
         public static final String BASERM    = currentVersion + "rm/";
 
         /**
-         * (ds mode)base url for ds APIs.
+         * (ds mode) base url for ds APIs.
          */
         public static final String BASEDS    = currentVersion + "ds/";
+
+        /**
+         * (OPA) base url for OPA APIs.
+         */
+        public static final String BASEOPA   = "/v1/";
 
         /**
          * (proxy  mode) base url for users' profile, which stores values like configuration parameters
@@ -482,7 +502,7 @@ public class Const {
         /**
          * (proxy mode) API for deleting a role tuple (admin only).
          */
-        public static final String DELETEASSIGNMENT = BASEASSIGNMENTS + ":" + kRoleNameInCryptoAC + "/:" + FormParameters.kUsernameInCryptoAC + "/";
+        public static final String DELETEASSIGNMENT = BASEASSIGNMENTS + ":" + FormParameters.kUsernameInCryptoAC + "/:" + kRoleNameInCryptoAC + "/";
 
 
         /**
@@ -498,7 +518,7 @@ public class Const {
         /**
          * (proxy mode) API for deleting a permission tuple (admin only).
          */
-        public static final String DELETEPERMISSION = BASEPERMISSIONS + ":" + kFileNameInCryptoAC + "/:" + kRoleNameInCryptoAC + "/:" + kPermissionInCryptoAC + "/" ;
+        public static final String DELETEPERMISSION = BASEPERMISSIONS + ":" + kRoleNameInCryptoAC + "/:" + kFileNameInCryptoAC + "/:" + kPermissionInCryptoAC + "/" ;
 
 
 
@@ -567,6 +587,11 @@ public class Const {
 
 
         /**
+         * (ds mode) API for configuring the DS (admin only).
+         */
+        public static final String DSCONFIGURE = BASEDS + "configure/";
+
+        /**
          * (ds mode) API for pinging the DS so users check
          * that they have the right configuration data.
          */
@@ -598,6 +623,21 @@ public class Const {
         public static final String REMOVEFILE       = BASEDS + "files/:" + kDAO + "/:" + kFileNameInCryptoAC + "/";
 
 
+
+        /**
+         * (OPA) API for managing the rbac policy in OPA.
+         */
+        public static final String OPARBACPOLICY = BASEOPA + "policies/rbac";
+
+        /**
+         * (OPA) API for managing the rbac data in OPA.
+         */
+        public static final String OPARBACDATA = BASEOPA + "data/rbac";
+
+        /**
+         * (OPA) API for querying the rbac policy in OPA.
+         */
+        public static final String OPARBACQUERY = BASEOPA + "data/app/rbac/allow";
 
 
 

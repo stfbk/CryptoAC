@@ -28,7 +28,7 @@ public class Role extends CryptoACActiveElement implements Serializable {
 
         this.roleVersionNumber = roleVersionNumber;
 
-        if (!isVersionNumberValid(roleVersionNumber))
+        if (isVersionNumberInvalid(roleVersionNumber))
             throw new IllegalArgumentException("Version number is either null or less than 1");
     }
 

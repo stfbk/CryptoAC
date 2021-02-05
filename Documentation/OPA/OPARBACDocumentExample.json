@@ -1,0 +1,26 @@
+{
+    "ur": {
+      "username": [
+        {
+          "associatedElement":"admin",
+          "associatedRole":"admin",
+          "roleVersionNumber":1,
+          "signerOfThisTuple":"admin",
+          "tupleType":"RK"
+        }
+      ]
+    },
+    "pa": {
+      "roleName": [
+        {
+          "associatedElement":"employee",
+          "associatedFile":"start.sh",
+          "associatedPermission":"Read",
+          "encryptingKeyVersionNumber":1,
+          "roleVersionNumber":1,
+          "signerOfThisTuple":"admin",
+          "tupleType":"FK"
+        }
+      ]
+    }
+  }

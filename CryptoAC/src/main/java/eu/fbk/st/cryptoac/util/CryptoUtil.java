@@ -115,8 +115,6 @@ public final class CryptoUtil {
 
 
 
-
-
     /**
      * A constructor for singletons, that forbids the creation of more than one instance of this class.
      * @param pkcAlgorithm PKC algorithm, null if you wish to keep the default value
@@ -420,7 +418,7 @@ public final class CryptoUtil {
             throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
 
         App.logger.info("[{}{}{} ", kClassName, " (" + kEncryptFile + ")]: ",
-                "encrypting stream with the given symmetric key");
+               "encrypting stream with the given symmetric key");
 
         return applySymCipherOnBytes(keyToUse, streamOfFileToEncrypt, Cipher.ENCRYPT_MODE);
     }
@@ -526,6 +524,7 @@ public final class CryptoUtil {
     private byte[] applyPKCCipherOnBytes(Key pkcKeyToUse, byte[] input, int opMode)
             throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
 
+        
         App.logger.info("[{}{}{} ", kClassName, " (" + kApplyPKCCipherOnBytesName + ")]: ", "applying pkc cipher on bytes");
 
         byte[] output;

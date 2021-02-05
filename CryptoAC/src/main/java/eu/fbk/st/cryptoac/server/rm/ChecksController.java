@@ -11,7 +11,8 @@ import eu.fbk.st.cryptoac.core.tuple.Permission;
 import eu.fbk.st.cryptoac.core.tuple.PermissionTuple;
 import eu.fbk.st.cryptoac.dao.DAO;
 import eu.fbk.st.cryptoac.dao.DAOException;
-import eu.fbk.st.cryptoac.dao.DAOInterfaceMySQLParameters;
+import eu.fbk.st.cryptoac.dao.local.DAOInterfaceLocal;
+import eu.fbk.st.cryptoac.dao.local.DAOInterfaceLocalParameters;
 import eu.fbk.st.cryptoac.server.model.APIOutput;
 import eu.fbk.st.cryptoac.server.util.JSONUtil;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
@@ -27,7 +28,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -39,6 +39,7 @@ import static eu.fbk.st.cryptoac.App.admin;
 import static eu.fbk.st.cryptoac.dao.local.DAOInterfaceLocal.*;
 import static eu.fbk.st.cryptoac.server.util.RequestUtil.*;
 import static eu.fbk.st.cryptoac.util.Const.API.*;
+import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceLocalParameters.*;
 import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceMySQLParameters.*;
 import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceParameters.*;
 import static eu.fbk.st.cryptoac.util.Const.FormParameters.kDAO;
@@ -50,18 +51,17 @@ public class ChecksController {
     /**
      * The MySQL helper object to interact with the metadata storage.
      */
-    private static MySQLHelper mySQLHelper;
+    private static DAOInterfaceLocal daoInterfaceLocal;
 
     /**
-     * The base url (with port) of the data storage.
+     * The url + port of the DS.
      */
-    private static String dsBaseAPI;
+    public static String dsBaseAPI;
 
     /**
-     * The default timeout for connections toward the DS.
+     * The url + port of the OPA server.
      */
-    private static final Integer kTimeoutInSeconds = 10;
-
+    public static String opaBaseAPI;
 
     // variables for logging
     public static final String className = "ChecksController";
@@ -72,30 +72,46 @@ public class ChecksController {
 
     /**
      * Initialise the RM by configuring URL, ports and credentials.
-     * @param jDBUrl the url to contact the DS
-     * @param mySQLUser the name of the RM  in the MS
-     * @param mySQLPassword the password of the RM in the MS
-     * @param dsBaseAPI url + port of the DS
+     * @param givenjDBUrl the url to contact the DS
+     * @param givenMySQLUser the name of the RM  in the MS
+     * @param givenMySQLPassword the password of the RM in the MS
+     * @param givenDSBaseAPI url + port of the DS
+     * @param givenOPABaseAPI url + port of the OPA server
      */
-    private static void initialize (String jDBUrl, String mySQLUser, String mySQLPassword, String dsBaseAPI) {
+    private static void initialize (String givenjDBUrl, String givenMySQLUser, String givenMySQLPassword, String givenDSBaseAPI, String givenOPABaseAPI) {
 
-        ChecksController.dsBaseAPI = dsBaseAPI;
+        String[] msBaseAPISplit  = givenjDBUrl.replace(kJDBC, "").split(":");
+        String[] dsBaseAPISplit  = givenDSBaseAPI.split(":");
+        String[] opaBaseAPISplit = givenOPABaseAPI.split(":");
 
-        String[] mySQLBaseAPI = jDBUrl.replace(kJDBC, "").split(":");
+        dsBaseAPI = givenDSBaseAPI;
+        opaBaseAPI = givenOPABaseAPI;
 
         HashMap<String, byte[]> parameters = new HashMap<>();
-        parameters.put(kMySQLDatabaseURL, mySQLBaseAPI[0].getBytes());
-        parameters.put(kMySQLDatabasePort, mySQLBaseAPI[1].getBytes());
-        parameters.put(kMySQLDatabasePassword, mySQLPassword.getBytes());
-        parameters.put(kUsernameInCryptoAC, mySQLUser.getBytes());
+        parameters.put(kMySQLDatabaseURL,      msBaseAPISplit[0].getBytes());
+        parameters.put(kMySQLDatabasePort,     msBaseAPISplit[1].getBytes());
+        parameters.put(kMySQLDatabasePassword, givenMySQLPassword.getBytes());
+        parameters.put(kUsernameInCryptoAC,    givenMySQLUser.getBytes());
 
-        parameters.put(kEncryptingPublicKey,    "PotF".getBytes());
-        parameters.put(kEncryptingPrivateKey,   "PotF".getBytes());
-        parameters.put(kSigningPublicKey,       "PotF".getBytes());
-        parameters.put(kSigningPrivateKey,      "PotF".getBytes());
+        // EE: check them out, they are great
+        parameters.put(kEncryptingPublicKey,  "PotF".getBytes());
+        parameters.put(kEncryptingPrivateKey, "PotF".getBytes());
+        parameters.put(kSigningPublicKey,     "PotF".getBytes());
+        parameters.put(kSigningPrivateKey,    "PotF".getBytes());
 
-        DAOInterfaceMySQLParameters parameterObject = new DAOInterfaceMySQLParameters(parameters);
-        mySQLHelper = MySQLHelper.getInstance(parameterObject);
+        // note: we are not going to use these parameters, as this
+        // class is the RM itself! However, we have to provide a
+        // valid url and port to go over the safe regex validation
+        parameters.put(kLocalRMURL,   dsBaseAPISplit[0].getBytes());
+        parameters.put(kLocalRMPort,  dsBaseAPISplit[1].getBytes());
+
+        parameters.put(kLocalDSURL,   dsBaseAPISplit[0].getBytes());
+        parameters.put(kLocalDSPort,  dsBaseAPISplit[1].getBytes());
+        parameters.put(kLocalOPAURL,  opaBaseAPISplit[0].getBytes());
+        parameters.put(kLocalOPAPort, opaBaseAPISplit[1].getBytes());
+
+        DAOInterfaceLocalParameters parameterObject = new DAOInterfaceLocalParameters(parameters);
+        daoInterfaceLocal = DAOInterfaceLocal.getInstance(parameterObject);
     }
 
 
@@ -115,14 +131,13 @@ public class ChecksController {
         String jDBUrl = getStringParameterFromMultipart(request, kJDBUrl);
         String mySQLUser = getStringParameterFromMultipart(request, kMySQLPropertyUser);
         String mySQLPassword = getStringParameterFromMultipart(request, kMySQLPropertyPassword);
-        String dsBaseAPI = getStringParameterFromMultipart(request, KDSBaseAPI);
+        String opaBaseAPI = getStringParameterFromMultipart(request, DAOInterfaceLocal.kOPABaseAPI);
+        String dsBaseAPI = getStringParameterFromMultipart(request, DAOInterfaceLocal.kDSBaseAPI);
 
-        invocationResult = new APIOutput(
-                code_0.toString(),
-                code_0.toString(),
-                HttpStatus.OK_200);
+        invocationResult = new APIOutput(code_0.toString(), code_0);
+        response.status(HttpStatus.OK_200);
 
-        initialize(jDBUrl, mySQLUser, mySQLPassword, dsBaseAPI);
+        initialize(jDBUrl, mySQLUser, mySQLPassword, dsBaseAPI, opaBaseAPI);
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
     };
@@ -135,6 +150,7 @@ public class ChecksController {
         // TODO check that cryptoac users are those actually requesting the operation
 
         APIOutput invocationResult;
+        Exception thrownException = null;
         boolean toCallback = false;
 
         try {
@@ -194,10 +210,10 @@ public class ChecksController {
                                                 CryptoACActiveElement.CryptoACActiveElementEnum.User) {
 
                                             // ========== FINAL CHECK ========== tuple's signature is correct
-                                            mySQLHelper.lockDAOInterfaceStatus();
+                                            daoInterfaceLocal.lockDAOInterfaceStatus();
                                             toCallback = true;
 
-                                            PublicKey publicKeyOfSigner = mySQLHelper
+                                            PublicKey publicKeyOfSigner = daoInterfaceLocal
                                                     .getPublicSigningKeyOfUserByToken(signerOfTheTuple);
 
                                             CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
@@ -208,9 +224,9 @@ public class ChecksController {
 
                                             // if everything is correct, add the tuples to the metadata storage
                                             // and then ask the data storage to move the data
-                                            mySQLHelper.addFileToTable(file);
-                                            mySQLHelper.addFileTuple(fileTuple);
-                                            mySQLHelper.addPermissionTuple(permissionTuple);
+                                            daoInterfaceLocal.addFile(file);
+                                            daoInterfaceLocal.addFileTuple(fileTuple);
+                                            daoInterfaceLocal.addPermissionTuple(permissionTuple);
 
                                             // TODO https
                                             // ask the DS to move the file to the download folder
@@ -229,97 +245,110 @@ public class ChecksController {
                                                     .build().send(requestToMoveFile, HttpResponse.BodyHandlers.ofString());
 
                                             invocationResult = new Gson().fromJson(responseFromDS.body(), APIOutput.class);
-                                            OperationOutcomeCode returningCode = OperationOutcomeCode.get(invocationResult.getOutcomeMessage());
+                                            OperationOutcomeCode returningCode = invocationResult.getOutcomeCode();
 
                                             if (returningCode == code_0)
-                                                mySQLHelper.unlockDAOInterfaceStatus();
+                                                daoInterfaceLocal.unlockDAOInterfaceStatus();
                                         }
                                         // if so, it means that the file tuple was not signed by a user
                                         else {
                                             invocationResult = new APIOutput("the file tuple " +
-                                                    "was not signed by a user ", code_59.toString(),
-                                                    HttpStatus.UNPROCESSABLE_ENTITY_422);
+                                                    "was not signed by a user ", code_59);
+                                            response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                                         }
                                     }
                                     // if so, it means that the permission is not given to the administrator
                                     else {
                                         invocationResult = new APIOutput("the permission is not " +
-                                                "given to the administrator ", code_59.toString(),
-                                                HttpStatus.UNPROCESSABLE_ENTITY_422);
+                                                "given to the administrator ", code_59);
+                                        response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                                     }
                                 }
                                 // if so, it means that the permission given to the administrator is not read and write
                                 else {
                                     invocationResult = new APIOutput("the permission given to " +
-                                            "the administrator is not read and write ", code_59.toString(),
-                                            HttpStatus.UNPROCESSABLE_ENTITY_422);
+                                            "the administrator is not read and write ", code_59);
+                                    response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                                 }
                             }
                             // if so, it means that the signers of the two tuples are different from each other
                             else {
                                 invocationResult = new APIOutput("the signers of the two " +
-                                        "tuples are different from each other ", code_59.toString(),
-                                        HttpStatus.UNPROCESSABLE_ENTITY_422);
+                                        "tuples are different from each other ", code_59);
+                                response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                             }
                         }
                         // if so, it means that the tokens of the file in the two tuples are different from each other
                         else {
                             invocationResult = new APIOutput("the tokens of the file in the " +
-                                    "two tuples are different from each other ", code_59.toString(),
-                                    HttpStatus.UNPROCESSABLE_ENTITY_422);
+                                    "two tuples are different from each other ", code_59);
+                            response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                         }
                     }
                     // if so, it means that the names of the file in the two tuples are different from each other
                     else {
                         invocationResult = new APIOutput("the names of the file in the " +
-                                "two tuples are different from each other ", code_59.toString(),
-                                HttpStatus.UNPROCESSABLE_ENTITY_422);
+                                "two tuples are different from each other ", code_59);
+                        response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                     }
                 }
                 // if so, it means that the admin's role version number is not 1
                 else {
                     invocationResult = new APIOutput("admin's role version number is not 1 ",
-                            code_17.toString(), HttpStatus.UNPROCESSABLE_ENTITY_422);
+                            code_17);
+                    response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                 }
             }
             // if so, it means that file version numbers are different from 1
             else {
                 invocationResult = new APIOutput("file version numbers are different from 1 ",
-                        code_17.toString(), HttpStatus.UNPROCESSABLE_ENTITY_422);
+                        code_17);
+                response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
             }
         }
         // thrown while parsing the received parameters as tuples
         catch (JsonSyntaxException e) {
             invocationResult = new APIOutput("exception while parsing the received parameters" +
-                    " as tuples ", code_59.toString(), HttpStatus.UNPROCESSABLE_ENTITY_422);
+                    " as tuples ", code_59);
+            thrownException = e;
+            response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
         }
         // thrown while getting the parameters from the HTTP request
         catch (IOException | InterruptedException | ServletException | IllegalArgumentException e) {
             invocationResult = new APIOutput("exception while getting the parameters from " +
-                    "the HTTP request ", code_76.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    "the HTTP request ", code_76);
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         // thrown while interacting with the metadata storage
         catch (DAOException e) {
             invocationResult = new APIOutput("exception while interacting with the metadata " +
-                    "storage ", e.getErrorCode().toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    "storage ", e.getErrorCode());
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         // thrown while verifying the signature of a tuple
         catch (InvalidKeyException | NoSuchAlgorithmException e) {
             invocationResult = new APIOutput("exception while verifying the signature of a tuple ",
-                    code_13.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    code_13);
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         // thrown if the signature of a tuple is not valid
         catch (SignatureException e) {
             invocationResult = new APIOutput("the signature of a tuple is not valid ",
-                    code_7.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    code_7);
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
 
-        if (invocationResult.getHttpStatus() != HttpStatus.OK_200)
+        if (response.status() != HttpStatus.OK_200)
             App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + addFileLog + ")]: ", "error: ",
-                    invocationResult.getOutputJSON().toString(), " (", invocationResult.getOutcomeMessage(), ")");
+                    invocationResult.getOutputJSON().toString(), " (", invocationResult.getOutcomeCode(),
+                    "), exception: ", thrownException);
 
-        if (invocationResult.getHttpStatus() != HttpStatus.OK_200 && toCallback)
-            mySQLHelper.rollback();
+        if (response.status() != HttpStatus.OK_200 && toCallback)
+            daoInterfaceLocal.rollback();
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
     };
@@ -332,6 +361,7 @@ public class ChecksController {
         // TODO check that cryptoac users are those actually requesting the operation
 
         APIOutput invocationResult = null;
+        Exception thrownException = null;
         boolean toCallback = false;
 
         try {
@@ -350,161 +380,205 @@ public class ChecksController {
             App.logger.info("[{}{}{}{} ", className, " (" + writeFileLog + ")]: ",
                     "received request to write file ", fileName);
 
-            // We have to check that:
-            // - the file tuple's signature is correct. This includes also checking that the role
-            // that signed the tuple actually exists and it was not deleted;
-            // - the file version number is the latest one;
-            // - the role that signed the file tuple has READ AND WRITE permission over the file.
+            // this hash set contains the file tuple related to the file to
+            // read if the user has access to the file, no tuples otherwise
+            HashSet<FileTuple> fileTupleOfFileToReads = daoInterfaceLocal.getFileTuples(fileName);
 
-            String roleToken = fileTuple.getSignerOfThisTuple();
-            Integer decryptFileVersionNumber = fileTuple.getDecryptingKeyVersionNumber();
+            if (!fileTupleOfFileToReads.isEmpty()) {
 
-            // ========== FIRST CHECK ========== the tuple was signed by a role
-            if (fileTuple.getElementSigner() == CryptoACActiveElement.CryptoACActiveElementEnum.Role) {
+                FileTuple oldFileTuple = null;
+                for (FileTuple currentFileTuple : fileTupleOfFileToReads)
+                    oldFileTuple = currentFileTuple;
 
-                mySQLHelper.lockDAOInterfaceStatus();
-                toCallback = true;
-                int actualFileVersionNumber = mySQLHelper.getFileEncryptingVersionNumberByName(fileName);
+                // We have to check that:
+                // - the file tuple's signature is correct. This includes also checking that the role
+                // that signed the tuple actually exists and it was not deleted;
+                // - the file version number is the latest one;
+                // - the role that signed the file tuple has READ AND WRITE permission over the file.
+                // - the specified AccessControlEnforcement is the same as the old one
 
-                // ========== SECOND CHECK ========== check that the new decrypt file number is the
-                // latest encrypt file number (i.e., the file was encrypted with the latest key)
-                if (actualFileVersionNumber == decryptFileVersionNumber) {
+                // ========== ZERO CHECK ========== the specified AccessControlEnforcement is the same as the old one
+                if (oldFileTuple.getAccessControlEnforcement().equals(fileTuple.getAccessControlEnforcement())) {
 
-                    // ========== THIRD CHECK ========== FileTuple signature
-                    PublicKey publicKeyOfRole = mySQLHelper.getPublicSigningKeyOfRoleByToken(roleToken);
-                    CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(fileTuple, publicKeyOfRole);
+                    String roleToken = fileTuple.getSignerOfThisTuple();
+                    Integer decryptFileVersionNumber = fileTuple.getDecryptingKeyVersionNumber();
 
-                    // ========== FINAL CHECK ========== does the role have WRITE permission over the file?
-                    HashSet<Role> rolesThatSignedTheTuple =
-                            mySQLHelper.getRole(null, roleToken, -1, -1);
+                    // ========== FIRST CHECK ========== the tuple was signed by a role
+                    if (fileTuple.getElementSigner() == CryptoACActiveElement.CryptoACActiveElementEnum.Role) {
 
-                    if (!rolesThatSignedTheTuple.isEmpty()) {
+                        daoInterfaceLocal.lockDAOInterfaceStatus();
+                        toCallback = true;
+                        int actualFileVersionNumber = daoInterfaceLocal.getFileEncryptingVersionNumberByName(fileName);
 
-                        if (rolesThatSignedTheTuple.size() == 1) {
+                        // ========== SECOND CHECK ========== check that the new decrypt file number is the
+                        // latest encrypt file number (i.e., the file was encrypted with the latest key)
+                        if (actualFileVersionNumber == decryptFileVersionNumber) {
 
-                            Role roleThatSignedTheTuple = null;
-                            for (Role role : rolesThatSignedTheTuple)
-                                roleThatSignedTheTuple = role;
-                            String roleName = roleThatSignedTheTuple.getName();
+                            // ========== THIRD CHECK ========== FileTuple signature
+                            PublicKey publicKeyOfRole = daoInterfaceLocal.getPublicSigningKeyOfRoleByToken(roleToken);
+                            CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(fileTuple, publicKeyOfRole);
 
-                            HashSet<PermissionTuple> permissionTuplesOfRole =
-                                    mySQLHelper.getPermissionTuples(roleName, fileName,
-                                            null, null, -1, -1);
+                            // ========== FINAL CHECK ========== does the role have WRITE permission over the file?
+                            HashSet<Role> rolesThatSignedTheTuple =
+                                    daoInterfaceLocal.getRole(null, roleToken, -1, -1);
 
-                            boolean didWeFindTheTuple = false;
+                            if (!rolesThatSignedTheTuple.isEmpty()) {
 
-                            // we look for the tuple giving RW permission to the role over the file
-                            for (PermissionTuple permissionTuple : permissionTuplesOfRole) {
+                                if (rolesThatSignedTheTuple.size() == 1) {
 
-                                if (Permission.Read_and_Write == permissionTuple.getAssociatedPermission()) {
+                                    Role roleThatSignedTheTuple = null;
+                                    for (Role role : rolesThatSignedTheTuple)
+                                        roleThatSignedTheTuple = role;
+                                    String roleName = roleThatSignedTheTuple.getName();
 
-                                    PublicKey publicKeyOfSigner = mySQLHelper.getPublicSigningKeyOfUserByToken(
-                                            permissionTuple.getSignerOfThisTuple());
-                                    CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(permissionTuple, publicKeyOfSigner);
+                                    HashSet<PermissionTuple> permissionTuplesOfRole =
+                                            daoInterfaceLocal.getPermissionTuples(roleName, fileName,
+                                                    null, null, -1, -1);
 
-                                    // if the permission tuple is related to the latest file number
-                                    if (permissionTuple.getEncryptingKeyVersionNumber() == actualFileVersionNumber) {
+                                    boolean didWeFindTheTuple = false;
 
-                                        // Yes, the role has write permissions!
-                                        didWeFindTheTuple = true;
+                                    // we look for the tuple giving RW permission to the role over the file
+                                    for (PermissionTuple permissionTuple : permissionTuplesOfRole) {
 
-                                        // if everything is correct, update the tuple in the metadata storage
-                                        // and then ask the data storage to overwrite the file
-                                        mySQLHelper.deleteFileTupleByFileName(fileName);
-                                        mySQLHelper.addFileTuple(fileTuple);
+                                        if (Permission.Read_and_Write == permissionTuple.getAssociatedPermission()) {
 
-                                        // TODO https
-                                        // ask the DS to overwrite the file in the download folder
-                                        HttpRequest requestToWriteFile = HttpRequest.newBuilder()
-                                                .uri(new URI("http://"
-                                                        + dsBaseAPI
-                                                        + OVERWRITEFILE
-                                                        .replace(":" + kDAO, selectedDAO.toString())
-                                                        .replace(":" + kFileNameInCryptoAC, fileName)))
-                                                .version(HttpClient.Version.HTTP_2)
-                                                .timeout(Duration.ofSeconds(kTimeoutInSeconds))
-                                                .PUT(HttpRequest.BodyPublishers.noBody())
-                                                .build();
+                                            PublicKey publicKeyOfSigner = daoInterfaceLocal.getPublicSigningKeyOfUserByToken(
+                                                    permissionTuple.getSignerOfThisTuple());
+                                            CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(permissionTuple, publicKeyOfSigner);
+
+                                            // if the permission tuple is related to the latest file number
+                                            if (permissionTuple.getEncryptingKeyVersionNumber() == actualFileVersionNumber) {
+
+                                                // Yes, the role has write permissions!
+                                                didWeFindTheTuple = true;
+
+                                                // if everything is correct, update the tuple in the metadata storage
+                                                // and then ask the data storage to overwrite the file
+                                                daoInterfaceLocal.deleteFileTupleByFileName(fileName);
+                                                daoInterfaceLocal.addFileTuple(fileTuple);
+
+                                                // TODO https
+                                                // ask the DS to overwrite the file in the download folder
+                                                HttpRequest requestToWriteFile = HttpRequest.newBuilder()
+                                                        .uri(new URI("http://"
+                                                                + dsBaseAPI
+                                                                + OVERWRITEFILE
+                                                                .replace(":" + kDAO, selectedDAO.toString())
+                                                                .replace(":" + kFileNameInCryptoAC, fileName)))
+                                                        .version(HttpClient.Version.HTTP_2)
+                                                        .timeout(Duration.ofSeconds(kTimeoutInSeconds))
+                                                        .PUT(HttpRequest.BodyPublishers.noBody())
+                                                        .build();
 
 
-                                        HttpResponse<String> responseFromDS = HttpClient.newBuilder()
-                                                .build().send(requestToWriteFile, HttpResponse.BodyHandlers.ofString());
+                                                HttpResponse<String> responseFromDS = HttpClient.newBuilder()
+                                                        .build().send(requestToWriteFile, HttpResponse.BodyHandlers.ofString());
 
-                                        invocationResult = new Gson().fromJson(responseFromDS.body(), APIOutput.class);
-                                        OperationOutcomeCode returningCode = OperationOutcomeCode.get(invocationResult.getOutcomeMessage());
+                                                invocationResult = new Gson().fromJson(responseFromDS.body(), APIOutput.class);
+                                                OperationOutcomeCode returningCode = invocationResult.getOutcomeCode();
 
-                                        if (returningCode == code_0)
-                                            mySQLHelper.unlockDAOInterfaceStatus();
+                                                if (returningCode == code_0)
+                                                    daoInterfaceLocal.unlockDAOInterfaceStatus();
 
-                                        // break the while loop
-                                        break;
+                                                // break the while loop
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (!didWeFindTheTuple) {
+                                        invocationResult = new APIOutput("the role with token" +
+                                                roleToken + " does not have write permission on file " + fileName,
+                                                code_15);
+                                        response.status(HttpStatus.FORBIDDEN_403);
                                     }
                                 }
+                                // if so, it means that the role that signed the tuple is not uniquely identified by its token
+                                else {
+                                    invocationResult = new APIOutput("found more than one role with token" +
+                                            roleToken, code_79);
+                                    response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
+                                }
                             }
-                            if (!didWeFindTheTuple) {
+                            // if so, it means that the role that signed the tuple does not exist in the database
+                            else {
                                 invocationResult = new APIOutput("the role with token" +
-                                        roleToken + " does not have write permission on file " + fileName,
-                                        code_15.toString(), HttpStatus.FORBIDDEN_403);
+                                        roleToken + " does not exists in the database",
+                                        code_10);
+                                response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                             }
                         }
-                        // if so, it means that the role that signed the tuple is not uniquely identified by its token
+                        // if so, it means that the version number in the file tuple is not the latest one
                         else {
-                            invocationResult = new APIOutput("found more than one role with token" +
-                                    roleToken, code_79.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                            invocationResult = new APIOutput("file version number should be " +
+                                    actualFileVersionNumber + " and instead it is " + decryptFileVersionNumber,
+                                    code_17);
+                            response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                         }
                     }
-                    // if so, it means that the role that signed the tuple does not exist in the database
+                    // if so, it means that the file tuple was not signed by a role
                     else {
-                        invocationResult = new APIOutput("the role with token" +
-                                roleToken + " does not exists in the database",
-                                code_10.toString(), HttpStatus.UNPROCESSABLE_ENTITY_422);
+                        invocationResult = new APIOutput("the file tuple was not signed by a role",
+                                code_59);
+                        response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                     }
                 }
-                // if so, it means that the version number in the file tuple is not the latest one
+                // if so, it means that the file is to be uploaded with a different AC enforcement
                 else {
-                    invocationResult = new APIOutput("file version number should be " +
-                            actualFileVersionNumber + " and instead it is " +  decryptFileVersionNumber,
-                        code_17.toString(), HttpStatus.UNPROCESSABLE_ENTITY_422);
+                    invocationResult = new APIOutput("the specified access control enforcement " +
+                            "is wrong (old is " + oldFileTuple.getAccessControlEnforcement() + ", new is " +
+                            fileTuple.getAccessControlEnforcement() + "),", code_89);
+                    response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                 }
             }
-            // if so, it means that the file tuple was not signed by a role
+            // if so, it means that the file does not exist
             else {
-                invocationResult = new APIOutput("the file tuple was not signed by a role",
-                        code_59.toString(), HttpStatus.UNPROCESSABLE_ENTITY_422);
+                invocationResult = new APIOutput("the file does not exist",
+                        code_6);
+                response.status(HttpStatus.NOT_FOUND_404);
             }
         }
         // thrown while parsing the received parameters as tuples
         catch (JsonSyntaxException e) {
             invocationResult = new APIOutput("exception while parsing the received parameters" +
-                    " as tuples ", code_59.toString(), HttpStatus.UNPROCESSABLE_ENTITY_422);
+                    " as tuples ", code_59);
+            thrownException = e;
+            response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
         }
         // thrown while getting the parameters from the HTTP request
         catch (IOException | InterruptedException | ServletException | IllegalArgumentException e) {
             invocationResult = new APIOutput("exception while getting the parameters from " +
-                    "the HTTP request ", code_76.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    "the HTTP request ", code_76);
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         // thrown while interacting with the metadata storage
         catch (DAOException e) {
             invocationResult = new APIOutput("exception while interacting with the metadata " +
-                    "storage ", e.getErrorCode().toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    "storage ", e.getErrorCode());
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         // thrown while verifying the signature of a tuple
         catch (InvalidKeyException | NoSuchAlgorithmException e) {
             invocationResult = new APIOutput("exception while verifying the signature of a tuple ",
-                    code_13.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    code_13);
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
         // thrown if the signature of a tuple is not valid
         catch (SignatureException e) {
-            invocationResult = new APIOutput("the signature of a tuple is not valid ",
-                    code_7.toString(), HttpStatus.INTERNAL_SERVER_ERROR_500);
+            invocationResult = new APIOutput("the signature of a tuple is not valid ", code_7);
+            thrownException = e;
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
 
-        if (invocationResult.getHttpStatus() != HttpStatus.OK_200)
+        if (response.status() != HttpStatus.OK_200)
             App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + writeFileLog + ")]: ", "error: ",
-                    invocationResult.getOutputJSON().toString(), " (", invocationResult.getOutcomeMessage(), ")");
+                    invocationResult.getOutputJSON().toString(), " (", invocationResult.getOutcomeCode(),
+                    "), exception: ", thrownException);
 
-        if (invocationResult.getHttpStatus() != HttpStatus.OK_200 && toCallback)
-            mySQLHelper.rollback();
+        if (response.status() != HttpStatus.OK_200 && toCallback)
+            daoInterfaceLocal.rollback();
 
         return JSONUtil.getJSONToReturn(invocationResult, response);
     };

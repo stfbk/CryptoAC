@@ -1,8 +1,4 @@
 package eu.fbk.st.cryptoac;
-
-import com.google.gson.Gson;
-import eu.fbk.st.cryptoac.dao.local.MultipartBodyPublisher;
-import eu.fbk.st.cryptoac.server.model.APIOutput;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
 import eu.fbk.st.cryptoac.server.ds.FilesController;
 import eu.fbk.st.cryptoac.server.proxy.users.AdminController;
@@ -14,20 +10,11 @@ import eu.fbk.st.cryptoac.server.proxy.login.LoginController;
 import eu.fbk.st.cryptoac.server.proxy.profile.ProfileController;
 import eu.fbk.st.cryptoac.server.model.OperationMode;
 import eu.fbk.st.cryptoac.server.util.RequestUtil;
-import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
 import org.apache.commons.cli.*;
-import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.Properties;
 
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.*;
@@ -45,12 +32,12 @@ import static spark.Spark.*;
 public class App {
 
     /**
-     * (DS mode) The folder where the DS stores uploaded files (users cannot download).
+     * (DS mode) The folder where the DS stores uploaded files (users cannot download from this folder).
      */
     public static final File uploadDirectoryDS = new File(kUploadDirectoryDSPath);
 
     /**
-     * (DS mode) The folder in the DS from which users can download (not upload) files.
+     * (DS mode) The folder where the DS stores files users can download (users cannot upload in this folder).
      */
     public static final File downloadDirectoryDS = new File(kDownloadDirectoryDSPath);
 
@@ -61,12 +48,26 @@ public class App {
     public static final File usersDataDirectoryProxy = new File(kUsersDataDirectoryProxyPath);
 
     /**
-     * (proxy mode) The folder where temporary files uploaded by clients may be stored.
+     * (proxy mode) The folder where temporary files uploaded by clients are stored.
      */
     public static final File temporaryDirectoryProxy = new File(kTemporaryDirectoryProxyPath);
 
     /**
-     * (any mode) The logger object through which all logs are written.
+     * (proxy mode) The static files (e.g., js, css, images) expiration time (in seconds).
+     * After that time, the server will clear the cache and fetch the files from the disk.
+     * Note: you can modify it with program parameters.
+     */
+    private static long staticFilesExpirationTime = 600L;
+
+    /**
+     * (proxy mode) The expiration time for idling sessions (in seconds) after which the session will be reset
+     * Note: you can modify it with program parameters.
+     */
+    public static int sessionExpirationTime = 300;
+
+
+    /**
+     * (any mode) The logger object through which logs are written.
      */
     public static Logger logger = null;
 
@@ -82,19 +83,6 @@ public class App {
      * Note: you can modify it with program parameters.
      */
     private static int serverPort = 7777;
-
-    /**
-     * (proxy mode) The static files (e.g., js, css, images) expiration time (in seconds).
-     * After that time, the server will clear the cache and fetch the files from the disk.
-     * Note: you can modify it with program parameters.
-     */
-    private static long staticFilesExpirationTime = 600L;
-
-    /**
-     * (proxy mode) The expiration time for idling sessions (in seconds) after which the session will be reset
-     * Note: you can modify it with program parameters.
-     */
-    public static int sessionExpirationTime = 300;
 
     /**
      * (any mode) The maximum number of threads that the jetty server will spawn. Must be above 2
@@ -121,11 +109,13 @@ public class App {
     public static String logFileName = "CryptoAC.log";
 
 
+
+
     /**
      * The main method creates the server and configures the necessary routes for REST APIs.
-     * CryptoAC is a flexible tool, and each instance can be configured to assume a different role;
+     * CryptoAC is a flexible tool, and each instance can be configured to assume a different role.
      * CryptoAC supports the roles of proxy, Reference Monitor (RM) and Data Storage (DS). The role
-     * of Metadata Storage (DS) can instead be assumed by a MySQL8+ database; see the doc for more details.
+     * of Metadata Storage (MS) is assumed by a MySQL8+ database. Refer to the doc for more details.
      * @param args program arguments
      */
     // TODO altri parametri da passare: percorso ai certificati per SSL
@@ -245,7 +235,10 @@ public class App {
 
         try {
 
-            // check and acquire the parameters
+            final int kIntMax = Integer.MAX_VALUE;
+            final int kMaxPort = 65535;
+
+            // ========== 1 ========== check and acquire the parameters
             cmd = parser.parse(options, args);
             OperationMode operationMode;
 
@@ -257,20 +250,17 @@ public class App {
                 operationMode = RM;
             }
             else
-                throw new ParseException("Operation mode is missing. You must provide either the -op, -or or -od option");
+                throw new ParseException("Operation mode is missing (specify either '-op', '-or' or '-od')");
 
-            serverPort = acquireIntegerOption(
-                    cmd, kCMDPortKey, serverPort, 1, 65535);
-            maxThreads = acquireIntegerOption(
-                    cmd, kCMDMaxThreads, maxThreads, 4, Integer.MAX_VALUE);
-            minThreads = acquireIntegerOption(
-                    cmd, kCMDMinThreads, minThreads, 1, maxThreads);
+            serverPort = acquireIntegerOption(cmd, kCMDPortKey, serverPort, 1, kMaxPort);
+            maxThreads = acquireIntegerOption(cmd, kCMDMaxThreads, maxThreads, maxThreads, kIntMax);
+            minThreads = acquireIntegerOption(cmd, kCMDMinThreads, minThreads, minThreads, maxThreads);
             sessionExpirationTime = acquireIntegerOption(
-                    cmd, kCMDSessionExpTime, sessionExpirationTime, 1, Integer.MAX_VALUE);
+                    cmd, kCMDSessionExpTime, sessionExpirationTime, 1, kIntMax);
             staticFilesExpirationTime = acquireIntegerOption(
-                    cmd, kCMDStaticFilesExpTime, (int) staticFilesExpirationTime, 1, Integer.MAX_VALUE);
+                    cmd, kCMDStaticFilesExpTime, (int) staticFilesExpirationTime, 1, kIntMax);
             threadsTimeOutMillis = acquireIntegerOption(
-                    cmd, kCMDThreadsTimeOutMillis, threadsTimeOutMillis, 1, Integer.MAX_VALUE);
+                    cmd, kCMDThreadsTimeOutMillis, threadsTimeOutMillis, 1, kIntMax);
 
             admin = acquireStringOption(cmd, kCMDAdminID, admin);
 
@@ -278,10 +268,10 @@ public class App {
             new CryptoUtil(
                     acquireStringOption(cmd, kCMDPKCAlgorithm, CryptoUtil.getPKCAlgorithm()),
                     acquireStringOption(cmd, kCMDHashAlgorithm, CryptoUtil.getHashAlgorithm()),
-                    acquireIntegerOption(cmd, kCMDPKCKeyLength, CryptoUtil.getPKCKeyLength(), 1, Integer.MAX_VALUE),
+                    acquireIntegerOption(cmd, kCMDPKCKeyLength, CryptoUtil.getPKCKeyLength(), 1, kIntMax),
                     acquireStringOption(cmd, kCMDPKCSigningAlgorithm, CryptoUtil.getPKCSigningAlgorithm()),
                     acquireStringOption(cmd, kCMDSymAlgorithm, CryptoUtil.getSymAlgorithm()),
-                    acquireIntegerOption(cmd, kCMDSymKeyLength, CryptoUtil.getSymKeyLength(), 1, Integer.MAX_VALUE)
+                    acquireIntegerOption(cmd, kCMDSymKeyLength, CryptoUtil.getSymKeyLength(), 1, kIntMax)
             );
 
             Properties props = System.getProperties();
@@ -295,13 +285,11 @@ public class App {
             }
 
 
-            // ===== ===== ===== ===== SET UP OF SERVER ===== ===== ===== =====
+            // ========== 2 ========== setup server
             logger = LoggerFactory.getLogger(App.class);
             logger.info("[{}{}{}{}{}{}{}{} ", "Application", " (" + "main" + ")]: ", "Starting server on port ",
                     serverPort, ", admin ID ", admin, ", operation mode ", operationMode);
 
-
-            // here we have common configuration to all operation modes
 
             threadPool(maxThreads, minThreads, threadsTimeOutMillis);
             port(serverPort);
@@ -312,7 +300,7 @@ public class App {
             secure(ksPath, ksPass, null, null);*/
 
 
-            // 1. if this instance of CryptoAC is configured to be a proxy
+            // ========== 2.1 ========== if this instance of CryptoAC is configured to be a proxy
             if (operationMode.equals(proxy)) {
 
                 if (!temporaryDirectoryProxy.exists()) {
@@ -329,7 +317,7 @@ public class App {
                 staticFiles.expireTime(staticFilesExpirationTime);
                 staticFiles.externalLocation(temporaryDirectoryProxy.getAbsolutePath() + "/");
 
-                // ===== SET UP BEFORE FILTERS =====
+                // ========== setup before filters ==========
                 before("*", FiltersUtil.addTrailingSlashes);
                 before("*", FiltersUtil.logRequest);
                 before("*", RequestUtil.setAttributeForMultipart);
@@ -337,7 +325,7 @@ public class App {
                 before(BASEPROXY + "/*",                    RequestUtil.checkRequestAcceptJSON);
                 before(BASEPROXY + "/*/:" + kDAO + "/*",    ProfileController.checkProfileCompleteAndLoadIt);
 
-                // ===== SET UP ROUTES =====
+                // ========== setup before routes ==========
                 // session related routes
                 get     (LOGIN,     LoginController.loginPage);
                 post    (LOGIN,     LoginController.login);
@@ -372,25 +360,25 @@ public class App {
                 patch   (PATCHPROFILE,      ProfileController.UpdateProfile);
             }
 
-            // 2. if this instance of CryptoAC is configured to be a RM
+            // ========== 2.2 ========== if this instance of CryptoAC is configured to be a RM
             else if (operationMode.equals(RM)) {
 
-                // ===== SET UP BEFORE FILTERS =====
+                // ========== setup before filters ==========
                 before("*", FiltersUtil.addTrailingSlashes);
                 before("*", FiltersUtil.logRequest);
                 before("*", RequestUtil.setAttributeForMultipart);
 
-                // ===== SET UP ROUTES =====
+                // ========== setup before routes ==========
                 // routes for adding and writing files
                 get     (RMPING,            eu.fbk.st.cryptoac.server.rm.PingController.ping);
                 post    (RMCONFIGURE,       ChecksController.configure);
                 post    (ADDFILE,           ChecksController.addFile);
                 patch   (WRITEFILE,         ChecksController.writeFile);
 
-                // TODO what about authentication?
+                // TODO what about authentication toward other CryptoAC instances?
             }
 
-            // 3. if this instance of CryptoAC is configured to be a DS
+            // ========== 2.3 ========== if this instance of CryptoAC is configured to be a DS
             else if (operationMode.equals(DS)) {
 
                 if (!uploadDirectoryDS.exists()) {
@@ -416,21 +404,22 @@ public class App {
                 // set storage of files to the upload directory
                 staticFiles.externalLocation(uploadDirectoryDS.getAbsolutePath() + "/");
 
-                // ===== SET UP BEFORE FILTERS =====
+                // ========== setup before filters ==========
                 before("*", FiltersUtil.addTrailingSlashes);
                 before("*", FiltersUtil.logRequest);
                 before("*", RequestUtil.setAttributeForMultipart);
 
-                // ===== SET UP ROUTES =====
+                // ========== setup before routes ==========
                 // routes for adding, writing and deleting files
                 get     (DSPING,        eu.fbk.st.cryptoac.server.rm.PingController.ping);
+                post    (DSCONFIGURE,   FilesController.configure);
                 get     (DOWNLOADFILE,  FilesController.downloadFile);
                 patch   (MOVEFILE,      FilesController.moveFile);
                 put     (OVERWRITEFILE, FilesController.overwriteFile);
                 post    (UPLOADFILE,    FilesController.uploadFile);
                 delete  (REMOVEFILE,    FilesController.deleteFile);
 
-                // TODO what about authentication?
+                // TODO what about authentication toward other CryptoAC instances?
             }
 
             // here we have further common configuration to all operation modes

@@ -7,6 +7,7 @@ import eu.fbk.st.cryptoac.core.tuple.FileTuple;
 import eu.fbk.st.cryptoac.core.tuple.PermissionTuple;
 import eu.fbk.st.cryptoac.core.tuple.Permission;
 import eu.fbk.st.cryptoac.core.tuple.RoleTuple;
+import eu.fbk.st.cryptoac.util.AccessControlEnforcement;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
 import eu.fbk.st.cryptoac.util.EncryptedPKCKeyPair;
 import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
@@ -17,8 +18,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -225,8 +229,6 @@ public final class User extends CryptoACActiveElement {
 
                 for (RoleTuple roleTupleToRevoke : roleTuplesAssociatedWithTheDeletedUser) {
 
-                    CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
-                            roleTupleToRevoke, getSigningPublicKey());
                     returningCode = revokeUserFromRole(roleTupleToRevoke.getAssociatedElement(),
                             roleTupleToRevoke.getAssociatedRole()).getReturningCode();
 
@@ -249,17 +251,6 @@ public final class User extends CryptoACActiveElement {
         catch (DAOException e) {
             exceptionThrown = e;
             returningCode = e.getErrorCode();
-        }
-        // exceptions while validating the signature of the role tuples
-        catch (InvalidKeyException | NoSuchAlgorithmException e) {
-            exceptionThrown = e;
-            returningCode = OperationOutcomeCode.code_13;
-        }
-        // the signature of a role tuple is not valid
-        catch (SignatureException e) {
-            exceptionThrown = e;
-            returningCode = OperationOutcomeCode.code_7;
-
         }
         catch (Exception e) {
             exceptionThrown = e;
@@ -380,14 +371,6 @@ public final class User extends CryptoACActiveElement {
 
                 for (PermissionTuple permissionTupleToRevoke : permissionTuplesAssociatedWithTheDeletedRole) {
 
-                    PublicKey userVerifyingKey = daoInterface.getPublicSigningKeyOfUserByToken(
-                            permissionTupleToRevoke.getSignerOfThisTuple());
-
-                    // verify the tuple signature. This is not required by the theoretical
-                    // formulation of the problem, but we perform such check for completeness anyway
-                    CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
-                            permissionTupleToRevoke, userVerifyingKey);
-
                     // invoke the revoke method
                     returningCode = revokePermissionFromRole(permissionTupleToRevoke.getAssociatedElement(),
                             permissionTupleToRevoke.getAssociatedFile(), Read_and_Write).getReturningCode();
@@ -413,16 +396,6 @@ public final class User extends CryptoACActiveElement {
             exceptionThrown = e;
             returningCode = e.getErrorCode();
         }
-        // exceptions while validating the signature of the tuples
-        catch (InvalidKeyException | NoSuchAlgorithmException e) {
-            exceptionThrown = e;
-            returningCode = OperationOutcomeCode.code_13;
-        }
-        // the signature of a tuple is not valid
-        catch (SignatureException e) {
-            exceptionThrown = e;
-            returningCode = OperationOutcomeCode.code_7;
-        }
         catch (Exception e) {
             exceptionThrown = e;
             returningCode = OperationOutcomeCode.code_72;
@@ -439,14 +412,17 @@ public final class User extends CryptoACActiveElement {
      * over the new file and also the file tuple referring to the new file.
      * @param fileName the name of the file (not token)
      * @param fileStream the stream of the file (unencrypted)
+     * @param accessControlEnforcement the access control enforcement for the file
      * @return the outcome of the operation together with the token of the file. The token is null if something went wrong
      */
-    UserOutput addFile(@NotNull String fileName, @NotNull InputStream fileStream) {
+    UserOutput addFile(@NotNull String fileName, @NotNull InputStream fileStream,
+                       @NotNull AccessControlEnforcement accessControlEnforcement) {
 
         OperationOutcomeCode returningCode = OperationOutcomeCode.code_0;
         Exception exceptionThrown = null;
         InputStream newFileEncryptedStream;
         File newFile;
+        byte[] encryptedSymKey;
 
         App.logger.info("[{}{}{}{}{}{}{} ", className, " (" + addNewFile + ")]: ", "user ", getName(),
                 ": creating a new file ", fileName, " along with the permission and file tuples");
@@ -455,22 +431,33 @@ public final class User extends CryptoACActiveElement {
         String whereWereWe = "";
 
         try {
-
-            SecretKey symKetForEncryptingFile = CryptoUtil.generateSymKey();
-
-            whereWereWe = kEncryptFile;
-            newFileEncryptedStream = CryptoUtil.getCryptoUtil().encryptInputStream(symKetForEncryptingFile, fileStream);
-            newFile = new File(fileName, newFileEncryptedStream, 1);
-
-            // remember that the token of the role of the admin is the ID of the admin
             daoInterface.lockDAOInterfaceStatus();
-            PublicKey adminEncryptingPublicKey = daoInterface.getPublicEncryptingKeyOfRoleByToken(App.admin);
 
-            // encrypt the symmetric key with the private key of the admin. This will allow the admin to
-            // decrypt the symmetric key, i.e., it grants the admin access to the file
-            whereWereWe = kEncryptSymmetricKey;
-            byte[] encryptedSymKey = CryptoUtil.getCryptoUtil().encryptSymmetricKey(
-                    symKetForEncryptingFile, adminEncryptingPublicKey);
+            // if we have to enforce CAC, then encrypt the file. Otherwise, leave the file as it is
+            if (accessControlEnforcement.equals(AccessControlEnforcement.Cryptographic) ||
+                    accessControlEnforcement.equals(AccessControlEnforcement.Combined)) {
+
+                SecretKey symKetForEncryptingFile = CryptoUtil.generateSymKey();
+
+                whereWereWe = kEncryptFile;
+                newFileEncryptedStream = CryptoUtil.getCryptoUtil().encryptInputStream(symKetForEncryptingFile, fileStream);
+
+                // remember that the token of the role of the admin is the ID of the admin
+                PublicKey adminEncryptingPublicKey = daoInterface.getPublicEncryptingKeyOfRoleByToken(App.admin);
+
+                // encrypt the symmetric key with the private key of the admin. This will allow the admin to
+                // decrypt the symmetric key, i.e., it grants the admin access to the file
+                whereWereWe = kEncryptSymmetricKey;
+                encryptedSymKey = CryptoUtil.getCryptoUtil()
+                        .encryptSymmetricKey(symKetForEncryptingFile, adminEncryptingPublicKey);
+            }
+            else {
+                newFileEncryptedStream = fileStream;
+                // TODO decide what to do with the encryptedSymKey and document it
+                encryptedSymKey = "No need to encrypt the file".getBytes();
+            }
+
+            newFile = new File(fileName, newFileEncryptedStream, 1);
 
             // get the role's version number to consistently create the admin's permission tuple. Note that
             // the version number of the role of the admin should be always 1, but we fetch it anyway for
@@ -482,7 +469,7 @@ public final class User extends CryptoACActiveElement {
                     fileName, Read_and_Write, 1, encryptedSymKey, App.admin,
                     newFile.getToken(), null, null);
             FileTuple newFileTuple = new FileTuple(fileName, newFile.getToken(), 1,
-                    CryptoACActiveElementEnum.User, null, null);
+                    CryptoACActiveElementEnum.User, null, null, accessControlEnforcement);
             CryptoUtil.getCryptoUtil().signCryptoACTuple(newFileTuple, getSigningPrivateKey(), getToken());
             CryptoUtil.getCryptoUtil().signCryptoACTuple(newPermissionTuple, getSigningPrivateKey(), getToken());
 
@@ -1060,7 +1047,7 @@ public final class User extends CryptoACActiveElement {
      * @param roleName the roleName of the role to give the permission to
      * @param fileName the path of the file the role is being assigned permission over
      * @param permissionToBeGiven the permission to be given to the role, either Read or Read_and_Write
-     * @return the outcome of the operation:
+     * @return the outcome of the operation:assignPermissionToRole
      */
     UserOutput assignPermissionToRole(@NotNull String roleName, @NotNull String fileName,
                                       @NotNull Permission permissionToBeGiven)  {
@@ -1069,7 +1056,7 @@ public final class User extends CryptoACActiveElement {
         Exception exceptionThrown = null;
 
         App.logger.info("[{}{}{}{}{}{}{}{}{}{} ", className, " (" + assignPermissionToRoleOverFile + ")]: ", "user ",
-                getName(), ": assigning the role ", roleName, " permission", permissionToBeGiven,
+                getName(), ": assigning the role ", roleName, " permission ", permissionToBeGiven,
                 " over the file ", fileName);
 
         // this variable allows to keep track of which instruction threw an eventual exception
@@ -1287,34 +1274,41 @@ public final class User extends CryptoACActiveElement {
                 HashSet<PermissionTuple> permissionTuplesToUpdate = daoInterface.getPermissionTuples(
                         roleName, fileName, null, null,0, -1);
 
-                for (PermissionTuple oldPermissionTuple : permissionTuplesToUpdate) {
 
-                    PublicKey userVerifyingKey = daoInterface.getPublicSigningKeyOfUserByToken(
-                            oldPermissionTuple.getSignerOfThisTuple());
+                if (permissionTuplesToUpdate.size() == 0) {
+                    App.logger.error("[{}{}{}{}{}{} ", className, " (" + revokePermissionFromRole + ")]: ",
+                            "no permission tuples found with role name", roleName, " and file name ", fileName);
+                    returningCode = OperationOutcomeCode.code_27;
+                }
+                else {
+                    for (PermissionTuple oldPermissionTuple : permissionTuplesToUpdate) {
 
-                    whereWereWe = kVerifySignature;
-                    CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
-                            oldPermissionTuple, userVerifyingKey);
+                        PublicKey userVerifyingKey = daoInterface.getPublicSigningKeyOfUserByToken(
+                                oldPermissionTuple.getSignerOfThisTuple());
 
-                    // create a new permission tuple equal to the old tuple, except for the permission
-                    PermissionTuple newPermissionTuple = new PermissionTuple(
-                            roleName,
-                            oldPermissionTuple.getRoleVersionNumber(),
-                            fileName,
-                            Permission.Read,
-                            oldPermissionTuple.getEncryptingKeyVersionNumber(),
-                            oldPermissionTuple.getEncryptedSymmetricFileKey(),
-                            daoInterface.getRoleTokenFromUsername(roleName),
-                            daoInterface.getFileTokenFromUsername(fileName),
-                            null, null);
+                        whereWereWe = kVerifySignature;
+                        CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
+                                oldPermissionTuple, userVerifyingKey);
 
-                    CryptoUtil.getCryptoUtil().signCryptoACTuple(
-                            newPermissionTuple, getSigningPrivateKey(), getToken());
+                        // create a new permission tuple equal to the old tuple, except for the permission
+                        PermissionTuple newPermissionTuple = new PermissionTuple(
+                                roleName,
+                                oldPermissionTuple.getRoleVersionNumber(),
+                                fileName,
+                                Permission.Read,
+                                oldPermissionTuple.getEncryptingKeyVersionNumber(),
+                                oldPermissionTuple.getEncryptedSymmetricFileKey(),
+                                daoInterface.getRoleTokenFromUsername(roleName),
+                                daoInterface.getFileTokenFromUsername(fileName),
+                                null, null);
 
-                    daoInterface.updatePermissionInPermissionTuple(newPermissionTuple);
+                        CryptoUtil.getCryptoUtil().signCryptoACTuple(
+                                newPermissionTuple, getSigningPrivateKey(), getToken());
+
+                        daoInterface.updatePermissionInPermissionTuple(newPermissionTuple);
+                    }
                 }
             }
-
             else if (permission == Read_and_Write) {
 
                 // we have to delete the permission tuples related to the role, as the role should
@@ -1462,85 +1456,92 @@ public final class User extends CryptoACActiveElement {
                 CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
                         fileTupleOfFileToRead, publicKeyOfSigner);
 
-                // now we have to obtain the symmetric key to decrypt the file. Therefore, we get the
-                // decrypting key version number from the file tuple, and then fetch the corresponding
-                // permission tuple
+                // if CAC was enforced, we have to obtain the symmetric key to decrypt the file.
+                // Therefore, we get the decrypting key version number from the file tuple, and
+                // then fetch the corresponding permission tuple
+                if (fileTupleOfFileToRead.getAccessControlEnforcement().equals(AccessControlEnforcement.Cryptographic) ||
+                        fileTupleOfFileToRead.getAccessControlEnforcement().equals(AccessControlEnforcement.Combined)) {
 
-                HashSet<PermissionTuple> filePermissionTuples = daoInterface.getMyPermissionTuples(
-                        getName(), null, fileName, null,
-                        fileTupleOfFileToRead.getDecryptingKeyVersionNumber(), 0, -1);
+                    HashSet<PermissionTuple> filePermissionTuples = daoInterface.getMyPermissionTuples(
+                            getName(), null, fileName, null,
+                            fileTupleOfFileToRead.getDecryptingKeyVersionNumber(), 0, -1);
 
-                if (!filePermissionTuples.isEmpty()) {
+                    if (!filePermissionTuples.isEmpty()) {
 
-                    PermissionTuple permissionTupleOfFileToRead = null;
-                    for (PermissionTuple permissionTuple : filePermissionTuples)
-                        permissionTupleOfFileToRead = permissionTuple;
+                        PermissionTuple permissionTupleOfFileToRead = null;
+                        for (PermissionTuple permissionTuple : filePermissionTuples)
+                            permissionTupleOfFileToRead = permissionTuple;
 
-                    PublicKey userVerifyingKeyPermissionTuple = daoInterface.getPublicSigningKeyOfUserByToken(
-                            permissionTupleOfFileToRead.getSignerOfThisTuple());
-
-                    whereWereWe = kVerifySignature;
-                    CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
-                            permissionTupleOfFileToRead, userVerifyingKeyPermissionTuple);
-
-                    // now we get the role tuple of the role that can read the file. With the
-                    // role tuple, we can decrypt the role private key. With the role private
-                    // key, we can decrypt the symmetric key. With the symmetric key, we can
-                    // decrypt the file
-
-                    HashSet<RoleTuple> fileRoleTuples = daoInterface.getMyRoleTuples(getName(),
-                            permissionTupleOfFileToRead.getAssociatedElement(), 0, -1);
-
-                    if (!fileRoleTuples.isEmpty()) {
-
-                        RoleTuple roleTupleOfFileToRead = null;
-                        for (RoleTuple roleTuple : fileRoleTuples)
-                            roleTupleOfFileToRead = roleTuple;
-
-                        PublicKey userVerifyingKeyRoleTuple = daoInterface.
-                                getPublicSigningKeyOfUserByToken(roleTupleOfFileToRead.getSignerOfThisTuple());
+                        PublicKey userVerifyingKeyPermissionTuple = daoInterface.getPublicSigningKeyOfUserByToken(
+                                permissionTupleOfFileToRead.getSignerOfThisTuple());
 
                         whereWereWe = kVerifySignature;
                         CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
-                                roleTupleOfFileToRead, userVerifyingKeyRoleTuple);
+                                permissionTupleOfFileToRead, userVerifyingKeyPermissionTuple);
 
-                        InputStream fileToRead = daoInterface.downloadFile(fileName);
+                        // now we get the role tuple of the role that can read the file. With the
+                        // role tuple, we can decrypt the role private key. With the role private
+                        // key, we can decrypt the symmetric key. With the symmetric key, we can
+                        // decrypt the file
 
-                        // now we decrypt the keys of the role. Then, we use the keys of the role
-                        // to decrypt the symmetric key. Finally, we decrypt the file
+                        HashSet<RoleTuple> fileRoleTuples = daoInterface.getMyRoleTuples(getName(),
+                                permissionTupleOfFileToRead.getAssociatedElement(), 0, -1);
 
-                        whereWereWe = kDecryptPKIKeys;
-                        KeyPair roleEncryptingKeyPair = CryptoUtil.getCryptoUtil().decryptPKCKeys(
-                                roleTupleOfFileToRead.getEncryptedEncryptingRoleKeys(),
-                                getEncryptingPrivateKey());
+                        if (!fileRoleTuples.isEmpty()) {
 
-                        whereWereWe = kDecryptSymmetricKey;
-                        SecretKey fileKey = CryptoUtil.getCryptoUtil().decryptSymmetricKey(
-                                permissionTupleOfFileToRead.getEncryptedSymmetricFileKey(),
-                                roleEncryptingKeyPair.getPrivate());
+                            RoleTuple roleTupleOfFileToRead = null;
+                            for (RoleTuple roleTuple : fileRoleTuples)
+                                roleTupleOfFileToRead = roleTuple;
 
-                        whereWereWe = kDecryptFile;
-                        decryptedFileStream = CryptoUtil.getCryptoUtil().
-                                decryptFile(fileKey, fileToRead);
+                            PublicKey userVerifyingKeyRoleTuple = daoInterface.
+                                    getPublicSigningKeyOfUserByToken(roleTupleOfFileToRead.getSignerOfThisTuple());
+
+                            whereWereWe = kVerifySignature;
+                            CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
+                                    roleTupleOfFileToRead, userVerifyingKeyRoleTuple);
+
+                            InputStream fileToRead = daoInterface.downloadFile(fileName);
+
+                            // now we decrypt the keys of the role. Then, we use the keys of the role
+                            // to decrypt the symmetric key. Finally, we decrypt the file
+
+                            whereWereWe = kDecryptPKIKeys;
+                            KeyPair roleEncryptingKeyPair = CryptoUtil.getCryptoUtil().decryptPKCKeys(
+                                    roleTupleOfFileToRead.getEncryptedEncryptingRoleKeys(),
+                                    getEncryptingPrivateKey());
+
+                            whereWereWe = kDecryptSymmetricKey;
+                            SecretKey fileKey = CryptoUtil.getCryptoUtil().decryptSymmetricKey(
+                                    permissionTupleOfFileToRead.getEncryptedSymmetricFileKey(),
+                                    roleEncryptingKeyPair.getPrivate());
+
+                            whereWereWe = kDecryptFile;
+                            decryptedFileStream = CryptoUtil.getCryptoUtil().
+                                    decryptFile(fileKey, fileToRead);
+                        }
+                        // it means that the user can access the permission tuples of roles to which the user
+                        // is not assigned to. This is an inconsistent state
+                        else {
+
+                            App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + readFile + ")]: ", "user ",
+                                    getName(), " can access permission tuples but does not have any role ",
+                                    "tuple for file", fileName);
+                            returningCode = OperationOutcomeCode.code_14;
+                        }
                     }
-                    // it means that the user can access the permission tuples of roles to which the user
-                    // is not assigned to. This is an inconsistent state
+                    // it means that we are in an inconsistent state, as the user got the file tuple but there are
+                    // no permission tuples, i.e., the user is not assigned to a role that can read the file
                     else {
 
-                        App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + readFile + ")]: ", "user ",
-                                getName(), " can access permission tuples but does not have any role ",
-                                "tuple for file", fileName);
+                        App.logger.error("[{}{}{}{}{}{} ", className, " (" + readFile + ")]: ", "user ", getName(),
+                                " can access the file tuple but does not have any permission tuple for file ",
+                                fileName);
                         returningCode = OperationOutcomeCode.code_14;
                     }
                 }
-                // it means that we are in an inconsistent state, as the user got the file tuple but there are
-                // no permission tuples, i.e., the user is not assigned to a role that can read the file
+                // it means that the file was not encrypted, so we can simply return it
                 else {
-
-                    App.logger.error("[{}{}{}{}{}{} ", className, " (" + readFile + ")]: ", "user ", getName(),
-                            " can access the file tuple but does not have any permission tuple for file ",
-                            fileName);
-                    returningCode = OperationOutcomeCode.code_14;
+                    decryptedFileStream = daoInterface.downloadFile(fileName);
                 }
             }
             // either the file does not exists or the user does not have access to the file
@@ -1618,8 +1619,8 @@ public final class User extends CryptoACActiveElement {
 
             daoInterface.lockDAOInterfaceStatus();
 
-            // this hash set contains the file tuple related to the file to
-            // write if the user has access to the file, no tuples otherwise
+            // this hash set contains the (unique) file tuple related to the file
+            // to write if the user has access to the file, no tuples otherwise
             HashSet<FileTuple> fileTupleOfFileToReads = daoInterface.getMyFileTuples(getName(), fileName, 0,1);
 
             if (!fileTupleOfFileToReads.isEmpty()) {
@@ -1628,6 +1629,7 @@ public final class User extends CryptoACActiveElement {
                 for (FileTuple fileTuple : fileTupleOfFileToReads)
                     fileTupleOfFileToRead = fileTuple;
 
+                AccessControlEnforcement accessControlEnforcement = fileTupleOfFileToRead.getAccessControlEnforcement();
                 String signerOfTuple = fileTupleOfFileToRead.getSignerOfThisTuple();
                 PublicKey publicKeyOfSigner =
                         fileTupleOfFileToRead.getElementSigner() == CryptoACActiveElementEnum.User ?
@@ -1638,118 +1640,134 @@ public final class User extends CryptoACActiveElement {
                 CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
                         fileTupleOfFileToRead, publicKeyOfSigner);
 
-
-                // now we have to obtain the symmetric key to encrypt the file. Therefore, we get the
-                // encrypting key version number from the file, and then fetch the corresponding
-                // permission tuple
-
                 int latestFileVersionNumber = daoInterface.getFileEncryptingVersionNumberByToken(
                         fileTupleOfFileToRead.getFileToken());
 
-                HashSet<PermissionTuple> filePermissionTuples = daoInterface.getMyPermissionTuples(getName(),
-                        null, fileName, null, latestFileVersionNumber, 0, -1);
+                // if CAC is to be enforced, we have to obtain the symmetric key to encrypt the file.
+                // Therefore, we get the decrypting key version number from the file tuple, and
+                // then fetch the corresponding permission tuple
+                if (accessControlEnforcement.equals(AccessControlEnforcement.Cryptographic) ||
+                        accessControlEnforcement.equals(AccessControlEnforcement.Combined)) {
 
-                if (!filePermissionTuples.isEmpty()) {
+                    HashSet<PermissionTuple> filePermissionTuples = daoInterface.getMyPermissionTuples(getName(),
+                            null, fileName, null, latestFileVersionNumber, 0, -1);
 
-                    PermissionTuple permissionTupleOfFileToWrite = null;
-                    for (PermissionTuple permissionTuple : filePermissionTuples) {
-                        if (permissionTuple.getAssociatedPermission() == Read_and_Write)
-                            permissionTupleOfFileToWrite = permissionTuple;
-                    }
+                    if (!filePermissionTuples.isEmpty()) {
 
-                    if (permissionTupleOfFileToWrite != null) {
+                        PermissionTuple permissionTupleOfFileToWrite = null;
+                        for (PermissionTuple permissionTuple : filePermissionTuples) {
+                            if (permissionTuple.getAssociatedPermission() == Read_and_Write)
+                                permissionTupleOfFileToWrite = permissionTuple;
+                        }
 
-                        PublicKey userVerifyingKeyPermissionTuple = daoInterface.getPublicSigningKeyOfUserByToken(
-                                permissionTupleOfFileToWrite.getSignerOfThisTuple());
+                        if (permissionTupleOfFileToWrite != null) {
 
-                        whereWereWe = kVerifySignature;
-                        CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
-                                permissionTupleOfFileToWrite, userVerifyingKeyPermissionTuple);
-
-
-                        // now we get the role tuple of the role that can write the file. With the
-                        // role tuple, we can decrypt the role private key. With the role private
-                        // key, we can decrypt the symmetric key. With the symmetric key, we can
-                        // encrypt the file
-
-                        HashSet<RoleTuple> fileRoleTuples = daoInterface.getMyRoleTuples(getName(),
-                                permissionTupleOfFileToWrite.getAssociatedElement(), 0, -1);
-
-                        if (!fileRoleTuples.isEmpty()) {
-
-                            RoleTuple roleTupleOfFileToWrite = null;
-                            for (RoleTuple roleTuple : fileRoleTuples)
-                                roleTupleOfFileToWrite = roleTuple;
-
-                            PublicKey userVerifyingKeyRoleTuple =
-                                    daoInterface.getPublicSigningKeyOfUserByToken(App.admin);
+                            PublicKey userVerifyingKeyPermissionTuple = daoInterface.getPublicSigningKeyOfUserByToken(
+                                    permissionTupleOfFileToWrite.getSignerOfThisTuple());
 
                             whereWereWe = kVerifySignature;
                             CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
-                                    roleTupleOfFileToWrite, userVerifyingKeyRoleTuple);
+                                    permissionTupleOfFileToWrite, userVerifyingKeyPermissionTuple);
 
-                            // now we decrypt the keys of the role. Then, we use the keys of the role
-                            // to decrypt the symmetric key. Finally, we encrypt the file and upload it
 
-                            whereWereWe = kDecryptPKIKeys;
-                            KeyPair roleEncryptingKeyPair = CryptoUtil.getCryptoUtil().decryptPKCKeys(
-                                    roleTupleOfFileToWrite.getEncryptedEncryptingRoleKeys(),
-                                    getEncryptingPrivateKey());
+                            // now we get the role tuple of the role that can write the file. With the
+                            // role tuple, we can decrypt the role private key. With the role private
+                            // key, we can decrypt the symmetric key. With the symmetric key, we can
+                            // encrypt the file
 
-                            KeyPair roleSigningKeyPair = CryptoUtil.getCryptoUtil().decryptPKCKeys(
-                                    roleTupleOfFileToWrite.getEncryptedSigningRoleKeys(),
-                                    getEncryptingPrivateKey());
+                            HashSet<RoleTuple> fileRoleTuples = daoInterface.getMyRoleTuples(getName(),
+                                    permissionTupleOfFileToWrite.getAssociatedElement(), 0, -1);
 
-                            whereWereWe = kDecryptSymmetricKey;
-                            SecretKey fileKey = CryptoUtil.getCryptoUtil().decryptSymmetricKey(
-                                    permissionTupleOfFileToWrite.getEncryptedSymmetricFileKey(),
-                                    roleEncryptingKeyPair.getPrivate());
-                            // encrypt the new file
-                            whereWereWe = kEncryptFile;
-                            streamOfEncryptedFile = CryptoUtil.getCryptoUtil().
-                                    encryptInputStream(fileKey, fileStream);
+                            if (!fileRoleTuples.isEmpty()) {
 
-                            File newFileToUpload = new File(fileName,
-                                    streamOfEncryptedFile, latestFileVersionNumber);
-                            newFileToUpload.setToken(permissionTupleOfFileToWrite.getFileToken());
+                                RoleTuple roleTupleOfFileToWrite = null;
+                                for (RoleTuple roleTuple : fileRoleTuples) {
+                                    roleTupleOfFileToWrite = roleTuple;
+                                }
 
-                            FileTuple newFileTupleToUpload = new FileTuple(fileName,
-                                    "mock token", latestFileVersionNumber,
-                                    CryptoACActiveElementEnum.Role, null, null);
+                                PublicKey userVerifyingKeyRoleTuple =
+                                        daoInterface.getPublicSigningKeyOfUserByToken(App.admin);
 
-                            whereWereWe = kSignTuple;
-                            CryptoUtil.getCryptoUtil().signCryptoACTuple(
-                                    newFileTupleToUpload,
-                                    roleSigningKeyPair.getPrivate(),
-                                    permissionTupleOfFileToWrite.getRoleToken());
+                                whereWereWe = kVerifySignature;
+                                CryptoUtil.getCryptoUtil().verifyCryptoACTupleSignature(
+                                        roleTupleOfFileToWrite, userVerifyingKeyRoleTuple);
 
-                            daoInterface.updateFile(newFileToUpload, newFileTupleToUpload);
+                                // now we decrypt the keys of the role. Then, we use the keys of the role
+                                // to decrypt the symmetric key. Finally, we encrypt the file and upload it
+
+                                whereWereWe = kDecryptPKIKeys;
+                                KeyPair roleEncryptingKeyPair = CryptoUtil.getCryptoUtil().decryptPKCKeys(
+                                        roleTupleOfFileToWrite.getEncryptedEncryptingRoleKeys(),
+                                        getEncryptingPrivateKey());
+
+                                KeyPair roleSigningKeyPair = CryptoUtil.getCryptoUtil().decryptPKCKeys(
+                                        roleTupleOfFileToWrite.getEncryptedSigningRoleKeys(),
+                                        getEncryptingPrivateKey());
+
+                                whereWereWe = kDecryptSymmetricKey;
+                                SecretKey fileKey = CryptoUtil.getCryptoUtil().decryptSymmetricKey(
+                                        permissionTupleOfFileToWrite.getEncryptedSymmetricFileKey(),
+                                        roleEncryptingKeyPair.getPrivate());
+
+                                // encrypt the new file
+                                whereWereWe = kEncryptFile;
+                                streamOfEncryptedFile = CryptoUtil.getCryptoUtil().
+                                        encryptInputStream(fileKey, fileStream);
+
+                                File newFileToUpload = new File(fileName,
+                                        streamOfEncryptedFile, latestFileVersionNumber);
+                                newFileToUpload.setToken(fileTupleOfFileToRead.getFileToken());
+
+                                FileTuple newFileTupleToUpload = new FileTuple(fileName,
+                                        "mock token", latestFileVersionNumber, CryptoACActiveElementEnum.Role,
+                                        null, null, accessControlEnforcement);
+
+                                whereWereWe = kSignTuple;
+                                CryptoUtil.getCryptoUtil().signCryptoACTuple(
+                                        newFileTupleToUpload,
+                                        roleSigningKeyPair.getPrivate(),
+                                        permissionTupleOfFileToWrite.getRoleToken());
+
+                                daoInterface.updateFile(newFileToUpload, newFileTupleToUpload);
+                            }
+                            // it means that the user can access the permission tuples of roles to which the user
+                            // is not assigned to. This is an inconsistent state
+                            else {
+
+                                App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + writeFile + ")]: ", "user ",
+                                        getName(), " can access permission tuples but does not have any role ",
+                                        "tuple for file", fileName);
+                                returningCode = OperationOutcomeCode.code_15;
+                            }
                         }
-                        // it means that the user can access the permission tuples of roles to which the user
-                        // is not assigned to. This is an inconsistent state
+                        // it means that the user is assigned to roles that have read but not write access to the file
                         else {
 
-                            App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + writeFile + ")]: ", "user ",
-                                    getName(), " can access permission tuples but does not have any role ",
-                                    "tuple for file", fileName);
+                            App.logger.error("[{}{}{}{}{}{} ", className, " (" + writeFile + ")]: ", "user ",
+                                    getName(), " has read but not write permission on file ", fileName);
                             returningCode = OperationOutcomeCode.code_15;
                         }
                     }
-                    // it means that the user is assigned to roles that have read but not write access to the file
+                    // it means that we are in an inconsistent state, as the user got the file tuple but there are
+                    // no permission tuples, i.e., the user is not assigned to a role that can access the file
                     else {
-
-                        App.logger.error("[{}{}{}{}{}{} ", className, " (" + writeFile + ")]: ", "user ",
-                                getName(), " has read but not write permission on file ", fileName);
-                        returningCode = OperationOutcomeCode.code_15;
+                        App.logger.error("[{}{}{}{}{}{} ", className, " (" + writeFile + ")]: ", "user ", getName(),
+                                " can access the file tuple but does not have any permission tuple for file ",
+                                fileName);
+                        returningCode = OperationOutcomeCode.code_14;
                     }
                 }
-                // it means that we are in an inconsistent state, as the user got the file tuple but there are
-                // no permission tuples, i.e., the user is not assigned to a role that can access the file
+                // it means that the file is not to be encrypted, so we can simply upload it as it is
                 else {
-                    App.logger.error("[{}{}{}{}{}{} ", className, " (" + writeFile + ")]: ", "user ", getName(),
-                            " can access the file tuple but does not have any permission tuple for file ",
-                            fileName);
-                    returningCode = OperationOutcomeCode.code_14;
+                    File newFileToUpload = new File(fileName,
+                            fileStream, latestFileVersionNumber);
+                    newFileToUpload.setToken(fileTupleOfFileToRead.getFileToken());
+
+                    FileTuple newFileTupleToUpload = new FileTuple(fileName,
+                            "mock token", latestFileVersionNumber, CryptoACActiveElementEnum.Role,
+                            null, null, accessControlEnforcement);
+
+                    daoInterface.updateFile(newFileToUpload, newFileTupleToUpload);
                 }
             }
             // either the file does not exists or the user does not have access to the file

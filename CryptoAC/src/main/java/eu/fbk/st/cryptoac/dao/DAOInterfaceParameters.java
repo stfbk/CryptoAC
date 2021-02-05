@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 import static eu.fbk.st.cryptoac.util.Const.DAOInterfaceParameters.*;
 import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.*;
-import static eu.fbk.st.cryptoac.util.SafeRegex.checkIfMatchesRegex;
+import static eu.fbk.st.cryptoac.util.SafeRegex.matchRegex;
 import static eu.fbk.st.cryptoac.util.SafeRegex.*;
 
 /**
@@ -100,7 +100,7 @@ public class DAOInterfaceParameters {
      * @throws IllegalArgumentException if at least one of the parameters does not satisfy the regular expression
      */
     protected void checkParametersAreValid() {
-        if (!checkIfMatchesRegex(safeTextRegex, usernameInCryptoAC))
+        if (!matchRegex(safeTextRegex, usernameInCryptoAC))
             throw new IllegalArgumentException("the username parameter is null or it does not match a safe regular expression");
     }
 

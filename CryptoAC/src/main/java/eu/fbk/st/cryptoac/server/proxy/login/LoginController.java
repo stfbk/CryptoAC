@@ -4,6 +4,7 @@ import eu.fbk.st.cryptoac.App;
 import eu.fbk.st.cryptoac.server.model.Credentials;
 import eu.fbk.st.cryptoac.server.util.ErrorUtil;
 import eu.fbk.st.cryptoac.server.proxy.util.ViewUtil;
+import org.eclipse.jetty.http.HttpStatus;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
@@ -88,7 +89,7 @@ public class LoginController {
             String givenPassword = getQueryParameter(request, kPasswordOfUserLoggingIn);
 
             if (givenUsername.isBlank() || givenPassword.isBlank())
-                halt(422, (String) unprocessableEntity.handle(request, response));
+                halt(HttpStatus.UNPROCESSABLE_ENTITY_422, (String) unprocessableEntity.handle(request, response));
 
             if (authenticateUser(givenUsername, givenPassword)) {
 
@@ -102,7 +103,7 @@ public class LoginController {
             else {
                 App.logger.error("[{}{}{}{} ", className, " (" + loginLog + ")]: ",
                         "authentication failed for user ", givenUsername);
-                halt(401, (String) unauthorized.handle(request, response));
+                halt(HttpStatus.UNAUTHORIZED_401, (String) unauthorized.handle(request, response));
             }
         }
 
@@ -146,7 +147,7 @@ public class LoginController {
             if (credentials == null) {
                 App.logger.error("[{}{}{} ", className, " (" + authenticateUserLog + ")]: ",
                         "user is not authenticated and did not provide Basic header credentials");
-                halt(401, (String) unauthorized.handle(request, response));
+                halt(HttpStatus.UNAUTHORIZED_401, (String) unauthorized.handle(request, response));
             }
             else {
 
@@ -156,7 +157,7 @@ public class LoginController {
                 if (!authenticateUser(username, password)) {
                     App.logger.error("[{}{}{} ", className, " (" + authenticateUserLog + ")]: ",
                             "user is not authenticated and header credentials are wrong");
-                    halt(401, (String) unauthorized.handle(request, response));
+                    halt(HttpStatus.UNAUTHORIZED_401, (String) unauthorized.handle(request, response));
                 }
                 // it means that the user successfully authenticated
                 else {

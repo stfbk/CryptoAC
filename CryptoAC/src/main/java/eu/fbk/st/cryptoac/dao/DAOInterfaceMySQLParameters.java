@@ -55,9 +55,9 @@ public class DAOInterfaceMySQLParameters extends DAOInterfaceParameters {
      */
     protected void checkMySQLParametersAreValid() {
 
-        if (!(checkIfMatchesRegex(safeTextRegex, mySQLDatabaseURL)))
+        if (!(matchRegex(urlOrIPRegex, mySQLDatabaseURL)))
             throw new IllegalArgumentException("the database URL parameter is null or it does not match a safe regular expression");
-        if (!(checkIfMatchesRegex(safeTextRegex, mySQLDatabasePassword)))
+        if (!(matchRegex(safeTextRegex, mySQLDatabasePassword)))
             throw new IllegalArgumentException("the database password parameter is null or it does not match a safe regular expression");
 
         try {

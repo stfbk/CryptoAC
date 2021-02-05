@@ -6,6 +6,7 @@ import eu.fbk.st.cryptoac.core.tuple.FileTuple;
 import eu.fbk.st.cryptoac.core.tuple.Permission;
 import eu.fbk.st.cryptoac.core.tuple.PermissionTuple;
 import eu.fbk.st.cryptoac.core.tuple.RoleTuple;
+import eu.fbk.st.cryptoac.util.AccessControlEnforcement;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
 import eu.fbk.st.cryptoac.util.EncryptedPKCKeyPair;
 import eu.fbk.st.cryptoac.util.OperationOutcomeCode;
@@ -37,8 +38,8 @@ import static eu.fbk.st.cryptoac.util.OperationOutcomeCode.*;
  *  this class. It is way quicker than re-implementing everything by yourself.
  *  Still, you will have to implement the abstract methods to create (add), delete (delete), update (write)
  *  and download (read) files. Of this methods, only create, update and download can be invoked by the user.
- *  Therefore, assuming malicious users, invocations to these methods must be checked by the Reference Monitor.
- *  Note that it is up to you to choose where to place the Reference Monitor.
+ *  Therefore, assuming malicious users, invocations to these methods must be checked by the RM.
+ *  Note that it is up to you to choose where to place the RM.
  *
  *  Note: we configured the database to avoid the disclosure of the AC policy to the users. First, we assign a
  *  random token to each user, role and file identifier. Then, we grant users SELECT privilege on the token column
@@ -59,6 +60,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
     // variables for logging
     protected static String className;
+    protected static String countRowsInTable = "countRowsInTable";
 
     /**
      * the default offset for MySQL queries.
@@ -116,6 +118,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     public static final String roleNameColumn = "roleName";
     public static final String fileNameColumn = "fileName";
     public static final String statusFlagColumn = "statusFlag";
+    public static final String accessControlEnforcementColumn = "accessControlEnforcement";
 
     // variables for keeping track of where an exception was thrown
     public static final String kSignTuple = "signTuple";
@@ -218,7 +221,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
         String whereWereWe = "";
 
         // the content is composed of the SQL commands that we need to execute to initialize the database
-        InputStream inputStream = DAOInterfaceMySQL.class.getResourceAsStream(kInitializationFileMySQLPath);
+        InputStream inputStreamMySQLFile = DAOInterfaceMySQL.class.getResourceAsStream(kInitializationFileMySQLPath);
 
         // this is an array of users and an array of roles to insert in the database.
         // We only have one user and one role, though (i.e., the admin)
@@ -250,7 +253,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
                 Statement initializationStatement = connection.createStatement();
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))
+                BufferedReader br = new BufferedReader(new InputStreamReader(inputStreamMySQLFile))
         ) {
 
             // read and execute the sql commands from the file
@@ -558,7 +561,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
      */
     public void addRole(@NotNull Role newRole, @NotNull RoleTuple newRoleTuple) throws DAOException {
 
-        App.logger.info("[{}{}{}{}{}{} ", className, " (" + addRole + ")]: ", "adding a new role:  ",
+        App.logger.info("[{}{}{}{}{}{} ", className, " (" + addRole + ")]: ", "adding a new role: ",
                 newRole.toString(), " and tuple ", newRoleTuple.toString());
 
         OperationOutcomeCode returningCode = code_0;
@@ -604,11 +607,54 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
     /**
+     * This method adds a new file in database "files" table.
+     * Remember that file names are unique.
+     * @param fileToAdd the file to insert
+     * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
+     * exception along with a proper OperationOutcomeCode code
+     */
+    public void addFile(File fileToAdd) throws DAOException {
+
+        App.logger.info("[{}{}{}{} ", className, " (" + addFile + ")]: ",
+                "adding a new file in the files table:  ", fileToAdd.toString());
+
+        OperationOutcomeCode returningCode = code_0;
+        Exception exceptionThrown = null;
+
+        // this is an array of roles to insert in the database; we only have one role, though
+        ArrayList<ArrayList<Object>> filesToInsert = new ArrayList<>();
+
+        ArrayList<Object> fileToInsert = new ArrayList<>();
+        fileToInsert.add(fileToAdd.getName());
+        fileToInsert.add(fileToAdd.getToken());
+        fileToInsert.add(fileToAdd.getEncryptingKeyVersionNumber());
+        fileToInsert.add(operational.getValue());
+
+        filesToInsert.add(fileToInsert);
+
+        try (
+                PreparedStatement insertFileStatement = createInsertStatement(filesTable, filesToInsert)
+        ) {
+
+            int affectedRowCountFile = insertFileStatement.executeUpdate();
+
+            if (affectedRowCountFile != 1)
+                returningCode = code_3;
+        }
+        catch (SQLException e) {
+            returningCode = code_58;
+            exceptionThrown = e;
+        }
+
+        logAtEndOfMethod(returningCode, addFile, exceptionThrown);
+    }
+
+    /**
      * This method stores the new file (1), saves the related metadata from the file tuple (2) and
      * the permission tuple that gives the admin all permissions over the file (3).
      * Remember that file names are unique.
      * Remember that you can get the content of the file from the InputStream in the newFile parameter.
-     * Remember that the reference monitor has to check the validity of the new data. This means that:
+     * Remember that the RM has to check the validity of the new data. This means that:
      *  - tuples' signatures shall be correct. This includes also checking that the user that signed the
      *    tuples actually exists and is the same for both tuples;
      *  - the file version number shall be equal to 1 in the newFile and newFileTuple;
@@ -624,10 +670,8 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
 
 
-
-
     /**
-     * This method adds the new role tuple to the metadata storage by inserting the tuple in the "RoleTuples" table
+     * This method adds the new role tuple to the MS by inserting the tuple in the "RoleTuples" table
      * and checking the existence of both the involved user and the role.
      * @param newRoleTuple the role tuple to insert
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
@@ -636,7 +680,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     public void addRoleTuple(@NotNull RoleTuple newRoleTuple) throws DAOException {
 
         App.logger.info("[{}{}{}{} ", className, " (" + addRoleTuple + ")]: ",
-                "adding a new role tuple:  ", newRoleTuple.toString());
+                "adding a new role tuple: ", newRoleTuple.toString());
 
         OperationOutcomeCode returningCode = code_0;
         Exception exceptionThrown = null;
@@ -663,7 +707,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
     /**
-     * This method adds the new role tuples to the metadata storage by inserting them in the "RoleTuples" table
+     * This method adds the new role tuples to the MS by inserting them in the "RoleTuples" table
      * and checking the existence of the involved users and roles.
      * @param newRoleTuples the set of role tuples to insert
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
@@ -700,7 +744,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
     /**
-     * This method adds the new permission tuple to the metadata storage by inserting the tuple in the
+     * This method adds the new permission tuple to the MS by inserting the tuple in the
      * "permissionTuples" table and checking the existence of both the involved role and the file.
      * @param newPermissionTuple the permission tuple to insert
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
@@ -709,7 +753,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     public void addPermissionTuple(@NotNull PermissionTuple newPermissionTuple) throws DAOException {
 
         App.logger.info("[{}{}{}{} ", className, " (" + addPermissionTuple + ")]: ",
-                "adding a new permission tuple:  ", newPermissionTuple.toString());
+                "adding a new permission tuple: ", newPermissionTuple.toString());
 
         OperationOutcomeCode returningCode = code_0;
         Exception exceptionThrown = null;
@@ -737,7 +781,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
     /**
-     * This method adds the new permission tuples to the metadata storage by inserting them in the
+     * This method adds the new permission tuples to the MS by inserting them in the
      * "permissionTuples" table and checking the existence of the involved roles and files.
      * @param newPermissionTuples the set of permission tuples to insert
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
@@ -775,7 +819,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
     /**
-     * This method adds the new file tuple to the metadata storage by inserting the tuple in the
+     * This method adds the new file tuple to the MS by inserting the tuple in the
      * "fileTuples" table and checking the existence of the involved file.
      * @param newFileTuple the file tuple to insert
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
@@ -784,7 +828,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     public void addFileTuple(@NotNull FileTuple newFileTuple) throws DAOException {
 
         App.logger.info("[{}{}{}{} ", className, " (" + addFileTuple + ")]: ",
-                "adding a new file tuple:  ", newFileTuple.toString());
+                "adding a new file tuple: ", newFileTuple.toString());
 
         OperationOutcomeCode returningCode = code_0;
         Exception exceptionThrown = null;
@@ -812,7 +856,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
     /**
-     * This method adds the new file tuples to the metadata storage by inserting them in the
+     * This method adds the new file tuples to the MS by inserting them in the
      * "fileTuples" table and checking the existence of the involved files.
      * @param newFileTuples the set of permission tuples to insert
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
@@ -825,7 +869,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
         OperationOutcomeCode returningCode = code_0;
         Exception exceptionThrown = null;
 
-        // this is an array of file tuples to insert in the metadata storage
+        // this is an array of file tuples to insert in the MS
         ArrayList<ArrayList<Object>> fileTuplesToInsert = new ArrayList<>();
 
         for (FileTuple currentFileTuple : newFileTuples)
@@ -891,7 +935,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
             PreparedStatement ps = createSelectStatement(usersTable, offset, limit,
-                    whereParameters, null, null);
+                    whereParameters, null, null, false);
             ResultSet rs = ps.executeQuery()
         ) {
 
@@ -952,7 +996,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement ps = createSelectStatement(rolesTable, offset, limit,
-                        whereParameters, null, null);
+                        whereParameters, null, null, false);
                 ResultSet rs = ps.executeQuery()
         ) {
 
@@ -1013,7 +1057,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement ps = createSelectStatement(filesTable, offset, limit,
-                        whereParameters, null, null);
+                        whereParameters, null, null, false);
                 ResultSet rs = ps.executeQuery()
         ) {
 
@@ -1541,7 +1585,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
     /**
-     * This method deletes the file with the given file name from the metadata storage.
+     * This method deletes the file with the given file name from the MS.
      * @param fileName the name of the file
      * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
      * exception along with a proper OperationOutcomeCode code
@@ -1609,7 +1653,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
             whereParameters.put(roleVersionNumberColumn, roleVersionNumber);
 
         // of course, we delete the tuples only if at least one parameters
-        // was provided. Otherwise, we would delete ALL tuples
+        // was provided. Otherwise, we would delete ALL tuples.
         if (!whereParameters.isEmpty()) {
 
             try (
@@ -1857,7 +1901,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
      */
     public void updatePermissionInPermissionTuple(PermissionTuple updatedPermissionTuple) throws DAOException {
 
-        App.logger.info("[{}{}{}{} ", className, " (" + updatePermissionTuple + ")]: ",
+        App.logger.info("[{}{}{}{} ", className, " (" + updatePermissionInPermissionTuple + ")]: ",
                 "updating permission tuple ", updatedPermissionTuple.toString());
 
         OperationOutcomeCode returningCode = code_0;
@@ -1886,15 +1930,15 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
             exceptionThrown = e;
         }
 
-        logAtEndOfMethod(returningCode, updatePermissionTuple, exceptionThrown);
+        logAtEndOfMethod(returningCode, updatePermissionInPermissionTuple, exceptionThrown);
     }
 
     /**
      * This method updates the content of the file matching the given file name ("write" operation); it
-     * - replaces (or uses versioning, if supported) the previous file
+     * - (1) replaces (or uses versioning, if supported) the previous file
      * - (2) updates the file tuple with the new one.
      * If the file didn't exist before, throw exception.
-     * Remember that the reference monitor has to check the validity of the new data. This means that:
+     * Remember that the RM has to check the validity of the new data. This means that:
      *  - the file tuple' signatures shall be correct. This includes also checking that the role that signed the
      *    tuple actually exists and it was not deleted.
      *  - the file version number is actually the latest one;
@@ -1940,7 +1984,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
             if (locksOnCloud == 0) {
 
                 App.logger.info("[{}{}{} ", className, " (" + lockDAOInterfaceStatus + ")]: ",
-                        "actually locking the database and  creating new SQL connection...");
+                        "actually locking the database and creating new SQL connection...");
 
                 if (connection == null || connection.isClosed()) {
 
@@ -2143,7 +2187,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     /**
      * Utility method to create a PreparedStatement for the SELECT statement with the given parameters.
      * The only supported parameters now are strings, booleans and integers.
-     * @param table the table in which to insert the values
+     * @param table the table in which to select the values
      * @param offset the offset in number of users to start selecting from.
      *               If negative, the parameter will be ignored.
      * @param limit limit the number of users to return.
@@ -2154,28 +2198,41 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
      * @param whereNotParameters map of parameters to filter by in the WHERE clause. The
      *                        key is the name of the column, the object the value to NOT match.
      *                        (LinkedHashMap for predictable iteration order)
-     * @param columnsToSelect the hash set containing the columns to actually select. If null, all columns will be selected
+     * @param columnsToSelect the hash set containing the columns to actually select. If null or empty,
+     *                        all columns will be selected.
+     * @param count if true, select the (distinct) count of records returned by the select query and not the columns.
+     *              The columns inside the COUNT() SQL function are those specified in the "columnsToSelect" parameter;
+     *              as such, if "count" is "true", "columnsToSelect" can be neither null nor empty.
      * @return the result set containing the rows matching the given parameters from the given table
      * @throws SQLException if something went wrong in the creation of the SQL statement
      */
     protected PreparedStatement createSelectStatement (String table, @NotNull Integer offset, @NotNull Integer limit,
                                                        LinkedHashMap<String, Object> whereParameters,
                                                        LinkedHashMap<String, Object> whereNotParameters,
-                                                       HashSet<String> columnsToSelect) throws SQLException {
+                                                       HashSet<String> columnsToSelect,
+                                                       boolean count) throws SQLException {
 
         StringBuilder selectString = new StringBuilder("SELECT ");
 
         whereParameters = whereParameters == null ? new LinkedHashMap<>() : whereParameters;
         whereNotParameters = whereNotParameters == null ? new LinkedHashMap<>() : whereNotParameters;
 
-        if (columnsToSelect != null) {
+        if (count)
+            selectString.append("COUNT(DISTINCT ");
+
+        if (columnsToSelect != null && !columnsToSelect.isEmpty()) {
             for (String column : columnsToSelect)
                 selectString.append(column).append(", ");
 
             selectString.delete(selectString.length() - 2, selectString.length());
         }
-        else
+        else if (!count)
             selectString.append(" * ");
+        else
+            throw new SQLException("count was set true but columnsToSelect was either null or empty");
+
+        if (count)
+            selectString.append(")");
 
         selectString.append(" FROM ").append(table).append(" ");
 
@@ -2324,7 +2381,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement ps = createSelectStatement(table, offset, limit,
-                        whereParameters, whereNotParameters, null);
+                        whereParameters, whereNotParameters, null, false);
                 ResultSet rs = ps.executeQuery()
         ) {
 
@@ -2393,7 +2450,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement ps = createSelectStatement(table, offset, limit,
-                        whereParameters, whereNotParameters, null);
+                        whereParameters, whereNotParameters, null, false);
                 ResultSet rs = ps.executeQuery()
         ) {
 
@@ -2453,7 +2510,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement ps = createSelectStatement(table, offset, limit,
-                        whereParameters, null, null);
+                        whereParameters, null, null, false);
                 ResultSet rs = ps.executeQuery()
         ) {
 
@@ -2471,7 +2528,8 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
                         rs.getInt(decryptFileVersionNumberColumn),
                         elementSigner,
                         Base64.getDecoder().decode(escapeString(rs.getString(signatureColumn))),
-                        elementToken);
+                        elementToken,
+                        AccessControlEnforcement.get(escapeString(rs.getString(accessControlEnforcementColumn))));
 
                 requestedFileTuples.add(tempFileTuple);
             }
@@ -2521,7 +2579,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement getVersionNumberStatement = createSelectStatement(tableToSearchIn,
-                        0, 1, whereParameters, null, columnsToSelect);
+                        0, 1, whereParameters, null, columnsToSelect, false);
                 ResultSet rs = getVersionNumberStatement.executeQuery()
         ) {
 
@@ -2573,7 +2631,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement getVersionNumberStatement = createSelectStatement(tableToSearchIn,
-                        0, 1, whereParameters, null, columnsToSelect);
+                        0, 1, whereParameters, null, columnsToSelect, false);
                 ResultSet rs = getVersionNumberStatement.executeQuery()
         ) {
 
@@ -2627,7 +2685,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement getPublicKeyStatement = createSelectStatement(
-                        tableToSearchIn, 0, 1, whereParameters, null, columnsToSelect);
+                        tableToSearchIn, 0, 1, whereParameters, null, columnsToSelect, false);
                 ResultSet rs = getPublicKeyStatement.executeQuery()
         ) {
 
@@ -2734,7 +2792,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
 
         try (
                 PreparedStatement hasTheFlagStatement = createSelectStatement(
-                        tableToSearchIn, 0, 1, whereParameters, null, columnsToSelect);
+                        tableToSearchIn, 0, 1, whereParameters, null, columnsToSelect, false);
 
                 ResultSet result = hasTheFlagStatement.executeQuery()
         ) {
@@ -2860,7 +2918,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     /**
      * Utility method to group together a common functionality, i.e., to check whether the file
      * involved in a file tuple exists and was not deleted (so this method returns the file tuple
-     * as an array to be inserted in the metadata storage) or not (so this method throw a DAOException).
+     * as an array to be inserted in the MS) or not (so this method throw a DAOException).
      * @param newFileTuple the file tuple of which to check file
      * @return the file tuple as an array to be inserted in the database, if the file exists
      * and was not deleted
@@ -2887,6 +2945,7 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
             fileTupleAsArray.add(newFileTuple.getSignerOfThisTuple());
             fileTupleAsArray.add(newFileTuple.getElementSigner());
             fileTupleAsArray.add(newFileTuple.getDecryptingKeyVersionNumber());
+            fileTupleAsArray.add(newFileTuple.getAccessControlEnforcement().toString());
             fileTupleAsArray.add(Base64.getEncoder().encodeToString(newFileTuple.getSignature()));
         }
 
@@ -2974,8 +3033,55 @@ public abstract class DAOInterfaceMySQL implements DAOInterface {
     }
 
 
+    /**
+     * This method counts the (distinct) rows in the given table filtering with the given parameters.
+     * @param table the table in which to count the values
+     * @param whereParameters map of parameters to filter by in the WHERE clause. The
+     *                        key is the name of the column, the object the value to match.
+     *                        (LinkedHashMap for predictable iteration order)
+     * @param whereNotParameters map of parameters to filter by in the WHERE clause. The
+     *                        key is the name of the column, the object the value to NOT match.
+     *                        (LinkedHashMap for predictable iteration order)
+     * @param columnsToSelect the hash set containing the columns to actually select. It can be neither
+     *                        null nor empty
+     * @return the count of rows in the given table filtered with the given parameters.
+     * @throws DAOException if something went wrong in the process, throw a DAOException wrapping the original
+     * exception along with a proper OperationOutcomeCode code
+     */
+    protected int countRowsInTable(String table, LinkedHashMap<String, Object> whereParameters,
+                                   LinkedHashMap<String, Object> whereNotParameters,
+                                   @NotNull HashSet<String> columnsToSelect) throws DAOException {
 
+        App.logger.info("[{}{}{}{} ", className, " (" + countRowsInTable + ")]: ",
+                "counting rows in table ", table);
 
+        int countOfRows = 0;
+
+        OperationOutcomeCode returningCode = code_0;
+        Exception exceptionThrown = null;
+
+        try (
+                PreparedStatement ps = createSelectStatement(table, -1, -1,
+                        whereParameters, whereNotParameters, columnsToSelect, true);
+                ResultSet rs = ps.executeQuery()
+        ) {
+            if (rs.next()) {
+
+                // remember that columns are indexed starting from '1' and not from '0'
+                countOfRows = rs.getInt(1);
+            }
+            else {
+                throw new SQLException("Query was executed but resultSet is empty");
+            }
+        }
+        catch (SQLException e) {
+            exceptionThrown = e;
+            returningCode = code_58;
+        }
+
+        logAtEndOfMethod(returningCode, countRowsInTable, exceptionThrown);
+        return countOfRows;
+    }
 
 
 

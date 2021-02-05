@@ -2,6 +2,7 @@ package eu.fbk.st.cryptoac.core.tuple;
 
 import com.google.gson.annotations.Expose;
 import eu.fbk.st.cryptoac.core.element.CryptoACActiveElement;
+import eu.fbk.st.cryptoac.util.AccessControlEnforcement;
 
 import java.io.Serializable;
 
@@ -20,8 +21,8 @@ public class FileTuple extends CryptoACTuple implements Serializable {
     private Integer decryptingKeyVersionNumber;
 
     /**
-     *  given that a FileTuple can be signed by both users and roles, it is important to
-     *  have a variable that holds this information, so to properly check the signature afterward.
+     * Given that a FileTuple can be signed by both users and roles, it is important to
+     * have a variable that holds this information, so to properly check the signature afterward.
      */
     @Expose
     private CryptoACActiveElement.CryptoACActiveElementEnum elementSigner;
@@ -31,6 +32,14 @@ public class FileTuple extends CryptoACTuple implements Serializable {
      * Don't apply the expose annotation so it can be excluded from serialization.
      */
     private String fileToken;
+
+    /**
+     * The enforcement chosen for this file.
+     */
+    @Expose
+    private AccessControlEnforcement accessControlEnforcement;
+
+
 
     /**
      * Empty constructor for serialization.
@@ -45,17 +54,19 @@ public class FileTuple extends CryptoACTuple implements Serializable {
      * @param elementSigner the CryptoAC active element that signed the tuple
      * @param newSignature the new signature to add to this tuple
      * @param signer the ID of the entity that signed the tuple
+     * @param accessControlEnforcement the enforcement chosen for this file
      * @throws IllegalArgumentException if the provided version number is null or less than 1
      */
     public FileTuple(String associatedElement, String fileToken, Integer fileVersionNumber,
-                     CryptoACActiveElement.CryptoACActiveElementEnum elementSigner,
-                     byte[] newSignature, String signer) throws IllegalArgumentException {
+                     CryptoACActiveElement.CryptoACActiveElementEnum elementSigner, byte[] newSignature,
+                     String signer, AccessControlEnforcement accessControlEnforcement) throws IllegalArgumentException {
 
         super(TupleType.F, associatedElement, newSignature, signer);
 
         this.decryptingKeyVersionNumber = fileVersionNumber;
         this.elementSigner = elementSigner;
         this.fileToken = fileToken;
+        this.accessControlEnforcement = accessControlEnforcement;
 
         if (!isVersionNumberValid(fileVersionNumber))
             throw new IllegalArgumentException("Version number is either null or less than 1");
@@ -112,6 +123,23 @@ public class FileTuple extends CryptoACTuple implements Serializable {
         this.fileToken = fileToken;
     }
 
+
+    /**
+     * getter for the file access control enforcement.
+     * @return the file access control enforcement
+     */
+    public AccessControlEnforcement getAccessControlEnforcement() {
+        return accessControlEnforcement;
+    }
+
+    /**
+     * setter for the file access control enforcement.
+     * @param accessControlEnforcement the file access control enforcement
+     */
+    public void setAccessControlEnforcement(AccessControlEnforcement accessControlEnforcement) {
+        this.accessControlEnforcement = accessControlEnforcement;
+    }
+
     /**
      * It checks whether all the fields of the tuple are not null.
      * Note that the token may be null, so it is not checked.
@@ -121,6 +149,7 @@ public class FileTuple extends CryptoACTuple implements Serializable {
     public boolean isCompleteInAllFields() {
         return (super.isCompleteInAllFields() &&
                 isVersionNumberValid(getDecryptingKeyVersionNumber()) &&
+                getAccessControlEnforcement() != null &&
                 getElementSigner() != null);
     }
 
@@ -130,6 +159,6 @@ public class FileTuple extends CryptoACTuple implements Serializable {
      */
     @Override
     public String getIdentifyingFieldsForSignature() {
-        return (getAssociatedElement()) + getDecryptingKeyVersionNumber();
+        return getAssociatedElement() + getDecryptingKeyVersionNumber() + getAccessControlEnforcement();
     }
 }

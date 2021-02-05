@@ -31,7 +31,7 @@ public class File extends CryptoACElement {
         this.fileStream = fileStream;
         this.encryptingKeyVersionNumber = encryptingKeyVersionNumber;
 
-        if (!isVersionNumberValid(encryptingKeyVersionNumber))
+        if (isVersionNumberInvalid(encryptingKeyVersionNumber))
             throw new IllegalArgumentException("Version number is either null or less than 1");
     }
 

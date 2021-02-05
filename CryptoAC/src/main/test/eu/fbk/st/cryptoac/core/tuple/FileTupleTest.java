@@ -1,6 +1,7 @@
 package eu.fbk.st.cryptoac.core.tuple;
 
 import eu.fbk.st.cryptoac.core.element.CryptoACActiveElement;
+import eu.fbk.st.cryptoac.util.AccessControlEnforcement;
 import eu.fbk.st.cryptoac.util.CryptoUtil;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,9 @@ class FileTupleTest {
     void isCompleteInAllFields_correct()
             throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 
-        FileTuple fileTuple = new FileTuple("file", "mock token", 1, CryptoACActiveElement.CryptoACActiveElementEnum.User, null, null);
+        FileTuple fileTuple = new FileTuple("file", "mock token", 1,
+                CryptoACActiveElement.CryptoACActiveElementEnum.User, null, null,
+                AccessControlEnforcement.Cryptographic);
         KeyPair keyPair = CryptoUtil.generatePKCKeys();
         CryptoUtil.getCryptoUtil().signCryptoACTuple(fileTuple, keyPair.getPrivate(), "none");
         assertTrue(fileTuple.isCompleteInAllFields());
@@ -36,14 +39,16 @@ class FileTupleTest {
     @Test
     void isCompleteInAllFields_noSignature() {
 
-        FileTuple fileTuple = new FileTuple("", "mock token", 1, CryptoACActiveElement.CryptoACActiveElementEnum.User, null, null);
+        FileTuple fileTuple = new FileTuple("", "mock token", 1, CryptoACActiveElement.CryptoACActiveElementEnum.User,
+                null, null, AccessControlEnforcement.Cryptographic);
         assertFalse(fileTuple.isCompleteInAllFields());
     }
 
     @Test
     void getIdentifyingFieldsForSignature_correct() throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 
-        FileTuple fileTuple = new FileTuple("file", "mock token", 1, CryptoACActiveElement.CryptoACActiveElementEnum.User, null, null);
+        FileTuple fileTuple = new FileTuple("file", "mock token", 1, CryptoACActiveElement.CryptoACActiveElementEnum.User,
+                null, null, AccessControlEnforcement.Cryptographic);
         KeyPair keyPair = CryptoUtil.generatePKCKeys();
         CryptoUtil.getCryptoUtil().signCryptoACTuple(fileTuple, keyPair.getPrivate(), "none");
         assertNotNull(fileTuple.getIdentifyingFieldsForSignature());

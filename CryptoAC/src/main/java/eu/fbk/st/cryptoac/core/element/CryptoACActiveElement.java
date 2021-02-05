@@ -96,22 +96,15 @@ public abstract class CryptoACActiveElement extends CryptoACElement {
             return param;
         }
 
-        //****** Reverse Lookup Implementation************//
-        //Lookup table
         private static final Map<String, CryptoACActiveElement.CryptoACActiveElementEnum> lookup = new HashMap<>();
 
-        //Populate the lookup table on loading time
-        static
-        {
-            for(CryptoACActiveElement.CryptoACActiveElementEnum env : CryptoACActiveElement.CryptoACActiveElementEnum.values())
-            {
+        static {
+            for(CryptoACActiveElement.CryptoACActiveElementEnum env : CryptoACActiveElement.CryptoACActiveElementEnum.values()) {
                 lookup.put(env.toString(), env);
             }
         }
 
-        //This method can be used for reverse lookup purpose
-        public static CryptoACActiveElement.CryptoACActiveElementEnum get(String param)
-        {
+        public static CryptoACActiveElement.CryptoACActiveElementEnum get(String param) {
             return lookup.get(param);
         }
     }

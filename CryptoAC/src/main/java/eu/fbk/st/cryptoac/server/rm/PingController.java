@@ -21,11 +21,8 @@ public class PingController {
 
         // TODO authentication
 
-        APIOutput invocationResult = new APIOutput(
-                code_0.toString(),
-                code_0.toString(),
-                HttpStatus.OK_200);
-
+        APIOutput invocationResult = new APIOutput(code_0.toString(), code_0);
+        response.status(HttpStatus.OK_200);
         return JSONUtil.getJSONToReturn(invocationResult, response);
     };
 }

@@ -109,18 +109,18 @@ public abstract class CryptoACElement {
      */
     @Override
     public String toString() {
-
         // return this as JSON string
+        // TODO "new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()"?
         return new Gson().toJson(this);
     }
 
     /**
-     * Utility method to check whether a version number is valid, i.e. exists and is positive.
+     * Utility method to check whether a version number is invalid, i.e. it is null or negative.
      * @param versionNumber the version number
-     * @return true if the number exists and is positive, false otherwise
+     * @return true if the number is null or is negative, false otherwise
      */
-    public boolean isVersionNumberValid (Integer versionNumber) {
-        return (versionNumber != null && versionNumber > 0 );
+    public boolean isVersionNumberInvalid(Integer versionNumber) {
+        return (versionNumber == null || versionNumber <= 0);
     }
 
 
@@ -145,22 +145,15 @@ public abstract class CryptoACElement {
             return param;
         }
 
-        //****** Reverse Lookup Implementation************//
-        //Lookup table
         private static final Map<String, CryptoACElementEnum> lookup = new HashMap<>();
 
-        //Populate the lookup table on loading time
-        static
-        {
-            for(CryptoACElementEnum env : CryptoACElementEnum.values())
-            {
+        static {
+            for(CryptoACElementEnum env : CryptoACElementEnum.values()) {
                 lookup.put(env.toString(), env);
             }
         }
 
-        //This method can be used for reverse lookup purpose
-        public static CryptoACElementEnum get(String param)
-        {
+        public static CryptoACElementEnum get(String param) {
             return lookup.get(param);
         }
     }

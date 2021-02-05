@@ -88,21 +88,20 @@ public class ProfileController {
             else {
                 App.logger.error("[{}{}{}{}{} ", className, " (" + isProfileCompleteLog + ")]: ",
                         "storage system ", selectedDAOString, " is not supported");
-                halt(422, (String) unprocessableEntity.handle(request, response));
+                halt(HttpStatus.UNPROCESSABLE_ENTITY_422, (String) unprocessableEntity.handle(request, response));
             }
-
         }
         // this exception is thrown when the configuration file was not found
         catch (FileNotFoundException e) {
             App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + isProfileCompleteLog + ")]: ",
                     "profile of user ", loggedUser, " for storage system ", selectedDAO, " is not complete");
-            halt(403, (String) forbidden.handle(request, response));
+            halt(HttpStatus.FORBIDDEN_403, (String) forbidden.handle(request, response));
         }
         // this exception is thrown when there was an exception while reading the configuration file
         catch (IOException e) {
             App.logger.error("[{}{}{}{}{}{} ", className, " (" + isProfileCompleteLog + ")]: ",
                     "exception while reading profile of user ", loggedUser, " for storage system ", selectedDAO);
-            halt(500, (String) internalError.handle(request, response));
+            halt(HttpStatus.INTERNAL_SERVER_ERROR_500, (String) internalError.handle(request, response));
         }
     };
 
@@ -131,7 +130,7 @@ public class ProfileController {
      * necessary to tell users to configure they profile
      */
     public static Route getUserProfile = (Request request, Response response) -> {
-// TODO implement button in web interface to download profile as json
+// TODO implement button in web interface to download user's profile as json
         APIOutput invocationResult;
 
         try {
@@ -158,8 +157,8 @@ public class ProfileController {
 
                     // we return 404 instead of 403, otherwise the user would know that a profile
                     // with the specified username exists, and this would leak information
-                    invocationResult = new APIOutput(
-                            null, code_53.toString(), HttpStatus.NOT_FOUND_404);
+                    invocationResult = new APIOutput(code_53.toString(), code_53);
+                    response.status(HttpStatus.NOT_FOUND_404);
                     App.logger.error("[{}{}{}{}{}{}{} ", className, " (" + getUserProfileLog + ")]: ", "user ",
                             loggedUser, " requested profile of user ", requestedUsername, " but is no admin");
                 }
@@ -175,7 +174,8 @@ public class ProfileController {
 
                     requestedParameters.update(hideKeys);
 
-                    invocationResult = new APIOutput(requestedParameters, code_0.toString(), HttpStatus.OK_200);
+                    invocationResult = new APIOutput(requestedParameters, code_0);
+                    response.status(HttpStatus.OK_200);
                 }
             }
             // it means that the user requested his own profile and we can safely return it
@@ -185,15 +185,14 @@ public class ProfileController {
 
                 loggedUserDAOInterfaceParameters.update(hideKeys);
 
-                invocationResult = new APIOutput(loggedUserDAOInterfaceParameters, code_0.toString(), HttpStatus.OK_200);
+                invocationResult = new APIOutput(loggedUserDAOInterfaceParameters, code_0);
+                response.status(HttpStatus.OK_200);
             }
         }
         // this exception is thrown when the configuration file was not found
         catch (FileNotFoundException e) {
-            invocationResult = new APIOutput(
-                    null,
-                    code_53.toString(),
-                    HttpStatus.NOT_FOUND_404);
+            invocationResult = new APIOutput(code_53.toString(), code_53);
+            response.status(HttpStatus.NOT_FOUND_404);
             App.logger.warn("[{}{}{} ", className, " (" + getUserProfileLog + ")]: ",
                     "warning:  (" + e + "). Probably, the user has yet to configure his profile");
         }
@@ -259,10 +258,11 @@ public class ProfileController {
                 // this as the raw parameters that come from the multipart HTML form
                 HashMap<String, byte[]> formParameters = getParametersFromMultipart(request);
 
-                // if the user said that he is the admin, then his name is the admin ID
-                // do not worry, we will check later that the user is actually the admin
-                if ("true".equals(new String(formParameters.get(Const.DAOInterfaceParameters.kIsAdminInCryptoAC))))
+                // if the user said that he is the admin, then his name is the admin ID.
+                // Do not worry, we will check later if the user is actually the admin.
+                if ("true".equals(new String(formParameters.get(Const.DAOInterfaceParameters.kIsAdminInCryptoAC)))) {
                     formParameters.put(Const.DAOInterfaceParameters.kUsernameInCryptoAC, admin.getBytes());
+                }
 
                 // this is where the user's keys are generated. These keys will
                 // be used by the user for interacting with the given storage system
@@ -299,8 +299,8 @@ public class ProfileController {
                     operationOutcomeCode = newUser.initializeUser().getReturningCode();
 
                 if (operationOutcomeCode != code_0) {
-                    invocationResult = new APIOutput(null, code_500.toString(),
-                            HttpStatus.INTERNAL_SERVER_ERROR_500);
+                    invocationResult = new APIOutput(code_500.toString(), code_500);
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
                     App.logger.error("[{}{}{}{}{}{} ", className, " (" + createProfileLog + ")]: ",
                             "error while instantiating the user ", usernameInCryptoAC, ": ",
                             operationOutcomeCode.toString());
@@ -312,49 +312,45 @@ public class ProfileController {
                     FileUtil.saveFileOnFileSystem(pathOfNewFile,
                             new ByteArrayInputStream(new GsonBuilder()
                                     .disableHtmlEscaping()
-                                    .create()
+                                    .create() // TODO ".excludeFieldsWithoutExposeAnnotation()"?
                                     .toJson(daoInterfaceParameters)
                                     .getBytes()),
                             FileUtil.SaveMode.THROW_EXCEPTION);
-                    invocationResult = new APIOutput(null, code_0.toString(), HttpStatus.OK_200);
+                    invocationResult = new APIOutput(code_0.toString(), code_0);
+                    response.status(HttpStatus.OK_200);
                 }
             }
             // it means that a not-admin user requested to create the profile for another user
-            else
-                invocationResult = new APIOutput(
-                        null, code_65.toString(), HttpStatus.FORBIDDEN_403);
+            else {
+                invocationResult = new APIOutput(code_65.toString(), code_65);
+                response.status(HttpStatus.FORBIDDEN_403);
+            }
         }
         // these exceptions are thrown when saving the file of the user
         catch (FileSystemException e) {
-            invocationResult = new APIOutput(null,
-                    code_37.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR_500);
+            invocationResult = new APIOutput(code_37.toString(), code_37);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
             App.logger.error("[{}{}{} ", className, " (" + createProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
         // these exceptions are thrown when reading data from parts
         catch (ServletException | IOException e) {
-            invocationResult = new APIOutput(null,
-                    code_66.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR_500);
+            invocationResult = new APIOutput(code_66.toString(), code_66);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
             App.logger.error("[{}{}{} ", className, " (" + createProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
         // this exception is thrown when a part is too big
         catch (IllegalArgumentException e) {
-            invocationResult = new APIOutput(
-                    null,
-                    code_422.toString(),
-                    HttpStatus.UNPROCESSABLE_ENTITY_422);
+            invocationResult = new APIOutput(code_422.toString(), code_422);
+            response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
             App.logger.error("[{}{}{} ", className, " (" + createProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
         // this exception is thrown when checking if the user is an admin or not
         catch (DAOException e) {
-            invocationResult = new APIOutput(
-                    null,
-                    code_63.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR_500);
+            invocationResult = new APIOutput(code_63.toString(), code_63);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
             App.logger.error("[{}{}{} ", className, " (" + createProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
@@ -432,11 +428,12 @@ public class ProfileController {
                     FileUtil.saveFileOnFileSystem(pathOfNewFile,
                             new ByteArrayInputStream(new GsonBuilder()
                                     .disableHtmlEscaping()
-                                    .create()
+                                    .create() // TODO ".excludeFieldsWithoutExposeAnnotation()"?
                                     .toJson(daoInterfaceParametersToUpdate)
                                     .getBytes()),
                             FileUtil.SaveMode.OVERWRITE);
-                    invocationResult = new APIOutput(null, code_0.toString(), HttpStatus.OK_200);
+                    invocationResult = new APIOutput(code_0.toString(), code_0);
+                    response.status(HttpStatus.OK_200);
                 }
                 // it means that the updated data that the user provided are not semantically correct
                 // (e.g., they do not satisfy the regex or the user tried to update final parameters
@@ -448,9 +445,8 @@ public class ProfileController {
                     DAOInterfaceParameters daoInterfaceParameters = loadDAOInterfaceParameters(loggedUser, selectedDAO);
                     RequestUtil.setSessionParameter(request, dataKey, daoInterfaceParameters);
 
-                    invocationResult = new APIOutput(null,
-                            updateCode.toString(),
-                            HttpStatus.UNPROCESSABLE_ENTITY_422);
+                    invocationResult = new APIOutput(updateCode.toString(), updateCode);
+                    response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
                     App.logger.error("[{}{}{}{} ", className, " (" + updateProfileLog + ")]: ",
                             "error while updating DAO data: ", updateCode.toString());
                 }
@@ -460,43 +456,37 @@ public class ProfileController {
             else {
                 // we return 404 instead of 403, otherwise the user would know that a profile
                 // with the specified username exists, and this would leak information
-                invocationResult = new APIOutput(
-                        null, code_53.toString(), HttpStatus.NOT_FOUND_404);
+                invocationResult = new APIOutput(code_53.toString(), code_53);
+                response.status(HttpStatus.NOT_FOUND_404);
                 App.logger.error("[{}{}{}{}{}{} ", className, " (" + updateProfileLog + ")]: ",
                         "not-admin user ", loggedUser, " asked to modify profile of user ", requestedUsername);
             }
         }
         // these exceptions are thrown when saving the file of the user
         catch (FileSystemException e) {
-            invocationResult = new APIOutput(null,
-                    code_37.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR_500);
+            invocationResult = new APIOutput(code_37.toString(), code_37);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
             App.logger.error("[{}{}{} ", className, " (" + updateProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
         // this exception is thrown when the user does not exist
         catch (FileNotFoundException e) {
-            invocationResult = new APIOutput(
-                    null,
-                    code_68.toString(),
-                    HttpStatus.NOT_FOUND_404);
+            invocationResult = new APIOutput(code_68.toString(), code_68);
+            response.status(HttpStatus.NOT_FOUND_404);
             App.logger.error("[{}{}{} ", className, " (" + updateProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
         // these exceptions are thrown when reading data from parts
         catch (ServletException | IOException e) {
-            invocationResult = new APIOutput(null,
-                    code_66.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR_500);
+            invocationResult = new APIOutput(code_66.toString(), code_66);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
             App.logger.error("[{}{}{} ", className, " (" + updateProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
         // this exception is thrown when a part is too big
         catch (IllegalArgumentException e) {
-            invocationResult = new APIOutput(
-                    null,
-                    code_422.toString(),
-                    HttpStatus.UNPROCESSABLE_ENTITY_422);
+            invocationResult = new APIOutput(code_422.toString(), code_422);
+            response.status(HttpStatus.UNPROCESSABLE_ENTITY_422);
             App.logger.error("[{}{}{} ", className, " (" + updateProfileLog + ")]: ",
                     "error:  (" + e + ")");
         }
@@ -545,6 +535,7 @@ public class ProfileController {
      */
     public static DAOInterfaceParameters fromStringToDAOInterfaceParameters(String string) {
 
+        // TODO ".excludeFieldsWithoutExposeAnnotation()"?
         // "disableHtmlEscaping" to avoid escaping the "=" base64 char
         String json = new GsonBuilder()
                 .disableHtmlEscaping()
