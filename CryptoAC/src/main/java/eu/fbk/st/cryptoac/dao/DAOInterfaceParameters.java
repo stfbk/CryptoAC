@@ -100,7 +100,7 @@ public class DAOInterfaceParameters {
      * @throws IllegalArgumentException if at least one of the parameters does not satisfy the regular expression
      */
     protected void checkParametersAreValid() {
-        if (!matchRegex(safeTextRegex, usernameInCryptoAC))
+        if (!matchRegex(safeTextNoSpacesRegex, usernameInCryptoAC))
             throw new IllegalArgumentException("the username parameter is null or it does not match a safe regular expression");
     }
 

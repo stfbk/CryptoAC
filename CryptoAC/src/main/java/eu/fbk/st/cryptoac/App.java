@@ -26,6 +26,59 @@ import static eu.fbk.st.cryptoac.util.Const.Server.*;
 import static java.lang.System.exit;
 import static spark.Spark.*;
 
+
+
+/**
+ * NB, quando convertirai il codice di CryptoAC, fai queste cose
+ *      - scegli se seguire l'approccio bottom-up o top-dowm
+ *      - converti una classe alla volta, facendo tutti gli unit tests, poi integration tests, infine system tests
+ *      - controlla se funzioni in overload possono essere semplificate con parametri nominati e valori di default
+ *      - quando concateni stringhe (e.g., nei log), usa i template "$variabile"
+ *      - converti i pojo in "data class"
+ *      - controlla la logica e migliorala. In particolare, considera:
+ *           * DAO per CryptoUtil
+ *           * Refactoring di come vengono create le DAOInterface
+ *      - "object" per i singleton
+ *      - c'e' "try-with-resource" in Kotlin, ma sintassi e' diversa
+ *
+ * Transizione a Kotlin; Kotlin ha le seguenti feature che possono essere interessanti:
+ *      - parametri nominati (named arguments) e parametri formali con valori di default (per ridurre overload)
+ *      - funzioni infisse se un singolo parametro (+ leggibile ma attento all'uso).
+ *      - puoi associare funzioni infisse ad operatori (*, +, /, -, [], ...)
+ *      - "vararg" per argomenti variabili. Un vararg a run-time e' un array.
+ *      - Per convertire un array in un vararg usa l'operatore spred "*"
+ *      - "var" per variabili e "val" per costanti. Puoi dichiare esplicitamente il tipo o lasciarlo implicito
+ *      - di default, le variabili in Kotlin non possono essere assegnate a NULL (Null Safety). Per dire che una
+ *        variabile puo' essere assegnata a NULL, dichiarala con il punto di domanda ("var nullable: String?")
+ *      - lambda ("it" e' il nome implicito se la lambda ha un solo parametro)
+ *          > fun containsEven(collection: Collection<Int>): Boolean = collection.any { it % 2 == 0 }
+ *      - il costruttore di default di una classe e' implicito
+ *      - classi sono "final" di default. Per estenderle, usa la keyword "open" prima di "class"
+ *      - per dichiarare una sottoclasse, usa ":" (e.g., class Rectangle(...): Shape {...}")
+ *      - per classi POJO, usa la keyword "data" prima di "class"
+ *          > data class Person(val name: String, val age: Int)
+ *      - dentro le stringhe, puoi accedere alle variabili con "$a"
+ *      - ci sono i range "x..y", molto utili se combinati con l'operatore "in" e lo "step"
+ *      - If-not-null shorthand -> println(files?.size) // size is printed if files is not null
+ *      - If-not-null-else shorthand -> println(files?.size ?: "empty") // if files is null, this prints "empty"
+ *      - gli "switch" sono "when", e valutano ad espressione (i.e., si possono ritornare). Anche "try-catch" e "if" sono espressioni
+ *
+ *
+ *
+ *
+ * Framework per Kotlin:
+ *      SparkJava -> Ktor
+
+ */
+
+
+
+
+
+
+
+
+
 /**
  * The application entry point; it creates a server exposing REST APIs, depending on the given parameters.
  */

@@ -77,11 +77,11 @@ public class DAOInterfaceAWSParameters extends DAOInterfaceMySQLParameters {
      */
     protected void checkAWSParametersAreValid() {
 
-        if (!(matchRegex(safeTextRegex, awsS3BucketDownload)))
+        if (!(matchRegex(safeTextNoSpacesRegex, awsS3BucketDownload)))
             throw new IllegalArgumentException("the AWS S3 download bucket is null or it does not match a safe regular expression");
-        if (!(matchRegex(safeTextRegex, awsS3BucketUpload)))
+        if (!(matchRegex(safeTextNoSpacesRegex, awsS3BucketUpload)))
             throw new IllegalArgumentException("the AWS S3 upload bucket is null or it does not match a safe regular expression");
-        if (!(matchRegex(safeTextRegex, awsS3Region)))
+        if (!(matchRegex(safeTextNoSpacesRegex, awsS3Region)))
             throw new IllegalArgumentException("the AWS region is null or it does not match a safe regular expression");
         if (!(matchRegex(awsAccessKeyRegex, awsAccessKey)))
             throw new IllegalArgumentException("the AWS access key is null or it does not match the AWS access key regular expression");

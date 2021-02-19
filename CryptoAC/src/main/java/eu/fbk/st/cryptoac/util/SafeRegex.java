@@ -12,10 +12,10 @@ public class SafeRegex {
     /**
      * the safe (not-empty) text regex:
      * ^                     # start of the line
-     *   [-a-zA-Z0-9 ._/+=]  # one or more repetitions of these chars
+     *   [-a-zA-Z0-9 ._/+=]  # one or more repetitions of these chars (no space)
      * $                     # end of the line
      */
-    public static final String safeTextRegex = "^[-a-zA-Z0-9 ._/+=]+$";
+    public static final String safeTextNoSpacesRegex = "^[-a-zA-Z0-9._/+=]+$";
 
     /**
      * the safe (not-empty) URL regex:
@@ -55,20 +55,20 @@ public class SafeRegex {
      *   )               # end of group #1
      *   (\.(?!$)|$))    # ensure IPv4 doesn't end with a dot
      *   {4}             # 4 times
-     * $                                # end of the line
+     * $                 # end of the line
      */
     public static final String ipv4Regex = "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
 
     /**
      * the safe (not-empty) regex matching either the URL or the IPv4 regexes.
      */
-    public static final String urlOrIPRegex = urlRegex + "|" + ipv4Regex;
+    public static final String urlOrIPV4Regex = urlRegex + "|" + ipv4Regex;
 
     /**
      * the safe (also empty) regex matching base64 encoded data.
      * ^                        # start of the line
      *   (?:                    # start of non-capturing group #1
-     *     [A-Za-z0-9+/]{4}*    # zero or more repetitions of 4 of these chars
+     *     [A-Za-z0-9+/]{4}+    # one or more repetitions of 4 of these chars
      *   )                      # end of group #1
      *   (?:                    # start of non-capturing group #1
      *     [A-Za-z0-9+/]{2}==   # two of these chars followed by "=="
@@ -77,12 +77,12 @@ public class SafeRegex {
      *   )                      # end of group #2
      * $               # end of the line
      */
-    public static final String base64Regex = "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$";
+    public static final String base64Regex = "^(?:[A-Za-z0-9+/]{4})+(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$";
 
     /**
      * the AWS access key regex consists of 20 chars among:
      * ^               # start of the line
-     *   [A-Z0-9]{40}  # 20 repetitions of these chars
+     *   [A-Z0-9]{20}  # 20 repetitions of these chars
      * $               # end of the line
      */
     public static final String awsAccessKeyRegex = "^[A-Z0-9]{20}$";

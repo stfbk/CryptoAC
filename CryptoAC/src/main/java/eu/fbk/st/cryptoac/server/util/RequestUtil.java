@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
-import static eu.fbk.st.cryptoac.server.util.ErrorUtil.badRequest;
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.notAcceptable;
 import static eu.fbk.st.cryptoac.util.SafeRegex.*;
 import static spark.Spark.halt;
@@ -268,7 +267,7 @@ public class RequestUtil {
 
                         // TODO check also the password against a regex? how?
                         //  we should first decide a policy wrt passwords, like hashing
-                        if (matchRegex(safeTextRegex, givenUsername)) {
+                        if (matchRegex(safeTextNoSpacesRegex, givenUsername)) {
                             credentials = new Credentials(givenUsername, givenPassword);
                         }
                         else {
@@ -289,7 +288,7 @@ public class RequestUtil {
                 }
                 // it means that the authentication method is not supported
                 else {
-                    if (matchRegex(safeTextRegex, authenticationMethod)) {
+                    if (matchRegex(safeTextNoSpacesRegex, authenticationMethod)) {
                         App.logger.error("[{}{}{}{} ", className, " (" + getCredentialsFromAuthnHeaderBasic + ")]: ",
                                 "type of authentication is not supported: ", authenticationMethod);
                     }

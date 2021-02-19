@@ -82,11 +82,11 @@ public class DAOInterfaceLocalParameters extends DAOInterfaceMySQLParameters {
      */
     protected void checkLocalParametersAreValid() {
 
-        if (!(matchRegex(urlOrIPRegex, rmURL)))
+        if (!(matchRegex(urlOrIPV4Regex, rmURL)))
             throw new IllegalArgumentException("the reference monitor URL parameter is null or it does not match a safe regular expression");
-        if (!(matchRegex(urlOrIPRegex, dsURL)))
+        if (!(matchRegex(urlOrIPV4Regex, dsURL)))
             throw new IllegalArgumentException("the data storage URL parameter is null or it does not match a safe regular expression");
-        if (!(matchRegex(urlOrIPRegex, opaURL)))
+        if (!(matchRegex(urlOrIPV4Regex, opaURL)))
             throw new IllegalArgumentException("the OPA server URL parameter is null or it does not match a safe regular expression");
 
         try {

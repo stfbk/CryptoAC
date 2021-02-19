@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static eu.fbk.st.cryptoac.server.util.ErrorUtil.badRequest;
-import static eu.fbk.st.cryptoac.server.util.ErrorUtil.unauthorized;
 import static eu.fbk.st.cryptoac.util.SafeRegex.*;
 import static spark.Spark.halt;
 
@@ -33,7 +32,7 @@ public class FiltersUtil {
     public static Filter logRequest = (Request request, Response response) -> {
         String method = request.requestMethod();
         String uri = request.uri();
-        if (matchRegex(safeTextRegex, method) && matchRegex(uriRegex, uri)) {
+        if (matchRegex(safeTextNoSpacesRegex, method) && matchRegex(uriRegex, uri)) {
             App.logger.info("{}{}{}{} ","Received a ", request.requestMethod() ," request for ", request.uri());
         }
         else {
