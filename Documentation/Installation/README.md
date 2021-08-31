@@ -1,12 +1,16 @@
+# TODO
+
+Page under construction (31/08/2021), available soon.
+
+<!--
 # CryptoAC | Documentation | Installation
 
-> Last Update: 19/02/2020
+> Last Update: 31/08/2021
+
 
 ## One Docker to rule them all
 
-*CryptoAC* is shipped in a Docker container for an easy orchestration and portability across different platforms. To enhance maintainability and simplify deployments, each instance of *CryptoAC* (i.e., each docker container) can be configured to act as a proxy, reference monitor or data storage. The configuration of the entity that an instance of *CryptoAC* is acting as is called "**Operation Mode**".
-
-> The metadata storage is a MySQL8+ Docker container
+*CryptoAC* is shipped in a Docker container for an easy orchestration and portability across different platforms. To enhance maintainability and simplify deployments, *CryptoAC* uses the dockerized version of third-party software modules(e.g., Mosquitto, MySQL).
 
 
 ## Toy Deployment
@@ -34,6 +38,8 @@ To try *CryptoAC* locally on your machine, follow the instructions below:
 * if you ever get an error alert saying "The user related to the operation was created but not initialized (500)", probably you created the user but did not follow all the steps in 7.
 * if you add a file as a user but then you do not see the file in the table of the user's interface, that's normal. Currently, the theoretical formulation of the CAC scheme does not grant any permission to the user who uploads a file. Instead, the file will appear on the files' table of the admin's interface. To allow a user to read a file, perform the following actions as in the admin's interface: (i) create a role, (ii) assign the user to the role and (iii) assign permission to the role over the file; 
 * for other issues, feel free to contact the developers at sberlato@fbk.eu.
+
+-->
 
 
 ## Real Deployment

@@ -1,23 +1,25 @@
 # CryptoAC | Documentation
 
-> Last Update: 19/02/2020
+> Last Update: 31/08/2021
+
 
 ## Introduction
 
-*CryptoAC* allows enforcing both traditional and cryptographic *Role-Based Access Control* (RBAC) policies to control access to outsourced sensitive data. *CryptoAC* employs container technology (i.e., Docker) and RESTful APIs for easy integration with other services. Moreover, *CryptoAC* decouples the management of the RBAC policy from the storage of data through the [**Data Access Object**](https://en.wikipedia.org/wiki/Data_access_object) (DAO) pattern to be independent of the actual storage solution. 
+*CryptoAC* joins cutting-edge academic reserch with emerging and established paradigms such as microservices (Docker), RESTful APIs, Kotlin multiplatform and the React framework. Thanks to a careful design enabling synergies among these technologies, *CryptoAC* guarantees portability, flexibility, modularity and easy integration with other services.
 
 
 ## Architecture
 
-*CryptoAC* is composed of four software modules implemented in Java and shipped in Docker Containers:
-* [**Proxy**](./Proxy) - exposes a web app together with RESTful APIs to interface users with data and perform cryptographic computations;
-* [**Reference Monitor**](./RM) - mediates users' requests and ensures compliance to the policy;
+*CryptoAC* implements and integrates several software modules which are differently combined based on the chosen scenario (e.g., IoT, Cloud) and CAC scheme. At high-level, *CryptoAC* uses the following modules:
+* [**Proxy**](./Proxy) - the core of *CryptoAC*, it performs cryptographic computations and allows users to interface with data through both a web app and RESTful APIs;
+* [**Reference Monitor**](./RM) - mediates users' requests to add and write files and ensures compliance with the access control policy for data protection;
 * [**Metadata Storage**](./MS) - stores metadata such as public cryptographic keys;
-* [**Data Storage**](./DS) - stores the encrypted data;
+* [**Data Storage**](./DS) - stores the encrypted (sensitive) data and potentially perform other security checks;
+* [**Open Policy Agent**](./OPA) - allows defining traditional (i.e., centrally enforced) RBAC policies.
 
-Finally, *CryptoAC* integrates the [**Open Policy Agent**](./OPA) service to allow enforcing traditional RBAC policies as well.
-
-> If used in a decentralized blockchain-based solution, the last three modules can be easily replaced by the distributed ledger (for data and metadata storage) and smart contracts (for Reference Monitor).
+For an in-depth view of the use of these modules in the context of a specific implementation, please refer to one of the supported scenarios:
+* [**Cloud**](./Cloud) 
+* [**MQTT**](./MQTT)
 
 
 ## Installation

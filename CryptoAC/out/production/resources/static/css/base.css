@@ -1,0 +1,443 @@
+/* ======================
+     FONT RELATED STUFF
+   ====================== */
+
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+/* hide scrollbar */
+html::-webkit-scrollbar {
+    width: 0 !important;
+
+}
+/* hide scrollbar */
+html {
+    overflow: -moz-scrollbars-none;
+    -ms-overflow-style: none;
+    overflow-y: scroll;
+}
+
+/* setting font and background of the page */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+/* This is for the card containing info about CryptoAC (version, developed by, ...) */
+h4 {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display:inline-block;
+    margin: 8px 8px 8px 8px;
+    color: #7f8c8d;
+}
+
+/* h2 text */
+h2 {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display:inline-block;
+    margin: 10px 8px 10px 8px;
+    color: #34495e;
+}
+
+p {
+    padding: 3px;
+}
+
+
+
+/* for the links on the navbar (addUser, addRole...) */
+a, a:hover, a:focus {
+    color: #bdc3c7;
+    text-decoration: none; /* no line under the link */
+    transition: all 0.5s;  /* transition of taking the background color */
+}
+
+/* set color to silver */
+a.greyLink:hover {
+    color: #bdc3c7;
+}
+
+/* moreover, set link color to asbestos*/
+a.greyLink {
+    color: #7f8c8d;
+    float: right;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+
+
+
+
+/* ======================
+     NAV AND SIDE BARS
+   ====================== */
+
+/* wrapper, div containing all the page */
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    /*perspective: 1500px; this conflicts with the sidebar, making it scrolling */
+}
+
+/* stile for the horizontal navbar */
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* stile for the button that collapses the navbar */
+.navbar-btn {
+    box-shadow: none;
+    background: #fff;
+    outline: none;
+    border: none;
+    margin-bottom: 5px;
+}
+
+/* hide scrollbar */
+#sidebar::-webkit-scrollbar {
+    width: 0 !important;
+}
+
+/* lateral sidebar */
+#sidebar {
+    min-width: 275px;
+    max-width: 275px;
+    position: fixed;
+    height: 100%;
+    overflow-y: scroll;
+    overflow: -moz-scrollbars-none;
+    -ms-overflow-style: none;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    padding-bottom: 20px;
+    color: #fff;
+    transition: all 0.6s cubic-bezier(0.945, 0.020, 0.270, 0.665);
+    transform-origin: bottom left;
+    background-image: url('/assets/navbar1.jpg');
+    background-size: cover; /* or contain depending on what you want */
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* when active, hide the sidebar */
+#sidebar.active {
+    margin-left: -265px;
+}
+
+/* the header of the navbar, where it is written "CryptoAC" */
+#sidebar .sidebar-header {
+    padding: 20px 0 10px 0;
+}
+
+/* this is what separates the different <ul> lists in the navbar */
+#sidebar ul.components {
+    padding: 10px 0 0 0;
+    border-bottom: 1px solid #47748b;
+}
+
+/* text on the navbar */
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+/* links on the navbar */
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1em;
+    display: block;
+}
+
+/* when over a white link, set text and background colors */
+#sidebar ul li a.whiteLink:hover {
+    color: #3498db;
+    background: #fff;
+}
+
+/* when over a red link, set text and background colors */
+#sidebar ul li a.redLink:hover {
+    color: #fff;
+    background: #c0392b;
+}
+
+/* other stuff related to the sidebar */
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #2980b9 ;
+}
+
+/* this is related to the sidebar "addUser", ...
+   and in particular to the positioning of the arrow */
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+/* rotate up the arrow when section is expanded */
+#sidebar ul li a[aria-expanded=true]::after {
+    transform: rotate(180deg) translateY(50%);;
+
+}
+
+
+/* ======================
+      SIDEBAR COLLAPSED
+   ====================== */
+#sidebarCollapse {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+#sidebarCollapse span {
+    width: 80%;
+    height: 2px;
+    margin: 0 auto;
+    display: block;
+    background: #555;
+    transition: all 0.8s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+    transition-delay: 0.2s;
+}
+
+#sidebarCollapse span:first-of-type {
+    transform: rotate(45deg) translate(2px, 2px);
+}
+#sidebarCollapse span:nth-of-type(2) {
+    opacity: 0;
+}
+#sidebarCollapse span:last-of-type {
+    transform: rotate(-45deg) translate(1px, -1px);
+}
+
+#sidebarCollapse.active span {
+    transform: none;
+    opacity: 1;
+    margin: 5px auto;
+}
+
+
+
+
+/* ======================
+       CONTENT STYLE
+   ====================== */
+#content {
+    width: 100%;
+    margin-left: 275px; /*  same margin as the width of the sidebar*/
+    padding: 30px 30px 30px 30px;
+    transition: all 0.6s cubic-bezier(0.945, 0.020, 0.270, 0.665);
+    transform-origin: bottom left;
+}
+
+#content.active {
+    margin-left: 0 !important;
+}
+
+#developedBy {
+    cursor: pointer;
+}
+
+.page-link {
+    border: none !important;
+}
+
+.centerThis {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+ul {
+    margin-bottom: 0 !important;
+}
+
+
+.custom-file-upload {
+    padding-top: 15px;
+    display: inline-block;
+    cursor: pointer;
+    color: #34495e;
+}
+
+.i-am-centered {
+    margin: auto !important;
+    max-width: 300px !important;
+}
+
+/* initially, hide the actions the client can perform */
+#userActions {
+    display: none;
+}
+
+#userActions {
+    display: none;
+}
+
+#getStarted {
+    text-align: center;
+    margin-top: 75%;
+    margin-bottom: 10px;
+    height: 150px;
+}
+
+.wrap-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ======================
+ GREY AREA TO CLICK FOR SIDEBAR COLLAPSE
+   ====================== */
+#greyAreaCollapseSidebar {
+    visibility: hidden;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       275px; /* same as sidebar length */
+    height:     100%;
+    width:      100%;
+    /*background: rgba( 236, 240, 241, .8 ),*/
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+
+
+
+
+
+/* ======================
+       MEDIA QUERIES
+   ====================== */
+
+/* less than 1210 */
+@media (max-width: 1210px) {
+
+    /* reduce fonts */
+    h4 {
+        text-align: center ;
+        font-size: 6px ;
+        margin: 4px 4px 4px 4px ;
+    }
+    h2 {
+        text-align: center;
+        font-size: 12px;
+        margin: 5px 4px 5px 4px;
+        color: #34495e;
+    }
+    th {
+        font-size: 12px;
+    }
+    p {
+        font-size: 12px;
+    }
+    span {
+        font-size: 12px;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+
+    #greyAreaCollapseSidebar.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* remove margin from content */
+    #content {
+        margin-left: 0;
+    }
+
+    #sidebarCollapse span:first-of-type,
+    #sidebarCollapse span:nth-of-type(2),
+    #sidebarCollapse span:last-of-type {
+        transform: none;
+        opacity: 1;
+        margin: 5px auto;
+    }
+    #sidebarCollapse.active span {
+        margin: 0 auto;
+    }
+    #sidebarCollapse.active span:first-of-type {
+        transform: rotate(45deg) translate(2px, 2px);
+    }
+    #sidebarCollapse.active span:nth-of-type(2) {
+        opacity: 0;
+    }
+    #sidebarCollapse.active span:last-of-type {
+        transform: rotate(-45deg) translate(1px, -1px);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* This is for the waiting wheel  */
+/* https://stackoverflow.com/questions/1964839/how-can-i-create-a-please-wait-loading-animation-using-jquery */
+
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.waitingWheel {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 )
+    url('/gif/waitingWheel.gif')
+    50% 50%
+    no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading .waitingWheel {
+    overflow: hidden;
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .waitingWheel {
+    display: block;
+}
+
+
+

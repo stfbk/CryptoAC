@@ -1,0 +1,8 @@
+FROM eclipse-mosquitto
+
+COPY ./mosquitto.conf /mosquitto/config/mosquitto2.conf
+
+COPY ./dynamic-security.json /mosquitto/config/dynamic-security.json
+
+CMD ["/usr/sbin/mosquitto", "-c", "/mosquitto/config/mosquitto2.conf"]
+ 

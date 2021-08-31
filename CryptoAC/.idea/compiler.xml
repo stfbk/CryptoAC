@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="CryptoAC" />
-      </profile>
-    </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="CryptoAC" target="11" />
+    <option name="BUILD_PROCESS_HEAP_SIZE" value="8192" />
+    <bytecodeTargetLevel target="11">
+      <module name="CryptoAC.shoppinglist.commonTest" target="11" />
+      <module name="CryptoAC.shoppinglist.jvmTest" target="11" />
+      <module name="eu.fbk.st.shoppinglist.commonTest" target="11" />
+      <module name="eu.fbk.st.shoppinglist.jvmTest" target="11" />
+      <module name="org.example.shoppinglist.commonTest" target="1.8" />
+      <module name="org.example.shoppinglist.jvmTest" target="1.8" />
+      <module name="shoppinglist.commonMain" target="11" />
+      <module name="shoppinglist.commonTest" target="1.8" />
+      <module name="shoppinglist.jvmMain" target="11" />
+      <module name="shoppinglist.jvmTest" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

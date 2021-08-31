@@ -1,16 +1,11 @@
-# CryptoAC | CryptoAC | Documentation | OPA
+# CryptoAC | Documentation | Open Policy Agent
 
-> Last Update: 05/02/2020
-
+> Last Update: 31/08/2021
 
 ## Introduction
 
-The Open Policy Agent (OPA) is an open source, general-purpose policy engine that decouples policy decision-making from policy enforcement. OPA provides a high-level declarative language (Rego) that allows to specify policy as code and offers APIs to offload policy decision-making. In *CryptoAC*, we use OPA as another service to which the [**Data Storage**](../DS) asks for decisions (i.e., add/read/write files).
-
-
-## Background
-
-When adding a new file, *CryptoAC* allows to specify whether to enforce cryptographic, traditional or both Role-Based Access Control (RBAC). OPA has [**document**](./OPARBACDocumentExample.json) for storing data and a [**policy**](./OPARBACPolicy.rego) for enforcement. An example input looks like this:
+The Open Policy Agent (OPA) allows defining traditional (i.e., centrally enforced) RBAC policies. The following implementations of OPA are available (between square parenthesis there is the list of scenarios using the related implementation):
+* [Cloud] **OPA** - [**OPA**](https://www.openpolicyagent.org/) is an open source, general-purpose policy engine that decouples policy decision-making from policy enforcement. OPA provides a high-level declarative language (Rego) that allows to specify policy as code and offers APIs to offload policy decision-making. In *CryptoAC*, OPA is used to add a further layer of security beside the CAC schemes. OPA has a [**document**](./OPARBACDocumentExample.json) for storing data and a [**policy**](./OPARBACPolicy.rego) for the enforcement. An example input looks like this:
 
 ```json
 {"input":{"user": "stefano", "associatedPermission": "Read", "associatedFile":"exam"}}

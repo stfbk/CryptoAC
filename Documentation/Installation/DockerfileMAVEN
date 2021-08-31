@@ -1,0 +1,5 @@
+FROM maven:3.6.3-jdk-11
+
+COPY CryptoAC/CryptoAC2/ ./
+
+ENTRYPOINT [ "mvn", "test"]

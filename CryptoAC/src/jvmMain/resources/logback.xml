@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Define the CRLFConverter -->
+    <conversionRule conversionWord="crlf" converterClass="org.owasp.security.logging.mask.CRLFConverter" />
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Encode any CRLF chars in the message and limit its maximum size to 10,000 characters -->
+            <pattern>[%thread] %-5level - %crlf(%.-10000msg) %n</pattern>
+        </encoder>
+    </appender>
+    <root level="info">
+        <appender-ref ref="Console" />
+    </root>
+</configuration>
