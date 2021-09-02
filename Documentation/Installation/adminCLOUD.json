@@ -1,0 +1,26 @@
+{
+    "username":"admin",
+    "isAdmin":true,
+    "asymEncPublicKeyBase64":"bnVsbA==",
+    "asymEncPrivateKeyBase64":"bnVsbA==",
+    "asymSigPublicKeyBase64":"bnVsbA==",
+    "asymSigPrivateKeyBase64":"bnVsbA==",
+    "msMySQLInterfaceParameters":{
+      "username":"admin",
+      "port":3306,
+      "password":"password",
+      "url":"10.1.0.6"
+   },
+    "rmCloudInterfaceParameters":{
+       "port":8443,
+       "url":"10.1.0.7"
+    },
+    "dsCloudInterfaceParameters":{
+       "port":8443,
+       "url":"10.1.0.8"
+    },
+    "opaInterfaceParameters":{
+       "port":8181,
+       "url":"10.1.0.9"
+    }
+ }

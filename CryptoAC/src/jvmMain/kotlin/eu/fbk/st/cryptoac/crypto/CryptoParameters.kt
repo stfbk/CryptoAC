@@ -11,4 +11,36 @@ data class CryptoParameters(
     val asymSigKeysLength: Int, val asymSigKeysGenAlgorithm: String, val asymSigAlgorithm: String,
     val symKeyLength: Int, val symAlgorithm: String,
     val hashAlgorithm: String,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CryptoParameters
+
+        if (asymEncKeysLength != other.asymEncKeysLength) return false
+        if (asymEncKeysGenAlgorithm != other.asymEncKeysGenAlgorithm) return false
+        if (asymEncAlgorithm != other.asymEncAlgorithm) return false
+        if (asymSigKeysLength != other.asymSigKeysLength) return false
+        if (asymSigKeysGenAlgorithm != other.asymSigKeysGenAlgorithm) return false
+        if (asymSigAlgorithm != other.asymSigAlgorithm) return false
+        if (symKeyLength != other.symKeyLength) return false
+        if (symAlgorithm != other.symAlgorithm) return false
+        if (hashAlgorithm != other.hashAlgorithm) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = asymEncKeysLength
+        result = 31 * result + asymEncKeysGenAlgorithm.hashCode()
+        result = 31 * result + asymEncAlgorithm.hashCode()
+        result = 31 * result + asymSigKeysLength
+        result = 31 * result + asymSigKeysGenAlgorithm.hashCode()
+        result = 31 * result + asymSigAlgorithm.hashCode()
+        result = 31 * result + symKeyLength
+        result = 31 * result + symAlgorithm.hashCode()
+        result = 31 * result + hashAlgorithm.hashCode()
+        return result
+    }
+}

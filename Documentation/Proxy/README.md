@@ -10,7 +10,7 @@ The proxy is the core of *CryptoAC*. It performs cryptographic computations and 
 * **roles**: roles are created internally in an organization for various job functions (e.g., doctor, student, dean, researcher);
 * **files**: files usually contain sensitive or personal data. Each file is encrypted with a symmetric key. Both traditional and cryptographic policies can be enforced over files.
 
-Each element in *CryptoAC* has an identifier (i.e., username, role name and file name) and a random token of 20 bytes for anonymity. Then, each user and role has a pair of asymmetric keys for encryption and decryption and another pair for signing and verifying signatures. Moreover, users and roles may be found in three different statuses:
+Each element in *CryptoAC* has an identifier (i.e., username, role name and file name) and a token of 20 bytes for anonymity. Then, each user and role has a pair of asymmetric keys for encryption and decryption and another pair for signing and verifying signatures. Moreover, users and roles may be found in three different statuses:
 * **incomplete**: the element was created but it is not fully configured (e.g., a user missing the keys);
 * **operational**: the element is present, fully configured and is ready for use;
 * **deleted**: the element was deleted.

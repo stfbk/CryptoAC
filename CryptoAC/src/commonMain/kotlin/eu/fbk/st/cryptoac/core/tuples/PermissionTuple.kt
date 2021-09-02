@@ -39,5 +39,37 @@ class PermissionTuple(
 
     /** Return a String array of the significant fields of this tuple. */
     override fun toArray(): Array<String> = arrayOf(roleName, fileName, symKeyVersionNumber.toString(), permission.toString())
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (!super.equals(other)) return false
+
+        other as PermissionTuple
+
+        if (roleName != other.roleName) return false
+        if (fileName != other.fileName) return false
+        if (roleToken != other.roleToken) return false
+        if (fileToken != other.fileToken) return false
+        if (permission != other.permission) return false
+        if (encryptedSymKey != other.encryptedSymKey) return false
+        if (roleVersionNumber != other.roleVersionNumber) return false
+        if (symKeyVersionNumber != other.symKeyVersionNumber) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + roleName.hashCode()
+        result = 31 * result + fileName.hashCode()
+        result = 31 * result + roleToken.hashCode()
+        result = 31 * result + fileToken.hashCode()
+        result = 31 * result + permission.hashCode()
+        result = 31 * result + (encryptedSymKey?.hashCode() ?: 0)
+        result = 31 * result + roleVersionNumber
+        result = 31 * result + symKeyVersionNumber
+        return result
+    }
 }
 

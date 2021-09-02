@@ -79,4 +79,38 @@ class CoreParametersMQTT(
         msMySQLInterfaceParameters.obscureSensitiveFields()
         dsMQTTInterfaceParameters.obscureSensitiveFields()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (!super.equals(other)) return false
+
+        other as CoreParametersMQTT
+
+        if (username != other.username) return false
+        if (isAdmin != other.isAdmin) return false
+        if (asymEncPublicKeyBase64 != other.asymEncPublicKeyBase64) return false
+        if (asymEncPrivateKeyBase64 != other.asymEncPrivateKeyBase64) return false
+        if (asymSigPublicKeyBase64 != other.asymSigPublicKeyBase64) return false
+        if (asymSigPrivateKeyBase64 != other.asymSigPrivateKeyBase64) return false
+        if (coreType != other.coreType) return false
+        if (msMySQLInterfaceParameters != other.msMySQLInterfaceParameters) return false
+        if (dsMQTTInterfaceParameters != other.dsMQTTInterfaceParameters) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + username.hashCode()
+        result = 31 * result + isAdmin.hashCode()
+        result = 31 * result + asymEncPublicKeyBase64.hashCode()
+        result = 31 * result + asymEncPrivateKeyBase64.hashCode()
+        result = 31 * result + asymSigPublicKeyBase64.hashCode()
+        result = 31 * result + asymSigPrivateKeyBase64.hashCode()
+        result = 31 * result + coreType.hashCode()
+        result = 31 * result + msMySQLInterfaceParameters.hashCode()
+        result = 31 * result + dsMQTTInterfaceParameters.hashCode()
+        return result
+    }
 }

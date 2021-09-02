@@ -9,7 +9,10 @@ private val logger = KotlinLogging.logger {}
 
 /** Parameters ([username], [password], [port] and [url]) for configuring the MS as a MySQL database. */
 @Serializable
-class MSInterfaceMySQLParameters(var username: String, var port: Int, var password: String, var url: String) : MSInterfaceParameters() {
+class MSInterfaceMySQLParameters(
+    var username: String, var password: String,
+    var port: Int, var url: String
+) : MSInterfaceParameters() {
 
     /** Check the parameters are valid through regular expressions and return true if they are, false otherwise. */
     override fun checkParameters(): Boolean =
@@ -47,5 +50,27 @@ class MSInterfaceMySQLParameters(var username: String, var port: Int, var passwo
     /** Obscure (e.g., overwrite values of) sensitive fields. */
     override fun obscureSensitiveFields() {
         password = "***"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as MSInterfaceMySQLParameters
+
+        if (username != other.username) return false
+        if (password != other.password) return false
+        if (port != other.port) return false
+        if (url != other.url) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = username.hashCode()
+        result = 31 * result + password.hashCode()
+        result = 31 * result + port
+        result = 31 * result + url.hashCode()
+        return result
     }
 }

@@ -31,6 +31,26 @@ abstract class ActiveElement : Element() {
             ).substring(0, length)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (!super.equals(other)) return false
+
+        other as ActiveElement
+
+        if (asymEncKeys != other.asymEncKeys) return false
+        if (asymSigKeys != other.asymSigKeys) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + (asymEncKeys?.hashCode() ?: 0)
+        result = 31 * result + (asymSigKeys?.hashCode() ?: 0)
+        return result
+    }
 }
 
 expect fun digest(algorithm: String, bytes: ByteArray): String

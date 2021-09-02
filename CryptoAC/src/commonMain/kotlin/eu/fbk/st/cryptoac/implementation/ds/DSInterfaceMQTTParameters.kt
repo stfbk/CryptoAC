@@ -44,6 +44,26 @@ class DSInterfaceMQTTParameters(var port: Int, var url: String, var password: St
     override fun obscureSensitiveFields() {
         password = "***"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as DSInterfaceMQTTParameters
+
+        if (port != other.port) return false
+        if (url != other.url) return false
+        if (password != other.password) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = port
+        result = 31 * result + url.hashCode()
+        result = 31 * result + password.hashCode()
+        return result
+    }
 }
 
 /** The possible ACL types Mosquitto supports in the dynamic security plugin. */

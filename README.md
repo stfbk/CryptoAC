@@ -1,4 +1,4 @@
-# COERCIVE | CryptoAC
+# CryptoAC
 
 > Last Update: 31/08/2021
 

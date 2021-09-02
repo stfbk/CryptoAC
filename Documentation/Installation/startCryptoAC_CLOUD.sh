@@ -1,0 +1,1 @@
+docker-compose --env-file .cloud.env.dev -f ./docker-compose-cloud.yml up

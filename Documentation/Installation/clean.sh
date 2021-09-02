@@ -1,10 +1,3 @@
-docker rm docker_rm_1
-docker rm docker_ms_1
-docker rm docker_ds_1
-docker rm docker_proxy_1
-docker rm docker_opa_1
+docker rm -f installation_cryptoac_mosquitto_1 installation_cryptoac_mysql_1 installation_cryptoac_opa_1 installation_cryptoac_proxy_1 installation_cryptoac_rm_1 installation_cryptoac_ds_1
 
-docker rmi docker_rm
-docker rmi docker_ms
-docker rmi docker_ds
-docker rmi docker_proxy
+docker rmi -f cryptoac_mosquitto cryptoac_mysql cryptoac_opa cryptoac_cryptoac

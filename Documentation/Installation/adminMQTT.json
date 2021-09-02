@@ -1,0 +1,19 @@
+{
+    "username":"admin",
+    "isAdmin":true,
+    "asymEncPublicKeyBase64":"bnVsbA==",
+    "asymEncPrivateKeyBase64":"bnVsbA==",
+    "asymSigPublicKeyBase64":"bnVsbA==",
+    "asymSigPrivateKeyBase64":"bnVsbA==",
+    "msMySQLInterfaceParameters":{
+       "username":"admin",
+       "port":3306,
+       "password":"password",
+       "url":"10.1.0.6"
+    },
+    "dsMQTTInterfaceParameters":{
+       "port":1883,
+       "url":"10.1.0.5",
+       "password":"password"
+    }
+ }

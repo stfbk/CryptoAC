@@ -1,0 +1,36 @@
+version: '3'
+services:
+  cryptoac_proxy:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACPROXYHOSTIP}"
+    image: cryptoac_proxy:latest
+    ports:
+      - "${CRYPTOACPROXYHOSTPORT}:${CRYPTOACPROXYPROXYPORT}"
+  cryptoac_mosquitto:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACMOSQUITTOHOSTIP}"
+    image: cryptoac_mosquitto:latest
+    ports:
+      - "${CRYPTOACMOSQUITTOPORT}:${CRYPTOACMOSQUITTOPORT}"
+  cryptoac_mysql:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACMYSQLHOSTIP}"
+    image: cryptoac_mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "${CRYPTOACMYSQLPASSWORD}"
+    ports:
+      - "${CRYPTOACMYSQLHOSTPORT}:${CRYPTOACMYSQLHOSTPORT}"
+networks:
+  test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.0.0/24
+
+
+
+

@@ -18,4 +18,14 @@ abstract class CryptoACObject {
 
     /** Return a String array of the significant fields of this CryptoAC object. */
     abstract fun toArray(): Array<String>
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return this::class.hashCode()
+    }
 }

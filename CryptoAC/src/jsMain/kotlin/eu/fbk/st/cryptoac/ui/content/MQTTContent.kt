@@ -332,7 +332,7 @@ class MQTTContent: RComponent<MQTTContentProps, MQTTContentState>() {
                 }
             }
 
-            props.contentMessages.forEach {
+            props.contentMessages.forEach { topicData ->
                 // TODO put tables in row, if possible, of max 3 tables
                 grid {
                     attrs {
@@ -347,13 +347,18 @@ class MQTTContent: RComponent<MQTTContentProps, MQTTContentState>() {
                         }
                         cryptoACTable {
                             val listOfMessages = mutableListOf<Array<String>>()
-                            it.value.forEach {
+                            topicData.value.forEach {
                                 listOfMessages.add(arrayOf(it.message))
                             }
                             attrs {
                                 elements = listOfMessages
                                 columns = mqttMessagesColumns
-                                title = "Topic: ${it.key}"
+                                title = "Topic: ${topicData.key}"
+                                onClose = {
+                                    setState {
+                                        props.contentMessages.remove(topicData.key)
+                                    }
+                                }
                             }
                         }
                     }

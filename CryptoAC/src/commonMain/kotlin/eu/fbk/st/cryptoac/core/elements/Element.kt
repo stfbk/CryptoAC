@@ -28,4 +28,26 @@ abstract class Element : CryptoACObject() {
             .map(charPool::get)
             .joinToString("")
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (!super.equals(other)) return false
+
+        other as Element
+
+        if (name != other.name) return false
+        if (status != other.status) return false
+        if (token != other.token) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + status.hashCode()
+        result = 31 * result + token.hashCode()
+        return result
+    }
 }

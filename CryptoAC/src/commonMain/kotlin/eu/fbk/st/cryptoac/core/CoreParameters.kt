@@ -14,7 +14,6 @@ private val logger = KotlinLogging.logger {}
  */
 @Serializable
 abstract class CoreParameters {
-
     abstract var username: String
     abstract var isAdmin: Boolean
     abstract var asymEncPublicKeyBase64: String

@@ -110,7 +110,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         if (storageOPADocument.code != OutcomeCode.CODE_000_SUCCESS) {
             return storageOPADocument.code
         }
-        val urAssignments = storageOPADocument.opaDocument!!.result.ur
+        val urAssignments = storageOPADocument.opaDocument!!.result!!.ur
 
         val jsonPatch = StringBuilder("[")
         val username = assignment.username
@@ -135,7 +135,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         if (storageOPADocument.code != OutcomeCode.CODE_000_SUCCESS) {
             return storageOPADocument.code
         }
-        val paAssignments = storageOPADocument.opaDocument!!.result.pa
+        val paAssignments = storageOPADocument.opaDocument!!.result!!.pa
 
         val jsonPatch = StringBuilder("[")
         val roleName = assignment.roleName
@@ -194,7 +194,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             return storageOPADocument.code
         }
         val opaDocument = storageOPADocument.opaDocument
-        val urAssignments = opaDocument!!.result.ur
+        val urAssignments = opaDocument!!.result!!.ur
 
 
         /** Build a single update request. */
@@ -291,7 +291,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             return storageOPADocument.code
         }
         val opaDocument = storageOPADocument.opaDocument
-        val paAssignments = opaDocument!!.result.pa
+        val paAssignments = opaDocument!!.result!!.pa
 
 
         /** Build a single update request. */
@@ -370,7 +370,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             return storageOPADocument.code
         }
         val opaDocument = storageOPADocument.opaDocument
-        val paAssignments = opaDocument!!.result.pa
+        val paAssignments = opaDocument!!.result!!.pa
         val roleName = updatedAssignment.roleName
         val rolePAAssignments = paAssignments[roleName]
 
@@ -435,7 +435,8 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * increment the number of [locks] by 1 at each invocation, effectively
      * starting a new transaction only when [lock] is 0.
      *
-     * In this implementation, create an HTTP client and get the current OPA document.
+     * In this implementation, create an HTTP client and get the current
+     * OPA document, if present.
      */
     fun lock(): OutcomeCode {
         return if (locks == 0) {
@@ -620,7 +621,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 @Serializable
 data class OPADocument(
     val decision_id: String,
-    val result: OPADocumentRBAC,
+    val result: OPADocumentRBAC? = null,
     val metrics: HashMap<String, Int>? = null
 )
 

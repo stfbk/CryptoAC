@@ -81,27 +81,27 @@ class CoreRBACCloud(
         adminRoleTuple.updateSignature(signature, ADMIN, ElementTypeWithKey.USER)
 
         /** Lock the status of the interfaces. */
-        var code = startOfMethod(opaLock = false)
+        var code = startOfMethod()
         return if (code != OutcomeCode.CODE_000_SUCCESS) {
             code
         }
         else {
             code = rm.configure(coreParametersCloud)
             if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return endOfMethod(code, opaLocked = false)
+                return endOfMethod(code)
             }
             code = ds.configure(coreParametersCloud)
             if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return endOfMethod(code, opaLocked = false)
+                return endOfMethod(code)
             }
             code = opa.configure()
             if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return endOfMethod(code, opaLocked = false)
+                return endOfMethod(code)
             }
 
             // TODO ADD ADMIN-ROLE ASSIGNMENT IN OPA
 
-            endOfMethod(ms.initAdmin(user, adminRoleTuple), opaLocked = false)
+            endOfMethod(ms.initAdmin(user, adminRoleTuple))
         }
     }
 

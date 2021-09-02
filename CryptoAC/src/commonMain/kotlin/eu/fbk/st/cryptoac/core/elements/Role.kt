@@ -23,4 +23,30 @@ class Role(
 
     /** Return a String array of the significant fields of this role. */
     override fun toArray(): Array<String> = arrayOf(name, status.toString(), token)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as Role
+
+        if (name != other.name) return false
+        if (status != other.status) return false
+        if (asymEncKeys != other.asymEncKeys) return false
+        if (asymSigKeys != other.asymSigKeys) return false
+        if (versionNumber != other.versionNumber) return false
+        if (token != other.token) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + status.hashCode()
+        result = 31 * result + (asymEncKeys?.hashCode() ?: 0)
+        result = 31 * result + (asymSigKeys?.hashCode() ?: 0)
+        result = 31 * result + versionNumber
+        result = 31 * result + token.hashCode()
+        return result
+    }
 }

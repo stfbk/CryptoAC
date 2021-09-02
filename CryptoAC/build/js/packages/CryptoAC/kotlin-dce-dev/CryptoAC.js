@@ -86,6 +86,8 @@
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal.NullableSerializer;
   var toString = Kotlin.toString;
+  var contentEquals = Kotlin.arrayEquals;
+  var contentHashCode = Kotlin.arrayHashCode;
   var SealedClassSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.SealedClassSerializer;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var set_zIndex = $module$kotlin_css.kotlinx.css.set_zIndex_a6g65m$;
@@ -145,7 +147,13 @@
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init;
   var set_paddingLeft = $module$kotlin_css.kotlinx.css.set_paddingLeft_n8chyh$;
   var set_paddingRight = $module$kotlin_css.kotlinx.css.set_paddingRight_n8chyh$;
+  var set_background = $module$kotlin_css.kotlinx.css.set_background_krvuuu$;
+  var set_backgroundSize = $module$kotlin_css.kotlinx.css.set_backgroundSize_krvuuu$;
+  var LineHeight = $module$kotlin_css.kotlinx.css.properties.LineHeight;
+  var set_lineHeight = $module$kotlin_css.kotlinx.css.set_lineHeight_ftzj10$;
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_cgipc5$;
+  var attributesMapOf_0 = $module$kotlin_react_dom.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_jyasbz$;
+  var P_init = $module$kotlin_react_dom.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.P;
   var set_paddingBottom = $module$kotlin_css.kotlinx.css.set_paddingBottom_n8chyh$;
   var set_onChangeFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onChangeFunction_pszlq2$;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
@@ -180,9 +188,8 @@
   var set_maxWidth = $module$kotlin_css.kotlinx.css.set_maxWidth_n8chyh$;
   var toList = Kotlin.kotlin.collections.toList_abgq59$;
   var formUrlEncode = $module$ktor_ktor_http_js_legacy.io.ktor.http.formUrlEncode_vw30m7$;
-  var attributesMapOf_0 = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_alerag$;
+  var attributesMapOf_1 = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_alerag$;
   var IMG_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.IMG;
-  var attributesMapOf_1 = $module$kotlin_react_dom.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_jyasbz$;
   var DIV_init_0 = $module$kotlin_react_dom.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.DIV;
   var JustifyContent = $module$kotlin_css.kotlinx.css.JustifyContent;
   var set_justifyContent = $module$kotlin_css.kotlinx.css.set_justifyContent_gwpzrh$;
@@ -205,7 +212,6 @@
   var set_borderBottom = $module$kotlin_css.kotlinx.css.set_borderBottom_krvuuu$;
   var padding_0 = $module$kotlin_css.kotlinx.css.padding_cx3uck$;
   var set_borderRadius = $module$kotlin_css.kotlinx.css.set_borderRadius_n8chyh$;
-  var set_background = $module$kotlin_css.kotlinx.css.set_background_krvuuu$;
   var Color = $module$kotlin_css.kotlinx.css.Color;
   var set_color = $module$kotlin_css.kotlinx.css.set_color_ommczd$;
   var TextDecoration = $module$kotlin_css.kotlinx.css.properties.TextDecoration;
@@ -217,7 +223,7 @@
   var StringBuilder = Kotlin.kotlin.text.StringBuilder;
   var MutableList = Kotlin.kotlin.collections.MutableList;
   var SUB_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.SUB;
-  var P_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.P;
+  var P_init_0 = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.P;
   var SPAN_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.SPAN;
   var A_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.A;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
@@ -1185,7 +1191,7 @@
       tmp$_3 = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().USERNAME));
       tmp$_4 = toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_PORT)));
       tmp$_5 = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_URL));
-      tmp$_6 = new CoreParametersCloud(tmp$, tmp$_0, 'mock', 'mock', 'mock', 'mock', tmp$_1, tmp$_2, new MSInterfaceMySQLParameters(tmp$_3, tmp$_4, ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_PASSWORD)), tmp$_5), new DSInterfaceCloudParameters(toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_PORT))), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_URL))), new OPAInterfaceParameters(toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().OPA_URL))));
+      tmp$_6 = new CoreParametersCloud(tmp$, tmp$_0, 'mock', 'mock', 'mock', 'mock', tmp$_1, tmp$_2, new MSInterfaceMySQLParameters(tmp$_3, ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_PASSWORD)), tmp$_4, tmp$_5), new DSInterfaceCloudParameters(toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_PORT))), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_URL))), new OPAInterfaceParameters(toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().OPA_URL))));
     } catch (e) {
       if (Kotlin.isType(e, NullPointerException)) {
         logger_0.warn_nq59yw$(CoreParametersCloud$Companion$fromMap$lambda);
@@ -1239,6 +1245,54 @@
     this.msMySQLInterfaceParameters.obscureSensitiveFields();
     this.dsCloudInterfaceParameters.obscureSensitiveFields();
     this.opaInterfaceParameters.obscureSensitiveFields();
+  };
+  CoreParametersCloud.prototype.equals = function (other) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!CoreParameters.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, CoreParametersCloud) ? tmp$_0 : throwCCE();
+    if (!equals(this.username, other.username))
+      return false;
+    if (this.isAdmin !== other.isAdmin)
+      return false;
+    if (!equals(this.asymEncPublicKeyBase64, other.asymEncPublicKeyBase64))
+      return false;
+    if (!equals(this.asymEncPrivateKeyBase64, other.asymEncPrivateKeyBase64))
+      return false;
+    if (!equals(this.asymSigPublicKeyBase64, other.asymSigPublicKeyBase64))
+      return false;
+    if (!equals(this.asymSigPrivateKeyBase64, other.asymSigPrivateKeyBase64))
+      return false;
+    if (this.coreType !== other.coreType)
+      return false;
+    if (!((tmp$_1 = this.rmCloudInterfaceParameters) != null ? tmp$_1.equals(other.rmCloudInterfaceParameters) : null))
+      return false;
+    if (!((tmp$_2 = this.msMySQLInterfaceParameters) != null ? tmp$_2.equals(other.msMySQLInterfaceParameters) : null))
+      return false;
+    if (!((tmp$_3 = this.dsCloudInterfaceParameters) != null ? tmp$_3.equals(other.dsCloudInterfaceParameters) : null))
+      return false;
+    if (!((tmp$_4 = this.opaInterfaceParameters) != null ? tmp$_4.equals(other.opaInterfaceParameters) : null))
+      return false;
+    return true;
+  };
+  CoreParametersCloud.prototype.hashCode = function () {
+    var result = CoreParameters.prototype.hashCode.call(this);
+    result = (31 * result | 0) + hashCode(this.username) | 0;
+    result = (31 * result | 0) + hashCode(this.isAdmin) | 0;
+    result = (31 * result | 0) + hashCode(this.asymEncPublicKeyBase64) | 0;
+    result = (31 * result | 0) + hashCode(this.asymEncPrivateKeyBase64) | 0;
+    result = (31 * result | 0) + hashCode(this.asymSigPublicKeyBase64) | 0;
+    result = (31 * result | 0) + hashCode(this.asymSigPrivateKeyBase64) | 0;
+    result = (31 * result | 0) + this.coreType.hashCode() | 0;
+    result = (31 * result | 0) + this.rmCloudInterfaceParameters.hashCode() | 0;
+    result = (31 * result | 0) + this.msMySQLInterfaceParameters.hashCode() | 0;
+    result = (31 * result | 0) + this.dsCloudInterfaceParameters.hashCode() | 0;
+    result = (31 * result | 0) + this.opaInterfaceParameters.hashCode() | 0;
+    return result;
   };
   function CoreParametersCloud$$serializer() {
     this.descriptor_7rh1wd$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.core.CoreParametersCloud', this, 11);
@@ -1502,7 +1556,7 @@
       tmp$_2 = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().USERNAME));
       tmp$_3 = toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_PORT)));
       tmp$_4 = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_URL));
-      tmp$_5 = new CoreParametersMQTT(tmp$, tmp$_0, 'mock', 'mock', 'mock', 'mock', tmp$_1, new MSInterfaceMySQLParameters(tmp$_2, tmp$_3, ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_PASSWORD)), tmp$_4), new DSInterfaceMQTTParameters(toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_PORT))), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_URL)), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_PASSWORD))));
+      tmp$_5 = new CoreParametersMQTT(tmp$, tmp$_0, 'mock', 'mock', 'mock', 'mock', tmp$_1, new MSInterfaceMySQLParameters(tmp$_2, ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MS_PASSWORD)), tmp$_3, tmp$_4), new DSInterfaceMQTTParameters(toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_PORT))), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_URL)), ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DS_PASSWORD))));
     } catch (e) {
       if (Kotlin.isType(e, NullPointerException)) {
         logger_1.warn_nq59yw$(CoreParametersMQTT$Companion$fromMap$lambda);
@@ -1552,6 +1606,48 @@
     CoreParameters.prototype.obscureSensitiveFields.call(this);
     this.msMySQLInterfaceParameters.obscureSensitiveFields();
     this.dsMQTTInterfaceParameters.obscureSensitiveFields();
+  };
+  CoreParametersMQTT.prototype.equals = function (other) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!CoreParameters.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, CoreParametersMQTT) ? tmp$_0 : throwCCE();
+    if (!equals(this.username, other.username))
+      return false;
+    if (this.isAdmin !== other.isAdmin)
+      return false;
+    if (!equals(this.asymEncPublicKeyBase64, other.asymEncPublicKeyBase64))
+      return false;
+    if (!equals(this.asymEncPrivateKeyBase64, other.asymEncPrivateKeyBase64))
+      return false;
+    if (!equals(this.asymSigPublicKeyBase64, other.asymSigPublicKeyBase64))
+      return false;
+    if (!equals(this.asymSigPrivateKeyBase64, other.asymSigPrivateKeyBase64))
+      return false;
+    if (this.coreType !== other.coreType)
+      return false;
+    if (!((tmp$_1 = this.msMySQLInterfaceParameters) != null ? tmp$_1.equals(other.msMySQLInterfaceParameters) : null))
+      return false;
+    if (!((tmp$_2 = this.dsMQTTInterfaceParameters) != null ? tmp$_2.equals(other.dsMQTTInterfaceParameters) : null))
+      return false;
+    return true;
+  };
+  CoreParametersMQTT.prototype.hashCode = function () {
+    var result = CoreParameters.prototype.hashCode.call(this);
+    result = (31 * result | 0) + hashCode(this.username) | 0;
+    result = (31 * result | 0) + hashCode(this.isAdmin) | 0;
+    result = (31 * result | 0) + hashCode(this.asymEncPublicKeyBase64) | 0;
+    result = (31 * result | 0) + hashCode(this.asymEncPrivateKeyBase64) | 0;
+    result = (31 * result | 0) + hashCode(this.asymSigPublicKeyBase64) | 0;
+    result = (31 * result | 0) + hashCode(this.asymSigPrivateKeyBase64) | 0;
+    result = (31 * result | 0) + this.coreType.hashCode() | 0;
+    result = (31 * result | 0) + this.msMySQLInterfaceParameters.hashCode() | 0;
+    result = (31 * result | 0) + this.dsMQTTInterfaceParameters.hashCode() | 0;
+    return result;
   };
   function CoreParametersMQTT$$serializer() {
     this.descriptor_8iod1i$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.core.CoreParametersMQTT', this, 9);
@@ -1713,6 +1809,17 @@
     if (number <= 0) {
       throw IllegalArgumentException_init('Given zero or negative version number ' + number);
     }};
+  CryptoACObject.prototype.equals = function (other) {
+    var tmp$;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    return true;
+  };
+  CryptoACObject.prototype.hashCode = function () {
+    return Kotlin.getKClassFromExpression(this).hashCode();
+  };
   function CryptoACObject$Companion() {
     CryptoACObject$Companion_instance = this;
   }
@@ -1767,6 +1874,28 @@
       tmp$_4 = digest('SHA-256', primitiveArrayConcat(tmp$_3, tmp$_6)).substring(0, length);
     }
     return tmp$_4;
+  };
+  ActiveElement.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!Element.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, ActiveElement) ? tmp$_0 : throwCCE();
+    if (!equals(this.asymEncKeys, other.asymEncKeys))
+      return false;
+    if (!equals(this.asymSigKeys, other.asymSigKeys))
+      return false;
+    return true;
+  };
+  ActiveElement.prototype.hashCode = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var result = Element.prototype.hashCode.call(this);
+    result = (31 * result | 0) + ((tmp$_0 = (tmp$ = this.asymEncKeys) != null ? tmp$.hashCode() : null) != null ? tmp$_0 : 0) | 0;
+    result = (31 * result | 0) + ((tmp$_2 = (tmp$_1 = this.asymSigKeys) != null ? tmp$_1.hashCode() : null) != null ? tmp$_2 : 0) | 0;
+    return result;
   };
   function ActiveElement$Companion() {
     ActiveElement$Companion_instance = this;
@@ -1826,6 +1955,30 @@
     if (length === void 0)
       length = 20;
     return callback$default ? callback$default(length) : this.generateToken_za3lpa$$default(length);
+  };
+  Element.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!CryptoACObject.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, Element) ? tmp$_0 : throwCCE();
+    if (!equals(this.name, other.name))
+      return false;
+    if (this.status !== other.status)
+      return false;
+    if (!equals(this.token, other.token))
+      return false;
+    return true;
+  };
+  Element.prototype.hashCode = function () {
+    var result = CryptoACObject.prototype.hashCode.call(this);
+    result = (31 * result | 0) + hashCode(this.name) | 0;
+    result = (31 * result | 0) + this.status.hashCode() | 0;
+    result = (31 * result | 0) + hashCode(this.token) | 0;
+    return result;
   };
   function Element$Companion() {
     Element$Companion_instance = this;
@@ -2128,6 +2281,30 @@
   File.prototype.toArray = function () {
     return [this.name, this.status.toString(), this.symEncKeyVersionNumber.toString(), this.token];
   };
+  File.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, File) ? tmp$_0 : throwCCE();
+    if (!equals(this.name, other.name))
+      return false;
+    if (this.status !== other.status)
+      return false;
+    if (this.symEncKeyVersionNumber !== other.symEncKeyVersionNumber)
+      return false;
+    if (!equals(this.token, other.token))
+      return false;
+    return true;
+  };
+  File.prototype.hashCode = function () {
+    var result = hashCode(this.name);
+    result = (31 * result | 0) + this.status.hashCode() | 0;
+    result = (31 * result | 0) + this.symEncKeyVersionNumber | 0;
+    result = (31 * result | 0) + hashCode(this.token) | 0;
+    return result;
+  };
   function File$Companion() {
     File$Companion_instance = this;
   }
@@ -2295,6 +2472,37 @@
   });
   Role.prototype.toArray = function () {
     return [this.name, this.status.toString(), this.token];
+  };
+  Role.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, Role) ? tmp$_0 : throwCCE();
+    if (!equals(this.name, other.name))
+      return false;
+    if (this.status !== other.status)
+      return false;
+    if (!equals(this.asymEncKeys, other.asymEncKeys))
+      return false;
+    if (!equals(this.asymSigKeys, other.asymSigKeys))
+      return false;
+    if (this.versionNumber !== other.versionNumber)
+      return false;
+    if (!equals(this.token, other.token))
+      return false;
+    return true;
+  };
+  Role.prototype.hashCode = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var result = hashCode(this.name);
+    result = (31 * result | 0) + this.status.hashCode() | 0;
+    result = (31 * result | 0) + ((tmp$_0 = (tmp$ = this.asymEncKeys) != null ? tmp$.hashCode() : null) != null ? tmp$_0 : 0) | 0;
+    result = (31 * result | 0) + ((tmp$_2 = (tmp$_1 = this.asymSigKeys) != null ? tmp$_1.hashCode() : null) != null ? tmp$_2 : 0) | 0;
+    result = (31 * result | 0) + this.versionNumber | 0;
+    result = (31 * result | 0) + hashCode(this.token) | 0;
+    return result;
   };
   function Role$Companion() {
     Role$Companion_instance = this;
@@ -2465,6 +2673,40 @@
   });
   User.prototype.toArray = function () {
     return [this.name, this.status.toString(), this.isAdmin.toString(), this.token];
+  };
+  User.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!ActiveElement.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, User) ? tmp$_0 : throwCCE();
+    if (!equals(this.name, other.name))
+      return false;
+    if (this.status !== other.status)
+      return false;
+    if (!equals(this.asymEncKeys, other.asymEncKeys))
+      return false;
+    if (!equals(this.asymSigKeys, other.asymSigKeys))
+      return false;
+    if (this.isAdmin !== other.isAdmin)
+      return false;
+    if (!equals(this.token, other.token))
+      return false;
+    return true;
+  };
+  User.prototype.hashCode = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var result = ActiveElement.prototype.hashCode.call(this);
+    result = (31 * result | 0) + hashCode(this.name) | 0;
+    result = (31 * result | 0) + this.status.hashCode() | 0;
+    result = (31 * result | 0) + ((tmp$_0 = (tmp$ = this.asymEncKeys) != null ? tmp$.hashCode() : null) != null ? tmp$_0 : 0) | 0;
+    result = (31 * result | 0) + ((tmp$_2 = (tmp$_1 = this.asymSigKeys) != null ? tmp$_1.hashCode() : null) != null ? tmp$_2 : 0) | 0;
+    result = (31 * result | 0) + hashCode(this.isAdmin) | 0;
+    result = (31 * result | 0) + hashCode(this.token) | 0;
+    return result;
   };
   function User$Companion() {
     User$Companion_instance = this;
@@ -2701,6 +2943,36 @@
   FileTuple.prototype.toArray = function () {
     return [this.fileName, this.symDecKeyVersionNumber.toString(), this.enforcement.toString()];
   };
+  FileTuple.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!Tuple.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, FileTuple) ? tmp$_0 : throwCCE();
+    if (!equals(this.fileName, other.fileName))
+      return false;
+    if (!equals(this.fileToken, other.fileToken))
+      return false;
+    if (!equals(this.roleToken, other.roleToken))
+      return false;
+    if (this.enforcement !== other.enforcement)
+      return false;
+    if (this.symDecKeyVersionNumber !== other.symDecKeyVersionNumber)
+      return false;
+    return true;
+  };
+  FileTuple.prototype.hashCode = function () {
+    var result = Tuple.prototype.hashCode.call(this);
+    result = (31 * result | 0) + hashCode(this.fileName) | 0;
+    result = (31 * result | 0) + hashCode(this.fileToken) | 0;
+    result = (31 * result | 0) + hashCode(this.roleToken) | 0;
+    result = (31 * result | 0) + this.enforcement.hashCode() | 0;
+    result = (31 * result | 0) + this.symDecKeyVersionNumber | 0;
+    return result;
+  };
   function FileTuple$Companion() {
     FileTuple$Companion_instance = this;
   }
@@ -2884,6 +3156,46 @@
   };
   PermissionTuple.prototype.toArray = function () {
     return [this.roleName, this.fileName, this.symKeyVersionNumber.toString(), this.permission.toString()];
+  };
+  PermissionTuple.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!Tuple.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, PermissionTuple) ? tmp$_0 : throwCCE();
+    if (!equals(this.roleName, other.roleName))
+      return false;
+    if (!equals(this.fileName, other.fileName))
+      return false;
+    if (!equals(this.roleToken, other.roleToken))
+      return false;
+    if (!equals(this.fileToken, other.fileToken))
+      return false;
+    if (this.permission !== other.permission)
+      return false;
+    if (!equals(this.encryptedSymKey, other.encryptedSymKey))
+      return false;
+    if (this.roleVersionNumber !== other.roleVersionNumber)
+      return false;
+    if (this.symKeyVersionNumber !== other.symKeyVersionNumber)
+      return false;
+    return true;
+  };
+  PermissionTuple.prototype.hashCode = function () {
+    var tmp$, tmp$_0;
+    var result = Tuple.prototype.hashCode.call(this);
+    result = (31 * result | 0) + hashCode(this.roleName) | 0;
+    result = (31 * result | 0) + hashCode(this.fileName) | 0;
+    result = (31 * result | 0) + hashCode(this.roleToken) | 0;
+    result = (31 * result | 0) + hashCode(this.fileToken) | 0;
+    result = (31 * result | 0) + this.permission.hashCode() | 0;
+    result = (31 * result | 0) + ((tmp$_0 = (tmp$ = this.encryptedSymKey) != null ? tmp$.hashCode() : null) != null ? tmp$_0 : 0) | 0;
+    result = (31 * result | 0) + this.roleVersionNumber | 0;
+    result = (31 * result | 0) + this.symKeyVersionNumber | 0;
+    return result;
   };
   function PermissionTuple$Companion() {
     PermissionTuple$Companion_instance = this;
@@ -3201,6 +3513,37 @@
   RoleTuple.prototype.toArray = function () {
     return [this.username, this.roleName, this.roleVersionNumber.toString()];
   };
+  RoleTuple.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!Tuple.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, RoleTuple) ? tmp$_0 : throwCCE();
+    if (!equals(this.username, other.username))
+      return false;
+    if (!equals(this.roleName, other.roleName))
+      return false;
+    if (this.roleVersionNumber !== other.roleVersionNumber)
+      return false;
+    if (!equals(this.encryptedAsymEncKeys, other.encryptedAsymEncKeys))
+      return false;
+    if (!equals(this.encryptedAsymSigKeys, other.encryptedAsymSigKeys))
+      return false;
+    return true;
+  };
+  RoleTuple.prototype.hashCode = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var result = Tuple.prototype.hashCode.call(this);
+    result = (31 * result | 0) + hashCode(this.username) | 0;
+    result = (31 * result | 0) + hashCode(this.roleName) | 0;
+    result = (31 * result | 0) + this.roleVersionNumber | 0;
+    result = (31 * result | 0) + ((tmp$_0 = (tmp$ = this.encryptedAsymEncKeys) != null ? tmp$.hashCode() : null) != null ? tmp$_0 : 0) | 0;
+    result = (31 * result | 0) + ((tmp$_2 = (tmp$_1 = this.encryptedAsymSigKeys) != null ? tmp$_1.hashCode() : null) != null ? tmp$_2 : 0) | 0;
+    return result;
+  };
   function RoleTuple$Companion() {
     RoleTuple$Companion_instance = this;
   }
@@ -3344,6 +3687,36 @@
     this.signer = newSigner;
     this.signerType = newSignerType;
   };
+  Tuple.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    if (!CryptoACObject.prototype.equals.call(this, other))
+      return false;
+    Kotlin.isType(tmp$_0 = other, Tuple) ? tmp$_0 : throwCCE();
+    if (this.signature != null) {
+      if (other.signature == null)
+        return false;
+      if (!contentEquals(this.signature, other.signature))
+        return false;
+    } else if (other.signature != null)
+      return false;
+    if (!equals(this.signer, other.signer))
+      return false;
+    if (!equals(this.signerType, other.signerType))
+      return false;
+    return true;
+  };
+  Tuple.prototype.hashCode = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
+    var result = CryptoACObject.prototype.hashCode.call(this);
+    result = (31 * result | 0) + ((tmp$_0 = (tmp$ = this.signature) != null ? contentHashCode(tmp$) : null) != null ? tmp$_0 : 0) | 0;
+    result = (31 * result | 0) + ((tmp$_2 = (tmp$_1 = this.signer) != null ? hashCode(tmp$_1) : null) != null ? tmp$_2 : 0) | 0;
+    result = (31 * result | 0) + ((tmp$_4 = (tmp$_3 = this.signerType) != null ? tmp$_3.hashCode() : null) != null ? tmp$_4 : 0) | 0;
+    return result;
+  };
   function Tuple$Companion() {
     Tuple$Companion_instance = this;
   }
@@ -3389,6 +3762,27 @@
     this.public = public_0;
     this.type = type;
   }
+  AsymKeys.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, AsymKeys) ? tmp$_0 : throwCCE();
+    if (!contentEquals(this.private, other.private))
+      return false;
+    if (!contentEquals(this.public, other.public))
+      return false;
+    if (this.type !== other.type)
+      return false;
+    return true;
+  };
+  AsymKeys.prototype.hashCode = function () {
+    var result = contentHashCode(this.private);
+    result = (31 * result | 0) + contentHashCode(this.public) | 0;
+    result = (31 * result | 0) + this.type.hashCode() | 0;
+    return result;
+  };
   function AsymKeys$Companion() {
     AsymKeys$Companion_instance = this;
   }
@@ -3505,16 +3899,6 @@
   };
   AsymKeys.prototype.toString = function () {
     return 'AsymKeys(private=' + Kotlin.toString(this.private) + (', public=' + Kotlin.toString(this.public)) + (', type=' + Kotlin.toString(this.type)) + ')';
-  };
-  AsymKeys.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.private) | 0;
-    result = result * 31 + Kotlin.hashCode(this.public) | 0;
-    result = result * 31 + Kotlin.hashCode(this.type) | 0;
-    return result;
-  };
-  AsymKeys.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.private, other.private) && Kotlin.equals(this.public, other.public) && Kotlin.equals(this.type, other.type)))));
   };
   function AsymKeysType(name, ordinal) {
     AsymKeysType$Companion_getInstance();
@@ -3704,6 +4088,27 @@
     this.public = public_0;
     this.type = type;
   }
+  EncryptedAsymKeys.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, EncryptedAsymKeys) ? tmp$_0 : throwCCE();
+    if (!contentEquals(this.private, other.private))
+      return false;
+    if (!contentEquals(this.public, other.public))
+      return false;
+    if (this.type !== other.type)
+      return false;
+    return true;
+  };
+  EncryptedAsymKeys.prototype.hashCode = function () {
+    var result = contentHashCode(this.private);
+    result = (31 * result | 0) + contentHashCode(this.public) | 0;
+    result = (31 * result | 0) + this.type.hashCode() | 0;
+    return result;
+  };
   function EncryptedAsymKeys$Companion() {
     EncryptedAsymKeys$Companion_instance = this;
   }
@@ -3821,20 +4226,24 @@
   EncryptedAsymKeys.prototype.toString = function () {
     return 'EncryptedAsymKeys(private=' + Kotlin.toString(this.private) + (', public=' + Kotlin.toString(this.public)) + (', type=' + Kotlin.toString(this.type)) + ')';
   };
-  EncryptedAsymKeys.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.private) | 0;
-    result = result * 31 + Kotlin.hashCode(this.public) | 0;
-    result = result * 31 + Kotlin.hashCode(this.type) | 0;
-    return result;
-  };
-  EncryptedAsymKeys.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.private, other.private) && Kotlin.equals(this.public, other.public) && Kotlin.equals(this.type, other.type)))));
-  };
   function EncryptedSymKey(key) {
     EncryptedSymKey$Companion_getInstance();
     this.key = key;
   }
+  EncryptedSymKey.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, EncryptedSymKey) ? tmp$_0 : throwCCE();
+    if (!contentEquals(this.key, other.key))
+      return false;
+    return true;
+  };
+  EncryptedSymKey.prototype.hashCode = function () {
+    return contentHashCode(this.key);
+  };
   function EncryptedSymKey$Companion() {
     EncryptedSymKey$Companion_instance = this;
   }
@@ -3924,14 +4333,6 @@
   EncryptedSymKey.prototype.toString = function () {
     return 'EncryptedSymKey(key=' + Kotlin.toString(this.key) + ')';
   };
-  EncryptedSymKey.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.key) | 0;
-    return result;
-  };
-  EncryptedSymKey.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.key, other.key))));
-  };
   function logger$lambda_2() {
     return Unit;
   }
@@ -3980,6 +4381,24 @@
     }
   };
   DSInterfaceCloudParameters.prototype.obscureSensitiveFields = function () {
+  };
+  DSInterfaceCloudParameters.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, DSInterfaceCloudParameters) ? tmp$_0 : throwCCE();
+    if (this.port !== other.port)
+      return false;
+    if (!equals(this.url, other.url))
+      return false;
+    return true;
+  };
+  DSInterfaceCloudParameters.prototype.hashCode = function () {
+    var result = this.port;
+    result = (31 * result | 0) + hashCode(this.url) | 0;
+    return result;
   };
   function DSInterfaceCloudParameters$Companion() {
     DSInterfaceCloudParameters$Companion_instance = this;
@@ -4130,6 +4549,27 @@
   };
   DSInterfaceMQTTParameters.prototype.obscureSensitiveFields = function () {
     this.password = '***';
+  };
+  DSInterfaceMQTTParameters.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, DSInterfaceMQTTParameters) ? tmp$_0 : throwCCE();
+    if (this.port !== other.port)
+      return false;
+    if (!equals(this.url, other.url))
+      return false;
+    if (!equals(this.password, other.password))
+      return false;
+    return true;
+  };
+  DSInterfaceMQTTParameters.prototype.hashCode = function () {
+    var result = this.port;
+    result = (31 * result | 0) + hashCode(this.url) | 0;
+    result = (31 * result | 0) + hashCode(this.password) | 0;
+    return result;
   };
   function DSInterfaceMQTTParameters$Companion() {
     DSInterfaceMQTTParameters$Companion_instance = this;
@@ -4309,6 +4749,17 @@
   function DSInterfaceParameters() {
     DSInterfaceParameters$Companion_getInstance();
   }
+  DSInterfaceParameters.prototype.equals = function (other) {
+    var tmp$;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    return true;
+  };
+  DSInterfaceParameters.prototype.hashCode = function () {
+    return Kotlin.getKClassFromExpression(this).hashCode();
+  };
   function DSInterfaceParameters$Companion() {
     DSInterfaceParameters$Companion_instance = this;
   }
@@ -4339,6 +4790,20 @@
     DSMQTTMessage$Companion_getInstance();
     this.message = message;
   }
+  DSMQTTMessage.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, DSMQTTMessage) ? tmp$_0 : throwCCE();
+    if (!equals(this.message, other.message))
+      return false;
+    return true;
+  };
+  DSMQTTMessage.prototype.hashCode = function () {
+    return hashCode(this.message);
+  };
   function DSMQTTMessage$Companion() {
     DSMQTTMessage$Companion_instance = this;
   }
@@ -4428,24 +4893,16 @@
   DSMQTTMessage.prototype.toString = function () {
     return 'DSMQTTMessage(message=' + Kotlin.toString(this.message) + ')';
   };
-  DSMQTTMessage.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.message) | 0;
-    return result;
-  };
-  DSMQTTMessage.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.message, other.message))));
-  };
   function logger$lambda_4() {
     return Unit;
   }
   var logger_4;
-  function MSInterfaceMySQLParameters(username, port, password, url) {
+  function MSInterfaceMySQLParameters(username, password, port, url) {
     MSInterfaceMySQLParameters$Companion_getInstance();
     MSInterfaceParameters.call(this);
     this.username = username;
-    this.port = port;
     this.password = password;
+    this.port = port;
     this.url = url;
   }
   function MSInterfaceMySQLParameters$checkParameters$lambda(this$MSInterfaceMySQLParameters) {
@@ -4504,6 +4961,30 @@
   MSInterfaceMySQLParameters.prototype.obscureSensitiveFields = function () {
     this.password = '***';
   };
+  MSInterfaceMySQLParameters.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, MSInterfaceMySQLParameters) ? tmp$_0 : throwCCE();
+    if (!equals(this.username, other.username))
+      return false;
+    if (!equals(this.password, other.password))
+      return false;
+    if (this.port !== other.port)
+      return false;
+    if (!equals(this.url, other.url))
+      return false;
+    return true;
+  };
+  MSInterfaceMySQLParameters.prototype.hashCode = function () {
+    var result = hashCode(this.username);
+    result = (31 * result | 0) + hashCode(this.password) | 0;
+    result = (31 * result | 0) + this.port | 0;
+    result = (31 * result | 0) + hashCode(this.url) | 0;
+    return result;
+  };
   function MSInterfaceMySQLParameters$Companion() {
     MSInterfaceMySQLParameters$Companion_instance = this;
   }
@@ -4524,8 +5005,8 @@
   function MSInterfaceMySQLParameters$$serializer() {
     this.descriptor_elxx5n$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.implementation.ms.MSInterfaceMySQLParameters', this, 4);
     this.descriptor.addElement_ivxn3r$('username', false);
-    this.descriptor.addElement_ivxn3r$('port', false);
     this.descriptor.addElement_ivxn3r$('password', false);
+    this.descriptor.addElement_ivxn3r$('port', false);
     this.descriptor.addElement_ivxn3r$('url', false);
     MSInterfaceMySQLParameters$$serializer_instance = this;
   }
@@ -4538,8 +5019,8 @@
   MSInterfaceMySQLParameters$$serializer.prototype.serialize_55azsf$ = function (encoder, value) {
     var output = encoder.beginStructure_24f42q$(this.descriptor);
     output.encodeStringElement_iij8qq$(this.descriptor, 0, value.username);
-    output.encodeIntElement_ptg7oe$(this.descriptor, 1, value.port);
-    output.encodeStringElement_iij8qq$(this.descriptor, 2, value.password);
+    output.encodeStringElement_iij8qq$(this.descriptor, 1, value.password);
+    output.encodeIntElement_ptg7oe$(this.descriptor, 2, value.port);
     output.encodeStringElement_iij8qq$(this.descriptor, 3, value.url);
     output.endStructure_24f42q$(this.descriptor);
   };
@@ -4559,11 +5040,11 @@
           bitMask0 |= 1;
           break;
         case 1:
-          local1 = input.decodeIntElement_szpzho$(this.descriptor, 1);
+          local1 = input.decodeStringElement_szpzho$(this.descriptor, 1);
           bitMask0 |= 2;
           break;
         case 2:
-          local2 = input.decodeStringElement_szpzho$(this.descriptor, 2);
+          local2 = input.decodeIntElement_szpzho$(this.descriptor, 2);
           bitMask0 |= 4;
           break;
         case 3:
@@ -4579,7 +5060,7 @@
     return MSInterfaceMySQLParameters_init(bitMask0, local0, local1, local2, local3, null);
   };
   MSInterfaceMySQLParameters$$serializer.prototype.childSerializers = function () {
-    return [internal.StringSerializer, internal.IntSerializer, internal.StringSerializer, internal.StringSerializer];
+    return [internal.StringSerializer, internal.StringSerializer, internal.IntSerializer, internal.StringSerializer];
   };
   MSInterfaceMySQLParameters$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -4592,7 +5073,7 @@
       new MSInterfaceMySQLParameters$$serializer();
     }return MSInterfaceMySQLParameters$$serializer_instance;
   }
-  function MSInterfaceMySQLParameters_init(seen1, username, port, password, url, serializationConstructorMarker) {
+  function MSInterfaceMySQLParameters_init(seen1, username, password, port, url, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(MSInterfaceMySQLParameters.prototype);
     $this = MSInterfaceParameters_init(seen1, $this);
     if ((seen1 & 1) === 0)
@@ -4600,13 +5081,13 @@
     else
       $this.username = username;
     if ((seen1 & 2) === 0)
-      throw MissingFieldException_init('port');
-    else
-      $this.port = port;
-    if ((seen1 & 4) === 0)
       throw MissingFieldException_init('password');
     else
       $this.password = password;
+    if ((seen1 & 4) === 0)
+      throw MissingFieldException_init('port');
+    else
+      $this.port = port;
     if ((seen1 & 8) === 0)
       throw MissingFieldException_init('url');
     else
@@ -4621,6 +5102,17 @@
   function MSInterfaceParameters() {
     MSInterfaceParameters$Companion_getInstance();
   }
+  MSInterfaceParameters.prototype.equals = function (other) {
+    var tmp$;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    return true;
+  };
+  MSInterfaceParameters.prototype.hashCode = function () {
+    return Kotlin.getKClassFromExpression(this).hashCode();
+  };
   function MSInterfaceParameters$Companion() {
     MSInterfaceParameters$Companion_instance = this;
   }
@@ -4683,6 +5175,24 @@
     this.url = updatedParameters.url;
   };
   OPAInterfaceParameters.prototype.obscureSensitiveFields = function () {
+  };
+  OPAInterfaceParameters.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, OPAInterfaceParameters) ? tmp$_0 : throwCCE();
+    if (this.port !== other.port)
+      return false;
+    if (!equals(this.url, other.url))
+      return false;
+    return true;
+  };
+  OPAInterfaceParameters.prototype.hashCode = function () {
+    var result = this.port;
+    result = (31 * result | 0) + hashCode(this.url) | 0;
+    return result;
   };
   function OPAInterfaceParameters$Companion() {
     OPAInterfaceParameters$Companion_instance = this;
@@ -4824,6 +5334,24 @@
   };
   RMInterfaceCloudParameters.prototype.obscureSensitiveFields = function () {
   };
+  RMInterfaceCloudParameters.prototype.equals = function (other) {
+    var tmp$, tmp$_0;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, RMInterfaceCloudParameters) ? tmp$_0 : throwCCE();
+    if (this.port !== other.port)
+      return false;
+    if (!equals(this.url, other.url))
+      return false;
+    return true;
+  };
+  RMInterfaceCloudParameters.prototype.hashCode = function () {
+    var result = this.port;
+    result = (31 * result | 0) + hashCode(this.url) | 0;
+    return result;
+  };
   function RMInterfaceCloudParameters$Companion() {
     RMInterfaceCloudParameters$Companion_instance = this;
   }
@@ -4919,6 +5447,17 @@
   function RMInterfaceParameters() {
     RMInterfaceParameters$Companion_getInstance();
   }
+  RMInterfaceParameters.prototype.equals = function (other) {
+    var tmp$;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    return true;
+  };
+  RMInterfaceParameters.prototype.hashCode = function () {
+    return Kotlin.getKClassFromExpression(this).hashCode();
+  };
   function RMInterfaceParameters$Companion() {
     RMInterfaceParameters$Companion_instance = this;
   }
@@ -6315,6 +6854,11 @@
   function styledDiv$lambda_3(it) {
     return new DIV_init(html.emptyMap, it);
   }
+  function p$lambda(closure$classes) {
+    return function (it) {
+      return new P_init(attributesMapOf_0('class', closure$classes), it);
+    };
+  }
   function CryptoACTable() {
     RComponent_init(this);
   }
@@ -6574,7 +7118,22 @@
   }
   function CryptoACTable$render$lambda$lambda$lambda_0(this$CryptoACTable) {
     return function ($receiver) {
-      $receiver.invoke_eb8iu4$($module$_material_ui_core.Table, CryptoACTable$render$lambda$lambda$lambda$lambda_0(this$CryptoACTable));
+      if (this$CryptoACTable.props.elements.isEmpty()) {
+        var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
+        var this$CryptoACTable_0 = this$CryptoACTable;
+        var $receiver_1 = $receiver_0.css;
+        set_background($receiver_1, 'url(blackhole.svg) no-repeat center center');
+        set_backgroundSize($receiver_1, '150px');
+        set_lineHeight($receiver_1, new LineHeight('75px'));
+        set_textAlign($receiver_1, TextAlign.center);
+        set_height($receiver_1, get_pct(90));
+        var $receiver_0_0 = RDOMBuilder.Companion.invoke_f6ihu2$(p$lambda(null));
+        $receiver_0_0.unaryPlus_pdl1vz$('No ' + this$CryptoACTable_0.props.title + '  yet');
+        $receiver_0.child_52psg1$($receiver_0_0.create());
+        $receiver.child_52psg1$($receiver_0.create());
+      } else {
+        $receiver.invoke_eb8iu4$($module$_material_ui_core.Table, CryptoACTable$render$lambda$lambda$lambda$lambda_0(this$CryptoACTable));
+      }
       return Unit;
     };
   }
@@ -6629,6 +7188,7 @@
       var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
       var this$CryptoACTable_0 = this$CryptoACTable;
       var $receiver_1 = $receiver_0.css;
+      set_height($receiver_1, get_px(330));
       set_paddingLeft($receiver_1, get_px(5));
       set_paddingRight($receiver_1, get_px(5));
       $receiver_0.invoke_eb8iu4$($module$_material_ui_core.TableContainer, CryptoACTable$render$lambda$lambda$lambda_0(this$CryptoACTable_0));
@@ -8559,38 +9119,51 @@
     $receiver.sm = 12;
     return Unit;
   }
-  function MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda_10(closure$listOfMessages, this$, closure$it) {
+  function MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_9(this$MQTTContent, closure$topicData) {
     return function ($receiver) {
-      this$.elements = closure$listOfMessages;
-      this$.columns = mqttMessagesColumns;
-      this$.title = 'Topic: ' + closure$it.key;
+      this$MQTTContent.props.contentMessages.remove_11rb$(closure$topicData.key);
       return Unit;
     };
   }
-  function MQTTContent$render$lambda$lambda$lambda$lambda$lambda_7(closure$it, this$) {
+  function MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_8(this$MQTTContent, closure$topicData) {
+    return function (it) {
+      setState(this$MQTTContent, MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_9(this$MQTTContent, closure$topicData));
+      return Unit;
+    };
+  }
+  function MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda_10(closure$listOfMessages, this$, closure$topicData, this$MQTTContent) {
+    return function ($receiver) {
+      this$.elements = closure$listOfMessages;
+      this$.columns = mqttMessagesColumns;
+      this$.title = 'Topic: ' + closure$topicData.key;
+      this$.onClose = MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_8(this$MQTTContent, closure$topicData);
+      return Unit;
+    };
+  }
+  function MQTTContent$render$lambda$lambda$lambda$lambda$lambda_7(closure$topicData, this$MQTTContent, this$) {
     return function ($receiver) {
       var listOfMessages = ArrayList_init_0();
       var tmp$;
-      tmp$ = closure$it.value.iterator();
+      tmp$ = closure$topicData.value.iterator();
       while (tmp$.hasNext()) {
         var element = tmp$.next();
         listOfMessages.add_11rb$([element.message]);
       }
-      this$.attrs_slhiwc$(MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda_10(listOfMessages, $receiver, closure$it));
+      this$.attrs_slhiwc$(MQTTContent$render$lambda$lambda$lambda$lambda$lambda$lambda_10(listOfMessages, $receiver, closure$topicData, this$MQTTContent));
       return Unit;
     };
   }
-  function MQTTContent$render$lambda$lambda$lambda$lambda_12(closure$it) {
+  function MQTTContent$render$lambda$lambda$lambda$lambda_12(closure$topicData, this$MQTTContent) {
     return function ($receiver) {
       $receiver.attrs_slhiwc$(MQTTContent$render$lambda$lambda$lambda$lambda$lambda_6);
-      cryptoACTable($receiver, MQTTContent$render$lambda$lambda$lambda$lambda$lambda_7(closure$it, $receiver));
+      cryptoACTable($receiver, MQTTContent$render$lambda$lambda$lambda$lambda$lambda_7(closure$topicData, this$MQTTContent, $receiver));
       return Unit;
     };
   }
-  function MQTTContent$render$lambda$lambda$lambda_7(closure$it) {
+  function MQTTContent$render$lambda$lambda$lambda_7(closure$topicData, this$MQTTContent) {
     return function ($receiver) {
       $receiver.attrs_slhiwc$(MQTTContent$render$lambda$lambda$lambda$lambda_11);
-      $receiver.invoke_eb8iu4$($module$_material_ui_core.Grid, MQTTContent$render$lambda$lambda$lambda$lambda_12(closure$it));
+      $receiver.invoke_eb8iu4$($module$_material_ui_core.Grid, MQTTContent$render$lambda$lambda$lambda$lambda_12(closure$topicData, this$MQTTContent));
       return Unit;
     };
   }
@@ -8613,7 +9186,7 @@
     tmp$_0 = this.props.contentMessages.entries.iterator();
     while (tmp$_0.hasNext()) {
       var element_0 = tmp$_0.next();
-      $receiver_0.invoke_eb8iu4$($module$_material_ui_core.Grid, MQTTContent$render$lambda$lambda$lambda_7(element_0));
+      $receiver_0.invoke_eb8iu4$($module$_material_ui_core.Grid, MQTTContent$render$lambda$lambda$lambda_7(element_0, this));
     }
     $receiver.child_52psg1$($receiver_0.create());
   };
@@ -10586,12 +11159,12 @@
   }
   function styledImg$lambda(closure$alt, closure$src) {
     return function (it) {
-      return new IMG_init(attributesMapOf_0(['alt', closure$alt, 'src', closure$src]), it);
+      return new IMG_init(attributesMapOf_1(['alt', closure$alt, 'src', closure$src]), it);
     };
   }
   function div$lambda(closure$classes) {
     return function (it) {
-      return new DIV_init_0(attributesMapOf_1('class', closure$classes), it);
+      return new DIV_init_0(attributesMapOf_0('class', closure$classes), it);
     };
   }
   function post$lambda_0($receiver) {
@@ -10914,7 +11487,7 @@
     return new SUB_init(html.emptyMap, it);
   }
   function styledP$lambda(it) {
-    return new P_init(html.emptyMap, it);
+    return new P_init_0(html.emptyMap, it);
   }
   function styledDiv$lambda_8(it) {
     return new DIV_init(html.emptyMap, it);
@@ -10924,7 +11497,7 @@
   }
   function styledA$lambda(closure$href, closure$target) {
     return function (it) {
-      return new A_init(attributesMapOf_0(['href', closure$href, 'target', closure$target]), it);
+      return new A_init(attributesMapOf_1(['href', closure$href, 'target', closure$target]), it);
     };
   }
   function post$lambda_1($receiver) {
@@ -13287,7 +13860,7 @@
     get: MSInterfaceMySQLParameters$$serializer_getInstance
   });
   var package$ms = package$implementation.ms || (package$implementation.ms = {});
-  package$ms.MSInterfaceMySQLParameters_init_7574dk$ = MSInterfaceMySQLParameters_init;
+  package$ms.MSInterfaceMySQLParameters_init_kfyxti$ = MSInterfaceMySQLParameters_init;
   package$ms.MSInterfaceMySQLParameters = MSInterfaceMySQLParameters;
   Object.defineProperty(MSInterfaceParameters, 'Companion', {
     get: MSInterfaceParameters$Companion_getInstance

@@ -4,8 +4,10 @@ import eu.fbk.st.cryptoac.ui.components.icons.*
 import eu.fbk.st.cryptoac.ui.components.materialui.core.*
 import kotlinx.browser.document
 import kotlinx.css.*
+import kotlinx.css.properties.LineHeight
 import org.w3c.dom.events.Event
 import react.*
+import react.dom.p
 import styled.css
 import styled.styledDiv
 
@@ -143,37 +145,53 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
             }
             styledDiv {
                 css {
+                    height = 330.px
                     paddingLeft = 5.px
                     paddingRight = 5.px
                 }
                 tableContainer {
-                    table {
-                        tableHead {
-                            tableRow {
-                                props.columns.forEach {
-                                    tableCell {
-                                        key = it.field
-                                        attrs {
-                                            align = "center"
+                    if (props.elements.isEmpty()) {
+                        styledDiv {
+                            css {
+                                background = "url(blackhole.svg) no-repeat center center"
+                                backgroundSize = "150px"
+                                lineHeight = LineHeight("75px")
+                                textAlign = TextAlign.center
+                                height = 90.pct
+                            }
+                            p {
+                                +"No ${props.title}  yet"
+                            }
+                        }
+                    } else {
+                        table {
+                            tableHead {
+                                tableRow {
+                                    props.columns.forEach {
+                                        tableCell {
+                                            key = it.field
+                                            attrs {
+                                                align = "center"
+                                            }
+                                            +it.headerName
                                         }
-                                        +it.headerName
                                     }
                                 }
                             }
-                        }
-                        tableBody {
-                            props.elements.subList(fromIndex(), toIndex()).forEach {
-                                tableRow {
-                                    key = it.joinToString("")
-                                    attrs {
-                                        hover = true
-                                        selected = false
-                                        onClick = { _ -> props.onElementClick(it) }
-                                    }
-                                    it.forEach {
-                                        tableCell {
-                                            attrs.align = "center"
-                                            +it
+                            tableBody {
+                                props.elements.subList(fromIndex(), toIndex()).forEach {
+                                    tableRow {
+                                        key = it.joinToString("")
+                                        attrs {
+                                            hover = true
+                                            selected = false
+                                            onClick = { _ -> props.onElementClick(it) }
+                                        }
+                                        it.forEach {
+                                            tableCell {
+                                                attrs.align = "center"
+                                                +it
+                                            }
                                         }
                                     }
                                 }

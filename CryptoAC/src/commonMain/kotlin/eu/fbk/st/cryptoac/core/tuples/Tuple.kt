@@ -23,4 +23,29 @@ sealed class Tuple : CryptoACObject() {
         signer = newSigner
         signerType = newSignerType
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (!super.equals(other)) return false
+
+        other as Tuple
+
+        if (signature != null) {
+            if (other.signature == null) return false
+            if (!signature.contentEquals(other.signature)) return false
+        } else if (other.signature != null) return false
+        if (signer != other.signer) return false
+        if (signerType != other.signerType) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + (signature?.contentHashCode() ?: 0)
+        result = 31 * result + (signer?.hashCode() ?: 0)
+        result = 31 * result + (signerType?.hashCode() ?: 0)
+        return result
+    }
 }

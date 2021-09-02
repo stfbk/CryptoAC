@@ -62,3 +62,11 @@ div.MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded {
 div.MuiTablePagination-root {
   bottom: 0px;
 }
+
+.MuiTableRow-root:nth-of-type(even) {
+  background-color: #f6fafb;
+}
+
+.MuiTableContainer-root {
+  height: 100% !important;
+}

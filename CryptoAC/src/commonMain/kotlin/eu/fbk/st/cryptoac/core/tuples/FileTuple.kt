@@ -35,4 +35,30 @@ class FileTuple(
 
     /** Return a String array of the significant fields of this tuple. */
     override fun toArray(): Array<String> = arrayOf(fileName, symDecKeyVersionNumber.toString(), enforcement.toString())
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (!super.equals(other)) return false
+
+        other as FileTuple
+
+        if (fileName != other.fileName) return false
+        if (fileToken != other.fileToken) return false
+        if (roleToken != other.roleToken) return false
+        if (enforcement != other.enforcement) return false
+        if (symDecKeyVersionNumber != other.symDecKeyVersionNumber) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + fileName.hashCode()
+        result = 31 * result + fileToken.hashCode()
+        result = 31 * result + roleToken.hashCode()
+        result = 31 * result + enforcement.hashCode()
+        result = 31 * result + symDecKeyVersionNumber
+        return result
+    }
 }

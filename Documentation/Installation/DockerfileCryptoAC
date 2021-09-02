@@ -1,7 +1,0 @@
-FROM openjdk:11.0.8-jre-slim 
-
-WORKDIR /cryptoac
-
-COPY ./CryptoAC.jar /cryptoac
-
-ENTRYPOINT [ "java", "-jar", "/cryptoac/CryptoAC.jar"]

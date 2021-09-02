@@ -33,4 +33,22 @@ class OPAInterfaceParameters(var port: Int, var url: String) {
     fun obscureSensitiveFields() {
         /** No sensitive fields to obscure. */
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as OPAInterfaceParameters
+
+        if (port != other.port) return false
+        if (url != other.url) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = port
+        result = 31 * result + url.hashCode()
+        return result
+    }
 }
