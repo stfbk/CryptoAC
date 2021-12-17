@@ -1,1 +1,0 @@
-// Kotlin.kotlin_module_metadata(393729, "ktor-ktor-client-websockets-js-legacy", "H4sIAAAAAAAAAGPgYBGK4hLhYnXNLSip5GLLzi/JyczjYnbMqxSS5eLn+A8DjAIMEgxcTAKMXGwcjAJMEgxSPDOQZJUEOA4ABY2YDJicmDiYdnAwTOJg4mKQghoIAP01h1ZnAAAA");
