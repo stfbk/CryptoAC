@@ -7,9 +7,9 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("Alert")
-external val alert: RClass<AlertProps>
+external val alert: ComponentClass<AlertProps>
 
-external interface AlertProps : RProps {
+external interface AlertProps : Props {
     var severity: String
     var onClose: (Event) -> Unit
 }

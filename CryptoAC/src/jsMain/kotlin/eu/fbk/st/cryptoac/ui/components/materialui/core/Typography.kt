@@ -6,9 +6,9 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("Typography")
-external val typography: RClass<TypographyProps>
+external val typography: ComponentClass<TypographyProps>
 
-external interface TypographyProps : RProps {
+external interface TypographyProps : Props {
     var variant: String
     var id: String
     var component: String

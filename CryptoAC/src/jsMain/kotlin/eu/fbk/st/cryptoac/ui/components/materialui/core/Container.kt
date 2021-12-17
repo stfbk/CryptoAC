@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("Container")
-external val container: RClass<RProps>
+external val container: ComponentClass<Props>

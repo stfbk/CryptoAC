@@ -1,20 +1,18 @@
 package eu.fbk.st.cryptoac.proxy
 
 import eu.fbk.st.cryptoac.*
-import eu.fbk.st.cryptoac.core.CoreParameters
-import eu.fbk.st.cryptoac.core.CoreType
+import eu.fbk.st.cryptoac.API.HTTPS
 import eu.fbk.st.cryptoac.core.elements.User
-import eu.fbk.st.cryptoac.core.tuples.EnforcementType
 import eu.fbk.st.cryptoac.core.tuples.PermissionTuple
-import eu.fbk.st.cryptoac.core.tuples.PermissionType
 import eu.fbk.st.cryptoac.core.tuples.RoleTuple
 import eu.fbk.st.cryptoac.Constants.ADMIN
+import eu.fbk.st.cryptoac.Parameters.proxyBaseAPI
 import eu.fbk.st.cryptoac.SERVER.ENFORCEMENT
 import eu.fbk.st.cryptoac.SERVER.FILE_NAME
 import eu.fbk.st.cryptoac.SERVER.PERMISSION
 import eu.fbk.st.cryptoac.SERVER.ROLE_NAME
 import eu.fbk.st.cryptoac.SERVER.USERNAME
-import eu.fbk.st.cryptoac.core.CoreParametersCloud
+import eu.fbk.st.cryptoac.core.*
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -25,6 +23,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.Assertions
 import java.io.InputStream
 
@@ -32,425 +31,580 @@ class ProxyUtilities {
 
     companion object {
 
-        suspend fun loginProxy(client: HttpClient, user: String = ADMIN) {
-            val response = client.post<HttpResponse>("https://127.0.0.1:8443${API.LOGIN}") {
-                contentType(ContentType.Application.FormUrlEncoded)
-                body = listOf(USERNAME to user).formUrlEncode()
-            }
-            Assertions.assertEquals(HttpStatusCode.OK, response.status)
-        }
-        suspend fun logoutProxy(client: HttpClient) {
-            val response = client.delete<HttpResponse>("https://127.0.0.1:8443${API.LOGOUT}")
-            Assertions.assertEquals(HttpStatusCode.OK, response.status)
-        }
-
-
-        fun `initialize user`(
-            coreParameters: CoreParameters,
-            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
-            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
-            loggedUser: String = coreParameters.username
+        fun initAdminInRBAC_MOCK(
+            coreParameters: CoreParameters, 
+            login: Boolean = true,
         ) {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, loggedUser)
-                    val response = it.post<HttpResponse>("https://127.0.0.1:8443${API.PROFILES.replace("{${SERVER.CORE}}", "${coreParameters.coreType}")}") {
+                    if (login) loginProxy(it, ADMIN)
+                    val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
                         contentType(ContentType.Application.Json)
-                        body = Json.encodeToString(coreParameters as CoreParametersCloud)
+                        body = Json.encodeToString(coreParameters as CoreParametersMOCK)
                     }
-                    Assertions.assertEquals(expectedStatus, response.status)
-                    Assertions.assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
-                    logoutProxy(it)
+                    Assertions.assertEquals(HttpStatusCode.OK, response.status)
+                    Assertions.assertEquals(OutcomeCode.CODE_000_SUCCESS, Json.decodeFromString<OutcomeCode>(response.readText()))
+                    if (login) logoutProxy(it)
                 }
             }
         }
-
-
-
-        fun `add user`(username: String, expectedCode: OutcomeCode): CoreParameters? {
-            var coreParameters: CoreParameters? = null
+        
+        fun initUserInRBAC_MOCK(
+            coreParameters: CoreParameters, 
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK, 
+            loggedUser: String = coreParameters.user.name, 
+            login: Boolean = true,
+        ) {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.post<HttpResponse>("https://127.0.0.1:8443${API.PROXY}users/${CoreType.RBAC_CLOUD}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(USERNAME to username).formUrlEncode()
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
+                        contentType(ContentType.Application.Json)
+                        body = Json.encodeToString(coreParameters as CoreParametersMOCK)
                     }
-                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
-                        coreParameters = Json.decodeFromString<CoreParametersCloud>(response.readText()).apply {
-                            Assertions.assertEquals(CoreType.RBAC_CLOUD, coreType)
-                            Assertions.assertEquals(username, this.username)
-                        }
+                    assertEquals(expectedStatus, response.status)
+                    if (expectedCode != OutcomeCode.CODE_000_SUCCESS) {
+                        assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
+                    } else {
+                        /** We do not care about mock core parameters */
                     }
-                    else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                            Assertions.assertEquals(expectedCode, this)
-                        }
-                    }
-                    logoutProxy(it)
-                }
-            }
-            return coreParameters
-        }
-        fun `delete user`(username: String, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.delete<HttpResponse>("https://127.0.0.1:8443${API.PROXY}users/${CoreType.RBAC_CLOUD}/${username}")
-                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
-                    }
-                    else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
-                    }
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
+                    if (login) logoutProxy(it)
                 }
             }
         }
-
-        fun `add role`(roleName: String, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.post<HttpResponse>("https://127.0.0.1:8443${API.PROXY}roles/${CoreType.RBAC_CLOUD}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(ROLE_NAME to roleName).formUrlEncode()
-                    }
-                    Assertions.assertEquals(
-                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS)
-                            HttpStatusCode.OK
-                        else HttpStatusCode.InternalServerError,
-                        response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-        fun `delete role`(roleName: String, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.delete<HttpResponse>("https://127.0.0.1:8443${API.PROXY}roles/${CoreType.RBAC_CLOUD}/${roleName}")
-                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
-                    }
-                    else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
-                    }
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-        fun `add file`(fileName: String, fileContent: InputStream, enforcementType: EnforcementType, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.submitFormWithBinaryData<HttpResponse>(
-                        url = "https://127.0.0.1:8443${API.PROXY}files/${CoreType.RBAC_CLOUD}/",
-                        formData = formData {
-                            append(
-                                key = ENFORCEMENT,
-                                value = enforcementType.toString()
-                            )
-                            append(key = FILE_NAME, value = fileContent.readAllBytes(), Headers.build {
-                                append(HttpHeaders.ContentDisposition, "filename=$fileName")
-                            })
-                        }
-                    )
-                    Assertions.assertEquals(
-                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS)
-                            HttpStatusCode.OK
-                        else HttpStatusCode.InternalServerError,
-                        response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-        fun `delete file`(fileName: String, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.delete<HttpResponse>("https://127.0.0.1:8443${API.PROXY}files/${CoreType.RBAC_CLOUD}/${fileName}")
-                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
-                    }
-                    else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
-                    }
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-
-        fun `read file`(fileName: String, expectedCode: OutcomeCode): InputStream? {
-            var inputStream: InputStream? = null
-
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.get<HttpResponse>("https://127.0.0.1:8443${API.PROXY}files/${CoreType.RBAC_CLOUD}/${fileName}")
-                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
-                        inputStream = response.content.toInputStream().readAllBytes().inputStream() // TODO fix
-                    }
-                    else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                            Assertions.assertEquals(expectedCode, this)
-                        }
-                    }
-                    logoutProxy(it)
-                }
-            }
-            return inputStream
-        }
-        fun `write file`(fileName: String, fileContent: InputStream, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.submitFormWithBinaryData<HttpResponse>(
-                        url = "https://127.0.0.1:8443${API.PROXY}files/${CoreType.RBAC_CLOUD}/",
-                        formData = formData {
-                            append(key = FILE_NAME, value = fileContent.readAllBytes(), Headers.build { // TODO fix this
-                                append(HttpHeaders.ContentDisposition, "filename=$fileName")
-                            })
-                        }
-                    ) {
-                        method = HttpMethod.Patch
-                    }
-                    Assertions.assertEquals(
-                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS)
-                            HttpStatusCode.OK
-                        else HttpStatusCode.InternalServerError,
-                        response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-
-        fun `assign user to role`(username: String, roleName: String, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.post<HttpResponse>("https://127.0.0.1:8443${API.PROXY}assignments/${CoreType.RBAC_CLOUD}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(USERNAME to username, ROLE_NAME to roleName).formUrlEncode()
-                    }
-                    Assertions.assertEquals(
-                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS)
-                            HttpStatusCode.OK
-                        else HttpStatusCode.InternalServerError,
-                        response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-        fun `revoke user from role`(username: String, roleName: String, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.delete<HttpResponse>("https://127.0.0.1:8443${API.PROXY}assignments/${CoreType.RBAC_CLOUD}/${username}/${roleName}")
-                    Assertions.assertEquals(
-                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS)
-                            HttpStatusCode.OK
-                        else HttpStatusCode.InternalServerError,
-                        response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-
-        fun `assign permission to role over file`(roleName: String, fileName: String, permission: PermissionType, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.post<HttpResponse>("https://127.0.0.1:8443${API.PROXY}permissions/${CoreType.RBAC_CLOUD}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(ROLE_NAME to roleName, FILE_NAME to fileName, PERMISSION to permission.toString()).formUrlEncode()
-                    }
-                    Assertions.assertEquals(
-                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS)
-                            HttpStatusCode.OK
-                        else HttpStatusCode.InternalServerError,
-                        response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-        fun `revoke permission from role`(roleName: String, fileName: String, permission: PermissionType, expectedCode: OutcomeCode) {
-            runBlocking {
-                TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, ADMIN)
-                    val response = it.delete<HttpResponse>("https://127.0.0.1:8443${API.PROXY}permissions/${CoreType.RBAC_CLOUD}/${roleName}/${fileName}/${permission}")
-                    Assertions.assertEquals(
-                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS)
-                            HttpStatusCode.OK
-                        else HttpStatusCode.InternalServerError,
-                        response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                        Assertions.assertEquals(expectedCode, this)
-                    }
-                    logoutProxy(it)
-                }
-            }
-        }
-
-        fun `get profile`(
-            username: String,
-            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+        
+        fun addUserInRBAC_MOCK(
+            username: String?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
+            login: Boolean = true,
         ): CoreParameters? {
             var coreParameters: CoreParameters? = null
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("https://127.0.0.1:8443${API.PROFILES.replace("{${SERVER.CORE}}", "${CoreType.RBAC_CLOUD}")}?$USERNAME=$username")
-
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}users/${core}/") {
+                        contentType(ContentType.Application.FormUrlEncoded)
+                            body = listOf(USERNAME to username).formUrlEncode()
+                    }
+                    assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(expectedStatus, response.status)
-                        coreParameters = Json.decodeFromString<CoreParametersCloud>(response.readText()).apply {
-                            Assertions.assertEquals(CoreType.RBAC_CLOUD, coreType)
-                            Assertions.assertEquals(username, this.username)
+                        coreParameters = Json.decodeFromString<CoreParametersMOCK>(response.readText()).apply {
+                            assertEquals(CoreType.RBAC_MOCK, coreType)
+                            assertEquals(username, this.user.name)
                         }
                     }
                     else {
-                        Assertions.assertEquals(expectedStatus, response.status)
                         Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                            Assertions.assertEquals(expectedCode, this)
+                            assertEquals(expectedCode, this)
                         }
                     }
-                    logoutProxy(it)
+                    if (login) logoutProxy(it)
                 }
             }
             return coreParameters
         }
-        fun `delete profile`(
-            username: String,
-            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
-            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
-            loggedUser: String = ADMIN,
-        ) {
+
+       fun deleteUserInRBAC_MOCK(
+           username: String?,
+           core: String? = CoreType.RBAC_MOCK.toString(),
+           expectedCode: OutcomeCode,
+           expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+           loggedUser: String = ADMIN,
+           login: Boolean = true,
+       ) {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, loggedUser)
-                    val response = it.delete<HttpResponse>("https://127.0.0.1:8443${API.PROFILES.replace("{${SERVER.CORE}}", "${CoreType.RBAC_CLOUD}")}$username")
-                    Assertions.assertEquals(expectedStatus, response.status)
-                    Assertions.assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
-                    logoutProxy(it)
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}users/${core}/${username}")
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
                 }
             }
         }
-        fun `update profile`(
-            coreParameters: CoreParameters,
-            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+        
+        fun addRoleInRBAC_MOCK(
+            roleName: String?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
-            loggedUser: String = coreParameters.username
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
         ) {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, loggedUser)
-                    val response = it.patch<HttpResponse>("https://127.0.0.1:8443${API.PROFILES.replace("{${SERVER.CORE}}", "${coreParameters.coreType}")}") {
-                        contentType(ContentType.Application.Json)
-                        body = Json.encodeToString(coreParameters as CoreParametersCloud)
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}roles/${core}/") {
+                        contentType(ContentType.Application.FormUrlEncoded)
+                        body = listOf(ROLE_NAME to roleName).formUrlEncode()
                     }
-                    Assertions.assertEquals(expectedStatus, response.status)
-                    Assertions.assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
-                    logoutProxy(it)
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+        
+        fun deleteRoleInRBAC_MOCK(
+            roleName: String,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}roles/${core}/${roleName}")
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
                 }
             }
         }
 
-        fun `get users`(expectedCode: OutcomeCode, loggedUser: String = ADMIN): HashSet<User>? {
+        fun addFileBinaryInRBAC_MOCK(
+            fileName: String?,
+            fileContent: InputStream?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            enforcementType: String?,
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.submitFormWithBinaryData<HttpResponse>(
+                        url = "$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/",
+                        formData = formData {
+                            enforcementType?.let { it1 ->
+                                append(
+                                    key = ENFORCEMENT,
+                                    value = it1
+                                )
+                            }
+                            fileContent?.let { it1 ->
+                                append(key = FILE_NAME, value = it1.readAllBytes(), Headers.build {
+                                    if (fileName != null) {
+                                        append(HttpHeaders.ContentDisposition, "filename=$fileName")
+                                    }
+                                })
+                            }
+                        }
+                    )
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+
+        fun addFileFormUrlEncodedInRBAC_MOCK(
+            fileName: String?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            enforcementType: String?,
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/") {
+                        contentType(ContentType.Application.FormUrlEncoded)
+                        body = listOf(FILE_NAME to fileName, ENFORCEMENT to enforcementType).formUrlEncode()
+                    }
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+
+        fun deleteFileInRBAC_MOCK(
+            fileName: String,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/${fileName}")
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+        
+        fun readFileInRBAC_MOCK(
+            fileName: String,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ): InputStream? {
+            var inputStream: InputStream? = null
+
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/${fileName}")
+                    assertEquals(expectedStatus, response.status)
+                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
+                        inputStream = response.content.toInputStream().readAllBytes().inputStream() // TODO fix
+                    }
+                    else {
+                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                            assertEquals(expectedCode, this)
+                        }
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+            return inputStream
+        }
+        
+        fun writeFileBinaryInRBAC_MOCK(
+            fileName: String?,
+            fileContent: InputStream?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+
+
+                    val response = it.submitFormWithBinaryData<HttpResponse>(
+                        url = "$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/",
+                        formData = formData {
+                            fileContent?.let { it1 ->
+                                append(key = FILE_NAME, value = it1.readAllBytes(), Headers.build {
+                                    if (fileName != null) {
+                                        append(HttpHeaders.ContentDisposition, "filename=$fileName")
+                                    }
+                                })
+                            }
+                        }
+                    ) {
+                        method = HttpMethod.Patch
+                    }
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+
+        fun writeFileFormUrlEncodedInRBAC_MOCK(
+            fileName: String?,
+            fileContent: String?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.patch<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/") {
+                        contentType(ContentType.Application.FormUrlEncoded)
+                        body = listOf(FILE_NAME to fileName, SERVER.FILE_CONTENT to fileContent).formUrlEncode()
+                    }
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+
+
+        fun assignUserToRoleInRBAC_MOCK(
+            username: String?,
+            roleName: String?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}assignments/${core}/") {
+                        contentType(ContentType.Application.FormUrlEncoded)
+                        body = listOf(USERNAME to username, ROLE_NAME to roleName).formUrlEncode()
+                    }
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+        
+        fun revokeUserFromRoleInRBAC_MOCK(
+            username: String, 
+            roleName: String,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}assignments/${core}/${username}/${roleName}")
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+        
+        fun assignPermissionToRoleInRBAC_MOCK(
+            roleName: String?,
+            fileName: String?,
+            permission: String?,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}permissions/${core}/") {
+                        contentType(ContentType.Application.FormUrlEncoded)
+                        body = listOf(ROLE_NAME to roleName, FILE_NAME to fileName, PERMISSION to permission).formUrlEncode()
+                    }
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+        
+        fun revokePermissionFromRoleInRBAC_MOCK(
+            roleName: String, 
+            fileName: String, 
+            permission: String,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}permissions/${core}/${roleName}/${fileName}/${permission}")
+                    assertEquals(expectedStatus, response.status)
+                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        assertEquals(expectedCode, this)
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+
+        fun getProfileInRBAC_MOCK(
+            username: String,
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ): CoreParameters? {
+            var coreParameters: CoreParameters? = null
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/?$USERNAME=$username")
+                    assertEquals(expectedStatus, response.status)
+                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
+                        coreParameters = Json.decodeFromString<CoreParametersMOCK>(response.readText()).apply {
+                            assertEquals(CoreType.RBAC_MOCK, coreType)
+                            assertEquals(username, this.user.name)
+                        }
+                    }
+                    else {
+                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                            assertEquals(expectedCode, this)
+                        }
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+            return coreParameters
+        }
+        
+        fun deleteProfileInRBAC_MOCK(
+            username: String,
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/$username")
+                    assertEquals(expectedStatus, response.status)
+                    assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+        
+        fun updateProfileInRBAC_MOCK(
+            coreParameters: CoreParameters,
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = coreParameters.user.name,
+            login: Boolean = true,
+        ) {
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.patch<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
+                        contentType(ContentType.Application.Json)
+                        body = Json.encodeToString(coreParameters as CoreParametersMOCK)
+                    }
+                    assertEquals(expectedStatus, response.status)
+                    assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
+                    if (login) logoutProxy(it)
+                }
+            }
+        }
+
+        fun getUsers(
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ): HashSet<User>? {
             var users: HashSet<User>? = null
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("https://127.0.0.1:8443${API.PROXY}users/${CoreType.RBAC_CLOUD}/")
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}users/${CoreType.RBAC_MOCK}/")
+                    assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
                         users = Json.decodeFromString<HashSet<User>>(response.readText())
                     }
                     else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
                         Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                            Assertions.assertEquals(expectedCode, this)
+                            assertEquals(expectedCode, this)
                         }
                     }
-                    logoutProxy(it)
+                    if (login) logoutProxy(it)
                 }
             }
             return users
         }
-        fun `get assignments`(expectedCode: OutcomeCode, loggedUser: String = ADMIN): HashSet<RoleTuple>? {
+        
+        fun getAssignments(
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ): HashSet<RoleTuple>? {
             var roleTuples: HashSet<RoleTuple>? = null
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("https://127.0.0.1:8443${API.PROXY}assignments/${CoreType.RBAC_CLOUD}/")
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}assignments/${CoreType.RBAC_MOCK}/")
+                    assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
                         roleTuples = Json.decodeFromString<HashSet<RoleTuple>>(response.readText())
                     }
                     else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
                         Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                            Assertions.assertEquals(expectedCode, this)
+                            assertEquals(expectedCode, this)
                         }
                     }
-                    logoutProxy(it)
+                    if (login) logoutProxy(it)
                 }
             }
             return roleTuples
         }
-        fun `get permissions`(expectedCode: OutcomeCode, loggedUser: String = ADMIN): HashSet<PermissionTuple>? {
+        
+        fun getPermissions(
+            expectedCode: OutcomeCode,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ): HashSet<PermissionTuple>? {
             var permissionTuples: HashSet<PermissionTuple>? = null
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
-                    loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("https://127.0.0.1:8443${API.PROXY}permissions/${CoreType.RBAC_CLOUD}/")
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}permissions/${CoreType.RBAC_MOCK}/")
+                    assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        Assertions.assertEquals(HttpStatusCode.OK, response.status)
                         permissionTuples = Json.decodeFromString<HashSet<PermissionTuple>>(response.readText())
                     }
                     else {
-                        Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status)
                         Json.decodeFromString<OutcomeCode>(response.readText()).apply {
-                            Assertions.assertEquals(expectedCode, this)
+                            assertEquals(expectedCode, this)
                         }
                     }
-                    logoutProxy(it)
+                    if (login) logoutProxy(it)
                 }
             }
             return permissionTuples
+        }
+
+        private suspend fun loginProxy(client: HttpClient, user: String = ADMIN) {
+            val response = client.post<HttpResponse>("$HTTPS$proxyBaseAPI${API.LOGIN}") {
+                contentType(ContentType.Application.FormUrlEncoded)
+                body = listOf(USERNAME to user).formUrlEncode()
+            }
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
+        private suspend fun logoutProxy(client: HttpClient) {
+            val response = client.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.LOGOUT}")
+            assertEquals(HttpStatusCode.OK, response.status)
         }
     }
 }

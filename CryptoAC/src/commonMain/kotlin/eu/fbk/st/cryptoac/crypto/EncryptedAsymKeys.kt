@@ -4,10 +4,17 @@ import kotlinx.serialization.Serializable
 
 /**
  * An encrypted asymmetric key pair of the given
- * [type] composed of [private] and [public].
+ * [type] composed of [private] and [public] (not
+ * empty) keys
  */
 @Serializable
 data class EncryptedAsymKeys(val private: ByteArray, val public: ByteArray, val type: AsymKeysType) {
+
+    init {
+        require(private.isNotEmpty()) { "No encrypted asymmetric private key was given" }
+        require(public.isNotEmpty()) { "No encrypted asymmetric public key was given" }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false

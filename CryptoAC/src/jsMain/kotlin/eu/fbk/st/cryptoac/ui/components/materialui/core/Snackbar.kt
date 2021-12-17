@@ -7,10 +7,10 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("Snackbar")
-external val snackbar: RClass<SnackbarProps>
+external val snackbar: ComponentClass<SnackbarProps>
 
-external interface SnackbarProps : RProps {
-    /** In ms. */
+external interface SnackbarProps : Props {
+    /** In ms */
     var autoHideDuration: Number?
     var open: Boolean
     var onClose: (Event, String) -> Unit

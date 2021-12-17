@@ -9,7 +9,7 @@ import kotlinx.serialization.Transient
 /**
  * A RoleTuple links a User with a Role.
  * A RoleTuple is defined by a [username], a [roleName], a positive [roleVersionNumber] and
- * 2 encrypted key pairs: [encryptedAsymEncKeys] and [encryptedAsymSigKeys].
+ * 2 encrypted key pairs: [encryptedAsymEncKeys] and [encryptedAsymSigKeys]
  */
 @Serializable
 class RoleTuple(
@@ -26,7 +26,7 @@ class RoleTuple(
     override fun getBytesForSignature(): ByteArray = ("$username$roleName$roleVersionNumber" +
             "$encryptedAsymEncKeys$encryptedAsymSigKeys").toByteArray()
 
-    /** Check that [newSignerType] is a User, then invoke superclass method. */
+    /** Check that [newSignerType] is a User, then invoke superclass method */
     override fun updateSignature(newSignature: ByteArray, newSigner: String, newSignerType: ElementTypeWithKey) {
         when (newSignerType) {
             ElementTypeWithKey.USER -> super.updateSignature(newSignature, newSigner, newSignerType)
@@ -34,7 +34,7 @@ class RoleTuple(
         }
     }
 
-    /** Return a String array of the significant fields of this tuple. */
+    /** Return a String array of the significant fields of this tuple */
     override fun toArray(): Array<String> = arrayOf(username, roleName, roleVersionNumber.toString())
 
     override fun equals(other: Any?): Boolean {

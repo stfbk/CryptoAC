@@ -3,6 +3,8 @@ package eu.fbk.st.cryptoac.ui.components.custom
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.SERVER
 import eu.fbk.st.cryptoac.core.CoreType
+import eu.fbk.st.cryptoac.CryptoACFormField
+import eu.fbk.st.cryptoac.InputType
 import eu.fbk.st.cryptoac.ui.*
 import eu.fbk.st.cryptoac.ui.components.icons.faCloudUploadAlt
 import eu.fbk.st.cryptoac.ui.components.icons.faPaperPlane
@@ -11,7 +13,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
-import kotlinx.html.InputType
 import kotlinx.html.hidden
 import kotlinx.html.js.onSubmitFunction
 import mu.KotlinLogging
@@ -26,60 +27,60 @@ import styled.styledDiv
 
 private val logger = KotlinLogging.logger {}
 
-external interface CryptoACProps : RProps {
-    /** The HTTP endpoint this form should send request to. */
+external interface CryptoACProps : Props {
+    /** The HTTP endpoint this form should send request to */
     var endpoint: String
 
-    /** The HTTP method for this form. */
+    /** The HTTP method for this form */
     var method: HttpMethod
 
-    /** Text to display in the submit button. */
+    /** Text to display in the submit button */
     var submitButtonText: String
 
-    /** The core type, i.e., the chosen (implementation of the) CAC scheme. */
-    var coreType: CoreType
-
-    /** The list of the input fields of this form. */
+    /** The list of the input fields of this form */
     var cryptoACFormFields: List<List<CryptoACFormField>>
 
-    /** The function to invoke for submitting the form. */
-    var submit: (HttpMethod, String, HashMap<String, String>, HashMap<String, File>) -> Unit
+    /** The function to invoke for submitting the form */
+    var handleSubmitEvent: (HttpMethod, String, HashMap<String, String>, HashMap<String, File>) -> Unit
 
-    var handleChangeBackdropOpen: (Boolean) -> Unit
+    var coreType: CoreType
+    var handleChangeBackdropIsOpen: (Boolean) -> Unit
     var handleDisplayCryptoACAlert : (OutcomeCode, CryptoACAlertSeverity) -> Unit
 }
 
-/** This component renders a form for sending API requests to the proxy. */
-class CryptoACForm: RComponent<CryptoACProps, RState>() {
+/** This component renders a form for sending API requests to the proxy */
+class CryptoACForm: RComponent<CryptoACProps, State>() {
 
     override fun RBuilder.render() {
 
-        /** Create the form. */
+        /** Create the form */
         form {
             attrs {
                 action = props.endpoint
                 onSubmitFunction = { event ->
-                    handleCryptoACFormSubmit(event, props.submit)
+                    handleCryptoACFormSubmit(event, props.handleSubmitEvent)
                 }
             }
 
-            /** Use a grid for the input fields. */
+            /** Use a grid for the input fields */
             grid {
                 attrs {
                     container = true
                     spacing = 1
                 }
 
-                /** For each "row" of input fields. */
+                /** For each "row" of input fields */
                 props.cryptoACFormFields.forEach { formRow ->
 
-                    /** Compute the space for the columns. */
+                    key = formRow.map { it.name+it.defaultValue }.joinToString { it }
+
+                    /** Compute the space for the columns */
                     val currentSM = 12 / formRow.size
 
-                    /** For each field in the row. */
+                    /** For each field in the row */
                     formRow.forEach { formField ->
 
-                        key = formField.name
+                        key = formField.name+formField.defaultValue
 
                         grid {
                             attrs {
@@ -89,22 +90,84 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
                             }
 
                             when (formField.type) {
-                                /** Create a radio input. */
+                                /** Create a radio input */
                                 InputType.radio -> {
-                                    cryptoACRadioGroup {
-                                        defaultValue = if (formField.defaultValue == undefined) "false" else formField.defaultValue
+                                    child(cryptoACRadioGroup {
+                                        defaultValue = if (
+                                            formField.defaultValue.isNullOrBlank() ||
+                                            formField.defaultValue == "null"
+                                        ) {
+                                            "false"
+                                        } else {
+                                            formField.defaultValue
+                                        }
                                         name = formField.name
                                         row = true
-                                        options = formField.radioOptions!!.map {
+                                        options = formField.options!!.map {
                                             CryptoACRadioOption(it, it, if (props.method == HttpMethod.Delete) {
                                                 "secondary"
                                             } else {
                                                 "primary"
                                             })
                                         }
+                                    })
+                                }
+                                /** Create a select input */
+                                InputType.select -> {
+                                    styledDiv {
+                                        css {
+                                            marginBottom = 10.px
+                                            marginTop = 10.px
+                                            marginRight = 20.px
+                                        }
+                                        formControl {
+                                            attrs {
+                                                if (formField.className != null) {
+                                                    className = formField.className
+                                                }
+                                                variant = "standard"
+                                            }
+                                            inputLabel {
+                                                attrs {
+                                                    id = "${formField.label}-label"
+                                                }
+                                                +formField.label
+                                            }
+                                            eu.fbk.st.cryptoac.ui.components.materialui.core.select {
+                                                attrs {
+                                                    name = formField.label
+                                                    autoWidth = true
+                                                    defaultValue = if (
+                                                        formField.defaultValue.isNullOrBlank() ||
+                                                        formField.defaultValue == "null"
+                                                    ) {
+                                                        "Select"
+                                                    } else {
+                                                        formField.defaultValue
+                                                    }
+                                                    label = formField.label
+                                                    labelId = "${formField.label}-label"
+                                                    id = formField.label
+                                                }
+                                                menuItem {
+                                                    attrs {
+                                                        value = "Select"
+                                                    }
+                                                    +"Select"
+                                                }
+                                                formField.options!!.map {
+                                                    menuItem {
+                                                        attrs {
+                                                            value = it
+                                                        }
+                                                        +it
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
-                                /** Create a text input. */
+                                /** Create a text input */
                                 InputType.text, InputType.password, InputType.number -> {
                                     styledDiv {
                                         css {
@@ -112,11 +175,18 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
                                             marginTop = 10.px
                                             marginRight = 20.px
                                         }
-                                        cryptoACTextField {
+                                        child(cryptoACTextField {
                                             if (formField.className != null) {
                                                 className = formField.className
                                             }
-                                            defaultValue = if (formField.defaultValue == undefined) "" else formField.defaultValue
+                                            defaultValue = if (
+                                                formField.defaultValue.isNullOrBlank() ||
+                                                formField.defaultValue == "null"
+                                            ) {
+                                                ""
+                                            } else {
+                                                formField.defaultValue
+                                            }
                                             name = formField.name
                                             label = formField.label
                                             type = formField.type.toString()
@@ -126,10 +196,10 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
                                             } else {
                                                 "primary"
                                             }
-                                        }
+                                        })
                                     }
                                 }
-                                /** Create a checkbox input. */
+                                /** Create a checkbox input */
                                 InputType.checkBox -> {
                                     styledDiv {
                                         css {
@@ -137,38 +207,46 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
                                             marginTop = 10.px
                                             marginRight = 20.px
                                         }
-                                        cryptoACCheckbox {
+                                        child(cryptoACCheckbox {
                                             attrs {
-                                                defaultValue = if (formField.defaultValue == undefined) "false" else formField.defaultValue.toString()
+                                                defaultValue = if (
+                                                    formField.defaultValue.isNullOrBlank() ||
+                                                    formField.defaultValue == "null"
+                                                ) {
+                                                    "false"
+                                                } else {
+                                                    formField.defaultValue
+                                                }
                                                 label = formField.name
                                             }
-                                        }
+                                        })
                                     }
                                 }
-                                /** Create a file input. */
+                                /** Create a file input */
                                 InputType.file -> {
                                     iconButton {
                                         attrs {
                                             color = "primary"
                                             component = "label"
-                                            children = faCloudUploadAlt { }
                                         }
+                                        child(createElement { faCloudUploadAlt { } }!!)
                                         input {
                                             attrs {
                                                 name = formField.name
-                                                type = InputType.file
+                                                type = kotlinx.html.InputType.file
                                                 hidden = true
                                             }
                                         }
                                     }
                                 }
+
                                 else -> throw Exception("TODO") // TODO
                             }
                         }
                     }
                 }
 
-                /** Create the submit button. */
+                /** Create the submit button */
                 grid {
                     attrs {
                         item = true
@@ -210,19 +288,19 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
 
     /**
      * When a form gets submitted, we extract the values of the input
-     * fields of the form and then send the API request to the proxy.
+     * fields of the form and then send the API request to the proxy
      */
     private fun handleCryptoACFormSubmit(e: Event, submitAndHandleCallback: (HttpMethod, String, HashMap<String, String>, HashMap<String, File>) -> Unit) {
         e.preventDefault()
 
         logger.info { "Received form submit request, retrieving values" }
 
-        /** Get the values of the input fields. */
+        /** Get the values of the input fields */
         val values = getValuesFromInputFields(e.target as HTMLFormElement)
         val files = getFilesFromInputFields(e.target as HTMLFormElement)
         logger.info { "Collected ${values.size} values and ${files.size} files" }
 
-        /** Compute the number of collected and expected values. */
+        /** Compute the number of collected and expected values */
         val collectedValues = values.size + files.size
         var expectedValues = 0
         props.cryptoACFormFields.forEach { expectedValues += it.size }
@@ -248,7 +326,7 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
         }
     }
 
-    /** Programmatically retrieve values from input fields of the [form]. */
+    /** Programmatically retrieve values from input fields of the [form] */
     private fun getValuesFromInputFields(form: HTMLFormElement): HashMap<String, String> {
         val values = HashMap<String, String>()
         for (i in 0..form.elements.length) {
@@ -270,7 +348,7 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
         return values
     }
 
-    /** Programmatically retrieve files from input fields of the [form]. */
+    /** Programmatically retrieve files from input fields of the [form] */
     private fun getFilesFromInputFields(form: HTMLFormElement): HashMap<String, File> {
         val values = HashMap<String, File>()
         for (i in 0..form.elements.length) {
@@ -287,62 +365,44 @@ class CryptoACForm: RComponent<CryptoACProps, RState>() {
     }
 }
 
-/** Extend RBuilder for easier use of this React component. */
-fun RBuilder.cryptoACForm(handler: CryptoACProps.() -> Unit): ReactElement {
-    return child(CryptoACForm::class) {
-        this.attrs(handler)
-    }
+/** Extend RBuilder for easier use of this React component */
+fun cryptoACForm(handler: CryptoACProps.() -> Unit): ReactElement {
+    return createElement {
+        child(CryptoACForm::class) {
+            this.attrs(handler)
+        }
+    }!!
 }
 
 
 
-/** Data necessary to render a CryptoAC form. */
+/** Data necessary to render a CryptoAC form */
 data class CryptoACFormData(
-    /** React key for the form component. */
+    /** React key for the form component */
     val key: String,
 
-    /** Text to display in the submit button. */
+    /** Text to display in the submit button */
     val submitButtonText: String,
 
-    /** Specify an icon, only for forms in the pro sidebar. */
-    val icon: RClass<RProps>,
+    /** Specify an icon, only for forms in the pro sidebar */
+    val icon: ComponentClass<Props>,
 
-    /** The HTTP endpoint this form should send request to. */
+    /** The HTTP endpoint this form should send request to */
     val endpoint: String,
 
-    /** The HTTP method for this form. */
+    /** The HTTP method for this form */
     val method: HttpMethod,
 
-    /** The core type, i.e., the chosen (implementation of the) CAC scheme. */
+    /** The core type, i.e., the chosen (implementation of the) CAC scheme */
     val coreType: CoreType,
 
-    /** The list of the input fields of this form. */
+    /** The list of the input fields of this form */
     val cryptoACFormFields: List<List<CryptoACFormField>>,
 
-    /** The function to invoke for submitting the form. */
+    /** The function to invoke for submitting the form */
     var submit: (HttpMethod, String, HashMap<String, String>, HashMap<String, File>) -> Unit,
 
-    /** Whether the form should display a divider after itself, only for forms in the pro sidebar. */
+    /** Whether the form should display a divider after itself, only for forms in the pro sidebar */
     val divider: Boolean = false
 )
 
-/** A field of a CryptoAC form. */
-data class CryptoACFormField(
-    /** The name of the field. */
-    val name: String,
-
-    /** The label of the field. */
-    val label: String,
-
-    /** The input type of the field. */
-    val type: InputType,
-
-    /** The list of options in case the input type is "radio", if any. */
-    val radioOptions: List<String>? = null,
-
-    /** The default value, if any. */
-    val defaultValue: String? = null,
-
-    /** An additional class name to apply to the form field, if any. */
-    val className: String? = null
-)

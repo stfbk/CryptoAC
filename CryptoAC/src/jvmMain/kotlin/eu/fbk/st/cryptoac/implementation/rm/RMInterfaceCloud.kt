@@ -7,7 +7,7 @@ import eu.fbk.st.cryptoac.core.tuples.FileTuple
 import eu.fbk.st.cryptoac.core.tuples.PermissionTuple
 import eu.fbk.st.cryptoac.API
 import eu.fbk.st.cryptoac.API.HTTPS
-import eu.fbk.st.cryptoac.core.CoreParametersCloud
+import eu.fbk.st.cryptoac.core.CoreParametersCLOUD
 import io.ktor.client.*
 import io.ktor.client.engine.jetty.*
 import io.ktor.client.features.cookies.*
@@ -27,21 +27,21 @@ private val logger = KotlinLogging.logger {}
 
 /**
  * Implementation of the methods to interface with the RM as a
- * microservice container configured with the given [interfaceParameters].
+ * microservice container configured with the given [interfaceParameters]
  */
 class RMInterfaceCloud(private val interfaceParameters: RMInterfaceCloudParameters) : RMInterface() {
 
-    /** The base API path (url + port) of the RM. */
+    /** The base API path (url + port) of the RM */
     private val rmBaseAPI = "${interfaceParameters.url}:${interfaceParameters.port}"
 
     /**
      * Configure the RM with relevant
-     * [parameters] and return the outcome code.
+     * [parameters] and return the outcome code
      */
     override fun configure(parameters: CoreParameters): OutcomeCode {
 
-        /** Guard clauses. */
-        if (parameters !is CoreParametersCloud) {
+        /** Guard clauses */
+        if (parameters !is CoreParametersCLOUD) {
             val message = "Given wrong parameters for update"
             logger.error { message }
             throw IllegalStateException(message)
@@ -57,8 +57,11 @@ class RMInterfaceCloud(private val interfaceParameters: RMInterfaceCloudParamete
                     val rmResponse = it.post<HttpResponse>(rmURL) {
                         contentType(ContentType.Application.Json)
                         body = Json.encodeToString(RMCloudParameters(
-                            parameters.msMySQLInterfaceParameters, parameters.dsCloudInterfaceParameters, parameters.opaInterfaceParameters)
-                        )
+                            parameters.cryptoType,
+                            parameters.mmMySQLInterfaceParameters,
+                            parameters.dmCloudInterfaceParameters,
+                            parameters.opaInterfaceParameters
+                        ))
                     }
                     logger.debug { "Received response from the RM" }
                     if (rmResponse.status != HttpStatusCode.OK) {
@@ -84,7 +87,7 @@ class RMInterfaceCloud(private val interfaceParameters: RMInterfaceCloudParamete
      * Invoke the RM to validate
      * the add file operation involving the given
      * [newFileTuple] and [adminPermissionTuple]
-     * and return the outcome code.
+     * and return the outcome code
      */
     override fun checkAddFile(newFileTuple: FileTuple, adminPermissionTuple: PermissionTuple): OutcomeCode {
 
@@ -127,7 +130,7 @@ class RMInterfaceCloud(private val interfaceParameters: RMInterfaceCloudParamete
      * Invoke the RM to validate
      * the write file operation involving the given
      * [newFileTuple] with the [symEncKeyVersionNumber]
-     * and return the outcome code.
+     * and return the outcome code
      */
     override fun checkWriteFile(symEncKeyVersionNumber: Int, newFileTuple: FileTuple): OutcomeCode {
 
@@ -165,10 +168,10 @@ class RMInterfaceCloud(private val interfaceParameters: RMInterfaceCloudParamete
         return code
     }
 
-    /** Return the Ktor Http client. */
+    /** Return the Ktor Http client */
     private fun getKtorClient(): HttpClient = HttpClient(Jetty) {
         expectSuccess = false
-        install(HttpCookies) /** To accept all cookies. */
+        install(HttpCookies) /** To accept all cookies */
         // TODO configure this, as for now the client accepts all certificates
         engine {
             sslContextFactory.isTrustAll = true
@@ -179,14 +182,14 @@ class RMInterfaceCloud(private val interfaceParameters: RMInterfaceCloudParamete
 
 /**
  * A wrapper for an add file request, which has a file tuple,
- * a permission tuple and a symmetric key version number.
+ * a permission tuple and a symmetric key version number
  */
 @Serializable
 data class AddFileRequest(val fileTuple: FileTuple, val permissionTuple: PermissionTuple, val symKeyVersionNumber: Int)
 
 /**
  * A wrapper for an add file request, which has a file tuple,
- * a permission tuple and a symmetric key version number.
+ * a permission tuple and a symmetric key version number
  */
 @Serializable
 data class WriteFileRequest(val fileTuple: FileTuple, val symKeyVersionNumber: Int)

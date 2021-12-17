@@ -23,34 +23,42 @@ import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
-/** The file containing REGO commands to initialize the OPA. */
+/** The file containing REGO commands to initialize the OPA */
 const val INIT_REGO_CODE = "/cryptoac/rbac.rego"
 
-/** The key in the OPA RBAC document for the user-role (UR) relationship. */
+/** The key in the OPA RBAC document for the user-role (UR) relationship */
 const val UR_KEY = "ur"
 
-/** The key in the OPA RBAC document for the role-file (PA) relationship. */
+/** The key in the OPA RBAC document for the role-file (PA) relationship */
 const val PA_KEY = "pa"
+
+// TODO Integrate JWT in OPA?
+
+// TODO OPA Docker should stay with DM Docker. But what about hybrid solutions?
+//  Do we duplicate OPA? In general, CryptoAC does not currently account for
+//  hybrid solutions. We should change the UI so to allow to add multiple {URL, Port}
+//  pairs for each entity (i.e., DM, MS). To do so, creates a "plus" button to the
+//  side of each row (i.e., DM, RM, MS) that creates another row. Change also behaviour in back-end.
 
 /**
  * Implementation of the methods to interface with the open policy
- * agent server configured with the given [opaInterfaceParameters].
+ * agent server configured with the given [opaInterfaceParameters]
  */
 class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
-    /** The number of locks on the OPA document for the lock-rollback-unlock mechanism. */
+    /** The number of locks on the OPA document for the lock-rollback-unlock mechanism */
     private var locks = 0
 
-    /** The OPA document at the beginning of a transaction. */
+    /** The OPA document at the beginning of a transaction */
     private var initialOPADocument: OPADocumentRBAC? = null
 
-    /** The base API path (url + port) of OPA. */
-    val opaBaseAPI = "${opaInterfaceParameters.url}:${opaInterfaceParameters.port}"
+    /** The base API path (url + port) of OPA */
+    private val opaBaseAPI = "${opaInterfaceParameters.url}:${opaInterfaceParameters.port}"
 
-    /** The Ktor Http client. */
+    /** The Ktor Http client */
     private var client: HttpClient? = null
 
-    /** Configure the OPA and return the outcome code. */
+    /** Configure the OPA and return the outcome code */
     fun configure(): OutcomeCode {
         val regoFile = OPAInterface::class.java.getResourceAsStream(INIT_REGO_CODE)
         if (regoFile == null) {
@@ -89,7 +97,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
                 body = "{\"$UR_KEY\":{}, \"$PA_KEY\":{}}"
             }
             logger.debug { "Received response from the OPA" }
-            /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/. */
+            /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */
             if (opaResponse.status != HttpStatusCode.NoContent) {
                 logger.warn { "Received error code from the OPA (status: ${opaResponse.status})" }
                 code = OutcomeCode.CODE_028_OPA_POLICY_CREATION
@@ -102,7 +110,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Update the RBAC data in the OPA with
-     * the [assignment] and return the outcome code.
+     * the [assignment] and return the outcome code
      */
     fun addURAssignment(assignment: UR): OutcomeCode {
 
@@ -127,7 +135,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Update the RBAC data in the OPA with
-     * the [assignment] and return the outcome code.
+     * the [assignment] and return the outcome code
      */
     fun addPAAssignment(assignment: PA): OutcomeCode {
 
@@ -155,7 +163,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * Update the RBAC data in the OPA by deleting the
      * assignments matching the given [username] and [roleName]
      * and return the outcome code. If a parameter was not given,
-     * ignore it. At least one parameters has to be provided.
+     * ignore it. At least one parameters has to be provided
      */
     fun deleteURAssignments(username: String? = null, roleName: String? = null): OutcomeCode {
 
@@ -167,7 +175,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
         /**
          * At least one parameter has to be specified, otherwise
-         * the delete operation would delete all assignments.
+         * the delete operation would delete all assignments
          */
         if (username == null && roleName == null) {
             val message = "No arguments were provided for delete operation"
@@ -186,7 +194,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
          *
          * TODO A possible revision to the JSON-Patch format is being discussed (last update Nov 2019),
          * which may support value-based array operations. Check https://github.com/json-patch/json-patch2
-         * and especially https://github.com/json-patch/json-patch2/issues/18.
+         * and especially https://github.com/json-patch/json-patch2/issues/18
          */
         /** TODO cache the OPA document? */
         val storageOPADocument = getOPADocument()
@@ -197,7 +205,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         val urAssignments = opaDocument!!.result!!.ur
 
 
-        /** Build a single update request. */
+        /** Build a single update request */
         val jsonPatch = StringBuilder("[")
         urAssignments.keys.forEach {
             if (it == username && roleName == null) {
@@ -229,7 +237,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             }
         }
 
-        /** If no assignment has been found, return the error code. */
+        /** If no assignment has been found, return the error code */
         return if (jsonPatch.length == 1) {
             logger.warn { "No UR assignments has been found" }
             if (roleName != null && username != null) {
@@ -253,7 +261,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * Update the RBAC data in the OPA by deleting the
      * assignments matching the given [roleName] and [fileName]
      * and return the outcome code. If a parameter was not given,
-     * ignore it. At least one parameters has to be provided.
+     * ignore it. At least one parameters has to be provided
      */
     fun deletePAAssignments(roleName: String? = null, fileName: String? = null): OutcomeCode {
 
@@ -264,7 +272,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
         /**
          * At least one parameter has to be specified, otherwise
-         * the delete operation would delete all assignments.
+         * the delete operation would delete all assignments
          */
         if (roleName == null && fileName == null) {
             val message = "No arguments were provided for delete operation"
@@ -283,7 +291,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
          *
          * TODO A possible revision to the JSON-Patch format is being discussed (last update Nov 2019),
          * which may support value-based array operations. Check https://github.com/json-patch/json-patch2
-         * and especially https://github.com/json-patch/json-patch2/issues/18.
+         * and especially https://github.com/json-patch/json-patch2/issues/18
          */
 
         val storageOPADocument = getOPADocument()
@@ -294,7 +302,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         val paAssignments = opaDocument!!.result!!.pa
 
 
-        /** Build a single update request. */
+        /** Build a single update request */
         val jsonPatch = StringBuilder("[")
         paAssignments.keys.forEach {
             if (it == roleName && fileName == null) {
@@ -326,7 +334,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             }
         }
 
-        /** If no assignment has been found, return the error code. */
+        /** If no assignment has been found, return the error code */
         return if (jsonPatch.length == 1) {
             logger.warn { "No PA assignments has been found" }
             if (fileName != null && roleName != null) {
@@ -347,7 +355,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Update the RBAC data in the OPA with the
-     * [updatedAssignment] and return the outcome code.
+     * [updatedAssignment] and return the outcome code
      */
     fun updatePAAssignment(updatedAssignment: PA): OutcomeCode {
 
@@ -362,7 +370,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
          *
          * TODO A possible revision to the JSON-Patch format is being discussed (last update Nov 2019),
          * which may support value-based array operations. Check https://github.com/json-patch/json-patch2
-         * and especially https://github.com/json-patch/json-patch2/issues/18.
+         * and especially https://github.com/json-patch/json-patch2/issues/18
          */
 
         val storageOPADocument = getOPADocument()
@@ -391,7 +399,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             }
         }
 
-        /** If no assignment has been found, return the error code. */
+        /** If no assignment has been found, return the error code */
         return if (jsonPatch.length == 1) {
             logger.warn { "No PA assignments has been found" }
             OutcomeCode.CODE_041_PA_ASSIGNMENTS_NOT_FOUND
@@ -405,7 +413,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
     }
 
 
-    /** Get the OPA RBAC document from the OPA. */
+    /** Get the OPA RBAC document from the OPA */
     fun getOPADocument(): StorageOPADocument {
 
         // TODO better handle exceptions and refused connections
@@ -433,10 +441,10 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * previous status in case of errors. As this method could be invoked
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
-     * starting a new transaction only when [lock] is 0.
+     * starting a new transaction only when [locks] is 0.
      *
      * In this implementation, create an HTTP client and get the current
-     * OPA document, if present.
+     * OPA document, if present
      */
     fun lock(): OutcomeCode {
         return if (locks == 0) {
@@ -466,9 +474,9 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * Signal an error during an atomic transaction so to restore the
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
-     * rollbacking to the previous status only when [lock] becomes 0.
+     * rollbacking to the previous status only when [locks] becomes 0.
      *
-     * In this implementation, restore the previous OPA document and close the client.
+     * In this implementation, restore the previous OPA document and close the client
      */
     fun rollback(): OutcomeCode {
         return when {
@@ -484,7 +492,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
                         body = Json.encodeToString(initialOPADocument)
                     }
                     logger.debug { "Received response from the OPA" }
-                    /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/. */
+                    /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */
                     if (opaResponse.status != HttpStatusCode.NoContent) {
                         logger.warn { "Received error code from the OPA (status: ${opaResponse.status})" }
                         code = OutcomeCode.CODE_028_OPA_POLICY_CREATION
@@ -510,9 +518,9 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * Signal the end of an atomic transaction so commit the changes.
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
-     * the transaction only when [lock] becomes 0.
+     * the transaction only when [locks] becomes 0.
      *
-     * In this implementation, just close the client.
+     * In this implementation, just close the client
      */
     fun unlock(): OutcomeCode {
         return when {
@@ -539,7 +547,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
     /**
      * Send a request to update the RBAC document in the OPA
      * according to the [jsonPatch] document (as specified in RFC6902)
-     * and return the outcome code.
+     * and return the outcome code
      */
     private fun updateOPADocument(
         jsonPatch: String,
@@ -555,7 +563,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
                 body = jsonPatch
             }
             logger.debug { "Received response from the OPA" }
-            /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/. */
+            /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */
             if (opaResponse.status != HttpStatusCode.NoContent) {
                 val errorMessage = opaResponse.readText() // TODO se vuoi puoi serializzare questo, creando una classe apposita
                 logger.warn { "Received error code from the OPA (status: ${opaResponse.status}, error: $errorMessage)" }
@@ -568,7 +576,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Build and return a Json patch request for the given
-     * [urORpa] assignment, [elementName], [count] and [assignment].
+     * [urORpa] assignment, [elementName], [count] and [assignment]
      */
     private fun createJsonPatchAddOperation(
         urORpa: String,
@@ -585,7 +593,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
         logger.debug { "count fpr $elementName ($urORpa) is $count" }
 
-        /** To account for indexing starting from 0. */
+        /** To account for indexing starting from 0 */
         val counter = count -1
 
         if (counter >= 0) {
@@ -616,7 +624,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
  * Describe the document received when querying OPA APIs:
  * - if decision logging was enabled in OPA, [decision_id] contains a string that uniquely identifies the decision/query;
  * - [result] is the base or virtual document referred to in the API request. If the path is undefined, this key will be omitted;
- * - if query metrics were enabled in OPA, [metrics] contains query performance metrics collected during the parse, compile, and evaluation steps.
+ * - if query metrics were enabled in OPA, [metrics] contains query performance metrics collected during the parse, compile, and evaluation steps
  */
 @Serializable
 data class OPADocument(
@@ -641,10 +649,10 @@ data class OPADocumentRBAC(
 
 
 @Serializable
-/** An assignment between a [username] and a [roleName]. */
+/** An assignment between a [username] and a [roleName] */
 data class UR(val username: String, val roleName: String) {
     companion object {
-        /** Extract a UR assignment from the [roleTuple]. */
+        /** Extract a UR assignment from the [roleTuple] */
         fun extractUR(roleTuple: RoleTuple): UR =
             UR(roleTuple.username, roleTuple.roleName)
     }
@@ -653,10 +661,10 @@ data class UR(val username: String, val roleName: String) {
 
 
 @Serializable
-/** An assignment between a [roleName] and a [fileName]. */
+/** An assignment between a [roleName] and a [fileName] */
 data class PA(val roleName: String, val fileName: String, val permission: PermissionType) {
     companion object {
-        /** Extract a PA assignment from the [permissionTuple]. */
+        /** Extract a PA assignment from the [permissionTuple] */
         fun extractPA(permissionTuple: PermissionTuple): PA =
             PA(permissionTuple.roleName, permissionTuple.fileName, permissionTuple.permission, )
     }
@@ -664,7 +672,7 @@ data class PA(val roleName: String, val fileName: String, val permission: Permis
 
 
 
-/** Wrapper for the outcome [code] and a [opaDocument]. */
+/** Wrapper for the outcome [code] and a [opaDocument] */
 data class StorageOPADocument(
     val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
     val opaDocument: OPADocument? = null

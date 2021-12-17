@@ -16,16 +16,16 @@ services:
         ipv4_address: "${CRYPTOACRMHOSTIP}"
     image: cryptoac_cryptoac:latest
     ports:
-      - "${CRYPTOACRMHOSTPORT}:${CRYPTOACRMHOSTPORT}"
+      - "${CRYPTOACRMHOSTPORT}:${CRYPTOACRMRMPORT}"
     entrypoint: [ "/cryptoac/bin/CryptoAC", "-or"]
 
-  cryptoac_ds:
+  cryptoac_dm:
     networks:
       test:
         ipv4_address: "${CRYPTOACDSHOSTIP}"
     image: cryptoac_cryptoac:latest
     ports:
-      - "${CRYPTOACDSHOSTPORT}:${CRYPTOACDSHOSTPORT}"
+      - "${CRYPTOACDSHOSTPORT}:${CRYPTOACDSDSPORT}"
     entrypoint: [ "/cryptoac/bin/CryptoAC", "-od"]
 
   cryptoac_mysql:
@@ -44,7 +44,7 @@ services:
         ipv4_address: "${CRYPTOACOPAHOSTIP}"
     image: cryptoac_opa:latest
     ports:
-      - "${CRYPTOACOPAPORT}:${CRYPTOACOPAPORT}"
+      - "${CRYPTOACOPAHOSTPORT}:${CRYPTOACOPAOPAPORT}"
     # WARNING: OPA is NOT running with an authorization policy configured. This
     # means that clients can read and write policies in OPA. If you are
     # deploying OPA in an insecure environment, be sure to configure

@@ -8,55 +8,48 @@ import react.*
 import styled.css
 import styled.styledDiv
 
-external interface CryptoACCheckboxProps : RProps {
-    /** Default value for the input. */
+external interface CryptoACCheckboxProps : Props {
+    /** Default value for the input */
     var defaultValue: String
 
-    /** The label/placeholder for this field. */
+    /** The label/placeholder for this field */
     var label: String
 }
 
-external interface CryptoACCheckboxState : RState {
-    /** The value of the checkbox. */
+external interface CryptoACCheckboxState : State {
+    /** The value of the checkbox */
     var value: String
 
-    /** Whether the component has to set to the new state or not. */
-    var hasToSetValue: Boolean
+    /** Whether to render the value on change by user */
+    var changedByUser: Boolean
+
+    /** Whether the component was just mounted */
+    var justMounted: Boolean
 }
 
-/** A custom component for a radio group. */
+/** A custom component for a radio group */
 class CryptoACCheckbox: RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>() {
     override fun RBuilder.render() {
 
-        var checkboxElement: ReactElement? = null
-        styledDiv {
-            css {
-                display = Display.none
-            }
-            /*input {
-                attrs {
-                    name = props.label
-                    type = InputType.checkBox
-                    value = state.value
-                }
-            }*/
-            checkboxElement = checkbox {
-                attrs {
-                    value = state.value
-                    checked = state.value.split("_")[0].toBoolean()
-                    onChange = {
-                        setState {
-                            hasToSetValue = true
-                            value = if (state.value == "true_${props.label}") "false_${props.label}" else "true_${props.label}"
-                        }
-                    }
-                }
-            }
-        }
-
         formControlLabel {
             attrs {
-                control = checkboxElement!!
+                control = createElement {
+                    checkbox {
+                        attrs {
+                            value = state.value
+                            checked = state.value.split("_")[0].toBoolean()
+                            onChange = {
+                                setState {
+                                    changedByUser = true
+                                    value = if (state.value == "true_${props.label}")
+                                        "false_${props.label}"
+                                    else
+                                        "true_${props.label}"
+                                }
+                            }
+                        }
+                    }
+                }!!
                 label = props.label
                 value = props.label
                 labelPlacement = "start"
@@ -65,22 +58,27 @@ class CryptoACCheckbox: RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>
     }
 
     override fun CryptoACCheckboxState.init() {
-        hasToSetValue = false
+        justMounted = true
+        changedByUser = false
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACCheckbox::class.js.asDynamic().getDerivedStateFromProps = {
                 props: CryptoACCheckboxProps, state: CryptoACCheckboxState ->
-            if (!state.hasToSetValue) {
-                state.value = if (props.defaultValue == undefined) "false_${props.label}" else "${props.defaultValue}_${props.label}"
+            if (state.justMounted || !state.changedByUser) {
+                state.value = "${props.defaultValue}_${props.label}"
             }
-            state.hasToSetValue = false
+            state.changedByUser = false
+            state.justMounted = false
         }
     }
+
 }
 
-/** Extend RBuilder for easier use of this React component. */
-fun RBuilder.cryptoACCheckbox(handler: CryptoACCheckboxProps.() -> Unit): ReactElement {
-    return child(CryptoACCheckbox::class) {
-        this.attrs(handler)
-    }
+/** Extend RBuilder for easier use of this React component */
+fun cryptoACCheckbox(handler: CryptoACCheckboxProps.() -> Unit): ReactElement {
+    return createElement {
+        child(CryptoACCheckbox::class) {
+            this.attrs(handler)
+        }
+    }!!
 }

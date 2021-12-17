@@ -5,42 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a787849-4788-4a0a-90f0-53d3ff5a735e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/proxy/upload/admin.RBAC_MQTT" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/proxy/upload/roberto.RBAC_MQTT" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/proxy/upload/silvio.RBAC_MQTT" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParametersCloud.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParametersCloud.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParametersMQTT.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParametersMQTT.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CryptoACObject.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CryptoACObject.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/ActiveElement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/ActiveElement.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/Element.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/Element.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/File.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/File.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/Role.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/Role.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/User.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/elements/User.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/FileTuple.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/FileTuple.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/PermissionTuple.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/PermissionTuple.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/RoleTuple.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/RoleTuple.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/Tuple.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/tuples/Tuple.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/crypto/AsymKeys.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/crypto/AsymKeys.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/crypto/EncryptedAsymKeys.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/crypto/EncryptedAsymKeys.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/crypto/EncryptedSymKey.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/crypto/EncryptedSymKey.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSInterfaceCloudParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSInterfaceCloudParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSInterfaceMQTTParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSInterfaceMQTTParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSInterfaceParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSInterfaceParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSMQTTMessage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ds/DSMQTTMessage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ms/MSInterfaceMySQLParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ms/MSInterfaceMySQLParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ms/MSInterfaceParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/ms/MSInterfaceParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterfaceParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterfaceParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceCloudParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceCloudParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/resources/stylesOverride.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/resources/stylesOverride.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/components/custom/table/CryptoACTable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/components/custom/table/CryptoACTable.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/content/MQTTContent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/content/MQTTContent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreRBACCloud.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreRBACCloud.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/CryptoParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/CryptoParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterface.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterface.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/proxy/UserSession.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/proxy/UserSession.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commonMain/resources/ds.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/resources/dm.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commonMain/resources/ms.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/resources/mm.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/App.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/App.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/proxy/ProxyRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/proxy/ProxyRoutes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/proxy/SessionController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/proxy/SessionController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/proxy/ProxyRoutesTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/proxy/ProxyRoutesTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/proxy/ProxyUtilities.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/proxy/ProxyUtilities.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +51,48 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="CryptoAC" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="benchmark" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CryptoAC" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CryptoAC" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build setup" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CryptoAC" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="distribution" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CryptoAC" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="documentation" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CryptoAC" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CryptoAC" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CryptoAC" type="f1a62948:ProjectNode" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -94,6 +106,7 @@
       <list>
         <option value="Rego File" />
         <option value="Kotlin Object" />
+        <option value="Kotlin Enum" />
         <option value="JUnit5 Test Class" />
         <option value="Kotlin Class" />
       </list>
@@ -112,7 +125,13 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/2a155a0655e2dea86b57a82f0e37dff30556d0dc/org.eclipse.paho.mqttv5.client-1.2.5-sources.jar!/org/eclipse/paho/mqttv5/client/internal/CommsReceiver.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/Main.kt" root0="FORCE_HIGHLIGHTING" />
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/2a155a0655e2dea86b57a82f0e37dff30556d0dc/org.eclipse.paho.mqttv5.client-1.2.5-sources.jar!/org/eclipse/paho/mqttv5/client/internal/ClientComms.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/content/Login.kt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/App.kt" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="1to70PCEZgk17iYU8q7eQdnx0OZ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -131,12 +150,12 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/build/classes" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../temptoDelete/kotlin-jni-mix" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.15880322" />
-    <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="testing.instrumented.configuration" />
+    <property name="project.structure.side.proportion" value="0.38809723" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -144,11 +163,11 @@
       <recent name="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/core/elements" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/tuples" />
-      <recent name="$PROJECT_DIR$/src/commonTest/kotlin/eu.fbk.st.cryptoac.core" />
+      <recent name="$PROJECT_DIR$/src/linuxX64Main/kotlin/eu/fbk/st/cryptoac/crypto/openssl/native" />
+      <recent name="$PROJECT_DIR$/src/linuxX64Main/kotlin/eu/fbk/st/cryptoac/crypto/openssl" />
+      <recent name="$PROJECT_DIR$/src/linuxX64Main/kotlin" />
+      <recent name="$PROJECT_DIR$/build/classes/kotlin/jvm/main" />
       <recent name="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/content" />
-      <recent name="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/components/custom" />
-      <recent name="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/ui/components/materialui/lab" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -157,69 +176,27 @@
       <recent name="sidebar" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
-      <recent name="eu.fbk.st.cryptoac.core" />
-      <recent name="eu.fbk.st.cryptoac.core.elements" />
       <recent name="eu.fbk.st.cryptoac" />
+      <recent name="eu.fbk.st.cryptoac.core" />
+      <recent name="eu.fbk.st.cryptoac.ui.components.custom" />
+      <recent name="eu.fbk.st.cryptoac.core.elements" />
       <recent name="eu.fbk.st.cryptoac.ui" />
-      <recent name="eu.fbk.st.cryptoac.ui.sidebar" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="eu.fbk.st.cryptoac" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="eu.fbk.st.cryptoac.crypto.openssl" />
       <recent name="eu.fbk.st.cryptoac.implementation.rm" />
       <recent name="eu.fbk.st.cryptoac.implementation.opa" />
       <recent name="eu.fbk.st.cryptoac.implementation.ms" />
       <recent name="eu.fbk.st.cryptoac.implementation.ds" />
-      <recent name="eu.fbk.st.cryptoac.core" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.CryptoAC [distZip]">
+  <component name="RunManager" selected="Gradle.CryptoAC [run]">
     <configuration default="true" type="OPA_RUN_CONFIGURATION" factoryName="Opa configuration factory">
       <option name="query" value="" />
       <option name="addtionalargs" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="CryptoAC [assembleDist]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="assembleDist" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="CryptoAC [distTar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="distTar" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="CryptoAC [distZip]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -234,27 +211,6 @@
         <option name="taskNames">
           <list>
             <option value="distZip" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="CryptoAC [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="jar" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -285,13 +241,57 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="ProxyRoutesTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="cleanJvmTest jvmTest" />
+            <option value="--tests &quot;eu.fbk.st.cryptoac.proxy.ProxyRoutesTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="All in CryptoAC.jvmTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CryptoAC.jvmTest" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="eu.fbk.st.cryptoac.proxy in CryptoAC.jvmTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CryptoAC.jvmTest" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="eu.fbk.st.cryptoac.proxy.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="eu.fbk.st.cryptoac.proxy" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.CryptoAC [distZip]" />
-        <item itemvalue="Gradle.CryptoAC [distTar]" />
-        <item itemvalue="Gradle.CryptoAC [assembleDist]" />
-        <item itemvalue="Gradle.CryptoAC [jar]" />
         <item itemvalue="Gradle.CryptoAC [run]" />
+        <item itemvalue="JUnit.eu.fbk.st.cryptoac.proxy in CryptoAC.jvmTest" />
+        <item itemvalue="Gradle.ProxyRoutesTest" />
+        <item itemvalue="Gradle.ProxyRoutesTest" />
       </list>
     </recent_temporary>
   </component>
@@ -306,6 +306,158 @@
     </task>
     <servers />
   </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-io-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-jetty" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-alpn-java-client" />
+    <option featureType="dependencySupport" implementationName="java:org.hamcrest:hamcrest-core" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-http-cio-jvm" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-coroutines-core-js" />
+    <option featureType="dependencySupport" implementationName="java:io.github.microutils:kotlin-logging-js" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-io-js" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-test" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-transport-native-unix-common" />
+    <option featureType="dependencySupport" implementationName="java:org.owasp.encoder:encoder" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-transport" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.paho:org.eclipse.paho.mqttv5.client" />
+    <option featureType="dependencySupport" implementationName="java:ch.qos.logback:logback-classic" />
+    <option featureType="dependencySupport" implementationName="java:net.java.dev.jna:jna-platform" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-digester3" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-alpn-openjdk8-server" />
+    <option featureType="dependencySupport" implementationName="java:org.opentest4j:opentest4j" />
+    <option featureType="dependencySupport" implementationName="java:org.junit.jupiter:junit-jupiter" />
+    <option featureType="dependencySupport" implementationName="java:junit:junit" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty.http2:http2-hpack" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty.http2:http2-client" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-core-kotlinMultiplatform" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty.http2:http2-http-client-transport" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-continuation" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-network-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-http-cio" />
+    <option featureType="dependencySupport" implementationName="java:org.codehaus.janino:janino" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-test-junit" />
+    <option featureType="dependencySupport" implementationName="java:com.google.protobuf:protobuf-java" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-serialization-core-js" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-json" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-http" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-core-js" />
+    <option featureType="dependencySupport" implementationName="java:ch.qos.logback:logback-core" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-serialization" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-lang3" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-benchmark-runtime-js" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-tests" />
+    <option featureType="dependencySupport" implementationName="java:net.sf.jopt-simple:jopt-simple" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-test-host" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin-wrappers:kotlin-react" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-stdlib-js" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-coroutines-core" />
+    <option featureType="dependencySupport" implementationName="java:commons-collections:commons-collections" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-io" />
+    <option featureType="dependencySupport" implementationName="java:org.slf4j:slf4j-api" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-stdlib-jdk7" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-stdlib-jdk8" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-stdlib-common" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin-wrappers:kotlin-react-dom" />
+    <option featureType="dependencySupport" implementationName="java:net.java.dev.jna:jna" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-test-host-kotlinMultiplatform" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-html-builder" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-alpn-server" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-serialization" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-network" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-math3" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-json-js" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty.http2:http2-common" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:atomicfu-js" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-serialization-js" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-stdlib" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-serialization-core-jvm" />
+    <option featureType="dependencySupport" implementationName="java:mysql:mysql-connector-java" />
+    <option featureType="dependencySupport" implementationName="java:org.openjdk.jmh:jmh-core" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-http" />
+    <option featureType="dependencySupport" implementationName="java:org.apiguardian:apiguardian-api" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-serialization-json-jvm" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-client" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-serialization-core" />
+    <option featureType="dependencySupport" implementationName="java:org.junit.jupiter:junit-jupiter-params" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-transport-native-epoll" />
+    <option featureType="dependencySupport" implementationName="java:commons-codec:commons-codec" />
+    <option featureType="dependencySupport" implementationName="java:commons-cli:commons-cli" />
+    <option featureType="dependencySupport" implementationName="java:org.owasp:security-logging-logback" />
+    <option featureType="dependencySupport" implementationName="java:org.junit.platform:junit-platform-engine" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-alpn-java-server" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-resolver" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.velocity.tools:velocity-tools-generic" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-coroutines-debug" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-html-js" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin-wrappers:kotlin-css-js" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty.http2:http2-server" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-network-tls" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-codec-http" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-servlet-kotlinMultiplatform" />
+    <option featureType="dependencySupport" implementationName="java:io.github.microutils:kotlin-logging" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-benchmark-runtime" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-alpn-openjdk8-client" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-host-common-kotlinMultiplatform" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-serialization-json-js" />
+    <option featureType="dependencySupport" implementationName="java:org.owasp:security-logging-common" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-test-common" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-html-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-utils-js" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-cio-jvm" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-buffer" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-html-common" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-servlets" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-js" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-utils" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-velocity" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-common" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty.alpn:alpn-api" />
+    <option featureType="dependencySupport" implementationName="java:org.junit.jupiter:junit-jupiter-engine" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-http-cio-js" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin-wrappers:kotlin-styled" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-core" />
+    <option featureType="dependencySupport" implementationName="java:commons-logging:commons-logging" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains:annotations" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-codec" />
+    <option featureType="dependencySupport" implementationName="java:com.typesafe:config" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-server" />
+    <option featureType="dependencySupport" implementationName="java:org.codehaus.janino:commons-compiler" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-test-annotations-common" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-host-common" />
+    <option featureType="dependencySupport" implementationName="java:org.junit.platform:junit-platform-commons" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-http-js" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-jetty" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-transport-native-kqueue" />
+    <option featureType="dependencySupport" implementationName="java:com.github.cliftonlabs:json-simple" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-serialization-json" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-core-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-servlet" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-netty" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-utils-jvm" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-io" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-json-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-websockets" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.velocity:velocity-engine-core" />
+    <option featureType="dependencySupport" implementationName="java:commons-beanutils:commons-beanutils" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-http-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-core" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-network-tls-certificates" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlinx:kotlinx-coroutines-jdk8" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-handler" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-server-sessions" />
+    <option featureType="dependencySupport" implementationName="java:org.junit.jupiter:junit-jupiter-api" />
+    <option featureType="dependencySupport" implementationName="java:io.github.microutils:kotlin-logging-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-network-tls-jvm" />
+    <option featureType="dependencySupport" implementationName="java:io.netty:netty-codec-http2" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-alpn-client" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-util" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin:kotlin-reflect" />
+    <option featureType="dependencySupport" implementationName="java:org.jetbrains.kotlin-wrappers:kotlin-extensions" />
+    <option featureType="dependencySupport" implementationName="java:javax.servlet:javax.servlet-api" />
+    <option featureType="dependencySupport" implementationName="java:io.ktor:ktor-client-serialization-jvm" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -316,7 +468,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -325,11 +476,6 @@
           <properties class="org.eclipse.paho.mqttv5.common.MqttException" package="org.eclipse.paho.mqttv5.common" />
           <option name="timeStamp" value="6" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/ms/MSInterfaceMySQLTest.kt</url>
-          <line>1307</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -338,6 +484,7 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CryptoAC$CryptoJavaTest.ic" NAME="CryptoJavaTest Coverage Results" MODIFIED="1636382799597" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/CryptoAC$CryptoAC__run_.ic" NAME="CryptoAC [run] Coverage Results" MODIFIED="1623925737196" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

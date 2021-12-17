@@ -2,19 +2,20 @@ package eu.fbk.st.cryptoac.ui
 
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.core.CoreType
-import eu.fbk.st.cryptoac.implementation.ds.DSMQTTMessage
 import eu.fbk.st.cryptoac.ui.components.custom.CryptoACAlertSeverity
 import eu.fbk.st.cryptoac.ui.components.custom.cryptoACAlert
 import eu.fbk.st.cryptoac.ui.components.materialui.core.backdrop
 import eu.fbk.st.cryptoac.ui.components.materialui.core.circularProgress
 import eu.fbk.st.cryptoac.ui.components.materialui.core.container
 import eu.fbk.st.cryptoac.ui.content.content
-import eu.fbk.st.cryptoac.ui.content.login.login
-import eu.fbk.st.cryptoac.ui.sidebar.proSidebarWrapper
+import eu.fbk.st.cryptoac.ui.content.login
+import eu.fbk.st.cryptoac.ui.sidebar.sidebar
+import eu.fbk.st.cryptoac.ui.content.tradeoffboard.tradeOffBoard
 import io.ktor.client.*
 import io.ktor.client.features.cookies.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
+import io.ktor.client.features.websocket.*
 import kotlinx.css.*
 import mu.KotlinLogging
 import react.*
@@ -25,79 +26,81 @@ private val logger = KotlinLogging.logger {}
 
 /**
  * State should only ever be modified from within
- * the "setState" lambda or in the "init" function.
+ * the "setState" lambda or in the "init" function
  */
-external interface AppState : RState {
-    /** Whether the pro sidebar is collapsed. */
-    var proSidebarCollapsed: Boolean
+external interface AppState : State {
+    /** Whether the sidebar is collapsed */
+    var sidebarIsCollapsed: Boolean
 
-    /** Whether the user is logged in the proxy. */
+    /** Whether the user is logged-in */
     var userIsLogged: Boolean
 
-    /** Whether the user has a profile to display. */
+    /** Whether the user has a profile */
     var userHasProfile: Boolean
 
-    /** The client for sending HTTPS requests and invoke proxy APIs. */
+    /** The HTTPS/WSS client to invoke the APIs of the proxy */
     var httpClient: HttpClient
 
-    /** The core type, i.e., the chosen (implementation of the) CAC scheme. */
+    /** The core type, i.e., the chosen (implementation of the) CAC scheme */
     var coreType: CoreType
 
-    /** Whether the currently logged user (if any) is an administrator. */
+    /** Whether the currently logged user (if any) is an administrator */
     var userIsAdmin: Boolean
 
-    /** The name of the user, if logged in. */
+    /** The name of the user, if logged-in, null otherwise */
     var username: String?
 
-    /** Whether the backdrop is open. */
-    var backdropOpen: Boolean
+    /** Whether the backdrop (i.e., the loading screen) is open */
+    var backdropIsOpen: Boolean
 
-    /** Message of the alert component. */
+    /** Message of the alert component */
     var alertMessage: String
 
-    /** Severity of the alert component. */
+    /** Severity of the alert component */
     var alertSeverity: CryptoACAlertSeverity
 
-    /** Whether the alert component is open. */
-    var alertOpen: Boolean
+    /** Whether the alert component is open */
+    var alertIsOpen: Boolean
 
-    /** Messages to show in the content. */
-    var contentMessages: HashMap<String, MutableList<DSMQTTMessage>>
+    /** Additional tables to show in the content (e.g., for MQTT topics) */
+    var tables: MutableList<String>
+
+    /** Whether to show or not the TradeOffBoard component */
+    var showTradeOffBoard: Boolean
 }
 
 /**
  * The App React component, consisting of:
  * 1. The backdrop component (loading overlay);
- * 2. The CryptoAC alert component (for messages);
- * 3. The sidebar for actions (e.g., add user, revoke permission);
- * 4. The content to display forms (e.g., login, edit profile) and data (e.g., list of users, permissions).
+ * 2. The CryptoAC alert component (for alerts to the user);
+ * 3. The main container for both the content (3.1) and the sidebar (3.2)
  */
 @JsExport
-class App : RComponent<RProps, AppState>() {
+class App : RComponent<Props, AppState>() {
 
     override fun RBuilder.render() {
 
-        /** 1. The backdrop component is a dimmed layer with a circular progress loading. */
+        /** 1. The backdrop component is a dimmed layer with circular progress loading */
         styledDiv {
             css {
                 zIndex = 10
                 position = Position.relative
             }
             backdrop {
-                attrs.open = state.backdropOpen
+                attrs.open = state.backdropIsOpen
                 circularProgress { }
             }
         }
 
-        /** 2. The CryptoAC alert component for displaying the outcome of user's operations. */
-        cryptoACAlert {
+        /** 2. The CryptoAC alert component for displaying alerts to the user */
+        child(cryptoACAlert {
             severity = state.alertSeverity
             message = state.alertMessage
-            open = state.alertOpen
-            handleClose = { setState { alertOpen = false } }
-        }
+            open = state.alertIsOpen
+            handleClose = { setState { alertIsOpen = false } }
+        })
 
-        /** The main container for both the sidebar and the content. */
+        /** 3. The container for both the content and the sidebar */
         styledDiv {
             css {
                 display = Display.flex
@@ -105,158 +108,175 @@ class App : RComponent<RProps, AppState>() {
                 height = 100.pct
             }
 
-            /** 3. First, the content. */
+            /** 3.1 First, the content */
             styledDiv {
                 css {
-                    /** Dynamically change the margins depending on the sidebar state. */
-                    marginLeft = if (state.proSidebarCollapsed) { 80.px } else { 300.px }
+                    marginLeft = if (state.sidebarIsCollapsed) { 80.px } else { 300.px }
                     width = 100.pct
                     height = 100.pct
                 }
-                /** If the user is not logged, render the login form; otherwise, the content. */
                 container {
-                    if (!state.userIsLogged) {
-                        login {
-                            handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity) }
-                            handleChangeUserIsLogged = { userIsLogged: Boolean -> changeUserIsLogged(userIsLogged) }
-                            handleChangeBackdropOpen = { backdropOpen: Boolean -> changeBackdropOpen(backdropOpen) }
-                            handleChangeUsername = { username: String? -> changeUsername(username) }
-                            httpClient = state.httpClient
-                            coreType = state.coreType
-                        }
-                    } else {
-                        content {
-                            handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity) }
-                            handleChangeUserIsLogged = { userIsLogged: Boolean -> changeUserIsLogged(userIsLogged) }
-                            handleChangeBackdropOpen = { backdropOpen: Boolean -> changeBackdropOpen(backdropOpen) }
-                            handleChangeUsername = { username: String? -> changeUsername(username) }
-                            handleChangeUserHasProfile = { userHasProfile: Boolean -> changeUserHasProfile(userHasProfile) }
-                            handleChangeUserIsAdmin = { userIsAdmin: Boolean -> changeUserIsAdmin(userIsAdmin) }
-                            userHasProfile = state.userHasProfile
-                            userIsLogged = state.userIsLogged
-                            userIsAdmin = state.userIsAdmin
-                            coreType = state.coreType
-                            username = state.username
-                            httpClient = state.httpClient
-                            contentMessages = state.contentMessages
+
+                    /** Show the TradeOffBoard, if requested */
+                    if (state.showTradeOffBoard) {
+                        child(tradeOffBoard { })
+                    }
+                    /** Otherwise, show either the login form (if the user is not logged) or the content */
+                    else {
+                        if (!state.userIsLogged) {
+                            child(login {
+                                handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
+                                handleChangeUserIsLogged = { userIsLogged: Boolean -> changeUserIsLogged(userIsLogged) }
+                                handleChangeUsername = { username: String? -> changeUsername(username) }
+                                handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity) }
+                                httpClient = state.httpClient
+                                coreType = state.coreType
+                            })
+                        } else {
+                            child(content {
+                                handleChangeUserHasProfile = { userHasProfile: Boolean -> changeUserHasProfile(userHasProfile) }
+                                handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
+                                handleChangeUserIsLogged = { userIsLogged: Boolean -> changeUserIsLogged(userIsLogged) }
+                                handleChangeUserIsAdmin = { userIsAdmin: Boolean -> changeUserIsAdmin(userIsAdmin) }
+                                handleChangeUsername = { username: String? -> changeUsername(username) }
+                                handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity) }
+                                userHasProfile = state.userHasProfile
+                                userIsLogged = state.userIsLogged
+                                userIsAdmin = state.userIsAdmin
+                                httpClient = state.httpClient
+                                coreType = state.coreType
+                                username = state.username
+                                tables = state.tables
+                            })
                         }
                     }
                 }
             }
 
-            /** 4. Then, the proSidebar (rendered after the content to overlay it). */
+            /** 3.2. Then, the sidebar (rendered after the content to overlay it) */
             styledDiv {
                 css {
-                    /** The position is fixed, so the sidebar does not scroll alongside the content. */
                     position = Position.fixed
                     height = 100.pct
                 }
-                proSidebarWrapper {
-                    handleAddMessagesToDisplayInContent = { file: String, messages: MutableList<DSMQTTMessage> -> setContentMessages(file, messages) }
-                    handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity) }
-                    handleChangeBackdropOpen = { backdropOpen: Boolean -> changeBackdropOpen(backdropOpen) }
+                child(sidebar {
+                    handleToggleShowTradeOffBoard = { toggleShowTradeOffBoard() }
+                    handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
+                    handleAddTableInContent = { topic: String -> addTableInContent(topic) }
                     handleChangeCoreType = { coreType -> changeCoreType(coreType) }
-                    handleToggleSidebar = { toggleProSidebarCollapsed() }
-                    proSidebarCollapsed = state.proSidebarCollapsed
+                    handleToggleSidebar = { toggleSidebarIsCollapsed() }
+                    handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity) }
+                    sidebarIsCollapsed = state.sidebarIsCollapsed
+                    showTradeOffBoard = state.showTradeOffBoard
                     userHasProfile = state.userHasProfile
                     userIsLogged = state.userIsLogged
                     userIsAdmin = state.userIsAdmin
-                    coreType = state.coreType
                     httpClient = state.httpClient
+                    coreType = state.coreType
                     collapsedWidth = 80.px
-                    width = 300.px
-                    image = "bg3.jpg"
                     breakpoint = "md"
-                }
+                    image = "bg3.jpg"
+                    width = 300.px
+                })
             }
         }
     }
 
 
     /**
-     * Init the state with default values. Note that:
+     * Init the state with default values. Remember that:
      * - "props" is still undefined here;
-     * - you cannot initialize state properties with class local variables
+     * - you cannot refer to external or
+     *   class-local variables which here
+     *   are still undefined
      */
     override fun AppState.init() {
         logger.info { "Initializing the state of the App component" }
         coreType = CoreType.RBAC_CLOUD
-        proSidebarCollapsed = false
+        sidebarIsCollapsed = false
+        showTradeOffBoard = false
         userHasProfile = false
         userIsLogged = false
-        backdropOpen = false
+        backdropIsOpen = false
         userIsAdmin = false
-        alertOpen = false
+        alertIsOpen = false
         alertMessage = ""
-        contentMessages = hashMapOf()
+        tables = mutableListOf()
         alertSeverity = CryptoACAlertSeverity.SUCCESS
         httpClient = HttpClient { // TODO check configuration
             expectSuccess = false
             install(JsonFeature) {
                 serializer = KotlinxSerializer()
             }
+            install(WebSockets)
             install(HttpCookies)
         }
     }
 
-    /** Add new messages to display in the content. */
-    private fun setContentMessages(file: String, messages: MutableList<DSMQTTMessage>) {
-        setState {
-            (contentMessages.getOrPut(file) { mutableListOf() }).addAll(messages)
-        }
-    }
-
-    /** Display the alert component based on the given [code] and [severity]. */
+    /** Display the alert component based on the given [code] and [severity] */
     private fun displayAlert(code: OutcomeCode, severity: CryptoACAlertSeverity) {
         logger.info { "Displaying the alert with code $code and severity $severity" }
-        val splitCode = code.toString().split("_").toMutableList()
-        val errorCode = splitCode[1]
-        val errorMessage = splitCode.subList(2, splitCode.lastIndex+1).joinToString(separator = " ")
         setState {
-            alertOpen = true
-            alertMessage = "$errorMessage${" (Code $errorCode)"}"
-            alertSeverity = if (code == OutcomeCode.CODE_038_PROFILE_NOT_FOUND) CryptoACAlertSeverity.INFO else severity
+            alertIsOpen = true
+            alertMessage = "${code.getMessage()}${" (Code ${code.getNumber()})"}"
+            alertSeverity = severity
         }
     }
 
-    /** Toggle the value of the 'proSidebarCollapsed' state. */
-    private fun toggleProSidebarCollapsed() {
-        val collapse = !state.proSidebarCollapsed
-        logger.info { "Setting the 'proSidebarCollapsed' state to $collapse" }
-        setState { proSidebarCollapsed = collapse }
+    /**
+     * Add a new table in the content with,
+     * as title, the given [tableName]
+     */
+    private fun addTableInContent(tableName: String) {
+        logger.info { "Adding table $tableName to content" }
+        setState { tables.add(tableName) }
     }
 
-    /** Change the value of the 'backdropOpen' state to the [newBackdropOpen]. */
-    private fun changeBackdropOpen(newBackdropOpen: Boolean) {
-        logger.info { "Setting the 'backdropOpen' state to $newBackdropOpen" }
-        setState { backdropOpen = newBackdropOpen }
+    /** Toggle the value of the 'sidebarIsCollapsed' state */
+    private fun toggleSidebarIsCollapsed() {
+        val collapse = !state.sidebarIsCollapsed
+        logger.info { "Setting the 'sidebarIsCollapsed' state to $collapse" }
+        setState { sidebarIsCollapsed = collapse }
     }
 
-    /** Change the value of the 'userIsLogged' state to the [newUserIsLogged]. */
+    /** Toggle the value of the 'showTradeOffBoard' state */
+    private fun toggleShowTradeOffBoard() {
+        val shown = !state.showTradeOffBoard
+        logger.info { "Setting the 'showTradeOffBoard' state to $shown" }
+        setState { showTradeOffBoard = shown }
+    }
+
+    /** Change the value of the 'backdropIsOpen' state to the [newBackdropIsOpen] */
+    private fun changeBackdropIsOpen(newBackdropIsOpen: Boolean) {
+        logger.info { "Setting the 'backdropIsOpen' state to $newBackdropIsOpen" }
+        setState { backdropIsOpen = newBackdropIsOpen }
+    }
+
+    /** Change the value of the 'userIsLogged' state to the [newUserIsLogged] */
     private fun changeUserIsLogged(newUserIsLogged: Boolean) {
         logger.info { "Setting the 'userIsLogged' state to $newUserIsLogged" }
         setState { userIsLogged = newUserIsLogged }
     }
 
-    /** Change the value of the 'userHasProfile' state to the [newUserHasProfile]. */
+    /** Change the value of the 'userHasProfile' state to the [newUserHasProfile] */
     private fun changeUserHasProfile(newUserHasProfile: Boolean) {
         logger.info { "Changing the 'newHasProfile' state to $newUserHasProfile" }
         setState { userHasProfile = newUserHasProfile }
     }
 
-    /** Change the value of the 'username' state to the [newUsername]. */
+    /** Change the value of the 'username' state to the [newUsername] */
     private fun changeUsername(newUsername: String?) {
         logger.info { "Changing the 'username' state to $newUsername" }
         setState { username = newUsername }
     }
 
-    /** Change the value of the 'userIsAdmin' state to the [newUserIsAdmin]. */
+    /** Change the value of the 'userIsAdmin' state to the [newUserIsAdmin] */
     private fun changeUserIsAdmin(newUserIsAdmin: Boolean) {
         logger.info { "Changing the 'userIsAdmin' state to $newUserIsAdmin" }
         setState { userIsAdmin = newUserIsAdmin }
     }
 
-    /** Change the value of the 'coreType' state to the [newCoreType]. */
+    /** Change the value of the 'coreType' state to the [newCoreType] */
     private fun changeCoreType(newCoreType: CoreType) {
         logger.info { "Changing the 'coreType' state to $newCoreType" }
         setState {

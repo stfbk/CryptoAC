@@ -56,6 +56,7 @@ CREATE TABLE `files` (
   `fileToken` char(20) NOT NULL UNIQUE,
   `symEncKeyVersionNumber` int NOT NULL,
   `status` varchar(20) NOT NULL,
+  `enforcement` char(50) NOT NULL,
   PRIMARY KEY (`fileName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -65,6 +66,7 @@ CREATE TABLE `deletedFiles` (
   `fileToken` char(20) NOT NULL,
   `symEncKeyVersionNumber` int NOT NULL,
   `status` varchar(20) NOT NULL,
+  `enforcement` char(50) NOT NULL,
   PRIMARY KEY (`fileName`, `fileToken`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -186,6 +188,19 @@ CREATE VIEW `user_specific_permissionTuples`
 
 
 /* users can access only the files they have permission over */
+CREATE VIEW `user_specific_files`
+(`fileName`, `fileToken`, `symEncKeyVersionNumber`, `status`, `enforcement`) AS
+    SELECT
+        `files`.`fileName` AS `fileName`,
+        `files`.`fileToken` AS `fileToken`,
+        `files`.`symEncKeyVersionNumber` AS `symEncKeyVersionNumber`,
+        `files`.`status` AS `status`,
+        `files`.`enforcement` AS `enforcement`
+    FROM
+        `files`
+    WHERE
+        `files`.`fileName` IN (SELECT `user_specific_permissionTuples`.`fileName` FROM `user_specific_permissionTuples`);
+
 CREATE VIEW `user_specific_fileTuples`
 (`fileName`, `fileToken`, `symDecKeyVersionNumber`, `enforcement`, `roleToken`, `signerToken`, `signature`) AS
     SELECT
@@ -200,7 +215,6 @@ CREATE VIEW `user_specific_fileTuples`
         `fileTuples`
     WHERE
         `fileTuples`.`fileName` IN (SELECT `user_specific_permissionTuples`.`fileName` FROM `user_specific_permissionTuples`);
-
 
 
 /* Automatically insert the tokens of the role and

@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaFileMedical")
-external val faFileMedical: RClass<RProps>
+external val faFileMedical: ComponentClass<Props>

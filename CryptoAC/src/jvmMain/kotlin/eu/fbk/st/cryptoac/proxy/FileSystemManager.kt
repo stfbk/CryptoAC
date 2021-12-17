@@ -19,7 +19,7 @@ class FileSystemManager {
         /**
          * Save the [content] in the given [path], eventually creating missing folders.
          * If another file with the same [path] is already present in the file system,
-         * behave as specified by the [saveMode]. Finally, return the path of the file.
+         * behave as specified by the [saveMode]. Finally, return the path of the file
          */
         fun saveFile(path: String, content: InputStream, saveMode: FileSaveMode): String {
             logger.info { "Saving file $path with save mode $saveMode" }
@@ -82,7 +82,7 @@ class FileSystemManager {
 
         /**
          * Appends a number to the path of the given [file] until it
-         * is unique in the file system. Finally, return the new file.
+         * is unique in the file system. Finally, return the new file
          */
         fun appendNumber(file: File): File {
             var count = 0
@@ -96,17 +96,28 @@ class FileSystemManager {
             return newFile
         }
 
-        /** The path of the file without extension. */
+        /** The path of the file without extension */
         private val File.pathWithoutExtension: String
             get() {
                 return path.substringBeforeLast(".")
             }
 
-        /** Copy the input stream in the file. */
+        /** Copy the input stream in the file */
         private fun File.copyInputStreamToFile(inputStream: InputStream) {
             this.outputStream().use { fileOut ->
                 inputStream.copyTo(fileOut)
             }
         }
     }
+}
+
+/**
+ * While saving a file in the file system, if another file with the same name is present, you can:
+ * - OVERWRITE: overwrite the previous file. if the previous file does not exist, throw a FileNotFoundException
+ * - APPEND_NUMBER: modify the name of the new file by appending a number at the end
+ * - DO_NOTHING: do not save the new file, keep the previous one
+ * - THROW_EXCEPTION: throw an exception
+ */
+enum class FileSaveMode {
+    OVERWRITE, APPEND_NUMBER, DO_NOTHING, THROW_EXCEPTION
 }

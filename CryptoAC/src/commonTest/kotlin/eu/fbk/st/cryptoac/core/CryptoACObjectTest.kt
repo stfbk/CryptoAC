@@ -6,20 +6,14 @@ import kotlin.test.assertFails
 
 internal class CryptoACObjectTest {
 
-    private val stub = CryptoACObjectStub()
-
     @Test
     fun `enforcing positive numbers positive values works`() {
-        stub.requirePositiveNumber(1)
+        CryptoACObject.requirePositiveNumber(1)
     }
 
     @Test
     fun `enforcing positive numbers with zero or negative values throws exception`() {
-        assertFails { stub.requirePositiveNumber(0) }
-        assertFails { stub.requirePositiveNumber(-1) }
+        assertFails { CryptoACObject.requirePositiveNumber(0) }
+        assertFails { CryptoACObject.requirePositiveNumber(-1) }
     }
-}
-
-class CryptoACObjectStub: CryptoACObject() {
-    override fun toArray(): Array<String> = arrayOf()
 }

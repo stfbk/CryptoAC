@@ -169,6 +169,13 @@ exports.scriptNonce = "__webpack_require__.nc";
 exports.loadScript = "__webpack_require__.l";
 
 /**
+ * function to promote a string to a TrustedScriptURL using webpack's Trusted
+ * Types policy
+ * Arguments: (url: string) => TrustedScriptURL
+ */
+exports.createScriptUrl = "__webpack_require__.tu";
+
+/**
  * the chunk name of the chunk with the runtime
  */
 exports.chunkName = "__webpack_require__.cn";
@@ -289,6 +296,11 @@ exports.hmrModuleData = "__webpack_require__.hmrD";
  * array with handler functions when a module should be invalidated
  */
 exports.hmrInvalidateModuleHandlers = "__webpack_require__.hmrI";
+
+/**
+ * the prefix for storing state of runtime modules when hmr is enabled
+ */
+exports.hmrRuntimeStatePrefix = "__webpack_require__.hmrS";
 
 /**
  * the AMD define function

@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaUndoAlt")
-external val faUndoAlt: RClass<RProps>
+external val faUndoAlt: ComponentClass<Props>

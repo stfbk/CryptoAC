@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker build -t cryptoac_mosquitto --file ./DockerFileMosquitto .
+newgrp docker << END
+    docker build -t cryptoac_mosquitto --file ./DockerFileMosquitto .
+END

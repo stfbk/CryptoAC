@@ -4,38 +4,47 @@ import eu.fbk.st.cryptoac.ui.components.materialui.core.textField
 import org.w3c.dom.HTMLInputElement
 import react.*
 
-external interface CryptoACTextFieldProps : RProps {
-    /** Additional CCS class name. */
+external interface CryptoACTextFieldProps : Props {
+    /** Additional CCS class name */
     var className: String
 
-    /** The name of the radio group. */
+    /** The name of the radio group */
     var name: String
 
-    /** The type of input to be provided. */
+    /** The type of input to be provided */
     var type: String
 
-    /** The label/placeholder for this field. */
+    /** Whether the fields is disabled */
+    var disabled: Boolean
+
+    /** The label/placeholder for this field */
     var label: String
 
     /** Text field variant among "standard", "filled" and "outlined" */
     var variant: String
 
-    /** Default value for the input. */
+    /** Default value for the input */
     var defaultValue: String
 
-    /** "primary" or "secondary" color. */
+    /** "primary" or "secondary" color */
     var color: String
+
+    /** Invoked when the field changes value */
+    var onChange: (String) -> Unit
 }
 
-external interface CryptoACTextFieldState : RState {
-    /** The value of the text field. */
+external interface CryptoACTextFieldState : State {
+    /** The value of the text field */
     var value: String
 
-    /** Whether the component has to set to the new state or not. */
-    var hasToSetValue: Boolean
+    /** Whether to render the value on change by user */
+    var changedByUser: Boolean
+
+    /** Whether the component was just mounted */
+    var justMounted: Boolean
 }
 
-/** A custom component for a radio group. */
+/** A custom component for a radio group */
 class CryptoACTextField: RComponent<CryptoACTextFieldProps, CryptoACTextFieldState>() {
     override fun RBuilder.render() {
 
@@ -50,10 +59,15 @@ class CryptoACTextField: RComponent<CryptoACTextFieldProps, CryptoACTextFieldSta
                 color = props.color
                 autoComplete = "off"
                 required = true
+                disabled = props.disabled
                 onChange = { event ->
+                    val newValue = (event.target as HTMLInputElement).value
+                    if (props.onChange != undefined) {
+                        props.onChange(newValue)
+                    }
                     setState {
-                        hasToSetValue = true
-                        value = (event.target as HTMLInputElement).value
+                        changedByUser = true
+                        value = newValue
                     }
                 }
             }
@@ -61,22 +75,26 @@ class CryptoACTextField: RComponent<CryptoACTextFieldProps, CryptoACTextFieldSta
     }
 
     override fun CryptoACTextFieldState.init() {
-        hasToSetValue = false
+        justMounted = true
+        changedByUser = false
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACTextField::class.js.asDynamic().getDerivedStateFromProps = {
                 props: CryptoACTextFieldProps, state: CryptoACTextFieldState ->
-            if (!state.hasToSetValue) {
-                state.value = if (props.defaultValue == undefined) "" else props.defaultValue
+            if (state.justMounted || !state.changedByUser) {
+                state.value = props.defaultValue
             }
-            state.hasToSetValue = false
+            state.changedByUser = false
+            state.justMounted = false
         }
     }
 }
 
-/** Extend RBuilder for easier use of this React component. */
-fun RBuilder.cryptoACTextField(handler: CryptoACTextFieldProps.() -> Unit): ReactElement {
-    return child(CryptoACTextField::class) {
-        this.attrs(handler)
-    }
+/** Extend RBuilder for easier use of this React component */
+fun cryptoACTextField(handler: CryptoACTextFieldProps.() -> Unit): ReactElement {
+    return createElement {
+        child(CryptoACTextField::class) {
+            attrs(handler)
+        }
+    }!!
 }

@@ -6,7 +6,7 @@ import kotlinx.serialization.Transient
 
 /**
  * A Role is an ActiveElement representing a role.
- * A Role is defined by a positive [versionNumber].
+ * A Role is defined by a positive [versionNumber]
  */
 @Serializable
 class Role(
@@ -19,9 +19,14 @@ class Role(
     init {
         requirePositiveNumber(versionNumber)
     }
-    override var token: String = generateToken()
 
-    /** Return a String array of the significant fields of this role. */
+    override var token: String = generateToken(
+        name = name,
+        asymEncKeys = asymEncKeys,
+        asymSigKeys = asymSigKeys
+    )
+
+    /** Return a String array of the significant fields of this role */
     override fun toArray(): Array<String> = arrayOf(name, status.toString(), token)
 
     override fun equals(other: Any?): Boolean {

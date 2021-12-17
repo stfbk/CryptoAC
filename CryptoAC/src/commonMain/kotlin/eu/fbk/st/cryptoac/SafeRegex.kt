@@ -1,6 +1,6 @@
 package eu.fbk.st.cryptoac
 
-/** A collection of regular expressions to validate users' inputs. */
+/** A collection of regular expressions to validate users' inputs */
 class SafeRegex {
 
     companion object {
@@ -56,7 +56,7 @@ class SafeRegex {
         val IPV4 = """^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$""".toRegex()
 
         /**
-         * the safe (not-empty) regex matching either the URL or the IPv4 regexes.
+         * the safe (not-empty) regex matching either the URL or the IPv4 regexes
          */
         val URL_OR_IPV4 = """^[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]${'$'}|^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!${'$'})|${'$'})){4}${'$'}""".toRegex()
 

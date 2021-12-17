@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  * A FileTuple links a File with other metadata.
  * A FileTuple is defined by a [fileName], the [fileToken], the [roleToken]
  * of the role that was used to create the tuple, an [enforcement] type and
- * a positive [symDecKeyVersionNumber].
+ * a positive [symDecKeyVersionNumber]
  */
 @Serializable
 class FileTuple(
@@ -25,7 +25,7 @@ class FileTuple(
     override fun getBytesForSignature(): ByteArray =
         "$fileName$fileToken$roleToken$symDecKeyVersionNumber$enforcement".toByteArray()
 
-    /** Check that [newSignerType] is a User, then invoke superclass method. */
+    /** Check that [newSignerType] is a User, then invoke superclass method */
     override fun updateSignature(newSignature: ByteArray, newSigner: String, newSignerType: ElementTypeWithKey) {
         when (newSignerType) {
             ElementTypeWithKey.USER -> super.updateSignature(newSignature, newSigner, newSignerType)
@@ -33,7 +33,7 @@ class FileTuple(
         }
     }
 
-    /** Return a String array of the significant fields of this tuple. */
+    /** Return a String array of the significant fields of this tuple */
     override fun toArray(): Array<String> = arrayOf(fileName, symDecKeyVersionNumber.toString(), enforcement.toString())
 
     override fun equals(other: Any?): Boolean {

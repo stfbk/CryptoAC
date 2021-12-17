@@ -5,11 +5,11 @@ package eu.fbk.st.cryptoac.ui.sidebar.prosidebar
 
 import react.*
 
-/** See https://github.com/azouaoui-med/react-pro-sidebar. */
+/** See https://github.com/azouaoui-med/react-pro-sidebar */
 @JsName("Menu")
-external val proSidebarMenu: RClass<ProSidebarMenuProps>
+external val proSidebarMenu: ComponentClass<ProSidebarMenuProps>
 
-external interface ProSidebarMenuProps : RProps {
-    /** Shape of the menu icons (one among square|round|circle). */
+external interface ProSidebarMenuProps : Props {
+    /** Shape of the menu icons (one among square|round|circle) */
     var iconShape: String
 }

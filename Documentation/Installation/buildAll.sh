@@ -1,4 +1,8 @@
-docker rmi cryptoac_mosquitto cryptoac_mysql cryptoac_opa cryptoac_cryptoac
+#!/bin/bash
+
+newgrp docker << END
+    docker rmi cryptoac_mosquitto cryptoac_mysql cryptoac_opa cryptoac_cryptoac
+END
 
 for d in */ ; do
     cd $d
@@ -6,3 +10,5 @@ for d in */ ; do
     "./build.sh"
     cd ..
 done
+
+echo "built_all_end_of_script"

@@ -7,9 +7,9 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("Button")
-external val button: RClass<ButtonProps>
+external val button: ComponentClass<ButtonProps>
 
-external interface ButtonProps : RProps {
+external interface ButtonProps : Props {
     var variant: String
     var component: String
 }

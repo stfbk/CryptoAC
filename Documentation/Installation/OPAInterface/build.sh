@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker build -t cryptoac_opa --file ./DockerFileOPA .
+newgrp docker << END
+    docker build -t cryptoac_opa --file ./DockerFileOPA .
+END

@@ -1,7 +1,6 @@
 package eu.fbk.st.cryptoac.core.elements
 
 import eu.fbk.st.cryptoac.Constants.ADMIN
-import eu.fbk.st.cryptoac.crypto.AsymKeys
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

@@ -13,11 +13,11 @@ let config = {
 
 // entry
 config.entry = {
-    main: ["/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev/CryptoAC.js"]
+    main: ["/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev/CryptoAC.js"]
 };
 
 config.output = {
-    path: "/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/distributions",
+    path: "/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/distributions",
     filename: (chunkData) => {
         return chunkData.chunk.name === 'main'
             ? "CryptoAC.js"
@@ -29,7 +29,7 @@ config.output = {
 };
 
 // resolve modules
-config.resolve.modules.unshift("/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev")
+config.resolve.modules.unshift("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev")
 
 // source maps
 config.module.rules.push({
@@ -47,7 +47,7 @@ config.ignoreWarnings = [/Failed to parse source map/]
     const handler = (percentage, message, ...args) => {
         const p = percentage * 100;
         let msg = `${Math.trunc(p / 10)}${Math.trunc(p % 10)}% ${message} ${args.join(' ')}`;
-        msg = msg.replace(new RegExp("/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/js", 'g'), '');;
+        msg = msg.replace("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js", '');;
         console.log(msg);
     };
 
@@ -118,7 +118,7 @@ config.module.rules.push({
     const util = require('util');
     const fs = require('fs');
     const evaluatedConfig = util.inspect(config, {showHidden: false, depth: null, compact: false});
-    fs.writeFile("/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/reports/webpack/CryptoAC/webpack.config.evaluated.js", evaluatedConfig, function (err) {});
+    fs.writeFile("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/reports/webpack/CryptoAC/webpack.config.evaluated.js", evaluatedConfig, function (err) {});
 })(config);
 
 module.exports = config

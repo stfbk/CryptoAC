@@ -6,9 +6,11 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("Radio")
-external val radio: RClass<RadioProps>
+external val radio: ComponentClass<RadioProps>
 
-external interface RadioProps : RProps {
+external interface RadioProps : Props {
     var color: String
+    var disabled: Boolean
     var checked: Boolean
+    var size: String  // either "small" or "medium"
 }

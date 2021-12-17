@@ -1,13 +1,18 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
-val kotlinVersion = "1.5.10"
-val serializationVersion = "1.2.1"
-val ktorVersion = "1.6.0"
+val kotlinVersion = "1.6.0"
+val serializationVersion = "1.3.0"
+val ktorVersion = "1.6.4"
+val libSodiumVersion = "0.8.4"
+
+var nativeTarget: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithHostTests? = null
+var jvmTarget: org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget? = null
 
 plugins {
-    kotlin("multiplatform") version "1.5.10"
+    kotlin("multiplatform") version "1.6.0"
     application //to run JVM part
-    kotlin("plugin.serialization") version "1.5.10"
+    kotlin("plugin.serialization") version "1.6.0"
+    id("org.jetbrains.kotlinx.benchmark") version "0.3.1"
 }
 
 group = "eu.fbk.st"
@@ -15,19 +20,14 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     maven("https://repo.eclipse.org/content/repositories/paho-releases/")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     mavenCentral()
-    jcenter()
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-    maven("https://kotlin.bintray.com/kotlin-js-wrappers/") // react, styled, ...
 }
-dependencies {
-    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
-}
+
 
 
 kotlin {
-    jvm {
+    jvmTarget = jvm {
         withJava()
         compilations.all {
             kotlinOptions.jvmTarget = "1.8"
@@ -41,28 +41,58 @@ kotlin {
             }
         }
     }
+    /*nativeTarget = linuxX64 {
+        binaries {
+            sharedLib()
+        }
+
+        val main by compilations.getting
+        val libssl by main.cinterops.creating
+
+        binaries {
+            executable()
+        }
+
+        compilations["main"].cinterops.create("openssl") {
+            val javaHome = File(System.getProperty("java.home")!!)
+            packageName = "eu.fbk.st.cryptoac.crypto"
+            includeDirs(
+                Callable { File(javaHome, "include") },
+                Callable { File(javaHome, "include/darwin") },
+                Callable { File(javaHome, "include/linux") },
+                Callable { File(javaHome, "include/win32") }
+            )
+        }
+    }*/
+
+
+
+
     // TODO bisogna pulire tutte le dependencies ed eliminare quelle ridondanti/inutili
     sourceSets {
         val commonMain by getting {
             dependencies {
+
                 //implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
 
-                // TODO I ADDED
+
                 implementation("io.github.microutils:kotlin-logging:2.0.8")
                 implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
                 implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion")
+
+                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.3.1")
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlin:kotlin-test-common:$kotlinVersion")
+                implementation("org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlinVersion")
             }
         }
-
         val jvmMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
@@ -70,7 +100,12 @@ kotlin {
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
                 implementation("io.ktor:ktor-websockets:$ktorVersion")
 
-                // TODO I ADDED
+
+                implementation(kotlin("stdlib-jdk8"))
+                implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:$libSodiumVersion") {
+                    exclude("org.jetbrains.kotlin", "kotlin-test-junit")
+                }
+
                 implementation("ch.qos.logback:logback-core:1.2.3")
                 implementation("org.owasp.encoder:encoder:1.2.3")
                 implementation("org.slf4j:slf4j-api:1.7.30")
@@ -81,7 +116,6 @@ kotlin {
                 // https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.mqttv5.client
                 implementation("org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5")
 
-                // TODO server
                 implementation("io.ktor:ktor-server-jetty:$ktorVersion")
                 implementation("io.ktor:ktor-html-builder:$ktorVersion")
                 implementation("io.ktor:ktor-server-sessions:$ktorVersion")
@@ -95,29 +129,36 @@ kotlin {
                 implementation("mysql:mysql-connector-java:8.0.25")
                 implementation("commons-cli:commons-cli:1.4")
 
-                // TODO do not know if relevant, but these were in scope 'compile' in the old maven
                 implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
                 implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
             }
         }
-
+        val jvmTest by getting {
+            dependencies {
+                implementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+                implementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
+                implementation("org.junit.jupiter:junit-jupiter:5.8.1")
+            }
+        }
         val jsMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-js:$ktorVersion") //include http&websockets
+                implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
                 // ktor client js json
                 implementation("io.ktor:ktor-client-json-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
 
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:17.0.2-pre.209-kotlin-1.5.10")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:17.0.2-pre.209-kotlin-1.5.10")
-
                 implementation(npm("react", "17.0.2"))
                 implementation(npm("react-dom", "17.0.2"))
 
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:5.3.0-pre.209-kotlin-1.5.10")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:17.0.2-pre.269-kotlin-1.6.0")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:17.0.2-pre.269-kotlin-1.6.0")
+
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:5.3.3-pre.269-kotlin-1.6.0")
                 implementation(npm("react-is", "17.0.2"))
-                implementation(npm("styled-components", "5.3.0"))
+                implementation(npm("styled-components", "5.3.3"))
 
                 // Material-ui core
                 implementation(npm("@material-ui/core", "4.11.4"))
@@ -133,22 +174,22 @@ kotlin {
                 implementation(npm("sass", "1.35.1"))
                 implementation(npm("sass-loader", "12.1.0"))
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
-            }
-        }
-
-        val jvmTest by getting {
-            dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.7.2")
-                implementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
             }
         }
     }
 }
 
+benchmark {
+    targets {
+        register("jvmTest")
+        register("jvm")
+        register("js")
+    }
+}
+
 application {
-    mainClassName = "eu.fbk.st.cryptoac.MainKt"
+    mainClass.set("eu.fbk.st.cryptoac.MainKt")
 }
 
 // include JS artifacts in any JAR we generate
@@ -167,8 +208,8 @@ tasks {
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             jvmTarget = "11"
-            apiVersion = "1.5"
-            languageVersion = "1.5"
+            apiVersion = "1.6"
+            languageVersion = "1.6"
         }
     }
 }
@@ -185,10 +226,42 @@ distributions {
 }
 
 // Alias "installDist" as "stage" (for cloud providers)
-tasks.create("stage") {
+/*tasks.create("stage") {
     dependsOn(tasks.getByName("installDist"))
+}*/
+
+/** This adds options to the Run task */
+tasks.getByName<JavaExec>("run") {
+
+    /**  so that the JS artifacts generated by `jvmJar` can be found and served */
+    classpath(tasks.getByName<Jar>("jvmJar"))
+
+
+    /**
+     * Before executing the Task, set the "java.library.path"
+     * property to include .so libraries generated through
+     * Kotlin Native
+     */
+    /*doFirst {
+        systemProperty("java.library.path", nativeTarget!!.binaries.findSharedLib("debug")!!.outputDirectory)
+    }*/
 }
 
-tasks.getByName<JavaExec>("run") {
-    classpath(tasks.getByName<Jar>("jvmJar")) // so that the JS artifacts generated by `jvmJar` can be found and served
+/** This adds options to Test Gradle tasks */
+tasks.withType<Test> {
+    /**
+     * Specify that JUnit Platform (a.k.a. JUnit 5)
+     * should be used to execute the tests
+     */
+    useJUnitPlatform()
+
+
+    /**
+     * Before executing the Task, set the "java.library.path"
+     * property to include .so libraries generated through
+     * Kotlin Native
+     */
+    /*doFirst {
+        systemProperty("java.library.path", nativeTarget!!.binaries.findSharedLib("debug")!!.outputDirectory)
+    }*/
 }

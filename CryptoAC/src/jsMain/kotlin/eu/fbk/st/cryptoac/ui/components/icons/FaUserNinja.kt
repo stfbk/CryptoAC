@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaUserNinja")
-external val faUserNinja: RClass<RProps>
+external val faUserNinja: ComponentClass<Props>

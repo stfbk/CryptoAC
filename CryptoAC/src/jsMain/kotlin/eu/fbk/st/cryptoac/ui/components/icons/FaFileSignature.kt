@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaFileSignature")
-external val faFileSignature: RClass<RProps>
+external val faFileSignature: ComponentClass<Props>

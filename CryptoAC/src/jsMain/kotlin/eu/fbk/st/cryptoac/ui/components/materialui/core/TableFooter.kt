@@ -6,8 +6,8 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("TableFooter")
-external val tableFooter: RClass<TableFooterProps>
+external val tableFooter: ComponentClass<TableFooterProps>
 
-external interface TableFooterProps : RProps {
+external interface TableFooterProps : Props {
     // TODO
 }

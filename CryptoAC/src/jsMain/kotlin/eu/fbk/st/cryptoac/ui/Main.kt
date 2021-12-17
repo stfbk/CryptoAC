@@ -6,15 +6,15 @@ import mu.KotlinLoggingConfiguration
 import mu.KotlinLoggingLevel
 import react.dom.render
 
-/** The base URL to which send APIs (i.e., the address of the browser tab). */
+/** The base URL to which send APIs (i.e., the address of the browser tab) */
 val baseURL = "${window.location.protocol}//${window.location.host}"
 
 fun main() {
-    // TODO make this dependent on the deployment state
-    /** Define the log level. */
+    // TODO make the log level dependent on the deployment state
+    /** Define the log level */
     KotlinLoggingConfiguration.LOG_LEVEL = KotlinLoggingLevel.DEBUG
 
-    /** Add here dependencies on SASS files added in the "/build/js/packages/CryptoAC/kotlin-dce-dev" directory. */
+    /** Add here dependencies on SASS files added in the "./build/js/packages/CryptoAC/kotlin-dce-dev" directory */
     kotlinext.js.require("prosidebar.scss")
 
     /** Render the app */

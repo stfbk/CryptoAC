@@ -1,13 +1,10 @@
 package eu.fbk.st.cryptoac.ui.sidebar
 
-import eu.fbk.st.cryptoac.API
-import eu.fbk.st.cryptoac.OutcomeCode
-import eu.fbk.st.cryptoac.SERVER
+import development
+import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.tuples.EnforcementType
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
-import eu.fbk.st.cryptoac.implementation.ds.DSMQTTMessage
-import eu.fbk.st.cryptoac.ui.baseURL
 import eu.fbk.st.cryptoac.ui.components.custom.*
 import eu.fbk.st.cryptoac.ui.components.icons.*
 import eu.fbk.st.cryptoac.ui.components.materialui.core.iconButton
@@ -23,7 +20,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
-import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -36,68 +32,57 @@ import styled.*
 
 private val logger = KotlinLogging.logger {}
 
-external interface SidebarProps : RProps {
-    var handleAddMessagesToDisplayInContent: (String, MutableList<DSMQTTMessage>) -> Unit
-    var handleToggleSidebar: () -> Unit
-    var handleChangeBackdropOpen: (Boolean) -> Unit
+external interface SidebarProps : Props {
+    var handleToggleShowTradeOffBoard: () -> Unit
+    var handleChangeBackdropIsOpen: (Boolean) -> Unit
+    var handleAddTableInContent: (String) -> Unit
     var handleChangeCoreType: (CoreType) -> Unit
-    var handleDisplayAlert : (OutcomeCode, CryptoACAlertSeverity) -> Unit
-    var proSidebarCollapsed: Boolean
+    var handleToggleSidebar: () -> Unit
+    var handleDisplayAlert: (OutcomeCode, CryptoACAlertSeverity) -> Unit
+
+    var sidebarIsCollapsed: Boolean
+    var showTradeOffBoard: Boolean
     var collapsedWidth: LinearDimension
-    var width: LinearDimension
-    var image: String
+    var userHasProfile: Boolean
+    var userIsLogged: Boolean
+    var userIsAdmin: Boolean
     var breakpoint: String
     var httpClient: HttpClient
-    var userIsAdmin: Boolean
-    var userHasProfile: Boolean
     var coreType: CoreType
-    var userIsLogged: Boolean
+    var width: LinearDimension
+    var image: String
 }
 
-external interface SidebarState : RState {
-    /** Whether to display the radio options for the core type selection. */
+external interface SidebarState : State {
+    /** Whether to display the radio options for the core type selection */
     var displayCoreTypeRadio: Boolean
 }
 
 /**
  * The proSidebar React component, consisting of:
- * 1. The header, containing the header text, the options for the coreType and the sidebar toggle icon;
- * 2. The content, containing the CryptoAC forms for invoking CryptoAC APIs;
- * 3. The footer, containing reference to the source GitHub repository.
-*/
+ * 1. The header, containing the header text, the options
+ *    for the coreType and the sidebar toggle icon;
+ * 2. The content, containing the CryptoAC forms for
+ *    invoking CryptoAC APIs;
+ * 3. The footer, containing reference to the source
+ *    GitHub repository and the TradeOffBoard toggle
+ */
 class Sidebar: RComponent<SidebarProps, SidebarState>() {
+
+    // TODO autocomplete fields (e.g., with Lucene?)
 
     override fun RBuilder.render() {
 
-        /**
-         * Very much ugly, but the problem is that we need to create a ReactElement as
-         * prop of another element . However, the only way I found to create a ReactElement
-         * is to render it. Unfortunately, rendering an element makes it appear on the
-         * HTML page automatically. Then, when we give the element as prop to the other
-         * component, it gets rendered again. As a result, the element appears in the HTML page twice.
-         * To fix this problem, I create the element in a hidden div, then re-use the
-         * element as prop. Of course, we have to TODO find a better way.
-         */
-        var faCaretLeftIcon: ReactElement? = null
-        var faCaretRightIcon: ReactElement? = null
-        styledDiv {
-            css {
-                display = Display.none
-            }
-            faCaretLeftIcon = faCaretLeft { }
-            faCaretRightIcon = faCaretRight { }
-        }
-
         proSidebar {
             attrs {
-                collapsed = props.proSidebarCollapsed
+                collapsed = props.sidebarIsCollapsed
                 collapsedWidth = props.collapsedWidth
                 width = props.width
                 image = props.image
                 breakpoint = props.breakpoint
             }
 
-            /** 1. The header, containing the header text, the options for the coreType and the sidebar toggle icon. */
+            /** 1. The header, containing the header text, the options for the coreType and the sidebar toggle icon */
             proSidebarHeader {
                 styledDiv {
                     css {
@@ -111,12 +96,12 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                         overflow = Overflow.hidden
                         textOverflow = TextOverflow.ellipsis
                         whiteSpace = WhiteSpace.nowrap
-                        if (!props.proSidebarCollapsed) {
+                        if (!props.sidebarIsCollapsed) {
                             padding(24.px)
                         }
                     }
 
-                    /** The title in the header of the sidebar. */
+                    /** The title in the header of the sidebar */
                     styledP {
                         css {
                             fontSize = 18.px
@@ -125,45 +110,45 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                         attrs.onClickFunction = { _ ->
                             toggleDisplayCoreTypeRadio()
                         }
-                        +if (!props.proSidebarCollapsed) "CryptoAC" else ""
+                        +if (!props.sidebarIsCollapsed) "CryptoAC" else ""
                         styledSub {
                             domProps.className = "badge red"
                             css {
-                                marginLeft = if (!props.proSidebarCollapsed) 5.px else 0.px
+                                marginLeft = if (!props.sidebarIsCollapsed) 5.px else 0.px
                                 fontSize = 10.px
                                 cursor = Cursor.pointer
                             }
                             +props.coreType.toString()
                         }
                     }
-                    /** Render the sidebar toggle icon based on the current state of the sidebar. */
+                    /** Render the sidebar toggle icon based on the current state of the sidebar */
                     styledDiv {
                         css {
-                            display = if (!props.proSidebarCollapsed) Display.inline else Display.block
+                            display = if (!props.sidebarIsCollapsed) Display.inline else Display.block
                         }
                         iconButton {
                             attrs {
                                 color = "primary"
                                 onClick = { props.handleToggleSidebar() }
-                                children = if (!props.proSidebarCollapsed) {
-                                    faCaretLeftIcon!!
-                                } else {
-                                    faCaretRightIcon!!
-                                }
+                            }
+                            if (!props.sidebarIsCollapsed) {
+                                child(createElement { faCaretLeft { } }!!)
+                            } else {
+                                child(createElement { faCaretRight { } }!!)
                             }
                         }
                     }
 
-                    /** The radio group options for selecting the core type. */
+                    /** The radio group options for selecting the core type */
                     styledDiv {
                         css {
-                            display = if (!state.displayCoreTypeRadio || props.proSidebarCollapsed) {
+                            display = if (!state.displayCoreTypeRadio || props.sidebarIsCollapsed) {
                                 Display.none
                             } else {
                                 Display.initial
                             }
                         }
-                        cryptoACRadioGroup {
+                        child(cryptoACRadioGroup {
                             name = "coreType"
                             row = false
                             onChange = { event ->
@@ -172,29 +157,27 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                             options = CoreType.values()
                                 .map { CryptoACRadioOption(it.toString(), it.toString(), "primary") }
                             defaultValue = props.coreType.toString()
-                        }
+                        })
                     }
                 }
             }
 
             /** 2. The content, containing the CryptoAC forms for invoking CryptoAC API.; */
             proSidebarContent {
-                /** Show the CryptoAC forms only if the user is logged and has a profile. */
+                /** Show the CryptoAC forms only if the user is logged and has a profile */
                 if (props.userIsLogged && props.userHasProfile) {
                     val cryptoACForm = when (props.coreType) {
-                        CoreType.RBAC_CLOUD -> if (props.userIsAdmin) (adminCryptoACFormsRBACCloud + userCryptoACFormsRBACCloud) else userCryptoACFormsRBACCloud
+                        CoreType.RBAC_CLOUD -> if (props.userIsAdmin) (adminCryptoACFormsRBACCLOUD + userCryptoACFormsRBACCloud) else userCryptoACFormsRBACCloud
                         CoreType.RBAC_MQTT -> if (props.userIsAdmin) (adminCryptoACFormsRBACMQTT + userCryptoACFormsRBACMQTT) else userCryptoACFormsRBACMQTT
+                        CoreType.RBAC_MOCK -> if (development) {
+                            if (props.userIsAdmin) (adminCryptoACFormsRBACMOCK + userCryptoACFormsRBACMOCK) else userCryptoACFormsRBACMOCK
+                        } else {
+                            val message = "Using MOCK core when not in development mode"
+                            logger.error { message }
+                            throw IllegalStateException(message)
+                        }
                     }
                     cryptoACForm.forEach { cryptoACFormData ->
-
-                        // TODO find a better way.
-                        var subMenuIcon: ReactElement? = null
-                        styledDiv {
-                            css {
-                                display = Display.none
-                            }
-                            subMenuIcon = cryptoACFormData.icon { }
-                        }
 
                         /**
                          * "key" helps the React rendered figure out which parts
@@ -203,32 +186,32 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                          */
                         key = cryptoACFormData.key
 
-                        /** Create a pro sidebar menu for containing the form. */
+                        /** Create a pro sidebar menu for containing the form */
                         proSidebarMenu {
                             attrs.iconShape = "circle"
                             proSidebarSubMenu {
                                 attrs {
                                     title = cryptoACFormData.submitButtonText
-                                    icon = subMenuIcon!!
+                                    icon = createElement { cryptoACFormData.icon { } }!!
                                 }
 
                                 /** Render a CryptoAC form component */
-                                cryptoACForm {
+                                child(cryptoACForm {
                                     attrs {
                                         submitButtonText = cryptoACFormData.submitButtonText
                                         endpoint = cryptoACFormData.endpoint
                                         coreType = cryptoACFormData.coreType
                                         method = cryptoACFormData.method
                                         cryptoACFormFields = cryptoACFormData.cryptoACFormFields
-                                        submit = cryptoACFormData.submit
-                                        handleChangeBackdropOpen = props.handleChangeBackdropOpen
+                                        handleSubmitEvent = cryptoACFormData.submit
+                                        handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
                                         handleDisplayCryptoACAlert = props.handleDisplayAlert
                                     }
-                                }
+                                })
                             }
                         }
 
-                        /** Divider between the add/assign CryptoAC forms and the delete/revoke ones. */
+                        /** Divider between the add/assign CryptoAC forms and the delete/revoke ones */
                         if (cryptoACFormData.divider) {
                             styledDiv {
                                 css {
@@ -240,7 +223,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                 }
             }
 
-            /** 3. The footer, containing reference to the source GitHub repository. */
+            /** 3. The footer, containing reference to the source GitHub repository */
             proSidebarFooter {
                 styledDiv {
                     css {
@@ -269,12 +252,12 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                             hover {
                                 color = Color("#d8d8d8")
                             }
-                            if (!props.proSidebarCollapsed) {
+                            if (!props.sidebarIsCollapsed) {
                                 padding(1.px, 15.px)
                             }
                         }
                         faGithub { }
-                        if (!props.proSidebarCollapsed) {
+                        if (!props.sidebarIsCollapsed) {
                             styledSpan {
                                 css {
                                     marginLeft = 5.px
@@ -284,18 +267,56 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                             }
                         }
                     }
+                    styledA {
+                        css {
+                            cursor = Cursor.pointer
+                            borderRadius = 40.px
+                            background = "rgba(255, 255, 255, 0.05)"
+                            color = Color("#adadad")
+                            textDecoration = TextDecoration.none
+                            margin(0.px)
+                            height = 35.px
+                            display = Display.flex
+                            alignItems = Align.center
+                            justifyContent = JustifyContent.center
+                            textOverflow = TextOverflow.ellipsis
+                            overflow = Overflow.hidden
+                            hover {
+                                color = Color("#d8d8d8")
+                            }
+                            if (!props.sidebarIsCollapsed) {
+                                padding(1.px, 15.px)
+                            }
+                        }
+                        attrs.onClickFunction = {
+                            props.handleToggleShowTradeOffBoard()
+                        }
+                        if (!props.sidebarIsCollapsed) {
+                            styledSpan {
+                                css {
+                                    marginLeft = 5.px
+                                    fontSize = 13.px
+                                }
+                                +if (props.showTradeOffBoard) {
+                                    "CryptoAC"
+                                } else {
+                                    "TradeOffBoard"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
-    /** Init the state with default values. */
+    /** Init the state with default values */
     override fun SidebarState.init() {
         logger.info { "Initializing the state of the Sidebar component" }
         displayCoreTypeRadio = false
     }
 
-    /** Toggle the value of the 'displayCoreTypeRadio' state. */
+    /** Toggle the value of the 'displayCoreTypeRadio' state */
     private fun toggleDisplayCoreTypeRadio() {
         val display = !state.displayCoreTypeRadio
         logger.info { "Setting the 'displayCoreTypeRadio' state to $display" }
@@ -305,7 +326,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
     /**
      * Submit, with the "x-www-form-urlencoded" application content type,
      * the given [values] at the specified [endpoint] through the [method].
-     * Finally, handle the HTTP response with the provided [callback] function.
+     * Finally, handle the HTTP response with the provided [callback] function
      */
     private fun submitCryptoACFormUrlEncoded (
         method: HttpMethod, endpoint: String,
@@ -315,10 +336,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         logger.info { "Submitting CryptoAC form (method $method, endpoint $endpoint) with the following values:" }
         values.forEach { logger.info { "- key: ${it.key}, value: ${it.value}" } }
 
-        props.handleChangeBackdropOpen(true)
+        props.handleChangeBackdropIsOpen(true)
 
         MainScope().launch {
-            /** Send the request based on the method. */
+            /** Send the request based on the method */
             try {
                 if (method == HttpMethod.Post || method == HttpMethod.Patch) {
                     if (method == HttpMethod.Post) {
@@ -334,12 +355,12 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                     }
                 }
                 else {
-                    props.handleChangeBackdropOpen(false)
+                    props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Exception) {
-                props.handleChangeBackdropOpen(false)
+                props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
                 props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
@@ -350,7 +371,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
     /**
      * Submit as binary data the given [values] and [files] at the specified
      * [endpoint] through the [method]. Finally, handle the HTTP response with
-     * the provided [callback] function.
+     * the provided [callback] function
      */
     private fun submitCryptoACFormWithBinaryData (
         method: HttpMethod, endpoint: String,
@@ -363,10 +384,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         }
         values.forEach { logger.info { "- key: ${it.key}, value: ${it.value}" } }
 
-        props.handleChangeBackdropOpen(true)
+        props.handleChangeBackdropIsOpen(true)
 
         MainScope().launch {
-            /** Send the request based on the method. */
+            /** Send the request based on the method */
             try {
                 if (method == HttpMethod.Post || method == HttpMethod.Patch) {
                     val parts = mutableListOf<FormPart<*>>()
@@ -389,7 +410,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                                     callback(
                                         props.httpClient.submitFormWithBinaryData(
                                             url = endpoint,
-                                            formData = formData(*parts.toTypedArray())
+                                            formData = formData(*parts.toTypedArray()),
                                         ) {
                                             this.method = method
                                         }
@@ -400,12 +421,12 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                     }
                 }
                 else {
-                    props.handleChangeBackdropOpen(false)
+                    props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Error) {
-                props.handleChangeBackdropOpen(false)
+                props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
                 props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
@@ -416,7 +437,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
     /**
      * Submit the form as a request in a new tab of the browser, setting the
      * [values] as URL path parameters (if [query] is false) or as URL query
-     * parameters (if [query] is true) at the specified [endpoint] through the [method].
+     * parameters (if [query] is true) at the specified [endpoint] through the [method]
      */
     private fun submitCryptoACFormInNewTab (
         method: HttpMethod, endpoint: String,
@@ -425,10 +446,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         logger.info { "Submitting CryptoAC form (method $method, endpoint $endpoint, query $query) with the following values:" }
         values.forEach { logger.info { "- key: ${it.key}, value: ${it.value}" } }
 
-        props.handleChangeBackdropOpen(true)
+        props.handleChangeBackdropIsOpen(true)
 
         MainScope().launch {
-            /** Send the request based on the method. */
+            /** Send the request based on the method */
             try {
                 if (method == HttpMethod.Get) {
                     val endpointWithParameters = StringBuilder(endpoint.substring(0, endpoint.length - 1))
@@ -439,9 +460,9 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                         values.forEach { endpointWithParameters.append("/").append(it.value) }
                     }
                     val win = window.open(url = endpointWithParameters.toString(), target = "_blank")
-                    props.handleChangeBackdropOpen(false)
+                    props.handleChangeBackdropIsOpen(false)
                     win?.onload = {
-                        /** The file was correctly downloaded from the proxy. */
+                        /** The file was correctly downloaded from the proxy */
                         if (win!!.document == undefined) {
                             logger.info { "Get request successful" }
                             props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
@@ -450,12 +471,12 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                     }
                 }
                 else {
-                    props.handleChangeBackdropOpen(false)
+                    props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Error) {
-                props.handleChangeBackdropOpen(false)
+                props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
                 props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
@@ -465,7 +486,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
 
     /**
      * Submit the form setting the [values] as URL path parameters (if [query] is false) or as
-     * URL query parameters (if [query] is true) at the specified [endpoint] through the [method].
+     * URL query parameters (if [query] is true) at the specified [endpoint] through the [method]
      */
     private fun submitCryptoACForm(
         method: HttpMethod, endpoint: String,
@@ -476,10 +497,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         logger.info { "Submitting CryptoAC form (method $method, endpoint $endpoint, query $query) with the following values:" }
         values.forEach { logger.info { "- key: ${it.key}, value: ${it.value}" } }
 
-        props.handleChangeBackdropOpen(true)
+        props.handleChangeBackdropIsOpen(true)
 
         MainScope().launch {
-            /** Send the request based on the method. */
+            /** Send the request based on the method */
             try {
                 if (method == HttpMethod.Delete || method == HttpMethod.Get) {
                     val endpointWithParameters = StringBuilder(endpoint.substring(0, endpoint.length - 1))
@@ -496,12 +517,12 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                     }
                 }
                 else {
-                    props.handleChangeBackdropOpen(false)
+                    props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Exception) {
-                props.handleChangeBackdropOpen(false)
+                props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
                 props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
@@ -511,10 +532,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
 
 
 
-    /** Handle the [response] from the proxy by showing in the alert the outcome code. */
+    /** Handle the [response] from the proxy by showing in the alert the outcome code */
     private fun callbackShowOutcomeCode(response: HttpResponse) {
 
-        props.handleChangeBackdropOpen(false)
+        props.handleChangeBackdropIsOpen(false)
 
         MainScope().launch {
             val status = response.status
@@ -529,10 +550,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         }
     }
 
-    /** Handle the [response] from the proxy by getting the profile of the new user. */
+    /** Handle the [response] from the proxy by getting the profile of the new user */
     private fun callbackDownloadUserProfile(response: HttpResponse, values: HashMap<String, String>) {
 
-        props.handleChangeBackdropOpen(false)
+        props.handleChangeBackdropIsOpen(false)
 
         MainScope().launch {
             val status = response.status
@@ -546,13 +567,6 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
                 document.body!!.appendChild(element)
                 element.asDynamic().click()
                 document.body!!.removeChild(element)
-                /*logger.info { "Getting the user profile from the proxy" }
-                submitCryptoACFormInNewTab( // TODO is this needed?
-                    method = HttpMethod.Get,
-                    endpoint = "$baseURL${API.PROFILES.replace("{${SERVER.CORE}}", props.coreType.toString())}",
-                    values = values,
-                    query = true
-                )*/
             } else {
                 val outcomeCode = Json.decodeFromString<OutcomeCode>(response.readText())
                 logger.warn { "Response status is $status, outcome code is $outcomeCode" }
@@ -561,21 +575,17 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         }
     }
 
-    /** Handle the [response] from the proxy by displaying the received MQTT messages in the content. */
-    private fun callbackReceiveMQTTMessages(response: HttpResponse, values: HashMap<String, String>) {
+    /** Handle the [response] from the proxy by displaying the received MQTT messages in the content */
+    private fun callbackSubscribeToTopic(response: HttpResponse, values: HashMap<String, String>) {
 
-        props.handleChangeBackdropOpen(false)
+        props.handleChangeBackdropIsOpen(false)
 
         MainScope().launch {
             val status = response.status
             if (status == HttpStatusCode.OK) {
                 logger.info { "Response status is $status" }
-                val mqttMessages: MutableList<DSMQTTMessage> = Json.decodeFromString(response.readText())
-                if (mqttMessages.isEmpty()) {
-                    props.handleDisplayAlert(OutcomeCode.CODE_051_NO_NEW_MESSAGES_TO_READ, CryptoACAlertSeverity.INFO)
-                } else {
-                    props.handleAddMessagesToDisplayInContent(values[SERVER.FILE_NAME]!!, mqttMessages)
-                }
+                props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
+                props.handleAddTableInContent(values[SERVER.FILE_NAME]!!)
             } else {
                 val outcomeCode = Json.decodeFromString<OutcomeCode>(response.readText())
                 logger.warn { "Response status is $status, outcome code is $outcomeCode" }
@@ -584,10 +594,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         }
     }
 
-    /** CryptoAC forms for the administrator in the CLOUD implementation. */
-    private val adminCryptoACFormsRBACCloud = listOf(
+    /** CryptoAC forms for the administrator in the CLOUD implementation */
+    private val adminCryptoACFormsRBACCLOUD = listOf(
 
-        /** Add user form. */
+        /** Add user form */
         CryptoACFormData(
             icon = faUserPlus,
             key = "add_user",
@@ -603,7 +613,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             ))
         ),
 
-        /** Add role form. */
+        /** Add role form */
         CryptoACFormData(
             icon = faUserSecret,
             key = "add_role",
@@ -619,7 +629,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             ))
         ),
 
-        /** Assign user to role form. */
+        /** Assign user to role form */
         CryptoACFormData(
             icon = faUserFriends,
             key = "assign_user_to_role",
@@ -636,7 +646,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Assign permission to role form. */
+        /** Assign permission to role form */
         CryptoACFormData(
             icon = faUserShield,
             key = "assign_permission_to_role",
@@ -657,7 +667,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             divider = true
         ),
 
-        /** Delete user form. */
+        /** Delete user form */
         CryptoACFormData(
             icon = faUserMinus,
             key = "delete_user",
@@ -673,7 +683,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Delete role form. */
+        /** Delete role form */
         CryptoACFormData(
             icon = faUserNinja,
             key = "delete_role",
@@ -689,7 +699,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Delete file form. */
+        /** Delete file form */
         CryptoACFormData(
             icon = faFileExcel,
             key = "delete_file",
@@ -706,7 +716,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         ),
 
 
-        /** Revoke user from role form. */
+        /** Revoke user from role form */
         CryptoACFormData(
             icon = faUserTimes,
             key = "revoke_user_from_role",
@@ -723,7 +733,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Revoke permission from role form. */
+        /** Revoke permission from role form */
         CryptoACFormData(
             icon = faUserLock,
             key = "revoke_permission_from_role",
@@ -745,10 +755,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         ),
     )
 
-    /** CryptoAC forms for the user in the CLOUD implementation. */
+    /** CryptoAC forms for the user in the CLOUD implementation */
     private val userCryptoACFormsRBACCloud = listOf(
 
-        /** Add file form. */
+        /** Add file form */
         CryptoACFormData(
             icon = faFileMedical,
             key = "add_file",
@@ -767,7 +777,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Write file form. */
+        /** Write file form */
         CryptoACFormData(
             icon = faFileSignature,
             key = "write_file",
@@ -783,7 +793,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             ))
         ),
 
-        /** Read file form. */
+        /** Read file form */
         CryptoACFormData(
             icon = faFileDownload,
             key = "read_file",
@@ -800,10 +810,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         ),
     )
 
-    /** CryptoAC forms for the administrator in the MQTT implementation. */
+    /** CryptoAC forms for the administrator in the MQTT implementation */
     private val adminCryptoACFormsRBACMQTT = listOf(
 
-        /** Add user form. */
+        /** Add user form */
         CryptoACFormData(
             icon = faUserPlus,
             key = "add_user",
@@ -819,7 +829,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             ))
         ),
 
-        /** Add role form. */
+        /** Add role form */
         CryptoACFormData(
             icon = faUserSecret,
             key = "add_role",
@@ -835,7 +845,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             ))
         ),
 
-        /** Add file form. */
+        /** Add file form */
         CryptoACFormData(
             icon = faFileMedical,
             key = "add_file",
@@ -854,7 +864,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Assign user to role form. */
+        /** Assign user to role form */
         CryptoACFormData(
             icon = faUserFriends,
             key = "assign_user_to_role",
@@ -871,7 +881,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Assign permission to role form. */
+        /** Assign permission to role form */
         CryptoACFormData(
             icon = faUserShield,
             key = "assign_permission_to_role",
@@ -892,7 +902,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             divider = true
         ),
 
-        /** Delete user form. */
+        /** Delete user form */
         CryptoACFormData(
             icon = faUserMinus,
             key = "delete_user",
@@ -908,7 +918,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Delete role form. */
+        /** Delete role form */
         CryptoACFormData(
             icon = faUserNinja,
             key = "delete_role",
@@ -924,7 +934,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Delete file (topic) form. */
+        /** Delete file (topic) form */
         CryptoACFormData(
             icon = faFileExcel,
             key = "delete_file",
@@ -941,7 +951,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         ),
 
 
-        /** Revoke user from role form. */
+        /** Revoke user from role form */
         CryptoACFormData(
             icon = faUserTimes,
             key = "revoke_user_from_role",
@@ -958,7 +968,7 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
 
-        /** Revoke permission from role form. */
+        /** Revoke permission from role form */
         CryptoACFormData(
             icon = faUserLock,
             key = "revoke_permission_from_role",
@@ -980,10 +990,10 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
         ),
     )
 
-    /** CryptoAC forms for the user in the MQTT implementation. */
+    /** CryptoAC forms for the user in the MQTT implementation */
     private val userCryptoACFormsRBACMQTT = listOf(
 
-        /** Write file form. */
+        /** Write file form */
         CryptoACFormData(
             icon = faFileSignature,
             key = "write_file",
@@ -1000,16 +1010,16 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             ))
         ),
 
-        /** Read file form. */
+        /** Read file form */
         CryptoACFormData(
             icon = faFileDownload,
             key = "read_file",
-            submitButtonText = "Read from Topic",
+            submitButtonText = "Subscribe to Topic",
             endpoint = API.PROXY + API.FILES,
             method = HttpMethod.Get,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACForm(method, endpoint, values, false) { response, params -> callbackReceiveMQTTMessages(response, params) }
+                submitCryptoACForm(method, endpoint, values, false) { response, params -> callbackSubscribeToTopic(response, params) }
             },
             cryptoACFormFields = listOf(
                 listOf(
@@ -1018,11 +1028,19 @@ class Sidebar: RComponent<SidebarProps, SidebarState>() {
             )
         ),
     )
+
+    /** CryptoAC forms for the administrator in the MOCK implementation */
+    private val adminCryptoACFormsRBACMOCK: List<CryptoACFormData> = listOf()
+
+    /** CryptoAC forms for the user in the MOCK implementation */
+    private val userCryptoACFormsRBACMOCK: List<CryptoACFormData> = listOf()
 }
 
-/** Extend RBuilder for easier use of this React component. */
-fun RBuilder.proSidebarWrapper(handler: SidebarProps.() -> Unit): ReactElement {
-    return child(Sidebar::class) {
-        this.attrs(handler)
-    }
+/** Extend RBuilder for easier use of this React component */
+fun sidebar(handler: SidebarProps.() -> Unit): ReactElement {
+    return createElement {
+        child(Sidebar::class) {
+            this.attrs(handler)
+        }
+    }!!
 }

@@ -6,8 +6,8 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("Paper")
-external val paper: RClass<RProps>
+external val paper: ComponentClass<Props>
 
-external interface PaperProps : RProps {
+external interface PaperProps : Props {
     // TODO
 }

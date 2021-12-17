@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaFileDownload")
-external val faFileDownload: RClass<RProps>
+external val faFileDownload: ComponentClass<Props>

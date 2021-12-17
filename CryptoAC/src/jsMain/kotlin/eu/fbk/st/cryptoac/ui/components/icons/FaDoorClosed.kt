@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaDoorClosed")
-external val faDoorClosed: RClass<RProps>
+external val faDoorClosed: ComponentClass<Props>

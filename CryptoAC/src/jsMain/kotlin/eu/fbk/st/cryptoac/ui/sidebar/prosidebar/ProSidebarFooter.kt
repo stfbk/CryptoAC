@@ -5,6 +5,6 @@ package eu.fbk.st.cryptoac.ui.sidebar.prosidebar
 
 import react.*
 
-/** See https://github.com/azouaoui-med/react-pro-sidebar. */
+/** See https://github.com/azouaoui-med/react-pro-sidebar */
 @JsName("SidebarFooter")
-external val proSidebarFooter: RClass<RProps>
+external val proSidebarFooter: ComponentClass<Props>

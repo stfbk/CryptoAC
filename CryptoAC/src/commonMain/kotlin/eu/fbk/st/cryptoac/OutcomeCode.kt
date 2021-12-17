@@ -4,8 +4,10 @@ import kotlinx.serialization.Serializable
 
 /**
  * Codes for describing the outcome of any operation in CryptoAC.
+ * A code is composed of the keyword "CODE", the error number and
+ * an error message, separated by the underscore "_" character.
  * If none of these codes is suitable to describe the outcome of
- * a new operation, document and add a new code.
+ * a new operation, document and add a new code
  */
 @Serializable
 enum class OutcomeCode {
@@ -70,7 +72,7 @@ enum class OutcomeCode {
     CODE_041_PA_ASSIGNMENTS_NOT_FOUND,
 
     CODE_042_RM_CONNECTION_TIMEOUT,
-    CODE_043_DS_CONNECTION_TIMEOUT,
+    CODE_043_DM_CONNECTION_TIMEOUT,
     CODE_044_MS_CONNECTION_TIMEOUT,
     CODE_045_PROXY_CONNECTION_TIMEOUT,
 
@@ -85,4 +87,26 @@ enum class OutcomeCode {
     CODE_051_NO_NEW_MESSAGES_TO_READ,
 
     CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION,
+
+    CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM,
+
+    CODE_054_DM_CONNECTION_TIMEOUT;
+
+
+
+    /**
+     * Parse this code to extract the error number.
+     * For instance, "CODE_047_UNEXPECTED".getNumber()
+     * returns "047"
+     */
+    fun getNumber() = this.toString().split("_")[1]
+
+    /**
+     * Parse this code to extract the error message.
+     * For instance, "CODE_046_HTTP_METHOD_NOT_SUPPORTED".getMessage()
+     * returns "HTTP METHOD NOT SUPPORTED"
+     */
+    fun getMessage() = this.toString().split("_").toMutableList().filterIndexed { index, _ ->
+        index != 0 && index != 1
+    }.joinToString(separator = " ")
 }

@@ -1,14 +1,13 @@
 package eu.fbk.st.cryptoac.proxy
 
-import eu.fbk.st.cryptoac.Parameters.adminCoreRBACCloudParameters
-import eu.fbk.st.cryptoac.Parameters.aliceCoreRBACCloudParameters
 import eu.fbk.st.cryptoac.Parameters.aliceUser
 import eu.fbk.st.cryptoac.OutcomeCode
+import eu.fbk.st.cryptoac.Parameters.aliceCoreParameters
+import eu.fbk.st.cryptoac.Parameters.bobCoreParameters
 import eu.fbk.st.cryptoac.TestUtilities
-import eu.fbk.st.cryptoac.core.CoreParametersCloud
-import eu.fbk.st.cryptoac.core.CoreType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.io.FileNotFoundException
 
@@ -16,25 +15,26 @@ internal class ProfileManagerTest {
 
     @AfterEach
     fun tearDown() {
-        TestUtilities.resetProxy()
+        TestUtilities.resetLocalProxy()
     }
 
     @Test
-    fun `save storage cloud parameters works`() {
-        /** save storage cloud parameters */
+    fun `save core parameters works`() {
+        /** save core parameters */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACCloudParameters)
+            assertDoesNotThrow {
+                ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
+            }
         }
     }
 
     @Test
-    fun `save storage cloud parameters twice fails`() {
-        /** save storage cloud parameters twice */
+    fun `save core parameters twice fails`() {
+        /** save core parameters twice */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACCloudParameters)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
             assertThrows<FileAlreadyExistsException> {
-                ProfileManager.saveProfile(aliceUser.name,
-                    aliceCoreRBACCloudParameters)
+                ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
             }
         }
     }
@@ -42,43 +42,42 @@ internal class ProfileManagerTest {
 
 
     @Test
-    fun `load storage cloud parameters works`() {
-        /** load storage cloud parameters */
+    fun `load profile parameters works`() {
+        /** load profile parameters */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACCloudParameters)
-            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, CoreType.RBAC_CLOUD)
-            assert(aliceCoreRBACCloudParameters == loadedParameters as CoreParametersCloud)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
+            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType)
+            assert(aliceCoreParameters == loadedParameters)
         }
     }
 
     @Test
-    fun `load non-existing storage cloud parameters fails`() {
-        /** load non-existing storage cloud parameters */
+    fun `load non-existing profile parameters fails`() {
+        /** load non-existing profile parameters */
         run {
-            assert(ProfileManager.loadProfile(aliceUser.name, CoreType.RBAC_CLOUD) == null)
+            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) == null)
         }
     }
 
 
 
     @Test
-    fun `update storage cloud parameters works`() {
-        /** update storage cloud parameters */
+    fun `update profile parameters works`() {
+        /** update profile parameters */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACCloudParameters)
-            ProfileManager.updateProfile(aliceUser.name, adminCoreRBACCloudParameters)
-            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, CoreType.RBAC_CLOUD)
-            assert(aliceCoreRBACCloudParameters != loadedParameters)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
+            ProfileManager.updateProfile(aliceUser.name, bobCoreParameters)
+            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType)
+            assert(aliceCoreParameters != loadedParameters)
         }
     }
 
     @Test
-    fun `update non-existing storage cloud parameters fails`() {
-        /** update non-existing storage cloud parameters */
+    fun `update non-existing profile parameters fails`() {
+        /** update non-existing profile parameters */
         run {
             assertThrows<FileNotFoundException> {
-                ProfileManager.updateProfile(aliceUser.name,
-                    aliceCoreRBACCloudParameters)
+                ProfileManager.updateProfile(aliceUser.name, aliceCoreParameters)
             }
         }
     }
@@ -86,21 +85,21 @@ internal class ProfileManagerTest {
 
 
     @Test
-    fun `delete storage cloud parameters works`() {
-        /** delete storage cloud parameters */
+    fun `delete profile parameters works`() {
+        /** delete profile parameters */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACCloudParameters)
-            assert(ProfileManager.loadProfile(aliceUser.name, CoreType.RBAC_CLOUD) != null)
-            assert(ProfileManager.deleteProfile(aliceUser.name, CoreType.RBAC_CLOUD) == OutcomeCode.CODE_000_SUCCESS)
-            assert(ProfileManager.loadProfile(aliceUser.name, CoreType.RBAC_CLOUD) == null)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
+            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) != null)
+            assert(ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType) == OutcomeCode.CODE_000_SUCCESS)
+            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) == null)
         }
     }
 
     @Test
-    fun `delete non-existing storage cloud parameters fails`() {
-        /** delete non-existing storage cloud parameters */
+    fun `delete non-existing profile parameters fails`() {
+        /** delete non-existing profile parameters */
         run {
-            assert(ProfileManager.deleteProfile(aliceUser.name, CoreType.RBAC_CLOUD) == OutcomeCode.CODE_038_PROFILE_NOT_FOUND)
+            assert(ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType) == OutcomeCode.CODE_038_PROFILE_NOT_FOUND)
         }
     }
 }

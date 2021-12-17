@@ -7,9 +7,9 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("RadioGroup")
-external val radioGroup: RClass<RadioGroupProps>
+external val radioGroup: ComponentClass<RadioGroupProps>
 
-external interface RadioGroupProps : RProps {
+external interface RadioGroupProps : Props {
     var name: String
     var value: String
     var row: Boolean

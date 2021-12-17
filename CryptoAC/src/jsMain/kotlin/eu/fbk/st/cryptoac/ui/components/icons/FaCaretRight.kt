@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaCaretRight")
-external val faCaretRight: RClass<RProps>
+external val faCaretRight: ComponentClass<Props>

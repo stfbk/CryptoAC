@@ -11,38 +11,26 @@ import react.dom.p
 import styled.css
 import styled.styledDiv
 
-external interface CryptoACTableProps : RProps {
+external interface CryptoACTableProps : Props {
     // TODO e doc
     var elements: List<Array<String>>
-    var columns: Array<CryptoACTableColumn>
+    var tableColumns: Array<CryptoACTableColumn>
     var title: String
     var onRefresh: (Event) -> Unit
     var onClose: (Event) -> Unit
     var onElementClick: (Array<String>) -> Unit
 }
 
-external interface CryptoACTableState : RState {
+external interface CryptoACTableState : State {
     // TODO e doc
     var rowsPerPage: Int
     var page: Int
 }
 
 
-/** A table component. */
+/** A table component */
 class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
     override fun RBuilder.render() {
-
-        var faUndoAltIcon: ReactElement? = null
-        var faTimesIcon: ReactElement? = null
-        var faDownloadIcon: ReactElement? = null
-        styledDiv {
-            css {
-                display = Display.none
-            }
-            faUndoAltIcon = faUndoAlt { }
-            faTimesIcon = faTimes { }
-            faDownloadIcon = faDownload { }
-        }
 
         paper {
             toolbar {
@@ -72,9 +60,9 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                     attrs {
                                         size = "small"
                                         label = "close"
-                                        children = faTimesIcon!!
                                         onClick = { event -> props.onClose(event) }
                                     }
+                                    child(createElement { faTimes { } }!!)
                                 }
                             }
                         }
@@ -90,16 +78,15 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                 attrs {
                                     size = "small"
                                     label = "download data"
-                                    children = faDownloadIcon!!
                                     onClick = {
                                         val csv = StringBuilder()
                                         var prefix = ""
-                                        props.columns.forEach {
+                                        props.tableColumns.forEach {
                                             csv.append(prefix)
                                             prefix = ","
                                             csv.append(it.field)
                                         }
-                                        /** "%0A" is "\n". */
+                                        /** "%0A" is "\n" */
                                         csv.append("%0A")
                                         props.elements.forEach { array ->
                                             prefix = ""
@@ -108,7 +95,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                                 prefix = ","
                                                 csv.append(it)
                                             }
-                                            /** "%0A" is "\n". */
+                                            /** "%0A" is "\n" */
                                             csv.append("%0A")
                                         }
                                         val element = document.createElement("a")
@@ -120,6 +107,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                         element.asDynamic().click()
                                         document.body!!.removeChild(element)
                                     }
+                                    child(createElement { faDownload { } }!!)
                                 }
                             }
                         }
@@ -135,9 +123,9 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                 attrs {
                                     size = "small"
                                     label = "refresh"
-                                    children = faUndoAltIcon!!
                                     onClick = { event -> props.onRefresh(event) }
                                 }
+                                child(createElement { faUndoAlt { } }!!)
                             }
                         }
                     }
@@ -160,14 +148,14 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                 height = 90.pct
                             }
                             p {
-                                +"No ${props.title}  yet"
+                                +"No items in this table yet"
                             }
                         }
                     } else {
                         table {
                             tableHead {
                                 tableRow {
-                                    props.columns.forEach {
+                                    props.tableColumns.forEach {
                                         tableCell {
                                             key = it.field
                                             attrs {
@@ -233,6 +221,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
             toIndex
         }
     }
+
     private fun fromIndex(): Int {
         val fromIndex = state.rowsPerPage * (state.page)
         val maxIndex = props.elements.size
@@ -254,9 +243,11 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
     }
 }
 
-/** Extend RBuilder for easier use of this React component. */
-fun RBuilder.cryptoACTable(handler: CryptoACTableProps.() -> Unit): ReactElement {
-    return child(CryptoACTable::class) {
-        this.attrs(handler)
-    }
+/** Extend RBuilder for easier use of this React component */
+fun cryptoACTable(handler: CryptoACTableProps.() -> Unit): ReactElement {
+    return createElement {
+        child(CryptoACTable::class) {
+            this.attrs(handler)
+        }
+    }!!
 }

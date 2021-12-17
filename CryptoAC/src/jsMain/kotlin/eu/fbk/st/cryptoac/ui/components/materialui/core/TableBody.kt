@@ -6,8 +6,8 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("TableBody")
-external val tableBody: RClass<TableBodyProps>
+external val tableBody: ComponentClass<TableBodyProps>
 
-external interface TableBodyProps : RProps {
+external interface TableBodyProps : Props {
     // TODO
 }

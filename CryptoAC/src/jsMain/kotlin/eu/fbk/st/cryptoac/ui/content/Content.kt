@@ -1,24 +1,11 @@
 package eu.fbk.st.cryptoac.ui.content
 
+import development
 import eu.fbk.st.cryptoac.API.PROFILES
+import eu.fbk.st.cryptoac.CryptoACFormField
 import eu.fbk.st.cryptoac.OutcomeCode
-import eu.fbk.st.cryptoac.SERVER.DS_PASSWORD
-import eu.fbk.st.cryptoac.SERVER.DS_PORT
-import eu.fbk.st.cryptoac.SERVER.DS_URL
-import eu.fbk.st.cryptoac.SERVER.IS_ADMIN
-import eu.fbk.st.cryptoac.SERVER.MS_PASSWORD
-import eu.fbk.st.cryptoac.SERVER.MS_PORT
-import eu.fbk.st.cryptoac.SERVER.MS_URL
-import eu.fbk.st.cryptoac.SERVER.OPA_PORT
-import eu.fbk.st.cryptoac.SERVER.OPA_URL
-import eu.fbk.st.cryptoac.SERVER.RM_PORT
-import eu.fbk.st.cryptoac.SERVER.RM_URL
 import eu.fbk.st.cryptoac.SERVER.USERNAME
-import eu.fbk.st.cryptoac.core.CoreParameters
-import eu.fbk.st.cryptoac.core.CoreParametersMQTT
-import eu.fbk.st.cryptoac.core.CoreParametersCloud
-import eu.fbk.st.cryptoac.core.CoreType
-import eu.fbk.st.cryptoac.implementation.ds.DSMQTTMessage
+import eu.fbk.st.cryptoac.core.*
 import eu.fbk.st.cryptoac.ui.baseURL
 import eu.fbk.st.cryptoac.ui.components.custom.*
 import eu.fbk.st.cryptoac.ui.components.icons.faChevronDown
@@ -33,7 +20,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
-import kotlinx.html.InputType
 import kotlinx.html.hidden
 import kotlinx.html.js.onChangeFunction
 import kotlinx.serialization.decodeFromString
@@ -51,42 +37,41 @@ import styled.styledDiv
 
 private val logger = KotlinLogging.logger {}
 
-external interface ContentProps : RProps {
+external interface ContentProps : Props {
+    var handleChangeBackdropIsOpen: (Boolean) -> Unit
+    var handleChangeUserHasProfile: (Boolean) -> Unit
+    var handleChangeUserIsLogged: (Boolean) -> Unit
+    var handleChangeUserIsAdmin: (Boolean) -> Unit
+    var handleChangeUsername: (String?) -> Unit
+    var handleDisplayAlert: (OutcomeCode, CryptoACAlertSeverity) -> Unit
     var userHasProfile: Boolean
     var userIsLogged: Boolean
     var userIsAdmin: Boolean
     var httpClient: HttpClient
-    var contentMessages: HashMap<String, MutableList<DSMQTTMessage>>
     var coreType: CoreType
     var username: String?
-    var handleChangeBackdropOpen: (Boolean) -> Unit
-    var handleChangeUserIsLogged: (Boolean) -> Unit
-    var handleChangeUserHasProfile: (Boolean) -> Unit
-    var handleChangeUsername: (String?) -> Unit
-    var handleChangeUserIsAdmin : (Boolean) -> Unit
-    var handleDisplayAlert : (OutcomeCode, CryptoACAlertSeverity) -> Unit
+    var tables: MutableList<String>
 }
 
-external interface ContentState : RState {
-    /** Whether the edit profile form is visible or not. */
-    var editProfileFormOpen: Boolean
+external interface ContentState : State {
+    /** Whether the edit profile form is visible or not */
+    var editProfileFormIsOpen: Boolean
+
+    /** The form fields of the edit profile form */
+    var cryptoACFormFields: List<List<CryptoACFormField>>
 }
 
 /**
  * The Content React component, consisting of:
  * 1. The edit profile form;
- * 2. The specific content for tables and data of the selected core type.
+ * 2. The specific content for tables and
+ *    data of the chosen core type
  */
 class Content: RComponent<ContentProps, ContentState>() {
 
     override fun RBuilder.render() {
 
-        // TODO make it collapsable
-        /**
-         * 1. The edit profile, consisting of:
-         * 1.1. The header with the title, the file upload option and the collapsable toggle icon;
-         * 1.2. The edit profile form.
-         */
+        /** 1. The edit profile */
         styledDiv {
             css {
                 textAlign = TextAlign.center
@@ -95,7 +80,7 @@ class Content: RComponent<ContentProps, ContentState>() {
             }
             paper {
 
-                /** 1.1. The header with the title, the file upload option and the collapsable toggle icon. */
+                /** 1.1. The header with the title, the file upload option and the collapsable toggle icon */
                 typography {
                     attrs {
                         variant = "h6"
@@ -107,18 +92,16 @@ class Content: RComponent<ContentProps, ContentState>() {
                         attrs {
                             color = "primary"
                             component = "label"
-                            children = faCloudUploadAlt { }
                         }
+                        child(createElement { faCloudUploadAlt { } }!!)
                         input {
                             attrs {
-                                type = InputType.file
+                                type = kotlinx.html.InputType.file
                                 accept = ".json"
                                 hidden = true
                                 this.onChangeFunction = { event ->
                                     logger.info {"Received upload configuration file event" }
-                                    val fileInput = event.target as HTMLInputElement
-                                    val file = fileInput.files!![0]
-                                    parseProfileFile(file!!)
+                                    parseProfileFile((event.target as HTMLInputElement).files!![0]!!)
                                 }
                             }
                         }
@@ -135,14 +118,14 @@ class Content: RComponent<ContentProps, ContentState>() {
                                 color = "primary"
                                 component = "label"
                                 size = "small"
-                                children = if (!state.editProfileFormOpen) {
+                                children = createElement { if (!state.editProfileFormIsOpen) {
                                     faChevronDown { }
                                 } else {
                                     faChevronUp { }
-                                }
+                                }}!!
                                 onClick = {
                                     setState {
-                                        editProfileFormOpen = !editProfileFormOpen
+                                        editProfileFormIsOpen = !editProfileFormIsOpen
                                     }
                                 }
                             }
@@ -150,114 +133,140 @@ class Content: RComponent<ContentProps, ContentState>() {
                     }
                 }
 
-                /** 1.2. The edit profile form. */
+                /** 1.2. The edit profile form */
                 styledDiv {
                     css {
                         marginTop = 10.px
                         marginBottom = 10.px
                         marginRight = 10.px
                         marginLeft = 30.px
-                        if (!state.editProfileFormOpen) {
+                        if (!state.editProfileFormIsOpen) {
                             display = Display.none
                         }
                     }
 
-                    /** Render the edit profile form. */
-                    cryptoACForm {
+                    /** Render the edit profile form */
+                    child(cryptoACForm {
                         attrs {
-                            handleChangeBackdropOpen = props.handleChangeBackdropOpen
+                            handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
                             handleDisplayCryptoACAlert = props.handleDisplayAlert
+                            handleSubmitEvent = { method, endpoint, values, _ ->
+                                submitEditProfileForm(method, endpoint, values)
+                            }
+                            method = if (props.userHasProfile) {
+                                HttpMethod.Patch
+                            } else {
+                                HttpMethod.Post
+                            }
+                            cryptoACFormFields = state.cryptoACFormFields
                             submitButtonText = "Edit Profile"
-                            method = if (props.userHasProfile) HttpMethod.Patch else HttpMethod.Post
                             coreType = props.coreType
                             endpoint = PROFILES
-                            submit = { method, endpoint, values, _ ->
-                                submitEditProfile(method, endpoint, values)
-                            }
-                            cryptoACFormFields = when (props.coreType) {
-                                CoreType.RBAC_CLOUD -> coreParametersCloudFormFields
-                                CoreType.RBAC_MQTT -> coreParametersMQTTCryptoACFormFields
-                            }
                         }
-                    }
+                    })
                 }
             }
         }
 
-        /** 2. The specific content for tables and data of the selected core type (if the user has a profile). */
+        // TODO automatically refresh users/roles/files tables after update
+        // TODO secure passwords (e.g., salt+hash)
+        /**
+         * 2. The specific content for tables and data of the
+         * selected core type (if the user has a profile)
+         * */
         if (props.userHasProfile) {
             when (props.coreType) {
-                CoreType.RBAC_CLOUD -> cloudContent {
-                    httpClient = props.httpClient
-                    userIsAdmin = props.userIsAdmin
-                    coreType = props.coreType
-                    handleChangeBackdropOpen = props.handleChangeBackdropOpen
+                CoreType.RBAC_CLOUD -> child(rbacCLOUDContent {
+                    handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
                     handleDisplayAlert = props.handleDisplayAlert
-                }
-                CoreType.RBAC_MQTT -> mqttContent {
-                    httpClient = props.httpClient
                     userIsAdmin = props.userIsAdmin
+                    httpClient = props.httpClient
                     coreType = props.coreType
-                    handleChangeBackdropOpen = props.handleChangeBackdropOpen
+                })
+                CoreType.RBAC_MQTT -> child(rbacMQTTContent {
+                    handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
                     handleDisplayAlert = props.handleDisplayAlert
-                    contentMessages = props.contentMessages
-                }
+                    userIsAdmin = props.userIsAdmin
+                    httpClient = props.httpClient
+                    coreType = props.coreType
+                    topics = props.tables
+                })
             }
         }
     }
 
     override fun ContentState.init() {
         logger.info { "Initializing the state of the Content component" }
-        editProfileFormOpen = true
+        editProfileFormIsOpen = true
+        cryptoACFormFields = listOf()
 
         MainScope().launch {
             getProfileFromProxy()
         }
     }
 
+
     /**
      * Submit and handle the callback for the edit profile form. It receives as input
-     * the HTTP [method], the [endpoint] (URL) and the [values] to add to the request.
+     * the HTTPS [method], the [endpoint] (URL) and the [values] to add to the request
      */
-    private fun submitEditProfile(method: HttpMethod, endpoint: String, values: HashMap<String, String>) {
+    private fun submitEditProfileForm(method: HttpMethod, endpoint: String, values: HashMap<String, String>) {
         logger.info { "Submitting CryptoAC edit profile form, method $method, endpoint $endpoint" }
-        props.handleChangeBackdropOpen(true)
 
-        /** Create the core parameters object based on the core type. */
+        /** Create the core parameters object based on the core type */
         val parameters = when (props.coreType) {
-            CoreType.RBAC_CLOUD -> CoreParametersCloud.fromMap(values)
+            CoreType.RBAC_CLOUD -> CoreParametersCLOUD.fromMap(values)
             CoreType.RBAC_MQTT -> CoreParametersMQTT.fromMap(values)
+            CoreType.RBAC_MOCK -> if (development) {
+                CoreParametersMOCK.fromMap()
+            } else {
+                val message = "Using MOCK core when not in development mode"
+                logger.error { message }
+                throw IllegalStateException(message)
+            }
         }
 
+        if (method != HttpMethod.Post && method != HttpMethod.Patch) {
+            logger.warn { "HTTP Method of edit profile form is neither Post nor Patch (it is $method)" }
+            props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
+        }
         if (parameters == null) {
             logger.warn { "Not all fields of the edit profile form were filled" }
             props.handleDisplayAlert(OutcomeCode.CODE_019_MISSING_PARAMETERS, CryptoACAlertSeverity.WARNING)
         } else {
             MainScope().launch {
                 try {
-                    /** Send the HTTP post request. */
-                    val response: HttpResponse = props.httpClient.post(endpoint) {
-                        contentType(ContentType.Application.Json)
-                        body = parameters
+                    /** Send the HTTPS  request */
+                    props.handleChangeBackdropIsOpen(true)
+                    val response: HttpResponse = if (method == HttpMethod.Post) {
+                        props.httpClient.post(endpoint) {
+                            contentType(ContentType.Application.Json)
+                            body = parameters
+                        }
+                    } else {
+                        props.httpClient.patch(endpoint) {
+                            contentType(ContentType.Application.Json)
+                            body = parameters
+                        }
                     }
                     val code: OutcomeCode = response.receive()
                     val status = response.status
-                    props.handleChangeBackdropOpen(false)
+                    props.handleChangeBackdropIsOpen(false)
 
                     if (status == HttpStatusCode.OK) {
                         logger.info { "Response status is ${status}, code is $code" }
                         props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
+                        props.handleChangeUserIsAdmin(parameters.user.isAdmin)
+                        props.handleChangeUsername(parameters.user.name)
                         props.handleChangeUserHasProfile(true)
-                        props.handleChangeUserIsAdmin(parameters.isAdmin)
-                        props.handleChangeUsername(parameters.username)
-                        setState { editProfileFormOpen = false }
+                        setState { editProfileFormIsOpen = false }
                     } else {
                         logger.warn { "Response status is ${status}, code is $code" }
                         props.handleDisplayAlert(code, CryptoACAlertSeverity.ERROR)
                         props.handleChangeUserHasProfile(false)
                         props.handleChangeUserIsAdmin(false)
                         props.handleChangeUsername(null)
-                        setState { editProfileFormOpen = true }
+                        setState { editProfileFormIsOpen = true }
                     }
                 } catch (e: Error) {
                     logger.error { "Error during edit profile (${e.message}), see console log for details" }
@@ -270,28 +279,37 @@ class Content: RComponent<ContentProps, ContentState>() {
 
     /**
      * Parse the content of the given profile [file] and update
-     * the fields of the edit profile form accordingly.
+     * the fields of the edit profile form accordingly
      */
     private fun parseProfileFile(file: File) {
-        /** Only Json files are parsable at the moment. */
+        /** Only Json files are parsable at the moment */
         if (file.name.endsWith(".json")) {
             val reader = FileReader()
             reader.readAsText(file, "UTF-8")
-            /** Once the file is loaded, read the content and decode the core parameters. */
+
+            /** Once the file is loaded, read the content and decode the core parameters */
             reader.onload = { _ ->
                 val fileContent = reader.result.toString()
                 try {
                     val parameters = when (props.coreType) {
-                        CoreType.RBAC_CLOUD -> Json.decodeFromString<CoreParametersCloud>(fileContent)
+                        CoreType.RBAC_CLOUD -> Json.decodeFromString<CoreParametersCLOUD>(fileContent)
                         CoreType.RBAC_MQTT -> Json.decodeFromString<CoreParametersMQTT>(fileContent)
+                        CoreType.RBAC_MOCK -> if (development) {
+                            Json.decodeFromString<CoreParametersMOCK>(fileContent)
+                        } else {
+                            val message = "Using MOCK core when not in development mode"
+                            logger.error { message }
+                            throw IllegalStateException(message)
+                        }
                     }
                     setState {
-                        editProfileFormOpen = true
-                        getFieldsFromParameters(parameters)
+                        editProfileFormIsOpen = true
                     }
+                    getFieldsFromParameters(parameters)
                 } catch (e: Exception) {
                     if (e.asDynamic().name == "JsonDecodingException") {
                         logger.warn {"Malformed .json profile file" }
+                        logger.warn { e }
                         props.handleDisplayAlert(OutcomeCode.CODE_039_MALFORMED_PROFILE_FILE, CryptoACAlertSeverity.ERROR)
                     } else {
                         logger.error { "Error during upload file (${e.message}), see console log for details" }
@@ -306,186 +324,52 @@ class Content: RComponent<ContentProps, ContentState>() {
         }
     }
 
-    // TODO refactor sooner or later
-    /** Update the edit profile fields with the new [parameters]. */
-    private fun getFieldsFromParameters(parameters: CoreParameters) {
+    /** Update the edit profile fields with the new [params] */
+    private fun getFieldsFromParameters(params: CoreParameters? = null) {
         logger.info {"Getting profile fields from parameters" }
-        when (parameters.coreType) {
-            CoreType.RBAC_CLOUD -> {
-                coreParametersCloudFormFields = listOf(
-                    listOf(
-                        CryptoACFormField(
-                            USERNAME,
-                            USERNAME,
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = parameters.username
-                        ),
-                        CryptoACFormField(
-                            IS_ADMIN,
-                            IS_ADMIN.replace("_", " "),
-                            InputType.checkBox,
-                            className = "darkTextField",
-                            defaultValue = parameters.isAdmin.toString()
-                        ),
-                    ), listOf(
-                        CryptoACFormField(
-                            RM_URL,
-                            RM_URL.replace("_", " "),
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = (parameters as CoreParametersCloud).rmCloudInterfaceParameters.url
-                        ),
-                        CryptoACFormField(
-                            RM_PORT,
-                            RM_PORT.replace("_", " "),
-                            InputType.number,
-                            className = "darkTextField",
-                            defaultValue = parameters.rmCloudInterfaceParameters.port.toString()
-                        ),
-                    ), listOf(
-                        CryptoACFormField(
-                            MS_URL,
-                            MS_URL.replace("_", " "),
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = parameters.msMySQLInterfaceParameters.url
-                        ),
-                        CryptoACFormField(
-                            MS_PASSWORD,
-                            MS_PASSWORD.replace("_", " "),
-                            InputType.password,
-                            className = "darkTextField",
-                            defaultValue = parameters.msMySQLInterfaceParameters.password
-                        ),
-                        CryptoACFormField(
-                            MS_PORT,
-                            MS_PORT.replace("_", " "),
-                            InputType.number,
-                            className = "darkTextField",
-                            defaultValue = parameters.msMySQLInterfaceParameters.port.toString()
-                        ),
-                    ), listOf(
-                        CryptoACFormField(
-                            DS_URL,
-                            DS_URL.replace("_", " "),
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = parameters.dsCloudInterfaceParameters.url
-                        ),
-                        CryptoACFormField(
-                            DS_PORT,
-                            DS_PORT.replace("_", " "),
-                            InputType.number,
-                            className = "darkTextField",
-                            defaultValue = parameters.dsCloudInterfaceParameters.port.toString()
-                        ),
-                    ), listOf(
-                        CryptoACFormField(
-                            OPA_URL,
-                            OPA_URL.replace("_", " "),
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = parameters.opaInterfaceParameters.url
-                        ),
-                        CryptoACFormField(
-                            OPA_PORT,
-                            OPA_PORT.replace("_", " "),
-                            InputType.number,
-                            className = "darkTextField",
-                            defaultValue = parameters.opaInterfaceParameters.port.toString()
-                        ),
-                    )
-                )
-            }
-            CoreType.RBAC_MQTT -> {
-                coreParametersMQTTCryptoACFormFields = listOf(
-                    listOf(
-                        CryptoACFormField(
-                            USERNAME,
-                            USERNAME,
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = parameters.username
-                        ),
-                        CryptoACFormField(
-                            IS_ADMIN,
-                            IS_ADMIN.replace("_", " "),
-                            InputType.checkBox,
-                            className = "darkTextField",
-                            defaultValue = parameters.isAdmin.toString()
-                        ),
-                    ), listOf(
-                        CryptoACFormField(
-                            DS_URL,
-                            "Broker URL",
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = (parameters as CoreParametersMQTT).dsMQTTInterfaceParameters.url
-                        ),
-                        CryptoACFormField(
-                            DS_PASSWORD,
-                            "Broker Password",
-                            InputType.password,
-                            className = "darkTextField",
-                            defaultValue = parameters.dsMQTTInterfaceParameters.password
-                        ),
-                        CryptoACFormField(
-                            DS_PORT,
-                            "Broker Port",
-                            InputType.number,
-                            className = "darkTextField",
-                            defaultValue = parameters.dsMQTTInterfaceParameters.port.toString()
-                        ),
-                    ), listOf(
-                        CryptoACFormField(
-                            MS_URL,
-                            MS_URL.replace("_", " "),
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = parameters.msMySQLInterfaceParameters.url
-                        ),
-                        CryptoACFormField(
-                            MS_PASSWORD,
-                            MS_PASSWORD.replace("_", " "),
-                            InputType.password,
-                            className = "darkTextField",
-                            defaultValue = parameters.msMySQLInterfaceParameters.password
-                        ),
-                        CryptoACFormField(
-                            MS_PORT,
-                            MS_PORT.replace("_", " "),
-                            InputType.number,
-                            className = "darkTextField",
-                            defaultValue = parameters.msMySQLInterfaceParameters.port.toString()
-                        )
-                    )
-                )
+
+        setState {
+            cryptoACFormFields = when (props.coreType) {
+                CoreType.RBAC_CLOUD -> CoreParametersCLOUD.toMap(if (params == null) null else params as CoreParametersCLOUD)
+                CoreType.RBAC_MQTT -> CoreParametersMQTT.toMap(if (params == null) null else params as CoreParametersMQTT)
+                CoreType.RBAC_MOCK -> if (development) {
+                    CoreParametersMOCK.toMap()
+                } else {
+                    val message = "Using MOCK core when not in development mode"
+                    logger.error { message }
+                    throw IllegalStateException(message)
+                }
             }
         }
     }
 
-    /** Get the profile of the [username] for the current coreType. */
-    private suspend fun getProfileFromProxy(username: String? = props.username): CoreParameters? {
+    /** Get the profile of the [username] for the current coreType */
+    private suspend fun getProfileFromProxy(username: String? = props.username) {
         val actualEndpoint = "$baseURL${PROFILES.replace("{Core}", props.coreType.toString())}?$USERNAME=$username"
         logger.info { "Getting the profile for user $username at endpoint $actualEndpoint" }
         val httpResponse: HttpResponse = props.httpClient.get(actualEndpoint)
 
         val status = httpResponse.status
-        return if (status == HttpStatusCode.OK) {
+        if (status == HttpStatusCode.OK) {
             logger.info { "Response status is $status" }
             val loggedUserCoreParameters = when (props.coreType) {
-                CoreType.RBAC_CLOUD -> Json.decodeFromString<CoreParametersCloud>(httpResponse.readText())
+                CoreType.RBAC_CLOUD -> Json.decodeFromString<CoreParametersCLOUD>(httpResponse.readText())
                 CoreType.RBAC_MQTT -> Json.decodeFromString<CoreParametersMQTT>(httpResponse.readText())
+                CoreType.RBAC_MOCK -> if (development) {
+                    Json.decodeFromString<CoreParametersMOCK>(httpResponse.readText())
+                } else {
+                    val message = "Using MOCK core when not in development mode"
+                    logger.error { message }
+                    throw IllegalStateException(message)
+                }
             }
             setState {
                 props.handleChangeUserHasProfile(true)
-                props.handleChangeUserIsAdmin(loggedUserCoreParameters.isAdmin)
-                props.handleChangeUsername(loggedUserCoreParameters.username)
-                editProfileFormOpen = false
-                getFieldsFromParameters(loggedUserCoreParameters)
+                props.handleChangeUserIsAdmin(loggedUserCoreParameters.user.isAdmin)
+                props.handleChangeUsername(loggedUserCoreParameters.user.name)
+                editProfileFormIsOpen = false
             }
-            loggedUserCoreParameters
+            getFieldsFromParameters(loggedUserCoreParameters)
         } else {
             val text = httpResponse.readText()
             val outcomeCode: OutcomeCode = Json.decodeFromString(text)
@@ -495,52 +379,17 @@ class Content: RComponent<ContentProps, ContentState>() {
                 props.handleChangeUserHasProfile(false)
                 props.handleChangeUserIsAdmin(false)
                 props.handleChangeUsername(null)
-                editProfileFormOpen = true
+                editProfileFormIsOpen = true
             }
-            null
+            getFieldsFromParameters()
         }
     }
-
-    /** The list of form fields for the CLOUD core type. */
-    private var coreParametersCloudFormFields = listOf(
-        listOf(
-            CryptoACFormField(USERNAME, USERNAME, InputType.text, className = "darkTextField"),
-            CryptoACFormField(IS_ADMIN, IS_ADMIN.replace("_", " "), InputType.checkBox, className = "darkTextField"),
-        ), listOf(
-            CryptoACFormField(RM_URL, RM_URL.replace("_", " "), InputType.text, className = "darkTextField"),
-            CryptoACFormField(RM_PORT, RM_PORT.replace("_", " "), InputType.number, className = "darkTextField"),
-        ), listOf(
-            CryptoACFormField(MS_URL, MS_URL.replace("_", " "), InputType.text, className = "darkTextField"),
-            CryptoACFormField(MS_PASSWORD, MS_PASSWORD.replace("_", " "), InputType.password, className = "darkTextField"),
-            CryptoACFormField(MS_PORT, MS_PORT.replace("_", " "), InputType.number, className = "darkTextField"),
-        ), listOf(
-            CryptoACFormField(DS_URL, DS_URL.replace("_", " "), InputType.text, className = "darkTextField"),
-            CryptoACFormField(DS_PORT, DS_PORT.replace("_", " "), InputType.number, className = "darkTextField"),
-        ), listOf(
-            CryptoACFormField(OPA_URL, OPA_URL.replace("_", " "), InputType.text, className = "darkTextField"),
-            CryptoACFormField(OPA_PORT, OPA_PORT.replace("_", " "), InputType.number, className = "darkTextField"),
-        )
-    )
-
-    /** The list of form fields for the MQTT core type. */
-    private var coreParametersMQTTCryptoACFormFields: List<List<CryptoACFormField>> = listOf(
-        listOf(
-            CryptoACFormField(USERNAME, USERNAME, InputType.text, className = "darkTextField"),
-            CryptoACFormField(IS_ADMIN, IS_ADMIN.replace("_", " "), InputType.checkBox, className = "darkTextField"),
-        ), listOf(
-            CryptoACFormField(DS_URL, "Broker URL", InputType.text, className = "darkTextField"),
-            CryptoACFormField(DS_PASSWORD, "Broker Password", InputType.password, className = "darkTextField"),
-            CryptoACFormField(DS_PORT, "Broker Port", InputType.number, className = "darkTextField"),
-            ), listOf(
-            CryptoACFormField(MS_URL, MS_URL.replace("_", " "), InputType.text, className = "darkTextField"),
-            CryptoACFormField(MS_PASSWORD, MS_PASSWORD.replace("_", " "), InputType.password, className = "darkTextField"),
-            CryptoACFormField(MS_PORT, MS_PORT.replace("_", " "), InputType.number, className = "darkTextField"),
-        )
-    )
 }
 
-fun RBuilder.content(handler: ContentProps.() -> Unit): ReactElement {
-    return child(Content::class) {
-        this.attrs(handler)
-    }
+fun content(handler: ContentProps.() -> Unit): ReactElement {
+    return createElement {
+        child(Content::class) {
+            this.attrs(handler)
+        }
+    }!!
 }

@@ -6,8 +6,8 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("TableContainer")
-external val tableContainer: RClass<TableContainerProps>
+external val tableContainer: ComponentClass<TableContainerProps>
 
-external interface TableContainerProps : RProps {
+external interface TableContainerProps : Props {
     // TODO
 }

@@ -6,8 +6,8 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("TableSortLabel")
-external val tableSortLabel: RClass<TableSortLabelProps>
+external val tableSortLabel: ComponentClass<TableSortLabelProps>
 
-external interface TableSortLabelProps : RProps {
+external interface TableSortLabelProps : Props {
     // TODO
 }

@@ -8,8 +8,8 @@ import java.io.File
 
 internal class FileSystemManagerTest {
 
-    private val fileContent1 = "The Poets of the Fall are a great band".toByteArray()
-    private val fileContent2 = "One does not simply walk into Mordor".toByteArray()
+    private val fileContent1 = "Go ahead, make my day.".toByteArray()
+    private val fileContent2 =  "What we've got here is failure to communicate.".toByteArray()
     private val filePath = "./test.txt"
 
 

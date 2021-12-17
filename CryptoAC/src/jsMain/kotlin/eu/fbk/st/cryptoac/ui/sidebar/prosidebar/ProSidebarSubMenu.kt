@@ -5,14 +5,14 @@ package eu.fbk.st.cryptoac.ui.sidebar.prosidebar
 
 import react.*
 
-/** See https://github.com/azouaoui-med/react-pro-sidebar. */
+/** See https://github.com/azouaoui-med/react-pro-sidebar */
 @JsName("SubMenu")
-external val proSidebarSubMenu: RClass<SubMenuProps>
+external val proSidebarSubMenu: ComponentClass<SubMenuProps>
 
-external interface SubMenuProps : RProps {
-    /** Title for the submenu. */
+external interface SubMenuProps : Props {
+    /** Title for the submenu */
     var title: String
 
-    /** Icon for submenu. */
+    /** Icon for submenu */
     var icon: ReactElement
 }

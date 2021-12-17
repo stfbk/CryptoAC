@@ -6,8 +6,9 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("Tooltip")
-external val tooltip: RClass<TooltipProps>
+external val tooltip: ComponentClass<TooltipProps>
 
-external interface TooltipProps : RProps {
+external interface TooltipProps : Props {
     var title: String
+    var children: ReactElement
 }

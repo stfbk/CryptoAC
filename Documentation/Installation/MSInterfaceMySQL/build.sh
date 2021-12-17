@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker build -t cryptoac_mysql --file ./DockerFileMySQL .
+newgrp docker << END
+    docker build -t cryptoac_mysql --file ./DockerFileMySQL .
+END

@@ -7,9 +7,9 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("TablePagination")
-external val tablePagination: RClass<TablePaginationProps>
+external val tablePagination: ComponentClass<TablePaginationProps>
 
-external interface TablePaginationProps : RProps {
+external interface TablePaginationProps : Props {
     var rowsPerPageOptions: Array<Int>
     var component: String
     var count: Int

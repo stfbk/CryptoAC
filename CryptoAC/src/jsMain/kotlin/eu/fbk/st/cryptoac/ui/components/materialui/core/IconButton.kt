@@ -7,9 +7,9 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("IconButton")
-external val iconButton: RClass<IconButtonProps>
+external val iconButton: ComponentClass<IconButtonProps>
 
-external interface IconButtonProps : RProps {
+external interface IconButtonProps : Props {
     var children: ReactElement
     var color: String
     var label: String

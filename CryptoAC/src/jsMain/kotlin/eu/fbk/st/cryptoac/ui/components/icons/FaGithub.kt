@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaGithub")
-external val faGithub: RClass<RProps>
+external val faGithub: ComponentClass<Props>

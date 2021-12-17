@@ -6,9 +6,9 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("FormControlLabel")
-external val formControlLabel: RClass<FormControlLabelProps>
+external val formControlLabel: ComponentClass<FormControlLabelProps>
 
-external interface FormControlLabelProps : RProps {
+external interface FormControlLabelProps : Props {
     var value: String
     var control: ReactElement
     var label: String

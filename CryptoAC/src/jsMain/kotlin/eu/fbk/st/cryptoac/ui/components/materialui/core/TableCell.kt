@@ -6,9 +6,9 @@ package eu.fbk.st.cryptoac.ui.components.materialui.core
 import react.*
 
 @JsName("TableCell")
-external val tableCell: RClass<TableCellProps>
+external val tableCell: ComponentClass<TableCellProps>
 
-external interface TableCellProps : RProps {
+external interface TableCellProps : Props {
     var align: String
     var padding: String
     var sortDirection: String

@@ -1,11 +1,9 @@
 package eu.fbk.st.cryptoac.proxy
 
+import development
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.USERS_PROFILE_DIRECTORY_PATH
-import eu.fbk.st.cryptoac.core.CoreParameters
-import eu.fbk.st.cryptoac.core.CoreParametersMQTT
-import eu.fbk.st.cryptoac.core.CoreParametersCloud
-import eu.fbk.st.cryptoac.core.CoreType
+import eu.fbk.st.cryptoac.core.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -31,8 +29,15 @@ class ProfileManager {
             FileSystemManager.saveFile(
                 path = getProfileKey(username, coreParameters.coreType),
                 content = when (coreParameters.coreType) {
-                    CoreType.RBAC_CLOUD -> Json.encodeToString(coreParameters as CoreParametersCloud).byteInputStream()
+                    CoreType.RBAC_CLOUD -> Json.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
                     CoreType.RBAC_MQTT -> Json.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
+                    CoreType.RBAC_MOCK -> if (development) {
+                        Json.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
+                    } else {
+                        val message = "Using MOCK core when not in development mode"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
                 },
                 saveMode = FileSaveMode.THROW_EXCEPTION
             )
@@ -44,8 +49,15 @@ class ProfileManager {
             FileSystemManager.saveFile(
                 path = getProfileKey(username, coreParameters.coreType),
                 content = when (coreParameters.coreType) {
-                    CoreType.RBAC_CLOUD -> Json.encodeToString(coreParameters as CoreParametersCloud).byteInputStream()
+                    CoreType.RBAC_CLOUD -> Json.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
                     CoreType.RBAC_MQTT -> Json.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
+                    CoreType.RBAC_MOCK -> if (development) {
+                        Json.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
+                    } else {
+                        val message = "Using MOCK core when not in development mode"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
                 },
                 saveMode = FileSaveMode.OVERWRITE
             )
@@ -58,8 +70,15 @@ class ProfileManager {
             return if (profileFile.exists()) {
                 val profileString = String(profileFile.inputStream().readAllBytes())
                 when (coreType) {
-                    CoreType.RBAC_CLOUD -> Json.decodeFromString<CoreParametersCloud>(profileString)
+                    CoreType.RBAC_CLOUD -> Json.decodeFromString<CoreParametersCLOUD>(profileString)
                     CoreType.RBAC_MQTT -> Json.decodeFromString<CoreParametersMQTT>(profileString)
+                    CoreType.RBAC_MOCK -> if (development) {
+                        Json.decodeFromString<CoreParametersMOCK>(profileString)
+                    } else {
+                        val message = "Using MOCK core when not in development mode"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
                 }
             } else {
                 null

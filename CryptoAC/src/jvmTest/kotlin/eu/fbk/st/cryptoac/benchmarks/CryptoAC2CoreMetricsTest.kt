@@ -20,7 +20,7 @@ internal class CoreMetricsTest {
         asymSigKeys = adminAsymSigKeys,
     )
 
-    private val CoreObject = Core(adminUser, cryptoObject, adminCoreRBACCloudParameters)
+    private val CoreObject = Core(adminUser, cryptoObject, adminCoreRBACCLOUDParameters)
 
 
     private val repetitions = 1000
@@ -35,7 +35,7 @@ internal class CoreMetricsTest {
     @AfterEach
     fun `tear down environment`() {
         TestUtilities.stopCloud()
-        TestUtilities.resetDSCloud()
+        TestUtilities.resetDMCloud()
         TestUtilities.resetMetadataStorageMySQL()
         TestUtilities.resetOPACloud()
     }
@@ -178,7 +178,7 @@ internal class CoreMetricsTest {
             for (i in 0 until warmup) {
                 currentFileName = iterator.next()
                 assert(CoreObject.addFile(currentFileName,
-                    currentFileName.toByteArray().inputStream(),
+                    currentFileName.inputStream(),
                     EnforcementType.COMBINED) ==
                         OutcomeCode.CODE_000_SUCCESS
                 )
@@ -199,7 +199,7 @@ internal class CoreMetricsTest {
                 println(i)
                 currentFileName = iterator.next()
                 assert(CoreObject.addFile(currentFileName,
-                    currentFileName.toByteArray().inputStream(),
+                    currentFileName.inputStream(),
                     EnforcementType.COMBINED) ==
                         OutcomeCode.CODE_000_SUCCESS
                 )
@@ -485,7 +485,7 @@ internal class CoreMetricsTest {
             println("adding files")
             fileNames.forEach {
                 assert(CoreObject.addFile(it,
-                    it.toByteArray().inputStream(),
+                    it.inputStream(),
                     EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
                 rolesAssignedToFile[it] = HashSet()
             }
@@ -866,7 +866,7 @@ internal class CoreMetricsTest {
                 totalTimes[i] = timeMeasured - (timeGCAfter - timeGCBefore)
                 assert(CoreObject.assignUserToRole(alice, employee) == OutcomeCode.CODE_000_SUCCESS)
                 assert(CoreObject.addFile(fileNames[i],
-                    fileNames[i].toByteArray().inputStream(),
+                    fileNames[i].inputStream(),
                     EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
                 assert(CoreObject.assignPermissionToRole(employee,
                     fileNames[i],
@@ -892,7 +892,7 @@ internal class CoreMetricsTest {
         val employee = "employee"; assert(CoreObject.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
         assert(CoreObject.assignUserToRole(alice, employee) == OutcomeCode.CODE_000_SUCCESS)
         val exam = "exam"
-        assert(CoreObject.addFile(exam, exam.toByteArray().inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
+        assert(CoreObject.addFile(exam, exam.inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
         assert(CoreObject.assignPermissionToRole(employee, exam, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
 
         var metrics: MetricTimes
@@ -950,7 +950,7 @@ internal class CoreMetricsTest {
             for (i in 0 until numberOfFiles) {
                 currentFileName = fileIterator.next()
                 assert(CoreObject.addFile(currentFileName,
-                    currentFileName.toByteArray().inputStream(),
+                    currentFileName.inputStream(),
                     EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
                 assert(CoreObject.assignPermissionToRole(employee,
                     currentFileName,
@@ -1005,7 +1005,7 @@ internal class CoreMetricsTest {
         val employee = "employee"; assert(CoreObject.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
         assert(CoreObject.assignUserToRole(alice, employee) == OutcomeCode.CODE_000_SUCCESS)
         val exam = "exam"
-        assert(CoreObject.addFile(exam, exam.toByteArray().inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
+        assert(CoreObject.addFile(exam, exam.inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
         assert(CoreObject.assignPermissionToRole(employee, exam, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
 
         /** add other roles */
@@ -1041,7 +1041,7 @@ internal class CoreMetricsTest {
                 assert(CoreObject.assignUserToRole(alice, employee) == OutcomeCode.CODE_000_SUCCESS)
                 currentFileName = fileIterator.next()
                 assert(CoreObject.addFile(currentFileName,
-                    currentFileName.toByteArray().inputStream(),
+                    currentFileName.inputStream(),
                     EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
                 assert(CoreObject.assignPermissionToRole(employee,
                     currentFileName,
@@ -1071,7 +1071,7 @@ internal class CoreMetricsTest {
         val employee = "employee"; assert(CoreObject.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
         assert(CoreObject.assignUserToRole(alice, employee) == OutcomeCode.CODE_000_SUCCESS)
         val exam = "exam"
-        assert(CoreObject.addFile(exam, exam.toByteArray().inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
+        assert(CoreObject.addFile(exam, exam.inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
         assert(CoreObject.assignPermissionToRole(employee, exam, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
 
         /** add users */
@@ -1128,7 +1128,7 @@ internal class CoreMetricsTest {
         val roleNames = utility_generateRandomNames(scale).toTypedArray()
         val employee = "employee"; assert(CoreObject.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
         val exam = "exam"
-        assert(CoreObject.addFile(exam, exam.toByteArray().inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
+        assert(CoreObject.addFile(exam, exam.inputStream(), EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
         assert(CoreObject.assignPermissionToRole(employee, exam, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
 
         /** warmup */
@@ -1186,7 +1186,7 @@ internal class CoreMetricsTest {
         var second: Long = 0L
         var third: Long = 0L
 
-        val storageDAO = MSMySQL(CoreObject.CoreParametersCloud.msParametersMySQL)
+        val storageDAO = MMMySQL(CoreObject.CoreParametersCLOUD.mmParametersMySQL)
         val crypto = CoreObject.crypto
         val user = CoreObject.user
 
@@ -1199,7 +1199,7 @@ internal class CoreMetricsTest {
 
         first += measureNanoTime {
 
-            /** Guard clauses. */
+            /** Guard clauses */
             if (username.isBlank() || roleName.isBlank()) {
                 throw Exception(OutcomeCode.CODE_020_INVALID_PARAMETER.toString())
             }
@@ -1207,42 +1207,42 @@ internal class CoreMetricsTest {
                 throw Exception(OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED.toString())
             }
 
-            /** Lock the status of the metadata. */
+            /** Lock the status of the metadata */
             val lockCode = storageDAO.lock()
             if (lockCode != OutcomeCode.CODE_000_SUCCESS) {
                 throw Exception(lockCode.toString())
             }
 
-            /** Get the RoleTuples of [roleName]. */
+            /** Get the RoleTuples of [roleName] */
             val roleRoleTuples = storageDAO.getRoleTuples(roleName = roleName, offset = 0, limit = NO_LIMIT)
             if (roleRoleTuples.isEmpty()) {
                 throw Exception(endOfMethod(OutcomeCode.CODE_005_ROLE_NOT_FOUND).toString())
             }
 
-            /** Get the RoleTuple of [username] and [roleName]. */
+            /** Get the RoleTuple of [username] and [roleName] */
             val userRoleTuple = roleRoleTuples.firstOrNull { it.username == username }
                 ?: throw Exception(endOfMethod(OutcomeCode.CODE_026_ROLETUPLE_NOT_FOUND).toString())
 
-            /** Verify the signature of the RoleTuple of [username] and [roleName]. */
+            /** Verify the signature of the RoleTuple of [username] and [roleName] */
             verifyTupleSignature(userRoleTuple)
 
-            /** Get the role tuple of the admin and [roleName]. */
+            /** Get the role tuple of the admin and [roleName] */
             adminRoleTuple = roleRoleTuples.first { it.username == ADMIN }
 
-            /** Verify the signature of the RoleTuple of the admin for [roleName]. */
+            /** Verify the signature of the RoleTuple of the admin for [roleName] */
             verifyTupleSignature(adminRoleTuple)
 
-            /** Update the version number and provide new keys for the RoleTuples (except for [username]'s one). */
+            /** Update the version number and provide new keys for the RoleTuples (except for [username]'s one) */
             val newRoleTuples = HashSet<RoleTuple>()
             oldRoleVersionNumber = userRoleTuple.roleVersionNumber
             newRoleVersionNumber = oldRoleVersionNumber + 1
             for (currentTuple in roleRoleTuples) {
                 if (currentTuple.username != username) {
 
-                    /** Verify the signature of the current RoleTuple. */
+                    /** Verify the signature of the current RoleTuple */
                     verifyTupleSignature(currentTuple)
 
-                    /** Get the key of the user of the current RoleTuple. */
+                    /** Get the key of the user of the current RoleTuple */
                     val userAsymEncPublicKeyBytes = storageDAO.getPublicKey(
                         name = currentTuple.username,
                         elementType = ElementType.USER,
@@ -1253,7 +1253,7 @@ internal class CoreMetricsTest {
                         type = AsymKeysType.ENC
                     ).public
 
-                    /** Encrypt the new asym keys with the public key of the user. */
+                    /** Encrypt the new asym keys with the public key of the user */
                     val encryptedAsymEncKeys =
                         crypto.encryptAsymKeys(userAsymEncPublicKey, newAsymEncKeys, AsymKeysType.ENC)
                     val encryptedAsymSigKeys =
@@ -1270,14 +1270,14 @@ internal class CoreMetricsTest {
                 }
             }
 
-            /** Delete the old role tuples of [roleName]. */
+            /** Delete the old role tuples of [roleName] */
             val deleteRoleTuplesCode =
                 storageDAO.deleteRoleTuples(roleName = roleName)
             if (deleteRoleTuplesCode != OutcomeCode.CODE_000_SUCCESS) {
                 throw Exception(endOfMethod(deleteRoleTuplesCode).toString())
             }
 
-            /** Add the new role tuples of [roleName]. */
+            /** Add the new role tuples of [roleName] */
             val addRoleTuplesCode = storageDAO.addRoleTuples(newRoleTuples)
             if (addRoleTuplesCode != OutcomeCode.CODE_000_SUCCESS) {
                 throw Exception(endOfMethod(addRoleTuplesCode).toString())
@@ -1288,16 +1288,16 @@ internal class CoreMetricsTest {
             crypto.decryptAsymEncKeys(user.asymEncKeys!!.private, adminRoleTuple.encryptedAsymEncKeys!!)
 
         second += measureNanoTime {
-            /** Get the [roleName] asymmetric encryption keys. */
+            /** Get the [roleName] asymmetric encryption keys */
 
-            /** Get the PermissionTuples to update. */
+            /** Get the PermissionTuples to update */
             val permissionTuples = storageDAO.getPermissionTuples(roleName = roleName, offset = 0, limit = NO_LIMIT)
             if (permissionTuples.isNotEmpty()) {
 
                 /** The key is the file name, the value are the related permission tuples */
                 val roleAccessibleFiles = HashMap<String, HashSet<PermissionTuple>>()
 
-                /** Collect the names of the files that [roleName] has access to. */
+                /** Collect the names of the files that [roleName] has access to */
                 for (currentTuple in permissionTuples) {
                     verifyTupleSignature(currentTuple)
                     val fileName = currentTuple.fileName
@@ -1305,7 +1305,7 @@ internal class CoreMetricsTest {
                     roleAccessibleFiles[fileName]!!.add(currentTuple)
                 }
 
-                /** For each file the revoked [username] had access through [roleName]. */
+                /** For each file the revoked [username] had access through [roleName] */
                 val newPermissionTuples = HashSet<PermissionTuple>()
                 for (roleAccessibleFile in roleAccessibleFiles) {
                     val fileName = roleAccessibleFile.key
@@ -1319,7 +1319,7 @@ internal class CoreMetricsTest {
                     val newSymKey = crypto.generateSymKey()
 
                     third += measureNanoTime {
-                        /** Update the PermissionTuples of the [roleName]. */
+                        /** Update the PermissionTuples of the [roleName] */
                         for (currentPermissionTuple in currentPermissionTuples) {
 
                             val tupleFileVersionNumber = currentPermissionTuple.symKeyVersionNumber
@@ -1348,14 +1348,14 @@ internal class CoreMetricsTest {
                         }
 
 
-                        /** Get the PermissionTuples of all other roles which can access the current file. */
+                        /** Get the PermissionTuples of all other roles which can access the current file */
                         val othersPermissionTuples = storageDAO.getPermissionTuples(
                             fileName = fileName, roleNameToExclude = roleName,
                             symKeyVersionNumber = latestFileVersionNumber,
                             offset = 0, limit = NO_LIMIT,
                         )
 
-                        /** Update the PermissionTuples. */
+                        /** Update the PermissionTuples */
                         for (currentTuple in othersPermissionTuples) {
                             verifyTupleSignature(currentTuple)
 
@@ -1414,20 +1414,21 @@ internal class CoreMetricsTest {
         }
         return MetricTimes(first, second-third, third)
     }
+    
     private fun utility_revokeReadPermission(roleName: String, fileName: String): OutcomeCode {
 
-        /** Guard clauses. */
+        /** Guard clauses */
         if (roleName.isBlank() || fileName.isBlank()) {
             return OutcomeCode.CODE_020_INVALID_PARAMETER
         }
         if (roleName == ADMIN) {
             return OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED
         }
-        val storageDAO = MSMySQL(CoreObject.CoreParametersCloud.msParametersMySQL)
+        val storageDAO = MMMySQL(CoreObject.CoreParametersCLOUD.mmParametersMySQL)
         val crypto = CoreObject.crypto
         val user = CoreObject.user
 
-        /** Lock the status of the metadata. */
+        /** Lock the status of the metadata */
         val lockCode = storageDAO.lock()
         if (lockCode != OutcomeCode.CODE_000_SUCCESS) {
             return lockCode
@@ -1468,20 +1469,21 @@ internal class CoreMetricsTest {
         }
         return endOfMethod(OutcomeCode.CODE_000_SUCCESS)
     }
+    
     private fun utility_revokeAllPermission(roleName: String, fileName: String): OutcomeCode {
 
-        /** Guard clauses. */
+        /** Guard clauses */
         if (roleName.isBlank() || fileName.isBlank()) {
             return OutcomeCode.CODE_020_INVALID_PARAMETER
         }
         if (roleName == ADMIN) {
             return OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED
         }
-        val storageDAO = MSMySQL(CoreObject.CoreParametersCloud.msParametersMySQL)
+        val storageDAO = MMMySQL(CoreObject.CoreParametersCLOUD.mmParametersMySQL)
         val crypto = CoreObject.crypto
         val user = CoreObject.user
 
-        /** Lock the status of the metadata. */
+        /** Lock the status of the metadata */
         val lockCode = storageDAO.lock()
         if (lockCode != OutcomeCode.CODE_000_SUCCESS) {
             return lockCode
@@ -1550,8 +1552,9 @@ internal class CoreMetricsTest {
         }
         return endOfMethod(OutcomeCode.CODE_000_SUCCESS)
     }
+    
     private fun verifyTupleSignature(tuple: Tuple) {
-        val storageDAO = MSMySQL(CoreObject.CoreParametersCloud.msParametersMySQL)
+        val storageDAO = MMMySQL(CoreObject.CoreParametersCLOUD.mmParametersMySQL)
         if (tuple.signerType == ElementType.USER && tuple.signer == CoreObject.user.name) {
             CoreObject.crypto.verifySignature(
                 signature = tuple.signature!!,
@@ -1572,8 +1575,9 @@ internal class CoreMetricsTest {
             CoreObject.crypto.verifySignature(tuple.signature!!, tuple.getBytesForSignature(), asymSigPublicKey)
         }
     }
+    
     private fun endOfMethod(code: OutcomeCode): OutcomeCode {
-        val storageDAO = MSMySQL(CoreObject.CoreParametersCloud.msParametersMySQL)
+        val storageDAO = MMMySQL(CoreObject.CoreParametersCLOUD.mmParametersMySQL)
         return if (code == OutcomeCode.CODE_000_SUCCESS) {
             val unlockCode = storageDAO.unlock()
             if (unlockCode != OutcomeCode.CODE_000_SUCCESS) {

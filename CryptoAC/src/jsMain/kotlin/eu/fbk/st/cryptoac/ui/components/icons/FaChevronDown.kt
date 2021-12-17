@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaChevronDown")
-external val faChevronDown: RClass<RProps>
+external val faChevronDown: ComponentClass<Props>

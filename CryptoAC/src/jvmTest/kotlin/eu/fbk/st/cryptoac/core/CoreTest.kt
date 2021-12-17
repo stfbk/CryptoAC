@@ -1,25 +1,35 @@
 package eu.fbk.st.cryptoac.core
 
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 
-/** Test class for class "Core". */
+/** Test class for class "Core" */
 internal abstract class CoreTest {
 
-    @Test
-    fun initAdmin() {
-        `init admin once works`()
-        `init admin twice fails`()
-    }
+    abstract val core: Core
+
+
+    @BeforeAll
+    abstract fun setUpAll()
+
+    @BeforeEach
+    abstract fun setUp()
+
+    @AfterEach
+    abstract fun tearDown()
+
+    @AfterAll
+    abstract fun tearDownAll()
+
 
     @Test
-    fun initUser() {
-        `init user of existing user works`()
-        `init user of non-existing, operational or deleted user fails`()
-    }
-
     abstract fun `init admin once works`()
+
+    @Test
     abstract fun `init admin twice fails`()
 
+    @Test
     abstract fun `init user of existing user works`()
-    abstract fun `init user of non-existing, operational or deleted user fails`()
+
+    @Test
+    abstract fun `init user twice fails`()
 }

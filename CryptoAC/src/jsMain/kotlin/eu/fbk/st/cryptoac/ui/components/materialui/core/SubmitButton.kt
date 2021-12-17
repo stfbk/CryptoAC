@@ -7,9 +7,9 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("Button")
-external val submitButton: RClass<SubmitButtonProps>
+external val submitButton: ComponentClass<SubmitButtonProps>
 
-external interface SubmitButtonProps : RProps {
+external interface SubmitButtonProps : Props {
     var type: String
     var onClick: (Event) -> Unit
     var color: String

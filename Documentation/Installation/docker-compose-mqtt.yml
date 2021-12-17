@@ -4,7 +4,7 @@ services:
     networks:
       test:
         ipv4_address: "${CRYPTOACPROXYHOSTIP}"
-    image: cryptoac_proxy:latest
+    image: cryptoac_cryptoac:latest
     ports:
       - "${CRYPTOACPROXYHOSTPORT}:${CRYPTOACPROXYPROXYPORT}"
   cryptoac_mosquitto:
@@ -13,7 +13,7 @@ services:
         ipv4_address: "${CRYPTOACMOSQUITTOHOSTIP}"
     image: cryptoac_mosquitto:latest
     ports:
-      - "${CRYPTOACMOSQUITTOPORT}:${CRYPTOACMOSQUITTOPORT}"
+      - "${CRYPTOACMOSQUITTOHOSTPORT}:${CRYPTOACMOSQUITTOMOSQUITTOPORT}"
   cryptoac_mysql:
     networks:
       test:
@@ -22,7 +22,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "${CRYPTOACMYSQLPASSWORD}"
     ports:
-      - "${CRYPTOACMYSQLHOSTPORT}:${CRYPTOACMYSQLHOSTPORT}"
+      - "${CRYPTOACMYSQLHOSTPORT}:${CRYPTOACMYSQLMYSQLPORT}"
 networks:
   test:
     driver: bridge

@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaUserEdit")
-external val faUserEdit: RClass<RProps>
+external val faUserEdit: ComponentClass<Props>

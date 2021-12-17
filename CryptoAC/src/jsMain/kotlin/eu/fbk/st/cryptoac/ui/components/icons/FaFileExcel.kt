@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaFileExcel")
-external val faFileExcel: RClass<RProps>
+external val faFileExcel: ComponentClass<Props>

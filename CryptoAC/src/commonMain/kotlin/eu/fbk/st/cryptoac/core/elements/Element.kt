@@ -8,7 +8,7 @@ import kotlin.random.Random
  * An Element is that involved in the access control policy.
  * An Element is defined by a (unique) [name] and a [status].
  * An Element has a [token] acting as an identifier for anonymization.
- * The token should be either random or computed from secret values.
+ * The token should be either random or computed from secret values
  */
 @Serializable
 abstract class Element : CryptoACObject() {
@@ -16,17 +16,19 @@ abstract class Element : CryptoACObject() {
     abstract val status: ElementStatus
     abstract var token: String
 
-    /**
-     * Generate a random token (string) with the given
-     * strictly positive [length] or the default value.
-     */
-    open fun generateToken(length: Int = 20): String {
-        requirePositiveNumber(length) // TODO refactor with @range annotation?
-        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return (1..length)
-            .map { Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("")
+    companion object {
+        /**
+         * Generate a random token (string) with the given
+         * strictly positive [length] or the default value
+         */
+        fun generateToken(length: Int = 20): String {
+            requirePositiveNumber(length)
+            val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+            return (1..length)
+                .map { Random.nextInt(0, charPool.size) }
+                .map(charPool::get)
+                .joinToString("")
+        }
     }
 
     override fun equals(other: Any?): Boolean {

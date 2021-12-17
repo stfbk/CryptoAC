@@ -7,9 +7,9 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsName("TableRow")
-external val tableRow: RClass<TableRowProps>
+external val tableRow: ComponentClass<TableRowProps>
 
-external interface TableRowProps : RProps {
+external interface TableRowProps : Props {
     var hover: Boolean
     var onClick: (Event) -> Unit
     var role: Boolean

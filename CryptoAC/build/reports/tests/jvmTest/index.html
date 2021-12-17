@@ -20,13 +20,13 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">17</div>
+<div class="counter">20</div>
 <p>tests</p>
 </div>
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">0</div>
+<div class="counter">3</div>
 <p>failures</p>
 </div>
 </td>
@@ -38,7 +38,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.094s</div>
+<div class="counter">5.458s</div>
 <p>duration</p>
 </div>
 </td>
@@ -47,8 +47,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox success" id="successRate">
-<div class="percent">100%</div>
+<div class="infoBox failures" id="successRate">
+<div class="percent">85%</div>
 <p>successful</p>
 </div>
 </td>
@@ -58,13 +58,33 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Packages</a>
+<a href="#tab0">Failed tests</a>
 </li>
 <li>
-<a href="#tab1">Classes</a>
+<a href="#tab1">Packages</a>
+</li>
+<li>
+<a href="#tab2">Classes</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
+<h2>Failed tests</h2>
+<ul class="linkList">
+<li>
+<a href="classes/eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.html">ProxyRoutesTest</a>.
+<a href="classes/eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.html#assign read or write or both permissions to role over file not logged in, not logged as admin, with no role name or file name or permission or with wrong core parameter fails()">assign read or write or both permissions to role over file not logged in, not logged as admin, with no role name or file name or permission or with wrong core parameter fails()[jvm]</a>
+</li>
+<li>
+<a href="classes/eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.html">ProxyRoutesTest</a>.
+<a href="classes/eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.html#delete combined or traditional file form or binary not logged in, not logged as admin or with wrong core parameter fails()">delete combined or traditional file form or binary not logged in, not logged as admin or with wrong core parameter fails()[jvm]</a>
+</li>
+<li>
+<a href="classes/eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.html">ProxyRoutesTest</a>.
+<a href="classes/eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.html#revoke read or write or both permissions from role over file not logged in, not logged as admin or with wrong core parameter fails()">revoke read or write or both permissions from role over file not logged in, not logged as admin or with wrong core parameter fails()[jvm]</a>
+</li>
+</ul>
+</div>
+<div id="tab1" class="tab">
 <h2>Packages</h2>
 <table>
 <thead>
@@ -79,49 +99,19 @@
 </thead>
 <tbody>
 <tr>
-<td class="success">
-<a href="packages/eu.fbk.st.cryptoac.core.html">eu.fbk.st.cryptoac.core</a>
-</td>
-<td>2</td>
-<td>0</td>
-<td>0</td>
-<td>0.001s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="packages/eu.fbk.st.cryptoac.core.elements.html">eu.fbk.st.cryptoac.core.elements</a>
-</td>
-<td>4</td>
-<td>0</td>
-<td>0</td>
-<td>0.086s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="packages/eu.fbk.st.cryptoac.core.tuples.html">eu.fbk.st.cryptoac.core.tuples</a>
-</td>
-<td>6</td>
-<td>0</td>
-<td>0</td>
-<td>0.001s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
+<td class="failures">
 <a href="packages/eu.fbk.st.cryptoac.proxy.html">eu.fbk.st.cryptoac.proxy</a>
 </td>
-<td>5</td>
+<td>20</td>
+<td>3</td>
 <td>0</td>
-<td>0</td>
-<td>0.006s</td>
-<td class="success">100%</td>
+<td>5.458s</td>
+<td class="failures">85%</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="tab1" class="tab">
+<div id="tab2" class="tab">
 <h2>Classes</h2>
 <table>
 <thead>
@@ -136,74 +126,14 @@
 </thead>
 <tbody>
 <tr>
-<td class="success">
-<a href="classes/eu.fbk.st.cryptoac.core.CryptoACObjectTest.html">eu.fbk.st.cryptoac.core.CryptoACObjectTest</a>
+<td class="failures">
+<a href="classes/eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.html">eu.fbk.st.cryptoac.proxy.ProxyRoutesTest</a>
 </td>
-<td>2</td>
+<td>20</td>
+<td>3</td>
 <td>0</td>
-<td>0</td>
-<td>0.001s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="classes/eu.fbk.st.cryptoac.core.elements.ActiveElementTest.html">eu.fbk.st.cryptoac.core.elements.ActiveElementTest</a>
-</td>
-<td>2</td>
-<td>0</td>
-<td>0</td>
-<td>0.067s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="classes/eu.fbk.st.cryptoac.core.elements.ElementTest.html">eu.fbk.st.cryptoac.core.elements.ElementTest</a>
-</td>
-<td>2</td>
-<td>0</td>
-<td>0</td>
-<td>0.019s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="classes/eu.fbk.st.cryptoac.core.tuples.FileTupleTest.html">eu.fbk.st.cryptoac.core.tuples.FileTupleTest</a>
-</td>
-<td>2</td>
-<td>0</td>
-<td>0</td>
-<td>0s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="classes/eu.fbk.st.cryptoac.core.tuples.PermissionTupleTest.html">eu.fbk.st.cryptoac.core.tuples.PermissionTupleTest</a>
-</td>
-<td>2</td>
-<td>0</td>
-<td>0</td>
-<td>0.001s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="classes/eu.fbk.st.cryptoac.core.tuples.RoleTupleTest.html">eu.fbk.st.cryptoac.core.tuples.RoleTupleTest</a>
-</td>
-<td>2</td>
-<td>0</td>
-<td>0</td>
-<td>0s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">
-<a href="classes/eu.fbk.st.cryptoac.proxy.SafeRegexTest.html">eu.fbk.st.cryptoac.proxy.SafeRegexTest</a>
-</td>
-<td>5</td>
-<td>0</td>
-<td>0</td>
-<td>0.006s</td>
-<td class="success">100%</td>
+<td>5.458s</td>
+<td class="failures">85%</td>
 </tr>
 </tbody>
 </table>
@@ -216,7 +146,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 6.3</a> at Aug 31, 2021, 11:38:04 AM</p>
+<a href="http://www.gradle.org">Gradle 7.2</a> at Dec 14, 2021, 9:07:38 AM</p>
 </div>
 </div>
 </body>

@@ -7,11 +7,11 @@ import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
-/** Parameters, [port] and [url], for configuring the OPA. */
+/** Parameters, [port] and [url], for configuring the OPA */
 @Serializable
 class OPAInterfaceParameters(var port: Int, var url: String) {
 
-    /** Check the parameters are valid through regular expressions and return true if they are, false otherwise. */
+    /** Check the parameters are valid through regular expressions and return true if they are, false otherwise */
     fun checkParameters(): Boolean =
         if (!SafeRegex.URL_OR_IPV4.matches(url)) {
             logger.warn { "URL ${url.toByteArray()} does not respect URL_OR_IPV4 regex" }
@@ -23,15 +23,15 @@ class OPAInterfaceParameters(var port: Int, var url: String) {
             true
         }
 
-    /** Update updatable fields. */
+    /** Update updatable fields */
     fun update(updatedParameters: OPAInterfaceParameters) {
         port = updatedParameters.port
         url = updatedParameters.url
     }
 
-    /** Obscure (e.g., overwrite values of) sensitive fields. */
+    /** Obscure (e.g., overwrite values of) sensitive fields */
     fun obscureSensitiveFields() {
-        /** No sensitive fields to obscure. */
+        /** No sensitive fields to obscure */
     }
 
     override fun equals(other: Any?): Boolean {

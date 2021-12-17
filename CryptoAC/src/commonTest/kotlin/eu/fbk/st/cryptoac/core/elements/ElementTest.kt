@@ -8,20 +8,12 @@ internal class ElementTest {
 
     @Test
     fun `token creation for positive values works`() {
-        assertTrue(ElementStub("Stub").generateToken(1).length == 1)
+        assertTrue(Element.generateToken(1).length == 1)
     }
 
     @Test
     fun `token creation with zero or negative values fails`() {
-        assertFails { ElementStub("Stub").generateToken(0) }
-        assertFails { ElementStub("Stub").generateToken(-1) }
+        assertFails { Element.generateToken(0) }
+        assertFails { Element.generateToken(-1) }
     }
-}
-
-
-class ElementStub(
-    override val name: String, override val status: ElementStatus = ElementStatus.DELETED
-): Element() {
-    override var token: String = generateToken()
-    override fun toArray(): Array<String> = arrayOf()
 }

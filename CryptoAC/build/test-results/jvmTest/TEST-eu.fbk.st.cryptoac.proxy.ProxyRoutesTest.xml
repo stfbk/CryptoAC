@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" tests="20" skipped="0" failures="3" errors="0" timestamp="2021-12-14T08:07:32" hostname="sberlato-Inspiron-15-5510" time="5.468">
+  <properties/>
+  <testcase name="revoke read or write or both permissions from role over file not logged in, not logged as admin or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.755">
+    <failure message="java.lang.AssertionError: expected:&lt;CODE_019_MISSING_PARAMETERS&gt; but was:&lt;CODE_020_INVALID_PARAMETER&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;CODE_019_MISSING_PARAMETERS&gt; but was:&lt;CODE_020_INVALID_PARAMETER&gt;
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion$revokePermissionFromRoleInRBAC_MOCK$1.invokeSuspend(ProxyUtilities.kt:418)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:87)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:61)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:40)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion.revokePermissionFromRoleInRBAC_MOCK(ProxyUtilities.kt:412)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion.revokePermissionFromRoleInRBAC_MOCK$default(ProxyUtilities.kt:402)
+	at eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.revoke read or write or both permissions from role over file not logged in, not logged as admin or with wrong core parameter fails(ProxyRoutesTest.kt:979)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:140)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:84)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:214)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:210)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:135)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:66)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:96)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:75)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:79)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:75)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:61)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
+	at com.sun.proxy.$Proxy2.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:193)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:129)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:100)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:60)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:133)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:71)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+</failure>
+  </testcase>
+  <testcase name="delete user not logged in, not logged as admin or wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.453"/>
+  <testcase name="revoke read or write or both permissions from role over file works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.437"/>
+  <testcase name="revoke user from role works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.184"/>
+  <testcase name="assign read or write or both permissions to role over file not logged in, not logged as admin, with no role name or file name or permission or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="1.054">
+    <failure message="java.lang.AssertionError: expected:&lt;CODE_019_MISSING_PARAMETERS&gt; but was:&lt;CODE_020_INVALID_PARAMETER&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;CODE_019_MISSING_PARAMETERS&gt; but was:&lt;CODE_020_INVALID_PARAMETER&gt;
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion$assignPermissionToRoleInRBAC_MOCK$1.invokeSuspend(ProxyUtilities.kt:395)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:87)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:61)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:40)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion.assignPermissionToRoleInRBAC_MOCK(ProxyUtilities.kt:386)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion.assignPermissionToRoleInRBAC_MOCK$default(ProxyUtilities.kt:376)
+	at eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.assign read or write or both permissions to role over file not logged in, not logged as admin, with no role name or file name or permission or with wrong core parameter fails(ProxyRoutesTest.kt:823)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:140)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:84)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:214)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:210)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:135)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:66)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:96)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:75)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:79)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:75)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:61)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
+	at com.sun.proxy.$Proxy2.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:193)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:129)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:100)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:60)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:133)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:71)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+</failure>
+  </testcase>
+  <testcase name="assign user to role not logged in, not logged as admin, with no username or role name or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.367"/>
+  <testcase name="add role not logged in, not logged as admin, with no role name or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.276"/>
+  <testcase name="assign read or write or both permissions to role over file works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.16"/>
+  <testcase name="add user not logged in, not logged as admin, with no username or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.293"/>
+  <testcase name="add combined or traditional file form or binary works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.37"/>
+  <testcase name="delete role not logged in, not logged as admin or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.224"/>
+  <testcase name="delete file not logged in, not logged as admin or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.207"/>
+  <testcase name="delete combined or traditional file form or binary not logged in, not logged as admin or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.11">
+    <failure message="java.lang.AssertionError: expected:&lt;403 Forbidden&gt; but was:&lt;404 Not Found&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;403 Forbidden&gt; but was:&lt;404 Not Found&gt;
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion$addFileFormUrlEncodedInRBAC_MOCK$1.invokeSuspend(ProxyUtilities.kt:233)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:191)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:147)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:93)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:87)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:61)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:40)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion.addFileFormUrlEncodedInRBAC_MOCK(ProxyUtilities.kt:226)
+	at eu.fbk.st.cryptoac.proxy.ProxyUtilities$Companion.addFileFormUrlEncodedInRBAC_MOCK$default(ProxyUtilities.kt:217)
+	at eu.fbk.st.cryptoac.proxy.ProxyRoutesTest.delete combined or traditional file form or binary not logged in, not logged as admin or with wrong core parameter fails(ProxyRoutesTest.kt:333)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:140)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:84)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:214)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:210)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:135)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:66)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:96)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:75)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:79)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:75)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:61)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
+	at com.sun.proxy.$Proxy2.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:193)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:129)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:100)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:60)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:133)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:71)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+</failure>
+  </testcase>
+  <testcase name="delete role works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.071"/>
+  <testcase name="delete user works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.074"/>
+  <testcase name="delete file works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.046"/>
+  <testcase name="revoke user from role not logged in, not logged as admin or with wrong core parameter fails()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.181"/>
+  <testcase name="add role works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.054"/>
+  <testcase name="add user works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.08"/>
+  <testcase name="assign user to role works()[jvm]" classname="eu.fbk.st.cryptoac.proxy.ProxyRoutesTest" time="0.062"/>
+  <system-out><![CDATA[[Test worker @coroutine#1] INFO  - Logging initialized @8722ms to org.eclipse.jetty.util.log.Slf4jLog 
+[ktor-jetty-dispatcher-worker-1 @call-context#3] WARN  - Trusting all certificates configured for Client@6077a66c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#3] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@6077a66c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#16] WARN  - Trusting all certificates configured for Client@2c9bf972[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#16] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@2c9bf972[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#21] WARN  - Trusting all certificates configured for Client@4dc61d64[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#21] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@4dc61d64[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#26] WARN  - Trusting all certificates configured for Client@5202b356[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#26] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@5202b356[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#31] WARN  - Trusting all certificates configured for Client@3eafce9d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#31] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@3eafce9d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#43] WARN  - Trusting all certificates configured for Client@18bc6405[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#43] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@18bc6405[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#55] WARN  - Trusting all certificates configured for Client@24e4557f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#55] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@24e4557f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#67] WARN  - Trusting all certificates configured for Client@74471010[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#67] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@74471010[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-2 @call-context#76] WARN  - Trusting all certificates configured for Client@50ef5d1c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-2 @call-context#76] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@50ef5d1c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#81] WARN  - Trusting all certificates configured for Client@60566ef2[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#81] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@60566ef2[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#93] WARN  - Trusting all certificates configured for Client@1e56a339[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#93] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@1e56a339[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#105] WARN  - Trusting all certificates configured for Client@370e300c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#105] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@370e300c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#118] WARN  - Trusting all certificates configured for Client@5a5c35f7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#118] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@5a5c35f7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#130] WARN  - Trusting all certificates configured for Client@4f403bf4[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#130] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@4f403bf4[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#142] WARN  - Trusting all certificates configured for Client@755f8716[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#142] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@755f8716[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#154] WARN  - Trusting all certificates configured for Client@283b8191[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#154] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@283b8191[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#166] WARN  - Trusting all certificates configured for Client@ccfea70[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#166] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@ccfea70[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#172] WARN  - Trusting all certificates configured for Client@2494f932[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#172] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@2494f932[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#178] WARN  - Trusting all certificates configured for Client@513c1199[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#178] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@513c1199[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#184] WARN  - Trusting all certificates configured for Client@67850169[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#184] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@67850169[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#197] WARN  - Trusting all certificates configured for Client@7e4c43db[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#197] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7e4c43db[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#210] WARN  - Trusting all certificates configured for Client@5e00d1c9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#210] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@5e00d1c9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#223] WARN  - Trusting all certificates configured for Client@7b25749[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#223] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7b25749[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#236] WARN  - Trusting all certificates configured for Client@7b57023d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#236] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7b57023d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-2 @call-context#249] WARN  - Trusting all certificates configured for Client@6c7e6c79[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-2 @call-context#249] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@6c7e6c79[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#262] WARN  - Trusting all certificates configured for Client@7a1e945f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#262] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7a1e945f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#275] WARN  - Trusting all certificates configured for Client@44eb269f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#275] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@44eb269f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#288] WARN  - Trusting all certificates configured for Client@6e9a8eb7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#288] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@6e9a8eb7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#301] WARN  - Trusting all certificates configured for Client@7f38cdd6[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#301] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7f38cdd6[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#314] WARN  - Trusting all certificates configured for Client@1a060b68[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#314] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@1a060b68[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#324] WARN  - Trusting all certificates configured for Client@14d07bd9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#324] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@14d07bd9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#330] WARN  - Trusting all certificates configured for Client@87093f7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#330] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@87093f7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#343] WARN  - Trusting all certificates configured for Client@776672f9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#343] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@776672f9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#356] WARN  - Trusting all certificates configured for Client@1ad8fbe7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#356] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@1ad8fbe7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#369] WARN  - Trusting all certificates configured for Client@28b01de4[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#369] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@28b01de4[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#382] WARN  - Trusting all certificates configured for Client@28f075ee[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#382] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@28f075ee[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#395] WARN  - Trusting all certificates configured for Client@47a7e621[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#395] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@47a7e621[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#401] WARN  - Trusting all certificates configured for Client@651fc489[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#401] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@651fc489[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#414] WARN  - Trusting all certificates configured for Client@70527f2c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#414] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@70527f2c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#427] WARN  - Trusting all certificates configured for Client@a01e879[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#427] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@a01e879[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#440] WARN  - Trusting all certificates configured for Client@1b2b1854[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#440] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@1b2b1854[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#453] WARN  - Trusting all certificates configured for Client@75270dcb[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#453] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@75270dcb[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#466] WARN  - Trusting all certificates configured for Client@607299be[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#466] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@607299be[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#479] WARN  - Trusting all certificates configured for Client@2cd87d85[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#479] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@2cd87d85[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#492] WARN  - Trusting all certificates configured for Client@f22bbc1[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#492] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@f22bbc1[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#498] WARN  - Trusting all certificates configured for Client@2c8972ce[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#498] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@2c8972ce[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#511] WARN  - Trusting all certificates configured for Client@57ccf574[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#511] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@57ccf574[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#524] WARN  - Trusting all certificates configured for Client@3d4d308a[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#524] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@3d4d308a[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#537] WARN  - Trusting all certificates configured for Client@636e5a12[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#537] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@636e5a12[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#550] WARN  - Trusting all certificates configured for Client@721fa96d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#550] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@721fa96d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#563] WARN  - Trusting all certificates configured for Client@7fd2e487[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#563] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7fd2e487[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#576] WARN  - Trusting all certificates configured for Client@6d24b93c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#576] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@6d24b93c[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#590] WARN  - Trusting all certificates configured for Client@7a1ecfad[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#590] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7a1ecfad[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#604] WARN  - Trusting all certificates configured for Client@1e008798[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#604] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@1e008798[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#609] WARN  - Trusting all certificates configured for Client@2e7e4c44[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#609] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@2e7e4c44[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#621] WARN  - Trusting all certificates configured for Client@737271fe[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#621] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@737271fe[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#633] WARN  - Trusting all certificates configured for Client@601ef5b2[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#633] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@601ef5b2[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#645] WARN  - Trusting all certificates configured for Client@5776b630[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#645] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@5776b630[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#650] WARN  - Trusting all certificates configured for Client@7a3be86f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#650] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7a3be86f[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#662] WARN  - Trusting all certificates configured for Client@76c93f82[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#662] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@76c93f82[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#674] WARN  - Trusting all certificates configured for Client@5bf4a1eb[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#674] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@5bf4a1eb[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#686] WARN  - Trusting all certificates configured for Client@5e7786b2[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#686] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@5e7786b2[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#692] WARN  - Trusting all certificates configured for Client@1317c50d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#692] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@1317c50d[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#698] WARN  - Trusting all certificates configured for Client@53bab5d7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#698] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@53bab5d7[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#708] WARN  - Trusting all certificates configured for Client@3334bacf[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#708] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@3334bacf[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#720] WARN  - Trusting all certificates configured for Client@62c17090[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#720] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@62c17090[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#732] WARN  - Trusting all certificates configured for Client@3195ac92[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#732] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@3195ac92[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#744] WARN  - Trusting all certificates configured for Client@6a98e6d9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#744] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@6a98e6d9[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#749] WARN  - Trusting all certificates configured for Client@7c00398[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#749] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@7c00398[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#761] WARN  - Trusting all certificates configured for Client@3641b58[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#761] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@3641b58[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#773] WARN  - Trusting all certificates configured for Client@4b7621e5[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#773] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@4b7621e5[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#785] WARN  - Trusting all certificates configured for Client@25e88269[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#785] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@25e88269[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#798] WARN  - Trusting all certificates configured for Client@2a89c121[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#798] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@2a89c121[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#811] WARN  - Trusting all certificates configured for Client@127d3359[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#811] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@127d3359[provider=null,keyStore=null,trustStore=null] 
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

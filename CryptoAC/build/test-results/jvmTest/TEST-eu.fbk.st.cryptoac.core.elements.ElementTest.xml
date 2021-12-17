@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="eu.fbk.st.cryptoac.core.elements.ElementTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-08-31T09:38:04" hostname="sberlato-Inspiron-15-5510" time="0.019">
-  <properties/>
-  <testcase name="token creation for positive values works" classname="eu.fbk.st.cryptoac.core.elements.ElementTest" time="0.017"/>
-  <testcase name="token creation with zero or negative values fails" classname="eu.fbk.st.cryptoac.core.elements.ElementTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

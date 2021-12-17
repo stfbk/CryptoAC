@@ -2,7 +2,7 @@
   mode: 'development',
   resolve: {
     modules: [
-      '/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev',
+      '/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev',
       'node_modules'
     ]
   },
@@ -66,11 +66,11 @@
   },
   entry: {
     main: [
-      '/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev/CryptoAC.js'
+      '/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev/CryptoAC.js'
     ]
   },
   output: {
-    path: '/home/sberlato/Desktop/gitlab/coercive/CryptoAC/CryptoAC/build/distributions',
+    path: '/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/distributions',
     filename: [Function: filename],
     library: 'CryptoAC',
     libraryTarget: 'umd',

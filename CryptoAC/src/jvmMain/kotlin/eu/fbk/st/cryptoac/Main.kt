@@ -1,9 +1,8 @@
 package eu.fbk.st.cryptoac
 
 import eu.fbk.st.cryptoac.Constants.ADMIN
-import eu.fbk.st.cryptoac.crypto.CryptoType
 import eu.fbk.st.cryptoac.proxy.UserSession
-import eu.fbk.st.cryptoac.implementation.ds.registerDSRoutes
+import eu.fbk.st.cryptoac.implementation.dm.registerDMRoutes
 import eu.fbk.st.cryptoac.implementation.rm.registerRMRoutes
 import eu.fbk.st.cryptoac.proxy.registerProxyRoutes
 import io.ktor.application.*
@@ -13,71 +12,73 @@ import io.ktor.serialization.*
 import io.ktor.server.jetty.*
 import io.ktor.sessions.*
 import io.ktor.velocity.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import org.apache.commons.cli.*
 import org.apache.velocity.runtime.RuntimeConstants
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
+import java.nio.charset.Charset
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
-/** The key for the port parameter. */
+/** The key for the port parameter */
 const val PORT_KEY = "port"
 
-/** The key for the proxy operation mode parameter. */
+/** The key for the proxy operation mode parameter */
 const val OM_PROXY = "operationModeProxy"
 
-/** The key for the RM operation mode parameter. */
+/** The key for the RM operation mode parameter */
 const val OM_RM = "operationModeRM"
 
-/** The key for the DS operation mode parameter. */
-const val OM_DS = "operationModeDS"
+/** The key for the DM operation mode parameter */
+const val OM_DM = "operationModeDM"
 
-/** The key for the admin ID parameter.*/
+/** The key for the admin ID parameter */
 const val ADMIN_KEY = "adminID"
 
-/** The key for the name of the log file. */
+/** The key for the name of the log file */
 const val LOGFILE_NAME_KEY = "logFileName"
 
-/** The key for the cryptographic implementation. */
-const val CRYPTO_KEY = "CryptographicImplementation"
-
-/** (any mode) The path of the folder where to store everything that is needed by CryptoAC. */
+/** (any mode) The path of the folder where to store everything that is needed by CryptoAC */
 const val ROOT_DIRECTORY_PATH = "server/"
 
-/** (DS mode) The folder where to store uploaded files. Users cannot download from this folder. */
-val UPLOAD_DIRECTORY: File = File("${ROOT_DIRECTORY_PATH}ds/upload")
+/** (DM mode) The folder where to store uploaded files. Users cannot download from this folder */
+val UPLOAD_DIRECTORY: File = File("${ROOT_DIRECTORY_PATH}dm/upload")
 
-/** (DS mode) The folder where to store files users can download. Users cannot upload in this folder. */
-val DOWNLOAD_DIRECTORY: File = File("${ROOT_DIRECTORY_PATH}ds/download")
+/** (DM mode) The folder where to store files users can download. Users cannot upload in this folder */
+val DOWNLOAD_DIRECTORY: File = File("${ROOT_DIRECTORY_PATH}dm/download")
 
-/** (proxy mode) The path of the folder where the proxy stores users' configuration data. */
+/** (proxy mode) The path of the folder where the proxy stores users' configuration data */
 const val USERS_PROFILE_DIRECTORY_PATH = "${ROOT_DIRECTORY_PATH}proxy/upload/"
 
-
-/** (proxy mode) The static files (e.g., js, css, images) expiration time (in seconds). */
-var staticFilesExpirationTime = 600L
-
-/** (proxy mode) The expiration time for idling sessions (in seconds). */
-var sessionExpirationTime = 300
-
-/** (any mode) The port the server opens to receive requests. */
+/** (any mode) The port the server opens to receive requests */
 var serverPort = 7777
 
-/** (any mode) The name of the log file. */
+/** (any mode) The name of the log file */
 var logFileName = "CryptoAC.log"
 
-/** (any mode) The name of the log file. */
-var cryptoImplementation = CryptoType.JAVA
-
-/** (any mode) The operation mode. */
+/** (any mode) The operation mode */
 var om: OperationMode = OperationMode.PROXY
 
+// TODO wrap all KTOR routes with try catch to
+//  catch unexpected exceptions and return a proper
+//  code (check if you can do it once for all with a hook function)
+
 data class User(val name: String, val surname: String)
-/** Acquire the specified program arguments [args] and creates the server. */
+/** Acquire the specified program arguments [args] and creates the server */
 // TODO altri parametri da passare: percorso ai certificati per SSL
 fun main(args: Array<String>) {
+
+    // TODO check web service security (e.g, TLS, HSTS header, Content Security Policy header)
+
+    // TODO protect from brute force attacks
+    // TODO session time expiration?
+    // TODO static files time expiration?
 
     val options = Options()
     
@@ -95,37 +96,33 @@ fun main(args: Array<String>) {
     logFileNameOption.isRequired = false
     options.addOption(logFileNameOption)
 
-    val cryptoOption = Option("c", CRYPTO_KEY, true,
-        "The name of the cryptographic implementation  [default is $cryptoImplementation]")
-    cryptoOption.isRequired = false
-    options.addOption(cryptoOption)
-
     val omOptionGroup = OptionGroup()
     omOptionGroup.isRequired = false
 
     val omOptionProxy = Option("op", OM_PROXY, false, "Run CryptoAC as a proxy")
-    val omOptionRM = Option("or", OM_RM, false, "Run CryptoAC as a RM")
-    val omOptionDS = Option("od", OM_DS, false, "Run CryptoAC as a DS")
+    val omOptionRM = Option("or", OM_RM, false, "Run CryptoAC as an RM")
+    val omOptionDM = Option("od", OM_DM, false, "Run CryptoAC as a DM")
 
     omOptionGroup.addOption(omOptionProxy)
     omOptionGroup.addOption(omOptionRM)
-    omOptionGroup.addOption(omOptionDS)
+    omOptionGroup.addOption(omOptionDM)
     options.addOptionGroup(omOptionGroup)
 
     val parser = DefaultParser()
 
-    /** Check and acquire the parameters. */
+    /** Check and acquire the parameters */
     val cmd: CommandLine = parser.parse(options, args)
+
+    // TODO somewhere you should invoke "CryptoSodium.initializeSodium()"
 
     om = when {
         cmd.hasOption(OM_RM) -> OperationMode.RM
-        cmd.hasOption(OM_DS) -> OperationMode.DS
+        cmd.hasOption(OM_DM) -> OperationMode.DM
         else -> OperationMode.PROXY
     }
 
     serverPort = getIntOption(cmd, PORT_KEY, serverPort, 1, 65535)
     //ADMIN = getStringOption(cmd, ADMIN_KEY, ADMIN)
-    cryptoImplementation = CryptoType.valueOf(getStringOption(cmd, ADMIN_KEY, CryptoType.JAVA.toString()))
 
     val props = System.getProperties()
     if (cmd.hasOption(LOGFILE_NAME_KEY)) {
@@ -143,7 +140,7 @@ fun main(args: Array<String>) {
     EngineMain.main(args)
 }
 
-/** This module is called with the resources/application.conf file. */
+/** This module is called with the resources/application.conf file */
 fun Application.module(testing: Boolean = true) {
     logger.info { "Starting application module (testing $testing)" }
     val port = environment.config.property("ktor.deployment.port").getString()
@@ -156,7 +153,7 @@ fun Application.module(testing: Boolean = true) {
     install(Sessions) {
         /**
          * "storage = SessionStorageMemory()" implies that this session's data are kept
-         * in memory and only a session ID is passed between the client and the server.
+         * in memory and only a session ID is passed between the client and the server
          */
         cookie<UserSession>("LOGIN_SESSION", storage = SessionStorageMemory()) {
             cookie.secure = true
@@ -168,7 +165,7 @@ fun Application.module(testing: Boolean = true) {
         setProperty("resource.loader.classpath.class", ClasspathResourceLoader::class.java.name)
     }
 
-    /** Force HTTPS. */
+    /** Force HTTPS */
     install(HttpsRedirect)
 
     // TODO check below CORS
@@ -182,24 +179,30 @@ fun Application.module(testing: Boolean = true) {
         gzip()
     }
     if (testing) {
+        install(WebSockets) {
+            // TODO config
+        }
         initializeProxy()
-        initializeDS()
+        initializeDM()
         registerProxyRoutes()
         registerRMRoutes()
-        registerDSRoutes()
+        registerDMRoutes()
     }
     else {
         when (om) {
             OperationMode.PROXY -> {
+                install(WebSockets) {
+                    // TODO config
+                }
                 initializeProxy()
                 registerProxyRoutes()
             }
             OperationMode.RM -> {
                 registerRMRoutes()
             }
-            OperationMode.DS -> {
-                initializeDS()
-                registerDSRoutes()
+            OperationMode.DM -> {
+                initializeDM()
+                registerDMRoutes()
             }
         }
     }
@@ -211,7 +214,7 @@ fun Application.module(testing: Boolean = true) {
 
 /**
  * Acquire the [key] integer option, checking it is within the [minValue] and the [maxValue].
- * If the option was not given, return the [defaultValue].
+ * If the option was not given, return the [defaultValue]
  */
 fun getIntOption(cmd: CommandLine, key: String, defaultValue: Int, minValue: Int, maxValue: Int): Int {
     var valueToReturn = defaultValue
@@ -225,7 +228,7 @@ fun getIntOption(cmd: CommandLine, key: String, defaultValue: Int, minValue: Int
 
 /**
  * Acquire the [key] integer option, checking it is not blank.
- * If the option was not given, return the [defaultValue].
+ * If the option was not given, return the [defaultValue]
  */
 fun getStringOption(cmd: CommandLine, key: String, defaultValue: String): String {
     var valueToReturn = defaultValue
@@ -235,7 +238,7 @@ fun getStringOption(cmd: CommandLine, key: String, defaultValue: String): String
     return valueToReturn
 }
 
-/** Initialize the data structures for the proxy to operate properly. */
+/** Initialize the data structures for the proxy to operate properly */
 fun initializeProxy() {
     val usersProfileDirectory = File(USERS_PROFILE_DIRECTORY_PATH)
     if (!usersProfileDirectory.exists()) {
@@ -247,8 +250,8 @@ fun initializeProxy() {
     }
 }
 
-/** Initialize the data structures for the DS to operate properly. */
-fun initializeDS() {
+/** Initialize the data structures for the DM to operate properly */
+fun initializeDM() {
     if (!UPLOAD_DIRECTORY.exists()) {
         if (!UPLOAD_DIRECTORY.mkdirs()) {
             val message = "unable to create directory ${UPLOAD_DIRECTORY.absolutePath}"
@@ -269,9 +272,35 @@ fun initializeDS() {
 /**
  * A CryptoAC instance has one operation mode among the following:
  * - PROXY: the instance runs as a proxy;
- * - RM: the instance runs as a RM;
- * - DS: the instance runs as a DS.
+ * - RM: the instance runs as an RM;
+ * - DM: the instance runs as a DM
  */
 enum class OperationMode {
-    PROXY, RM, DS,
+    PROXY, RM, DM,
+}
+
+/** Extension function to Base64-encode a byte array into a string */
+fun ByteArray.encodeBase64(): String = Base64.getEncoder().encodeToString(this)
+
+/** Extension function to Base64-decode a string into a byte array */
+fun String.decodeBase64(): ByteArray = Base64.getDecoder().decode(this)
+
+/** Extension function to get (byte array) input stream from a string */
+fun String.inputStream(charset: Charset = Charsets.UTF_8): InputStream = this.toByteArray(charset).inputStream()
+
+/**
+ * Every [polling] milliseconds, check whether the [block] is verified
+ * and return true when it is; if the block is not verified in the given
+ * [timeout], return false.
+ * Specify tail recursion to allow the function to be optimized into a loop
+ */
+tailrec suspend fun waitForCondition (timeout: Long = 5000, polling: Long = 100, block: () -> Boolean) : Boolean {
+    if (timeout < 0) {
+        return false
+    }
+    if (block.invoke()) {
+        return true
+    }
+    delay(polling)
+    return waitForCondition(timeout - polling, polling, block)
 }

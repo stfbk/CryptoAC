@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  * A PermissionTuple links a Role with a PermissionType over a File.
  * A PermissionTuple is defined by a [roleName], a [fileName], a [roleToken],
  * a [fileToken], a [permission] type, two positive version numbers ([roleVersionNumber],
- * [symKeyVersionNumber]) and an [encryptedSymKey].
+ * [symKeyVersionNumber]) and an [encryptedSymKey]
  */
 @Serializable
 class PermissionTuple(
@@ -37,7 +37,7 @@ class PermissionTuple(
         }
     }
 
-    /** Return a String array of the significant fields of this tuple. */
+    /** Return a String array of the significant fields of this tuple */
     override fun toArray(): Array<String> = arrayOf(roleName, fileName, symKeyVersionNumber.toString(), permission.toString())
 
     override fun equals(other: Any?): Boolean {

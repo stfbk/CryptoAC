@@ -1,47 +1,57 @@
 package eu.fbk.st.cryptoac.core
 
+import eu.fbk.st.cryptoac.CryptoACFormField
+import eu.fbk.st.cryptoac.InputType
 import eu.fbk.st.cryptoac.SERVER
-import eu.fbk.st.cryptoac.implementation.ds.DSInterfaceMQTTParameters
-import eu.fbk.st.cryptoac.implementation.ms.MSInterfaceMySQLParameters
+import eu.fbk.st.cryptoac.core.elements.User
+import eu.fbk.st.cryptoac.crypto.CryptoType
+import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMQTTParameters
+import eu.fbk.st.cryptoac.implementation.mm.MMInterfaceMySQLParameters
+import io.ktor.utils.io.core.*
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
 /**
- * Parameters for configuring the core object for the MQTT implementation.
- * Besides base parameters, we need to know the parameters to configure the interfaces,
- * i.e., [msMySQLInterfaceParameters] and [dsMQTTInterfaceParameters].
+ * Parameters for configuring the core object
+ * for the MQTT scenario. Besides base parameters,
+ * we need to know the parameters to configure the
+ * interfaces, i.e., [mmMySQLInterfaceParameters]
+ * and [dmMQTTInterfaceParameters]
  */
 @Serializable
 class CoreParametersMQTT(
-    override var username: String, override var isAdmin: Boolean,
-    override var asymEncPublicKeyBase64: String, override var asymEncPrivateKeyBase64: String,
-    override var asymSigPublicKeyBase64: String, override var asymSigPrivateKeyBase64: String,
+    override var user: User,
     override val coreType: CoreType = CoreType.RBAC_MQTT,
-    val msMySQLInterfaceParameters: MSInterfaceMySQLParameters,
-    val dsMQTTInterfaceParameters: DSInterfaceMQTTParameters,
+    override val cryptoType: CryptoType,
+    override val versionNumber: Int = 1,
+    val mmMySQLInterfaceParameters: MMInterfaceMySQLParameters,
+    val dmMQTTInterfaceParameters: DMInterfaceMQTTParameters,
 ) : CoreParameters() {
 
     companion object {
         /**
          * Create a CoreParametersMQTT object from the given map of [parameters].
-         * Missing parameters will cause the return value to be null.
-         * */
+         * Missing parameters will cause the return value to be null
+         */
         fun fromMap(parameters: HashMap<String, String>): CoreParametersMQTT? {
             return try {
                 CoreParametersMQTT(
-                    username = parameters[SERVER.USERNAME]!!, isAdmin = parameters[SERVER.IS_ADMIN].toBoolean(),
-                    asymEncPublicKeyBase64 = "mock", asymEncPrivateKeyBase64 = "mock",
-                    asymSigPublicKeyBase64 = "mock", asymSigPrivateKeyBase64 = "mock",
+                    user = User(
+                        name = parameters[SERVER.USERNAME]!!,
+                        isAdmin = parameters[SERVER.IS_ADMIN].toBoolean(),
+                    ),
                     coreType = CoreType.RBAC_MQTT,
-                    msMySQLInterfaceParameters = MSInterfaceMySQLParameters(
+                    cryptoType = CryptoType.valueOf(parameters[SERVER.CRYPTO]!!),
+                    versionNumber = 1,
+                    mmMySQLInterfaceParameters = MMInterfaceMySQLParameters(
                         username = parameters[SERVER.USERNAME]!!, port = parameters[SERVER.MS_PORT]!!.toInt(),
                         url = parameters[SERVER.MS_URL]!!, password = parameters[SERVER.MS_PASSWORD]!!
                     ),
-                    dsMQTTInterfaceParameters = DSInterfaceMQTTParameters(
-                        port = parameters[SERVER.DS_PORT]!!.toInt(), url = parameters[SERVER.DS_URL]!!,
-                        password = parameters[SERVER.DS_PASSWORD]!!
+                    dmMQTTInterfaceParameters = DMInterfaceMQTTParameters(
+                        port = parameters[SERVER.DM_PORT]!!.toInt(), url = parameters[SERVER.DM_URL]!!,
+                        password = parameters[SERVER.DM_PASSWORD]!!.toByteArray(), username = parameters[SERVER.USERNAME]!!
                     ),
                 )
             } catch (e: NullPointerException) {
@@ -50,21 +60,92 @@ class CoreParametersMQTT(
             }
         }
 
+        /** Create a list of CryptoAC form fields from the given [parameters] */
+        fun toMap(parameters: CoreParametersMQTT? = null): List<List<CryptoACFormField>> = listOf(
+            listOf(
+                CryptoACFormField(
+                    SERVER.USERNAME,
+                    SERVER.USERNAME,
+                    InputType.text,
+                    className = "darkTextField",
+                    defaultValue = parameters?.user?.name
+                ),
+                CryptoACFormField(
+                    SERVER.IS_ADMIN,
+                    SERVER.IS_ADMIN.replace("_", " "),
+                    InputType.checkBox,
+                    className = "darkTextField",
+                    defaultValue = parameters?.user?.isAdmin.toString()
+                ),
+                CryptoACFormField(
+                    SERVER.CRYPTO,
+                    SERVER.CRYPTO,
+                    InputType.select,
+                    options = CryptoType.values().map { it.toString() },
+                    className = "darkTextField",
+                    defaultValue = parameters?.cryptoType.toString()
+                ),
+            ), listOf(
+                CryptoACFormField(
+                    SERVER.DM_URL,
+                    "Broker URL",
+                    InputType.text,
+                    className = "darkTextField",
+                    defaultValue = parameters?.dmMQTTInterfaceParameters?.url
+                ),
+                CryptoACFormField(
+                    SERVER.DM_PASSWORD,
+                    "Broker Password",
+                    InputType.password,
+                    className = "darkTextField",
+                    defaultValue = parameters?.dmMQTTInterfaceParameters?.password?.let { String(it) }
+                ),
+                CryptoACFormField(
+                    SERVER.DM_PORT,
+                    "Broker Port",
+                    InputType.number,
+                    className = "darkTextField",
+                    defaultValue = parameters?.dmMQTTInterfaceParameters?.port.toString()
+                ),
+            ), listOf(
+                CryptoACFormField(
+                    SERVER.MS_URL,
+                    SERVER.MS_URL.replace("_", " "),
+                    InputType.text,
+                    className = "darkTextField",
+                    defaultValue = parameters?.mmMySQLInterfaceParameters?.url
+                ),
+                CryptoACFormField(
+                    SERVER.MS_PASSWORD,
+                    SERVER.MS_PASSWORD.replace("_", " "),
+                    InputType.password,
+                    className = "darkTextField",
+                    defaultValue = parameters?.mmMySQLInterfaceParameters?.password
+                ),
+                CryptoACFormField(
+                    SERVER.MS_PORT,
+                    SERVER.MS_PORT.replace("_", " "),
+                    InputType.number,
+                    className = "darkTextField",
+                    defaultValue = parameters?.mmMySQLInterfaceParameters?.port.toString()
+                )
+            )
+        )
     }
 
-    /** Check the parameters are valid through regular expressions and return true if they are, false otherwise. */
+    /** Check the parameters are valid through regular expressions and return true if they are, false otherwise */
     override fun checkParameters(): Boolean =
         if (!super.checkParameters()) {
             false
         } else {
-            msMySQLInterfaceParameters.checkParameters() && dsMQTTInterfaceParameters.checkParameters()
+            mmMySQLInterfaceParameters.checkParameters() && dmMQTTInterfaceParameters.checkParameters()
         }
 
-    /** Update updatable fields. */
+    /** Update updatable fields */
     override fun update(updatedParameters: CoreParameters) {
         if (updatedParameters is CoreParametersMQTT) {
-            msMySQLInterfaceParameters.update(updatedParameters.msMySQLInterfaceParameters)
-            dsMQTTInterfaceParameters.update(updatedParameters.dsMQTTInterfaceParameters)
+            mmMySQLInterfaceParameters.update(updatedParameters.mmMySQLInterfaceParameters)
+            dmMQTTInterfaceParameters.update(updatedParameters.dmMQTTInterfaceParameters)
         }
         else {
             val message = "Given a non-subclass of ${this::class} for update"
@@ -73,44 +154,37 @@ class CoreParametersMQTT(
         }
     }
 
-    /** Obscure (e.g., overwrite values of) sensitive fields. */
+    /** Obscure (e.g., overwrite values of) sensitive fields */
     override fun obscureSensitiveFields() {
         super.obscureSensitiveFields()
-        msMySQLInterfaceParameters.obscureSensitiveFields()
-        dsMQTTInterfaceParameters.obscureSensitiveFields()
+        mmMySQLInterfaceParameters.obscureSensitiveFields()
+        dmMQTTInterfaceParameters.obscureSensitiveFields()
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        if (!super.equals(other)) return false
 
         other as CoreParametersMQTT
 
-        if (username != other.username) return false
-        if (isAdmin != other.isAdmin) return false
-        if (asymEncPublicKeyBase64 != other.asymEncPublicKeyBase64) return false
-        if (asymEncPrivateKeyBase64 != other.asymEncPrivateKeyBase64) return false
-        if (asymSigPublicKeyBase64 != other.asymSigPublicKeyBase64) return false
-        if (asymSigPrivateKeyBase64 != other.asymSigPrivateKeyBase64) return false
+        if (user != other.user) return false
         if (coreType != other.coreType) return false
-        if (msMySQLInterfaceParameters != other.msMySQLInterfaceParameters) return false
-        if (dsMQTTInterfaceParameters != other.dsMQTTInterfaceParameters) return false
+        if (cryptoType != other.cryptoType) return false
+        if (versionNumber != other.versionNumber) return false
+        if (mmMySQLInterfaceParameters != other.mmMySQLInterfaceParameters) return false
+        if (dmMQTTInterfaceParameters != other.dmMQTTInterfaceParameters) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + username.hashCode()
-        result = 31 * result + isAdmin.hashCode()
-        result = 31 * result + asymEncPublicKeyBase64.hashCode()
-        result = 31 * result + asymEncPrivateKeyBase64.hashCode()
-        result = 31 * result + asymSigPublicKeyBase64.hashCode()
-        result = 31 * result + asymSigPrivateKeyBase64.hashCode()
+        var result = user.hashCode()
         result = 31 * result + coreType.hashCode()
-        result = 31 * result + msMySQLInterfaceParameters.hashCode()
-        result = 31 * result + dsMQTTInterfaceParameters.hashCode()
+        result = 31 * result + cryptoType.hashCode()
+        result = 31 * result + versionNumber
+        result = 31 * result + mmMySQLInterfaceParameters.hashCode()
+        result = 31 * result + dmMQTTInterfaceParameters.hashCode()
         return result
     }
+
 }

@@ -5,20 +5,20 @@ import eu.fbk.st.cryptoac.ui.components.materialui.core.snackbar
 import org.w3c.dom.events.Event
 import react.*
 
-/** Possible values for the CryptoAC alert. */
+/** Possible values for the CryptoAC alert */
 enum class CryptoACAlertSeverity {
     SUCCESS, WARNING, INFO, ERROR,
 }
 
-external interface CryptoACAlertProps : RProps {
+external interface CryptoACAlertProps : Props {
     var severity: CryptoACAlertSeverity
     var message: String
     var open: Boolean
     var handleClose: (Event) -> Unit
 }
 
-/** A custom component for an alert. */
-class CryptoACAlert: RComponent<CryptoACAlertProps, RState>() {
+/** A custom component for an alert */
+class CryptoACAlert: RComponent<CryptoACAlertProps, State>() {
     override fun RBuilder.render() {
         snackbar {
             attrs {
@@ -39,9 +39,11 @@ class CryptoACAlert: RComponent<CryptoACAlertProps, RState>() {
     }
 }
 
-/** Extend RBuilder for easier use of this React component. */
-fun RBuilder.cryptoACAlert(handler: CryptoACAlertProps.() -> Unit): ReactElement {
-    return child(CryptoACAlert::class) {
-        this.attrs(handler)
-    }
+/** Extend RBuilder for easier use of this React component */
+fun cryptoACAlert(handler: CryptoACAlertProps.() -> Unit): ReactElement {
+    return createElement {
+        child(CryptoACAlert::class) {
+            this.attrs(handler)
+        }
+    }!!
 }

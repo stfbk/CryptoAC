@@ -6,4 +6,4 @@ package eu.fbk.st.cryptoac.ui.components.icons
 import react.*
 
 @JsName("FaPaperPlane")
-external val faPaperPlane: RClass<RProps>
+external val faPaperPlane: ComponentClass<Props>
