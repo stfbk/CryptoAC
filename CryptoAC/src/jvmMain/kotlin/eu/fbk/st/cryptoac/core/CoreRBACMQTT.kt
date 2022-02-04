@@ -8,18 +8,13 @@ import eu.fbk.st.cryptoac.core.model.*
 import eu.fbk.st.cryptoac.core.tuples.*
 import eu.fbk.st.cryptoac.crypto.*
 import eu.fbk.st.cryptoac.decodeBase64
-import eu.fbk.st.cryptoac.implementation.dm.AclType
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMQTT
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMQTTParameters
-import eu.fbk.st.cryptoac.implementation.dm.MQTTMessage
+import eu.fbk.st.cryptoac.implementation.dm.*
 import eu.fbk.st.cryptoac.implementation.mm.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import org.eclipse.paho.mqttv5.client.*
-import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence
 import org.eclipse.paho.mqttv5.common.MqttException
 import org.eclipse.paho.mqttv5.common.MqttMessage
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties
@@ -27,14 +22,13 @@ import java.io.InputStream
 import java.lang.IllegalStateException
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
-import kotlin.random.Random
 
 private val logger = KotlinLogging.logger {}
 
 /**
  * The CoreRBACMQTT implements a role-based cryptographic access
  * control scheme with hybrid cryptography for IoT (MQTT) scenarios.
- * It assumes the presence of a MMMySQL and a MQTT broker, it is
+ * It assumes the presence of a MMRedis and a MQTT broker, it is
  * configured with the given [coreParameters] and has a reference
  * to a [wss] to communicate with the client
  */
@@ -43,18 +37,17 @@ class CoreRBACMQTT(
     override val coreParameters: CoreParametersMQTT,
 ) : CoreRBAC(crypto, coreParameters), MqttCallback {
 
-    /** Interface toward the MM (i.e., the MYSQL database) */
-    private val mm: MMInterfaceMySQL = MMInterfaceMySQL(coreParameters.mmMySQLInterfaceParameters)
+    /** Interface toward the MM (i.e., the Redis database) */
+    val mm: MMInterface = MMFactory.getMM(coreParameters.mmInterfaceParameters)
 
     /** Interface toward the DM (i.e., the MQTT broker) */
-    val dm: DMInterfaceMQTT
+    val dm: DMInterfaceRBACMQTT = DMFactory.getDM(coreParameters.dmInterfaceParameters) as DMInterfaceRBACMQTT
 
     /** The user in the [coreParameters] */
     private val user: User = coreParameters.user
 
     /** The web socket for sending MQTT messages */
     var wss: DefaultWebSocketSession? = null
-
 
     /** Asymmetric encryption key pair */
     private val asymEncKeyPair: KeyPairCryptoAC = crypto.recreateAsymKeyPair(
@@ -70,21 +63,11 @@ class CoreRBACMQTT(
         type = AsymKeysType.SIG
     )
 
-    /** The MQTT client */
-    val client: CryptoACMqttClient
-
     /** A map of subscribed topics with the cached key and messages to send to the client */
     val subscribedTopicsKeysAndMessages: HashMap<String, SymmetricKeysAndCachedMessages?> = hashMapOf()
 
-    /** The memory persistence object for the MQTT client */
-    private val persistence = MemoryPersistence()
-
     init {
-        val brokerBaseAPI = "tcp://${coreParameters.dmMQTTInterfaceParameters.url}:${coreParameters.dmMQTTInterfaceParameters.port}"
-        logger.info { "Initializing core ${CoreType.RBAC_MQTT} for user ${user.name} with broker base API $brokerBaseAPI" }
-        client = CryptoACMqttClient(brokerBaseAPI, generateRandomClientId(), persistence) // TODO check configuration is ok
-        client.setCallback(this)
-        dm = DMInterfaceMQTT(coreParameters.dmMQTTInterfaceParameters, client)
+        dm.client.setCallback(this)
     }
 
     /**
@@ -180,8 +163,15 @@ class CoreRBACMQTT(
         }
         else {
             /** Add the user in the DM */
-            val mmMySQLInterfaceParameters = addUserResult.parameters as MMInterfaceMySQLParameters
-            code = dm.sendDynsecCommand(hashSetOf(dm.getCreateClientCommand(username, mmMySQLInterfaceParameters.password)))
+            val mmUserInterfaceParameters = addUserResult.parameters!!
+            code = dm.sendDynsecCommand(
+                hashSetOf(
+                    dm.getCreateClientCommand(
+                        username,
+                        (mmUserInterfaceParameters as MMInterfaceRBACMQTTParameters).password
+                    )
+                )
+            )
             return if (code != OutcomeCode.CODE_000_SUCCESS) {
                 CodeCoreParameters(endOfMethod(code))
             } else {
@@ -189,15 +179,21 @@ class CoreRBACMQTT(
                     endOfMethod(OutcomeCode.CODE_000_SUCCESS),
                     CoreParametersMQTT(
                         user = User(name = username),
-                        coreType = CoreType.RBAC_MQTT,
                         cryptoType = coreParameters.cryptoType,
-                        mmMySQLInterfaceParameters = mmMySQLInterfaceParameters,
-                        dmMQTTInterfaceParameters = DMInterfaceMQTTParameters(
-                            port = coreParameters.dmMQTTInterfaceParameters.port,
-                            url = coreParameters.dmMQTTInterfaceParameters.url,
-                            username = username,
-                            password = mmMySQLInterfaceParameters.password.toByteArray()
-                        ),
+                        mmInterfaceParameters = mmUserInterfaceParameters,
+                        dmInterfaceParameters = when (coreParameters.dmInterfaceParameters.dmType) {
+                            DMType.MOSQUITTO -> DMInterfaceMosquittoParameters(
+                                port = coreParameters.dmInterfaceParameters.port,
+                                url = coreParameters.dmInterfaceParameters.url,
+                                username = username,
+                                password = mmUserInterfaceParameters.password.toByteArray()
+                            )
+                            DMType.CRYPTOAC -> {
+                                val message = "Given DM CryptoAC parameters for Core RBAC MQTT"
+                                logger.error { message }
+                                throw IllegalStateException(message)
+                            }
+                        }
                     )
                 )
             }
@@ -241,10 +237,12 @@ class CoreRBACMQTT(
 
         /** Revoke the [username] from all roles */
         logger.info { "Revoking the user $username from all roles" }
-        userRoleTuples.forEach error@{
-            code = revokeUserFromRole(it.username, it.roleName)
-            if (code!= OutcomeCode.CODE_000_SUCCESS) {
-                return@error
+        run error@{
+            userRoleTuples.forEach {
+                code = revokeUserFromRole(it.username, it.roleName)
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
             }
         }
 
@@ -287,12 +285,12 @@ class CoreRBACMQTT(
             asymEncKeys = AsymKeys(
                 public = asymEncKeys.public.encoded.encodeBase64(),
                 private = asymEncKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.ENC
+                keysType = AsymKeysType.ENC
             ),
             asymSigKeys = AsymKeys(
                 public = asymSigKeys.public.encoded.encodeBase64(),
                 private = asymSigKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.SIG
+                keysType = AsymKeysType.SIG
             )
         )
 
@@ -372,10 +370,12 @@ class CoreRBACMQTT(
         val rolePermissionTuples = mm.getPermissionTuples(roleName = roleName, offset = 0, limit = NO_LIMIT)
 
         /** Revoke all permissions from the [roleName] */
-        rolePermissionTuples.forEach error@{
-            code = revokePermissionFromRole(it.roleName, it.fileName, PermissionType.READWRITE)
-            if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return@error
+        run error@{
+            rolePermissionTuples.forEach {
+                code = revokePermissionFromRole(it.roleName, it.fileName, PermissionType.READWRITE)
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
             }
         }
         if (code != OutcomeCode.CODE_000_SUCCESS) {
@@ -495,7 +495,7 @@ class CoreRBACMQTT(
         /** Delete the file from the DM */
         return endOfMethod(dm.deleteFile(fileName).apply {
             if (this == OutcomeCode.CODE_000_SUCCESS) {
-                client.unsubscribe(fileName)
+                dm.client.unsubscribe(fileName)
             }
         })
     }
@@ -542,7 +542,7 @@ class CoreRBACMQTT(
             encryptedAsymEncKeys = EncryptedAsymKeys(
                 private = adminRoleTuple.encryptedAsymEncKeys!!.private,
                 public  = adminRoleTuple.encryptedAsymEncKeys.public,
-                type = AsymKeysType.ENC,
+                keysType = AsymKeysType.ENC,
             )
         )
         val asymSigKeys = crypto.decryptAsymSigKeys(
@@ -551,7 +551,7 @@ class CoreRBACMQTT(
             encryptedAsymSigKeys = EncryptedAsymKeys(
                 private = adminRoleTuple.encryptedAsymSigKeys!!.private,
                 public  = adminRoleTuple.encryptedAsymSigKeys.public,
-                type = AsymKeysType.SIG,
+                keysType = AsymKeysType.SIG,
             )
         )
 
@@ -563,10 +563,10 @@ class CoreRBACMQTT(
         /** If we did not find the user's key, it means that the user does not exist (or was deleted) */
         if (userAsymEncPublicKeyBytes == null) {
             logger.warn { "User's key not found. Checking the user's status" }
-            val getStatusResult = mm.getStatus(username, ElementTypeWithStatus.USER)
-            return if (getStatusResult.code == OutcomeCode.CODE_000_SUCCESS) {
-                logger.warn { "User's status is ${getStatusResult.status}" }
-                when (getStatusResult.status!!) {
+            val status = mm.getStatus(username, ElementTypeWithStatus.USER)
+            return if (status != null) {
+                logger.warn { "User's status is $status" }
+                when (status) {
                     ElementStatus.INCOMPLETE -> endOfMethod(OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED)
                     ElementStatus.OPERATIONAL -> {
                         val message = "User's $username key not found but user is operational"
@@ -576,15 +576,7 @@ class CoreRBACMQTT(
                     ElementStatus.DELETED -> endOfMethod(OutcomeCode.CODE_013_USER_WAS_DELETED)
                 }
             } else {
-                if (getStatusResult.code == OutcomeCode.CODE_004_USER_NOT_FOUND) {
-                    endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND)
-                }
-                else {
-                    val message =
-                        "Unexpected error code (${getStatusResult.code}) while getting the status of user $username"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
+                endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND)
             }
         }
 
@@ -603,8 +595,8 @@ class CoreRBACMQTT(
         newRoleTuple.updateSignature(newRoleTupleSignature, ADMIN, ElementTypeWithKey.USER)
 
         code = mm.addRoleTuples(HashSet<RoleTuple>().apply { add(newRoleTuple) })
-        return if (code == OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS) {
-            endOfMethod(OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            endOfMethod(code)
         } else {
             /** Add the user to the role in the DM */
             return endOfMethod(dm.sendDynsecCommand(hashSetOf(dm.getAddClientRoleCommand(username, roleName))))
@@ -852,13 +844,11 @@ class CoreRBACMQTT(
             return OutcomeCode.CODE_020_INVALID_PARAMETER
         }
 
-
         /** Lock the status of the interfaces */
         var code = startOfMethod()
         if (code != OutcomeCode.CODE_000_SUCCESS) {
             return code
         }
-
 
         /** Get the PermissionTuple of the admin */
         logger.debug { "Getting the permission tuple of the admin" }
@@ -1081,6 +1071,7 @@ class CoreRBACMQTT(
             logger.debug { "Updating permission tuples of other roles over topic $fileName" }
             val latestPermissionTuples = mm.getPermissionTuples(
                 fileName = fileName, symKeyVersionNumber = fileLatestVersionNumber,
+                roleNameToExclude = roleName,
                 offset = 0, limit = NO_LIMIT,
             )
 
@@ -1208,6 +1199,7 @@ class CoreRBACMQTT(
                  * up-to-date (because the administrator publishes
                  * retained messages for distributing updates)
                  */
+                logger.debug { "Getting enforcement from cache" }
                 subscribedTopicsKeysAndMessages[fileName]!!.enforcement
             } else {
 
@@ -1217,6 +1209,7 @@ class CoreRBACMQTT(
                  * every time whether the key of the topic is still
                  * up-to-date
                  */
+                logger.debug { "Getting enforcement from MM" }
                 val file = mm.getFiles(
                     fileName = fileName,
                     isAdmin = false,
@@ -1234,15 +1227,19 @@ class CoreRBACMQTT(
             return when (enforcement) {
                 /** MQTT messages should not be encrypted, i.e., just publish it */
                 EnforcementType.TRADITIONAL -> {
+                    logger.debug { "Enforcement is TRADITIONAL, no need to encrypt" }
                     endOfMethod(dm.writeFile(File(fileName, enforcement = enforcement), fileContent))
                 }
                 /** MQTT messages should be encrypted, i.e., get the key to do it */
                 EnforcementType.COMBINED -> {
+                    logger.debug { "Enforcement is COMBINED, encrypt the message" }
                     val codeAndKey = if (subscribedTopicsKeysAndMessages.containsKey(fileName)) {
+                        logger.debug { "Getting key from cache" }
                         CodeSymmetricKeyCryptoAC(
                             key = subscribedTopicsKeysAndMessages[fileName]!!.key
                         )
                     } else {
+                        logger.debug { "Getting key from MM" }
                         getLatestSymmetricKey(topic = fileName)
                     }
 
@@ -1260,68 +1257,53 @@ class CoreRBACMQTT(
 
 
     /**
-     * Retrieve and return the users that the
-     * user can see, along with the outcome code
+     * Retrieve the list of users,
+     * along with the outcome code
      */
     override fun getUsers(): CodeUsers {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting users" }
 
-        /** Look up in the metadata only if the user is the admin */
-        return if (user.isAdmin) {
-            /** Lock the status of the interfaces */
-            val code = startOfMethod(dmLock = false)
-            return if (code != OutcomeCode.CODE_000_SUCCESS) {
-                CodeUsers(code)
-            } else {
-                val users = mm.getUsers()
-                CodeUsers(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), users)
-            }
+        /** Lock the status of the interfaces */
+        val code = startOfMethod(dmLock = false)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            CodeUsers(code)
         } else {
-            CodeUsers(OutcomeCode.CODE_036_UNAUTHORIZED)
+            val users = mm.getUsers()
+            CodeUsers(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), users)
         }
     }
 
     /**
-     * Retrieve and return the roles that the
-     * user can see, along with the outcome code
+     * Retrieve the list of roles,
+     * along with the outcome code
      */
     override fun getRoles(): CodeRoles {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting roles" }
 
-        /** Look up in the metadata only if the user is the admin */
-        return if (user.isAdmin) {
-            /** Lock the status of the interfaces */
-            val code = startOfMethod(dmLock = false)
-            return if (code != OutcomeCode.CODE_000_SUCCESS) {
-                CodeRoles(code)
-            } else {
-                val roles = mm.getRoles()
-                CodeRoles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), roles)
-            }
+        /** Lock the status of the interfaces */
+        val code = startOfMethod(dmLock = false)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            CodeRoles(code)
         } else {
-            CodeRoles(OutcomeCode.CODE_036_UNAUTHORIZED)
+            val roles = mm.getRoles()
+            CodeRoles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), roles)
         }
     }
 
     /**
-     * Retrieve and return the files that the
-     * user can see, along with the outcome code
+     * Retrieve the list of files,
+     * along with the outcome code
      */
     override fun getFiles(): CodeFiles {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting topics" }
 
-        /** Look up in the metadata only if the user is the admin */
-        return if (user.isAdmin) {
-            /** Lock the status of the interfaces */
-            val code = startOfMethod(dmLock = false)
-            return if (code != OutcomeCode.CODE_000_SUCCESS) {
-                CodeFiles(code)
-            } else {
-                val files = mm.getFiles()
-                CodeFiles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), files)
-            }
+        /** Lock the status of the interfaces */
+        val code = startOfMethod(dmLock = false)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            CodeFiles(code)
         } else {
-            CodeFiles(OutcomeCode.CODE_036_UNAUTHORIZED)
+            val files = mm.getFiles()
+            CodeFiles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), files)
         }
     }
 
@@ -1383,7 +1365,7 @@ class CoreRBACMQTT(
      */
     private fun startOfMethod(mmLock: Boolean = true, dmLock: Boolean = true): OutcomeCode {
         logger.info {
-            "Locking the following interfaces: ${if (mmLock) "MS " else ""}${if (dmLock) "DM " else ""}"
+            "Locking the following interfaces: ${if (mmLock) "MM " else ""}${if (dmLock) "DM " else ""}"
         }
         val mmLockCode = if (mmLock) mm.lock() else OutcomeCode.CODE_000_SUCCESS
         return if (mmLockCode == OutcomeCode.CODE_000_SUCCESS) {
@@ -1409,14 +1391,14 @@ class CoreRBACMQTT(
         if (code == OutcomeCode.CODE_000_SUCCESS) {
             logger.info {
                 "Operation successful, unlocking the following interfaces: " +
-                        "${if (mmLocked) "MS " else ""}${if (dmLocked) "DM " else ""}"
+                        "${if (mmLocked) "MM " else ""}${if (dmLocked) "DM " else ""}"
             }
             if (mmLocked) unlockOrRollbackInterface("MS")
             if (dmLocked) unlockOrRollbackInterface("DM")
         } else {
             logger.info {
                 "Operation unsuccessful (code $code), rollbacking the following interfaces: " +
-                        "${if (mmLocked) "MS " else ""}${if (dmLocked) "DM " else ""}"
+                        "${if (mmLocked) "MM " else ""}${if (dmLocked) "DM " else ""}"
             }
             if (mmLocked) unlockOrRollbackInterface("MS", true)
             if (dmLocked) unlockOrRollbackInterface("DM", true)
@@ -1473,18 +1455,7 @@ class CoreRBACMQTT(
 
 
 
-    /** Generate a random string as Client ID for the MQTT client */
-    private fun generateRandomClientId(): String {
-        return if (coreParameters.user.isAdmin) {
-            ADMIN
-        } else {
-            val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-            (1..20)
-                .map { Random.nextInt(0, charPool.size) }
-                .map(charPool::get)
-                .joinToString("")
-        }
-    }
+
 
 
 
@@ -1528,12 +1499,12 @@ class CoreRBACMQTT(
                 /**
                  * The message is from the admin, and it contains
                  * the (latest) version number of the symmetric key
-                 * */
+                 */
                 if (message.isRetained) {
                     // TODO verify the signature of the message and that the admin sent it
                     if (message.payload.isEmpty()) {
                         logger.info { "The payload is empty (perhaps the topic is being deleted?)" }
-                        client.unsubscribe(topic)
+                        dm.client.unsubscribe(topic)
                     } else {
 
 
@@ -1548,6 +1519,7 @@ class CoreRBACMQTT(
 
                         when (enforcement) {
                             EnforcementType.COMBINED -> {
+                                logger.info { "Enforcement is combined" }
 
 
                                 /**
@@ -1559,6 +1531,8 @@ class CoreRBACMQTT(
                                  * number is greater than the previous one.
                                  */
                                 if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
+                                    logger.info { "Update of cached key" }
+
 
                                     if (subscribedTopicsKeysAndMessages[topic]!!.enforcement != EnforcementType.COMBINED) {
                                         // TODO this is wrong, unless we allow the admin to dynamically
@@ -1600,6 +1574,7 @@ class CoreRBACMQTT(
                                  * variable and proceed to get the symmetric key
                                  */
                                 else {
+                                    logger.info { "Probably just subscribed, fetch the key" }
                                     subscribedTopicsKeysAndMessages[topic] = SymmetricKeysAndCachedMessages(
                                         key = null,
                                         versionNumber = versionNumber,
@@ -1614,6 +1589,7 @@ class CoreRBACMQTT(
                                  */
                                 val lockCode = startOfMethod(dmLock = false)
                                 if (lockCode != OutcomeCode.CODE_000_SUCCESS) {
+                                    logger.warn { "Could not lock ($lockCode)" }
                                     val lockMessage = MQTTMessage(lockCode.toString(), topic, true)
                                     cacheOrSendMessage(topic, lockMessage)
                                 }
@@ -1624,8 +1600,12 @@ class CoreRBACMQTT(
                                  * error message with the code to the client
                                  * TODO do what with the key or eventual new messages?
                                  */
-                                val symKey = getLatestSymmetricKey(topic = topic, versionNumber = versionNumber)
+                                val symKey = getLatestSymmetricKey(
+                                    topic = topic,
+                                    versionNumber = versionNumber
+                                )
                                 if (symKey.code != OutcomeCode.CODE_000_SUCCESS) {
+                                    logger.warn { "Error while retrieving the key (${symKey.code})" }
                                     subscribedTopicsKeysAndMessages[topic]!!.key = null
                                     val errorMessage = MQTTMessage(symKey.code.toString(), topic, true)
                                     cacheOrSendMessage(topic, errorMessage)
@@ -1649,6 +1629,8 @@ class CoreRBACMQTT(
 
 
                             EnforcementType.TRADITIONAL -> {
+                                logger.info { "Enforcement is traditional" }
+
                                 /**
                                  * This is not the first retained message for this
                                  * topic that the user receives. In a topic with
@@ -1690,7 +1672,7 @@ class CoreRBACMQTT(
                                     throw java.lang.Exception("""
                                         it means that the last retrieval of the 
                                         key went wrong, but in the meantime a message
-                                        arrived. what to do? I'd say ehtier cache it 
+                                        arrived. what to do? I'd say either cache it 
                                         and try to get the key again OR send it to
                                         the user even if encrypted
                                     """.trimIndent())
@@ -1705,7 +1687,7 @@ class CoreRBACMQTT(
                         cacheOrSendMessage(topic, receivedMessage)
                     }
                     else {
-                        // TODO WFT? it means that the user subscribed, but no retained
+                        // TODO iit means that the user subscribed, but no retained
                         //  message was delivered by the broker... send error to the client
                     }
                 }
@@ -1727,7 +1709,7 @@ class CoreRBACMQTT(
     override fun disconnected(disconnectResponse: MqttDisconnectResponse?) {
         logger.warn { "MQTT client for ${user.name} was disconnected: ${disconnectResponse.toString()}" }
         logger.info { "Trying to reconnect" }
-        client.connectSync(reconnecting = true)
+        dm.client.connectSync(reconnecting = true)
         // TODO catch exceptions?
     }
 
@@ -1795,12 +1777,12 @@ class CoreRBACMQTT(
         if (wss == null) {
             logger.info { "User ${user.name} is not connected through WSS, caching the message" }
             subscribedTopicsKeysAndMessages[topic]!!.messages.add(message)
-            // TODO we cached the message, now wait for reconnection
-            //  from the MQTT client to then send to it the messages
+            // TODO we cached the message, now check for reconnection
+            //  from the WSS to then send to it the messages
         } else {
             runBlocking {
                 logger.info { "Sending the message to the client through WSS" }
-                wss!!.send(Json.encodeToString(message))
+                wss!!.send(myJson.encodeToString(message))
             }
         }
     }
@@ -1814,50 +1796,69 @@ class CoreRBACMQTT(
         topic: String,
         versionNumber: Int? = null,
     ): CodeSymmetricKeyCryptoAC {
-        logger.debug { "Getting the symmetric key for topic $topic (version number: $versionNumber" }
+        logger.debug { "Getting the symmetric key for topic $topic (version number: $versionNumber)" }
 
-        /**
-         * The [versionNumber] may even be null, but there
-         * is one permission tuple per topic anyway
-         */
-        val filePermissionTuple = mm.getPermissionTuples(
-            fileName = topic,
-            symKeyVersionNumber = versionNumber,
-            isAdmin = user.isAdmin,
-            offset = 0, limit = 1,
-        ).firstOrNull() ?: return (CodeSymmetricKeyCryptoAC(OutcomeCode.CODE_006_FILE_NOT_FOUND))
-
-
-        /** Verify the signature of the PermissionTuple */
-        verifyTupleSignature(filePermissionTuple)
-
-        // now we get the role tuple of the role that can read the file. With the
+        // we get the role tuple of the role that can read the file. With the
         // role tuple, we can decrypt the role private key. With the role private
         // key, we can decrypt the symmetric key. With the symmetric key, we can
         // decrypt the file
-        val fileRoleTuple = mm.getRoleTuples(
-            username = user.name, roleName = filePermissionTuple.roleName,
+        val fileRoleTuples = mm.getRoleTuples(
+            username = user.name,
             isAdmin = user.isAdmin,
             offset = 0, limit = 1,
-        ).first()
+        )
 
-        /** Verify the signature of the RoleTuple */
-        verifyTupleSignature(fileRoleTuple)
+        if (fileRoleTuples.isEmpty()) {
+            return (CodeSymmetricKeyCryptoAC(OutcomeCode.CODE_006_FILE_NOT_FOUND))
+        }
+
+        var filePermissionTuple: PermissionTuple? = null
+        var fileRoleTuple: RoleTuple? = null
+
+        run found@{
+            fileRoleTuples.forEach { currentRoleTuple ->
+                /** Verify the signature of the RoleTuple */
+                verifyTupleSignature(currentRoleTuple)
+
+                /**
+                 * The [versionNumber] may even be null, but there
+                 * is one permission tuple per topic anyway
+                 */
+                filePermissionTuple = mm.getPermissionTuples(
+                    roleName = currentRoleTuple.roleName,
+                    fileName = topic,
+                    symKeyVersionNumber = versionNumber,
+                    isAdmin = user.isAdmin,
+                    offset = 0, limit = 1,
+                ).firstOrNull()
+
+                if (filePermissionTuple != null) {
+                    /** Verify the signature of the PermissionTuple */
+                    verifyTupleSignature(filePermissionTuple!!)
+                    fileRoleTuple = currentRoleTuple
+                    return@found
+                }
+            }
+        }
+
+        if (filePermissionTuple == null) {
+            return (CodeSymmetricKeyCryptoAC(OutcomeCode.CODE_006_FILE_NOT_FOUND))
+        }
 
         // now we decrypt the keys of the role. Then, we use the keys of the role
         // to decrypt the symmetric key. Finally, we decrypt the file
         val roleAsymEncKeys = crypto.decryptAsymEncKeys(
             encryptingKey = asymEncKeyPair.public,
             decryptingKey = asymEncKeyPair.private,
-            encryptedAsymEncKeys = fileRoleTuple.encryptedAsymEncKeys!!
+            encryptedAsymEncKeys = fileRoleTuple!!.encryptedAsymEncKeys!!
         )
         return CodeSymmetricKeyCryptoAC(
             key = crypto.decryptSymKey(
                 encryptingKey = roleAsymEncKeys.public,
                 decryptingKey = roleAsymEncKeys.private,
-                encryptedSymKey = filePermissionTuple.encryptedSymKey!!
+                encryptedSymKey = filePermissionTuple!!.encryptedSymKey!!
             ),
-            versionNumber = filePermissionTuple.symKeyVersionNumber
+            versionNumber = filePermissionTuple!!.symKeyVersionNumber
         )
     }
 }

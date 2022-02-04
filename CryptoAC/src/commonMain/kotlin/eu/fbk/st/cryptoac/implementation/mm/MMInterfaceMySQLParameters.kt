@@ -1,5 +1,8 @@
 package eu.fbk.st.cryptoac.implementation.mm
 
+import eu.fbk.st.cryptoac.CryptoACFormField
+import eu.fbk.st.cryptoac.InputType
+import eu.fbk.st.cryptoac.SERVER
 import eu.fbk.st.cryptoac.SafeRegex
 import io.ktor.utils.io.core.*
 import kotlinx.serialization.Serializable
@@ -10,12 +13,59 @@ private val logger = KotlinLogging.logger {}
 /**
  * Parameters ([username], [password], [port] and [url])
  * for configuring the MM as a MySQL database.
- * */
+ */
 @Serializable
 class MMInterfaceMySQLParameters(
-    var username: String, var password: String,
-    var port: Int, var url: String
-) : MMInterfaceParameters() {
+    override var username: String, override var password: String,
+    override var port: Int, override var url: String
+) : MMInterfaceRBACCLOUDParameters {
+
+    /** The type of this interface */
+    override val mmType: MMType = MMType.MYSQL
+
+    companion object {
+
+        /**
+         * Create a MMInterfaceMySQLParameters object from the given map of
+         * [parameters]. Missing values will cause the return object to be null
+         */
+        fun fromMap(parameters: HashMap<String, String>): MMInterfaceMySQLParameters {
+            return MMInterfaceMySQLParameters(
+                username = parameters[SERVER.USERNAME]!!, port = parameters[SERVER.MM_PORT]!!.toInt(),
+                url = parameters[SERVER.MM_URL]!!, password = parameters[SERVER.MM_PASSWORD]!!
+            )
+        }
+
+        /**
+         * Create a list of CryptoAC form
+         * fields from the given [parameters]
+         */
+        fun toMap(parameters: MMInterfaceMySQLParameters? = null): List<List<CryptoACFormField>> = listOf(
+            listOf(
+                CryptoACFormField(
+                    SERVER.MM_URL,
+                    SERVER.MM_URL.replace("_", " "),
+                    InputType.text,
+                    className = "darkTextField",
+                    defaultValue = parameters?.url
+                ),
+                CryptoACFormField(
+                    SERVER.MM_PASSWORD,
+                    SERVER.MM_PASSWORD.replace("_", " "),
+                    InputType.password,
+                    className = "darkTextField",
+                    defaultValue = parameters?.password
+                ),
+                CryptoACFormField(
+                    SERVER.MM_PORT,
+                    SERVER.MM_PORT.replace("_", " "),
+                    InputType.number,
+                    className = "darkTextField",
+                    defaultValue = parameters?.port.toString()
+                ),
+            )
+        )
+    }
 
     /** Check the parameters are valid through regular expressions and return true if they are, false otherwise */
     override fun checkParameters(): Boolean =

@@ -1,18 +1,19 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
-val kotlinVersion = "1.6.0"
-val serializationVersion = "1.3.0"
-val ktorVersion = "1.6.4"
+val kotlinVersion = "1.6.10"
+val serializationVersion = "1.3.1"
+val ktorVersion = "1.6.5"
 val libSodiumVersion = "0.8.4"
+val junitVersion = "5.8.2"
 
 var nativeTarget: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithHostTests? = null
 var jvmTarget: org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget? = null
 
 plugins {
-    kotlin("multiplatform") version "1.6.0"
+    kotlin("multiplatform") version "1.6.10"
     application //to run JVM part
-    kotlin("plugin.serialization") version "1.6.0"
-    id("org.jetbrains.kotlinx.benchmark") version "0.3.1"
+    kotlin("plugin.serialization") version "1.6.10"
+    id("org.jetbrains.kotlinx.benchmark") version "0.4.2"
 }
 
 group = "eu.fbk.st"
@@ -75,15 +76,15 @@ kotlin {
 
                 //implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
 
-
-                implementation("io.github.microutils:kotlin-logging:2.0.8")
+                implementation("io.github.microutils:kotlin-logging:2.1.21")
                 implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
                 implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion")
 
-                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.3.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.2")
             }
         }
         val commonTest by getting {
@@ -106,12 +107,12 @@ kotlin {
                     exclude("org.jetbrains.kotlin", "kotlin-test-junit")
                 }
 
-                implementation("ch.qos.logback:logback-core:1.2.3")
+                implementation("ch.qos.logback:logback-core:1.2.10")
                 implementation("org.owasp.encoder:encoder:1.2.3")
-                implementation("org.slf4j:slf4j-api:1.7.30")
-                implementation("org.owasp:security-logging-logback:1.1.6")
-                implementation("org.codehaus.janino:janino:3.1.4")
-                implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
+                implementation("org.slf4j:slf4j-api:1.7.35")
+                implementation("org.owasp:security-logging-logback:1.1.7")
+                implementation("org.codehaus.janino:janino:3.1.6")
+                implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
 
                 // https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.mqttv5.client
                 implementation("org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5")
@@ -126,19 +127,21 @@ kotlin {
                 implementation("io.ktor:ktor-client-jetty:$ktorVersion")
                 implementation("io.ktor:ktor-network-tls-certificates:$ktorVersion")
 
-                implementation("mysql:mysql-connector-java:8.0.25")
-                implementation("commons-cli:commons-cli:1.4")
+                implementation("mysql:mysql-connector-java:8.0.28")
+                implementation("commons-cli:commons-cli:1.5.0")
 
                 implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
                 implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
+
+                implementation("redis.clients:jedis:4.0.1")
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-                implementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
-                implementation("org.junit.jupiter:junit-jupiter:5.8.1")
+                implementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+                implementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+                implementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
+                implementation("org.junit.jupiter:junit-jupiter:$junitVersion")
             }
         }
         val jsMain by getting {
@@ -153,10 +156,10 @@ kotlin {
                 implementation(npm("react", "17.0.2"))
                 implementation(npm("react-dom", "17.0.2"))
 
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:17.0.2-pre.269-kotlin-1.6.0")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:17.0.2-pre.269-kotlin-1.6.0")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:17.0.2-pre.291-kotlin-$kotlinVersion")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:17.0.2-pre.291-kotlin-$kotlinVersion")
 
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:5.3.3-pre.269-kotlin-1.6.0")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:5.3.3-pre.291-kotlin-$kotlinVersion")
                 implementation(npm("react-is", "17.0.2"))
                 implementation(npm("styled-components", "5.3.3"))
 
@@ -174,7 +177,7 @@ kotlin {
                 implementation(npm("sass", "1.35.1"))
                 implementation(npm("sass-loader", "12.1.0"))
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
             }
         }
     }

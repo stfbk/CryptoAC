@@ -1,0 +1,11 @@
+{
+  "name": "kotlin-extensions",
+  "version": "1.0.1-pre.291-kotlin-1.6.10",
+  "customFields": {},
+  "main": "kotlin-extensions.js",
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

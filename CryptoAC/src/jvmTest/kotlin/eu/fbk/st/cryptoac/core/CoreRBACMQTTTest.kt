@@ -1,12 +1,15 @@
 package eu.fbk.st.cryptoac.core
 
 import eu.fbk.st.cryptoac.*
+import eu.fbk.st.cryptoac.TestUtilities.Companion.assertUnLockAndLock
 import eu.fbk.st.cryptoac.core.tuples.EnforcementType
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.junit.jupiter.api.*
 import java.io.File
+import java.lang.AssertionError
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertFalse
 
@@ -32,7 +35,7 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
         processDocker = "./startCryptoAC_MQTT.sh".runCommand(
             File("../Documentation/Installation/"),
         )
-        processDocker!!.waitFor(20, TimeUnit.SECONDS)
+        processDocker!!.waitFor(5, TimeUnit.SECONDS)
     }
 
     @BeforeEach
@@ -43,9 +46,9 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
     @AfterEach
     override fun tearDown() {
         core.subscribedTopicsKeysAndMessages.clear()
-        core.client.alreadyConnectedOnce = false
+        core.dm.client.alreadyConnectedOnce = false
         TestUtilities.resetDMMQTT(core.dm)
-        TestUtilities.resetMMMySQL()
+        TestUtilities.resetMMRedis()
     }
 
     @AfterAll
@@ -68,7 +71,7 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
     // TODO do for both combined and traditional enforcement
     override fun `not assigned or revoked user read file fails`() {
         val alice = "alice"
-        val aliceCore = TestUtilities.addAndInitUser(core, alice) as CoreRBACMQTT
+        val aliceCore = addAndInitUser(core, alice) as CoreRBACMQTT
 
         val employee = "employee"
         assert(core.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -88,7 +91,7 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             assert(aliceCore.readFile(exam).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(exam, firstMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
 
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[exam]!!.messages.size == 1 })
+            assert(waitForCondition { (core.subscribedTopicsKeysAndMessages[exam]?.messages?.size ?: -1) == 1 })
             assert(core.subscribedTopicsKeysAndMessages[exam]!!.messages.first().message == firstMessage)
             assert(aliceCore.subscribedTopicsKeysAndMessages[exam] == null)
         }
@@ -99,18 +102,18 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             assert(aliceCore.readFile(exam).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(exam, secondMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
 
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[exam]!!.messages.size == 2 })
+            assert(waitForCondition { (core.subscribedTopicsKeysAndMessages[exam]?.messages?.size ?: -1) == 2 })
             assert(core.subscribedTopicsKeysAndMessages[exam]!!.messages.filter { it.message == secondMessage }.size == 1)
-            assert(waitForCondition { aliceCore.subscribedTopicsKeysAndMessages[exam]!!.messages.size == 1 })
+            assert(waitForCondition { (aliceCore.subscribedTopicsKeysAndMessages[exam]?.messages?.size ?: -1) == 1 })
             assert(aliceCore.subscribedTopicsKeysAndMessages[exam]!!.messages.first().message == secondMessage)
 
 
             assert(core.revokePermissionFromRole(employee, exam, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(exam, thirdMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
 
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[exam]!!.messages.size == 3 })
+            assert(waitForCondition { (core.subscribedTopicsKeysAndMessages[exam]?.messages?.size ?: -1) == 3 })
             assert(core.subscribedTopicsKeysAndMessages[exam]!!.messages.filter { it.message == thirdMessage }.size == 1)
-            assert(waitForCondition { aliceCore.subscribedTopicsKeysAndMessages[exam]!!.messages.size == 1 })
+            assert(waitForCondition { (aliceCore.subscribedTopicsKeysAndMessages[exam]?.messages?.size ?: -1) == 1 })
             assert(aliceCore.subscribedTopicsKeysAndMessages[exam]!!.messages.first().message == secondMessage)
         }
     }
@@ -127,7 +130,7 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
     @Test
     override fun `not assigned or revoked user write file fails`() {
         val alice = "alice"
-        val aliceCore = TestUtilities.addAndInitUser(core, alice) as CoreRBACMQTT
+        val aliceCore = addAndInitUser(core, alice) as CoreRBACMQTT
 
         val employee = "employee"
         assert(core.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -161,23 +164,29 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             /** combined AC enforcement */
             assert(core.assignPermissionToRole(employee, examCombined, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
             assert(aliceCore.writeFile(examCombined, secondMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[examCombined]!!.messages.size == 1 })
+            assert(waitForCondition { (core.subscribedTopicsKeysAndMessages[examCombined]?.messages?.size ?: -1) == 1 })
             assert(core.subscribedTopicsKeysAndMessages[examCombined]!!.messages.first().message == secondMessage)
 
             assert(core.revokePermissionFromRole(employee, examCombined, PermissionType.WRITE) == OutcomeCode.CODE_000_SUCCESS)
             assert(aliceCore.writeFile(examCombined, firstMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assertFalse(waitForCondition { core.subscribedTopicsKeysAndMessages[examCombined]!!.messages.size == 2 })
+            assertFalse(waitForCondition {
+                (core.subscribedTopicsKeysAndMessages[examCombined]?.messages?.size ?: -1) == 2
+            })
 
 
             /** traditional AC enforcement */
             assert(core.assignPermissionToRole(employee, examTraditional, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
             assert(aliceCore.writeFile(examTraditional, secondMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.size == 1 })
+            assert(waitForCondition {
+                (core.subscribedTopicsKeysAndMessages[examTraditional]?.messages?.size ?: -1) == 1
+            })
             assert(core.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.first().message == secondMessage)
 
             assert(core.revokePermissionFromRole(employee, examTraditional, PermissionType.WRITE) == OutcomeCode.CODE_000_SUCCESS)
             assert(aliceCore.writeFile(examTraditional, firstMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assertFalse(waitForCondition { core.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.size == 2 })
+            assertFalse(waitForCondition {
+                (core.subscribedTopicsKeysAndMessages[examTraditional]?.messages?.size ?: -1) == 2
+            })
         }
     }
 
@@ -189,7 +198,7 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
     @Test
     override fun `admin or user read file having permission over file works`() {
         val alice = "alice"
-        val aliceCore = TestUtilities.addAndInitUser(core, alice) as CoreRBACMQTT
+        val aliceCore = addAndInitUser(core, alice) as CoreRBACMQTT
 
         val employee = "employee"
         assert(core.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -212,13 +221,15 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             /** combined AC enforcement */
             assert(core.readFile(examCombined).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(examCombined, firstMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[examCombined]!!.messages.size == 1 })
+            assert(waitForCondition { (core.subscribedTopicsKeysAndMessages[examCombined]?.messages?.size ?: -1) == 1 })
             assert(core.subscribedTopicsKeysAndMessages[examCombined]!!.messages.first().message == firstMessage)
 
             /** traditional AC enforcement */
             assert(core.readFile(examTraditional).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(examTraditional, firstMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.size == 1 })
+            assert(waitForCondition {
+                (core.subscribedTopicsKeysAndMessages[examTraditional]?.messages?.size ?: -1) == 1
+            })
             assert(core.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.first().message == firstMessage)
         }
 
@@ -229,13 +240,17 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             /** combined AC enforcement */
             assert(aliceCore.readFile(examCombined).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(examCombined, secondMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { aliceCore.subscribedTopicsKeysAndMessages[examCombined]!!.messages.size == 1 })
+            assert(waitForCondition {
+                (aliceCore.subscribedTopicsKeysAndMessages[examCombined]?.messages?.size ?: -1) == 1
+            })
             assert(aliceCore.subscribedTopicsKeysAndMessages[examCombined]!!.messages.first().message == secondMessage)
 
             /** traditional AC enforcement */
             assert(aliceCore.readFile(examTraditional).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(examTraditional, secondMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { aliceCore.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.size == 1 })
+            assert(waitForCondition {
+                (aliceCore.subscribedTopicsKeysAndMessages[examTraditional]?.messages?.size ?: -1) == 1
+            })
             assert(aliceCore.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.first().message == secondMessage)
         }
     }
@@ -248,7 +263,7 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
     @Test
     override fun `admin or user write file having permission over file works`() {
         val alice = "alice"
-        val aliceCore = TestUtilities.addAndInitUser(core, alice) as CoreRBACMQTT
+        val aliceCore = addAndInitUser(core, alice) as CoreRBACMQTT
 
         val employee = "employee"
         assert(core.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -271,13 +286,15 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             /** combined AC enforcement */
             assert(core.readFile(examCombined).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(examCombined, firstMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[examCombined]!!.messages.size == 1 })
+            assert(waitForCondition { (core.subscribedTopicsKeysAndMessages[examCombined]?.messages?.size ?: -1) == 1 })
             assert(core.subscribedTopicsKeysAndMessages[examCombined]!!.messages.first().message == firstMessage)
 
             /** traditional AC enforcement */
             assert(core.readFile(examTraditional).code == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(examTraditional, firstMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { core.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.size == 1 })
+            assert(waitForCondition {
+                (core.subscribedTopicsKeysAndMessages[examTraditional]?.messages?.size ?: -1) == 1
+            })
             assert(core.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.first().message == firstMessage)
         }
 
@@ -288,13 +305,17 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             /** combined AC enforcement */
             assert(aliceCore.readFile(examCombined).code == OutcomeCode.CODE_000_SUCCESS)
             assert(aliceCore.writeFile(examCombined, secondMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { aliceCore.subscribedTopicsKeysAndMessages[examCombined]!!.messages.size == 1 })
+            assert(waitForCondition {
+                (aliceCore.subscribedTopicsKeysAndMessages[examCombined]?.messages?.size ?: -1) == 1
+            })
             assert(aliceCore.subscribedTopicsKeysAndMessages[examCombined]!!.messages.first().message == secondMessage)
 
             /** traditional AC enforcement */
             assert(aliceCore.readFile(examTraditional).code == OutcomeCode.CODE_000_SUCCESS)
             assert(aliceCore.writeFile(examTraditional, secondMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            assert(waitForCondition { aliceCore.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.size == 1 })
+            assert(waitForCondition {
+                (aliceCore.subscribedTopicsKeysAndMessages[examTraditional]?.messages?.size ?: -1) == 1
+            })
             assert(aliceCore.subscribedTopicsKeysAndMessages[examTraditional]!!.messages.first().message == secondMessage)
         }
     }
@@ -312,5 +333,31 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
         logger.warn { "Mosquitto does not tell the client if it tried to subscribe" +
                 "to a topic it does not have access to; it will just silently drop the message. " +
                 "This is done on purpose as a security mechanism  " }
+    }
+
+    /** Before executing each block, commit the MM status */
+    override fun myRun(coreRBAC: CoreRBAC?, block: () -> Unit) {
+        val mmInterface = coreRBAC?.let {(coreRBAC as CoreRBACMQTT).mm } ?: core.mm
+        assertUnLockAndLock(mmInterface)
+        try {
+            block.invoke()
+        } catch (e: AssertionError) {
+            e.printStackTrace()
+        }
+        assertUnLockAndLock(mmInterface)
+    }
+
+    /** Before executing each blocking block, commit the MM status */
+    override fun myRunBlocking(coreRBAC: CoreRBAC?, block: suspend CoroutineScope.() -> Unit) {
+        val mmInterface = coreRBAC?.let {(coreRBAC as CoreRBACMQTT).mm } ?: core.mm
+        assertUnLockAndLock(mmInterface)
+        try {
+            runBlocking {
+                block.invoke(this)
+            }
+        } catch (e: AssertionError) {
+            e.printStackTrace()
+        }
+        assertUnLockAndLock(mmInterface)
     }
 }

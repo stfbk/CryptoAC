@@ -4,21 +4,20 @@ import eu.fbk.st.cryptoac.crypto.AsymKeysType
 import eu.fbk.st.cryptoac.crypto.KeyPairCryptoAC
 import eu.fbk.st.cryptoac.crypto.PrivateKeyCryptoAC
 import eu.fbk.st.cryptoac.crypto.PublicKeyCryptoAC
-import java.math.BigInteger
 import java.security.KeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
 
 /**
  * A pair of cryptographic keys composed of
- * a [public] key, a [private] key and a [type]
+ * a [public] key, a [private] key and a [keyType]
  * for the JCA
  */
 class KeyPairJava(
     override val public: PublicKeyJava,
     override val private: PrivateKeyJava,
-    override val type: AsymKeysType,
-): KeyPairCryptoAC(public, private, type)
+    override val keyType: AsymKeysType,
+): KeyPairCryptoAC(public, private, keyType)
 
 /** A public cryptographic key for the JCA */
 class PublicKeyJava(val public: PublicKey) : PublicKeyCryptoAC {
@@ -38,5 +37,5 @@ class PrivateKeyJava(val private: PrivateKey) : PrivateKeyCryptoAC {
 fun KeyPair.toKeyPairJava(type: AsymKeysType): KeyPairJava = KeyPairJava(
     public = PublicKeyJava(this.public),
     private = PrivateKeyJava(this.private),
-    type = type
+    keyType = type
 )

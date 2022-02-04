@@ -5,7 +5,7 @@ import eu.fbk.st.cryptoac.core.CoreParameters
 import eu.fbk.st.cryptoac.core.tuples.FileTuple
 import eu.fbk.st.cryptoac.core.tuples.PermissionTuple
 
-/** Abstract class defining the methods to interface with the RM */
+/** Interface defining the methods to interact with the RM */
 abstract class RMInterface {
 
     /**

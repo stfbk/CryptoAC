@@ -61,7 +61,6 @@ import kotlin.collections.LinkedHashSet
 import kotlin.reflect.full.isSubclassOf
 
 // TODO AGGIORNA IL FILE SWAGGER DELLE APIs
-// TODO test these functions independently of the core type
 
 private val logger = KotlinLogging.logger {}
 
@@ -127,19 +126,7 @@ fun Route.profileRouting() {
 
             if (loggedUser == requestedUsername) {
                 loggedUserParams.obscureSensitiveFields()
-                call.respond(
-                    when (coreType) {
-                        CoreType.RBAC_CLOUD -> Json.encodeToString(loggedUserParams as CoreParametersCLOUD)
-                        CoreType.RBAC_MQTT -> Json.encodeToString(loggedUserParams as CoreParametersMQTT)
-                        CoreType.RBAC_MOCK -> if (development) {
-                            Json.encodeToString(loggedUserParams as CoreParametersMOCK)
-                        } else {
-                            val message = "Using MOCK core when not in development mode"
-                            logger.error { message }
-                            throw IllegalStateException(message)
-                        }
-                    }
-                )
+                call.respond(myJson.encodeToString(loggedUserParams))
             } else if (loggedUser == ADMIN && loggedUserParams.user.isAdmin) {
                 val requestedUserParams = ProfileManager.loadProfile(requestedUsername, coreType)
                 if (requestedUserParams == null) {
@@ -149,19 +136,7 @@ fun Route.profileRouting() {
                 }
                 else {
                     requestedUserParams.obscureSensitiveFields()
-                    call.respond(
-                        when (coreType) {
-                            CoreType.RBAC_CLOUD -> Json.encodeToString(requestedUserParams as CoreParametersCLOUD)
-                            CoreType.RBAC_MQTT -> Json.encodeToString(requestedUserParams as CoreParametersMQTT)
-                            CoreType.RBAC_MOCK -> if (development) {
-                                Json.encodeToString(requestedUserParams as CoreParametersMOCK)
-                            } else {
-                                val message = "Using MOCK core when not in development mode"
-                                logger.error { message }
-                                throw IllegalStateException(message)
-                            }
-                        }
-                    )
+                    call.respond(myJson.encodeToString(requestedUserParams))
                 }
             }
             else {
@@ -199,24 +174,9 @@ fun Route.profileRouting() {
             val isLoggedUserAdmin = loggedUserParams?.user?.isAdmin ?: false
 
             /** Get the core parameters from the request */
-            val coreParameters: CoreParameters = when (coreType) {
-                CoreType.RBAC_CLOUD -> {
-                    val coreParametersCLOUD: CoreParametersCLOUD = call.receive()
-                    coreParametersCLOUD
-                }
-                CoreType.RBAC_MQTT -> {
-                    val coreParametersMQTT: CoreParametersMQTT = call.receive()
-                    coreParametersMQTT
-                }
-                CoreType.RBAC_MOCK -> if (development) {
-                    val coreParametersMOCK: CoreParametersMOCK = call.receive()
-                    coreParametersMOCK
-                } else {
-                    val message = "Using MOCK core when not in development mode"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-            }
+            // TODO should become "val coreParameters = call.receive<CoreParameters>()", but serialization issues; investigate
+            val coreParametersString = call.receive<String>().replace("""\"""", "\"").drop(1).dropLast(1)
+            val coreParameters: CoreParameters = myJson.decodeFromString(coreParametersString)
 
             val requestedUsername = coreParameters.user.name
             logger.info { "User $loggedUser is creating a profile for user $requestedUsername" }
@@ -242,12 +202,12 @@ fun Route.profileRouting() {
                     asymEncKeys = AsymKeys(
                         public = asymEncKeys.public.encoded.encodeBase64(),
                         private = asymEncKeys.private.encoded.encodeBase64(),
-                        type = AsymKeysType.ENC
+                        keysType = AsymKeysType.ENC
                     ),
                     asymSigKeys = AsymKeys(
                         public = asymSigKeys.public.encoded.encodeBase64(),
                         private = asymSigKeys.private.encoded.encodeBase64(),
-                        type = AsymKeysType.SIG
+                        keysType = AsymKeysType.SIG
                     ),
                     isAdmin = coreParameters.user.isAdmin)
                 coreParameters.user = newUser
@@ -314,28 +274,9 @@ fun Route.profileRouting() {
             val isLoggedUserAdmin = loggedUserParams?.user?.isAdmin ?: false
 
             /** Get the core parameters from the request */
-            // TODO this should be "val coreParameters = call.receive<CoreParameters>()", but a bug in kotlinx
-            //  serialization library prevents it. Therefore, receive as string and then serialize. When a new version
-            //  of the kotlinx serialization library is provided, try again
-            val updatedCoreParametersString = call.receive<String>()
-            val updatedCoreParameters: CoreParameters = when (coreType) {
-                CoreType.RBAC_CLOUD -> {
-                    val coreParametersCLOUD: CoreParametersCLOUD = Json.decodeFromString(updatedCoreParametersString)
-                    coreParametersCLOUD
-                }
-                CoreType.RBAC_MQTT -> {
-                    val coreParametersMQTT: CoreParametersMQTT = Json.decodeFromString(updatedCoreParametersString)
-                    coreParametersMQTT
-                }
-                CoreType.RBAC_MOCK -> if (development) {
-                    val coreParametersMOCK: CoreParametersMOCK = Json.decodeFromString(updatedCoreParametersString)
-                    coreParametersMOCK
-                } else {
-                    val message = "Using MOCK core when not in development mode"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-            }
+            // TODO should become "val coreParameters = call.receive<CoreParameters>()", but serialization issues; investigate
+            val updatedCoreParametersString = call.receive<String>().replace("""\"""", "\"").drop(1).dropLast(1)
+            val updatedCoreParameters: CoreParameters = myJson.decodeFromString(updatedCoreParametersString)
 
             val requestedUsername = updatedCoreParameters.user.name
             logger.info { "User $loggedUser is updating the profile for user $requestedUsername" }
@@ -458,7 +399,61 @@ fun Route.adminRouting() {
 
         route(USERS) {
 
-            /** Create a new user in the access control policy and return the configuration parameters */
+            /** Return the list of currently existing users */
+            get {
+                // TODO implement button in web interface
+                // TODO think of eventual path or query parameters
+
+                /** Users must be logged-in to access this API */
+                val loggedUser = getSessionUsername(call.sessions) ?: return@get unauthorized(call,
+                    "User is not authenticated", OutcomeCode.CODE_036_UNAUTHORIZED)
+
+                val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
+                    "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
+                val coreType = try {
+                    CoreType.valueOf(coreParam)
+                } catch (e: IllegalArgumentException) {
+                    return@get unprocessableEntity(call,
+                        "Wrong $CORE parameter", OutcomeCode.CODE_020_INVALID_PARAMETER)
+                }
+
+                /** Proceed only if the logged user is the admin */
+                if (loggedUser == ADMIN) {
+                    val coreObject = getOrCreateCore(call.sessions, loggedUser, coreType)
+                        ?: return@get notFound(
+                            call,
+                            "Profile of logged user $loggedUser not found, create one",
+                            OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                        )
+
+                    if (!coreObject::class.isSubclassOf(CoreRBAC::class)) {
+                        val message = "Core created is not RBAC"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
+                    coreObject as CoreRBAC
+
+                    /** Get the (visible) users.  */
+                    val getUsersResult = coreObject.getUsers()
+                    if (getUsersResult.code != OutcomeCode.CODE_000_SUCCESS) {
+                        return@get internalError(
+                            call,
+                            "Error while getting users",
+                            getUsersResult.code
+                        )
+                    }
+                    call.respond(getUsersResult.users ?: hashSetOf())
+                } else {
+                    logger.warn { "User $loggedUser requested to get the list of users" }
+                    return@get forbidden(call, "Cannot get the list of users",
+                        OutcomeCode.CODE_035_FORBIDDEN)
+                }
+            }
+
+            /**
+             * Create a new user in the access control policy
+             * and return the configuration parameters
+             */
             post {
                 /** Users must be logged-in to access this API */
                 val loggedUser = getSessionUsername(call.sessions) ?: return@post unauthorized(call,
@@ -500,19 +495,7 @@ fun Route.adminRouting() {
                             addUserResult.code)
                     }
                     val parameters = addUserResult.parameters
-                    call.respond(
-                        when (coreType) {
-                            CoreType.RBAC_CLOUD -> Json.encodeToString(parameters!! as CoreParametersCLOUD)
-                            CoreType.RBAC_MQTT -> Json.encodeToString(parameters!! as CoreParametersMQTT)
-                            CoreType.RBAC_MOCK -> if (development) {
-                                Json.encodeToString(parameters!! as CoreParametersMOCK)
-                            } else {
-                                val message = "Using MOCK core when not in development mode"
-                                logger.error { message }
-                                throw IllegalStateException(message)
-                            }
-                        }
-                    )
+                    call.respond(myJson.encodeToString(parameters))
                 } else {
                     logger.warn { "User $loggedUser requested to create user $newUsername" }
                     return@post forbidden(call, "Cannot create user $newUsername",
@@ -572,6 +555,57 @@ fun Route.adminRouting() {
         }
 
         route(ROLES) {
+
+            /** Return the list of currently existing roles */
+            get {
+                // TODO implement button in web interface
+                // TODO think of eventual path or query parameters
+
+                /** Users must be logged-in to access this API */
+                val loggedUser = getSessionUsername(call.sessions) ?: return@get unauthorized(call,
+                    "User is not authenticated", OutcomeCode.CODE_036_UNAUTHORIZED)
+
+                val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
+                    "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
+                val coreType = try {
+                    CoreType.valueOf(coreParam)
+                } catch (e: IllegalArgumentException) {
+                    return@get unprocessableEntity(call,
+                        "Wrong $CORE parameter", OutcomeCode.CODE_020_INVALID_PARAMETER)
+                }
+
+                /** Proceed only if the logged user is the admin */
+                if (loggedUser == ADMIN) {
+                    val coreObject = getOrCreateCore(call.sessions, loggedUser, coreType)
+                        ?: return@get notFound(
+                            call,
+                            "Profile of logged user $loggedUser not found, create one",
+                            OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                        )
+
+                    if (!coreObject::class.isSubclassOf(CoreRBAC::class)) {
+                        val message = "Core created is not RBAC"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
+                    coreObject as CoreRBAC
+
+                    /** Get the (visible) roles.  */
+                    val getRolesResult = coreObject.getRoles()
+                    if (getRolesResult.code != OutcomeCode.CODE_000_SUCCESS) {
+                        return@get internalError(
+                            call,
+                            "Error while getting roles",
+                            getRolesResult.code
+                        )
+                    }
+                    call.respond(getRolesResult.roles ?: hashSetOf())
+                } else {
+                    logger.warn { "User $loggedUser requested to get the list of roles" }
+                    return@get forbidden(call, "Cannot get the list of roles",
+                        OutcomeCode.CODE_035_FORBIDDEN)
+                }
+            }
 
             /** Create a new role in the access control policy */
             post {
@@ -673,6 +707,56 @@ fun Route.adminRouting() {
         }
 
         route(FILES) {
+
+            /** Return the list of currently existing files */
+            get {
+                // TODO implement button in web interface
+
+                /** Users must be logged-in to access this API */
+                val loggedUser = getSessionUsername(call.sessions) ?: return@get unauthorized(call,
+                    "User is not authenticated", OutcomeCode.CODE_036_UNAUTHORIZED)
+
+                val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
+                    "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
+                val coreType = try {
+                    CoreType.valueOf(coreParam)
+                } catch (e: IllegalArgumentException) {
+                    return@get unprocessableEntity(call,
+                        "Wrong $CORE parameter", OutcomeCode.CODE_020_INVALID_PARAMETER)
+                }
+
+                /** Proceed only if the logged user is the admin */
+                if (loggedUser == ADMIN) {
+                    val coreObject = getOrCreateCore(call.sessions, loggedUser, coreType)
+                        ?: return@get notFound(
+                            call,
+                            "Profile of logged user $loggedUser not found, create one",
+                            OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                        )
+
+                    if (!coreObject::class.isSubclassOf(CoreRBAC::class)) {
+                        val message = "Core created is not RBAC"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
+                    coreObject as CoreRBAC
+
+                    /** Get the (visible) files.  */
+                    val getFilesResult = coreObject.getFiles()
+                    if (getFilesResult.code != OutcomeCode.CODE_000_SUCCESS) {
+                        return@get internalError(
+                            call,
+                            "Error while getting files",
+                            getFilesResult.code
+                        )
+                    }
+                    call.respond(getFilesResult.files ?: hashSetOf())
+                } else {
+                    logger.warn { "User $loggedUser requested to get the list of files" }
+                    return@get forbidden(call, "Cannot get the list of files",
+                        OutcomeCode.CODE_035_FORBIDDEN)
+                }
+            }
 
             /** Delete a file from the access control policy */
             delete("{$FILE_NAME}") {
@@ -966,158 +1050,7 @@ fun Route.userRouting() {
     /** Wrap all routes related to the proxy */
     route(PROXY) {
 
-        route(USERS) {
-
-            /**
-             * Return the users that the currently logged-in user can see.
-             * The admin can see all users, while a user can only get him/herself.
-             */
-            get {
-                // TODO implement button in web interface
-                // TODO think of eventual path or query parameters
-
-                /** Users must be logged-in to access this API */
-                val loggedUser = getSessionUsername(call.sessions)
-                if (loggedUser == null) {
-                    val message = "User not logged-in is asking for users"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-                logger.info { "User $loggedUser is querying users" }
-
-                val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
-                    "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
-                val coreType = try {
-                    CoreType.valueOf(coreParam)
-                } catch (e: IllegalArgumentException) {
-                    return@get unprocessableEntity(call,
-                        "Wrong $CORE parameter", OutcomeCode.CODE_020_INVALID_PARAMETER)
-                }
-
-                val coreObject = getOrCreateCore(call.sessions, loggedUser, coreType)
-                    ?: return@get notFound(call,
-                        "Profile of logged user $loggedUser not found, create one",
-                        OutcomeCode.CODE_038_PROFILE_NOT_FOUND)
-
-                if (!coreObject::class.isSubclassOf(CoreRBAC::class)) {
-                    val message = "Core created is not RBAC"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-                coreObject as CoreRBAC
-
-                /** Get the (visible) users.  */
-                val getUsersResult = coreObject.getUsers()
-                if (getUsersResult.code != OutcomeCode.CODE_000_SUCCESS) {
-                    return@get internalError(call,
-                        "Error while getting users",
-                        getUsersResult.code)
-                }
-                call.respond(getUsersResult.users!!)
-            }
-        }
-
-        route(ROLES) {
-
-            /**
-             * Return the roles that the currently logged-in user can see.
-             * The admin can see all roles, while a user can only get roles
-             * assigned to him.
-             */
-            get {
-                // TODO implement button in web interface
-                // TODO think of eventual path or query parameters
-
-                /** Users must be logged-in to access this API */
-                val loggedUser = getSessionUsername(call.sessions)
-                if (loggedUser == null) {
-                    val message = "User not logged-in is asking for roles"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-                logger.info { "User $loggedUser is querying roles" }
-
-                val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
-                    "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
-                val coreType = try {
-                    CoreType.valueOf(coreParam)
-                } catch (e: IllegalArgumentException) {
-                    return@get unprocessableEntity(call,
-                        "Wrong $CORE parameter", OutcomeCode.CODE_020_INVALID_PARAMETER)
-                }
-
-                val coreObject = getOrCreateCore(call.sessions, loggedUser, coreType)
-                    ?: return@get notFound(call,
-                        "Profile of logged user $loggedUser not found, create one",
-                        OutcomeCode.CODE_038_PROFILE_NOT_FOUND)
-
-                if (!coreObject::class.isSubclassOf(CoreRBAC::class)) {
-                    val message = "Core created is not RBAC"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-                coreObject as CoreRBAC
-
-                /** Get the (visible) roles.  */
-                val getRolesResult = coreObject.getRoles()
-                if (getRolesResult.code != OutcomeCode.CODE_000_SUCCESS) {
-                    return@get internalError(call,
-                        "Error while getting roles",
-                        getRolesResult.code)
-                }
-                call.respond(getRolesResult.roles!!)
-            }
-        }
-
         route(FILES) {
-
-            /**
-             * Return the files that the currently logged-in user can see.
-             * The admin can see all files, while a user can only get files
-             * assigned to him.
-             */
-            get {
-                // TODO implement button in web interface
-
-                /** Users must be logged-in to access this API */
-                val loggedUser = getSessionUsername(call.sessions)
-                if (loggedUser == null) {
-                    val message = "User not logged-in is asking for files"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-                logger.info { "User $loggedUser is querying files" }
-
-                val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
-                    "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
-                val coreType = try {
-                    CoreType.valueOf(coreParam)
-                } catch (e: IllegalArgumentException) {
-                    return@get unprocessableEntity(call,
-                        "Wrong $CORE parameter", OutcomeCode.CODE_020_INVALID_PARAMETER)
-                }
-
-                val coreObject = getOrCreateCore(call.sessions, loggedUser, coreType)
-                    ?: return@get notFound(call,
-                        "Profile of logged user $loggedUser not found, create one",
-                        OutcomeCode.CODE_038_PROFILE_NOT_FOUND)
-
-                if (!coreObject::class.isSubclassOf(CoreRBAC::class)) {
-                    val message = "Core created is not RBAC"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
-                coreObject as CoreRBAC
-
-                /** Get the (visible) files.  */
-                val getFilesResult = coreObject.getFiles()
-                if (getFilesResult.code != OutcomeCode.CODE_000_SUCCESS) {
-                    return@get internalError(call,
-                        "Error while getting files",
-                        getFilesResult.code)
-                }
-                call.respond(getFilesResult.files!!)
-            }
 
             /** Get a file from the access control policy */
             get("{$FILE_NAME}") {
@@ -1345,7 +1278,10 @@ fun Route.userRouting() {
             }
 
 
-            /** WebSocket (WS) for MQTT messages */ // TODO update doc
+            /**
+             * Allows connecting to the proxy
+             * through a WebSocket (WS)
+             */
             val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
             webSocket {
                 /** Users must be logged-in to access this API */
@@ -1400,13 +1336,8 @@ fun Route.userRouting() {
                 // TODO think of eventual path or query parameters
 
                 /** Users must be logged-in to access this API */
-                val loggedUser = getSessionUsername(call.sessions)
-                if (loggedUser == null) {
-                    // TODO do not throw exception, just return unauthorized
-                    val message = "User not logged-in is asking for users"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
+                val loggedUser = getSessionUsername(call.sessions) ?: return@get unauthorized(call,
+                    "User is not authenticated", OutcomeCode.CODE_036_UNAUTHORIZED)
 
                 val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
                     "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
@@ -1447,7 +1378,7 @@ fun Route.userRouting() {
                         "Error while getting assignments",
                         getAssignmentsResult.code)
                 }
-                call.respond(getAssignmentsResult.roleTuples!!)
+                call.respond(getAssignmentsResult.roleTuples ?: hashSetOf())
             }
         }
 
@@ -1459,12 +1390,8 @@ fun Route.userRouting() {
                 // TODO think of eventual path or query parameters
 
                 /** Users must be logged-in to access this API */
-                val loggedUser = getSessionUsername(call.sessions)
-                if (loggedUser == null) {
-                    val message = "User not logged-in is asking for users"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
+                val loggedUser = getSessionUsername(call.sessions) ?: return@get unauthorized(call,
+                    "User is not authenticated", OutcomeCode.CODE_036_UNAUTHORIZED)
 
                 val coreParam = call.parameters[CORE] ?: return@get unprocessableEntity(call,
                     "Missing $CORE parameter", OutcomeCode.CODE_019_MISSING_PARAMETERS)
@@ -1495,13 +1422,16 @@ fun Route.userRouting() {
                 }
 
                 /** Get the permissions.  */
-                val getPermissionsResult = coreObject.getPermissions(roleName = requestedRoleName, fileName = requestedFileName)
+                val getPermissionsResult = coreObject.getPermissions(
+                    roleName = requestedRoleName,
+                    fileName = requestedFileName
+                )
                 if (getPermissionsResult.code != OutcomeCode.CODE_000_SUCCESS) {
                     return@get internalError(call,
                         "Error while getting assignments",
                         getPermissionsResult.code)
                 }
-                call.respond(getPermissionsResult.permissionTuples!!)
+                call.respond(getPermissionsResult.permissionTuples ?: hashSetOf())
             }
         }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 newgrp docker << END
-    docker rmi cryptoac_mosquitto cryptoac_mysql cryptoac_opa cryptoac_cryptoac
+    docker rmi cryptoac_mosquitto cryptoac_mysql cryptoac_redis cryptoac_opa cryptoac_cryptoac
 END
 
 for d in */ ; do

@@ -1,0 +1,11 @@
+{
+  "name": "kotlinx-benchmark-kotlinx-benchmark-runtime-js-legacy",
+  "version": "0.4.2",
+  "customFields": {},
+  "main": "kotlinx-benchmark-kotlinx-benchmark-runtime-js-legacy.js",
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

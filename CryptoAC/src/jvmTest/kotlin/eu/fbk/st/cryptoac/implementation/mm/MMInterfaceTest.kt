@@ -1,11 +1,16 @@
 package eu.fbk.st.cryptoac.implementation.mm
 
 import eu.fbk.st.cryptoac.*
+import eu.fbk.st.cryptoac.Constants.ADMIN
+import eu.fbk.st.cryptoac.TestUtilities.Companion.assertLock
+import eu.fbk.st.cryptoac.TestUtilities.Companion.assertUnLockAndLock
+import eu.fbk.st.cryptoac.TestUtilities.Companion.assertUnlock
 import eu.fbk.st.cryptoac.core.elements.*
 import eu.fbk.st.cryptoac.core.elements.User
 import eu.fbk.st.cryptoac.core.tuples.*
 import eu.fbk.st.cryptoac.crypto.AsymKeysType
 import org.junit.jupiter.api.*
+import java.lang.AssertionError
 
 internal abstract class MMInterfaceTest {
 
@@ -16,54 +21,45 @@ internal abstract class MMInterfaceTest {
 
     @BeforeEach
     open fun setUp() {
-        assert(mm!!.lock() == OutcomeCode.CODE_000_SUCCESS)
+        assertLock(mm!!)
     }
 
     @AfterEach
     open fun tearDown() {
-        assert(mm!!.unlock() == OutcomeCode.CODE_000_SUCCESS)
+        assertUnlock(mm!!)
     }
 
     @AfterAll
     abstract fun tearDownAll()
-    
-    
-    
+
+
+    /** Add a user in the MM and return an instance of the interface */
+    abstract fun addAndInitUser(user: User): MMInterface
+
+
+
     @Test
     fun initAdmin() {
         // TODO
     }
 
-
-
     @Test
     open fun `init user of existing user works`() {
         /** init user of existing user */
-        run {
+        myRun {
             addAndInitUser(Parameters.aliceUser)
         }
     }
 
     @Test
-    open fun `init user of non-existing or already initialized user fails`() {
-
-        /** init user of non-existing user */
-        run {
-            val MMInterfaceMySQLParameters = MMInterfaceMySQLParameters(
-                username = "non-existing", password = "password",
-                port = Parameters.MMInterfaceMySQLParameters.port,
-                url = Parameters.MMInterfaceMySQLParameters.url,
-            )
-            val nonExistingUserMetadataStorage = MMInterfaceMySQL(MMInterfaceMySQLParameters)
-            assert(nonExistingUserMetadataStorage.lock() == OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED)
-        }
+    open fun `init user of already initialized user fails`() {
 
         /** init user of already initialized user */
-        run {
-            val bobMetadataStorageMySQL = addAndInitUser(Parameters.bobUser)
-            assert(bobMetadataStorageMySQL.lock() == OutcomeCode.CODE_000_SUCCESS)
-            assert(bobMetadataStorageMySQL.initUser(Parameters.bobUser) == OutcomeCode.CODE_004_USER_NOT_FOUND)
-            assert(bobMetadataStorageMySQL.unlock() == OutcomeCode.CODE_000_SUCCESS)
+        myRun {
+            val bobMM = addAndInitUser(Parameters.bobUser)
+            assert(bobMM.lock() == OutcomeCode.CODE_000_SUCCESS)
+            assert(bobMM.initUser(Parameters.bobUser) == OutcomeCode.CODE_004_USER_NOT_FOUND)
+            assert(bobMM.unlock() == OutcomeCode.CODE_000_SUCCESS)
         }
     }
 
@@ -72,14 +68,14 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `is admin of admin user is true, while is admin of other users, non-existing or deleted is false or fails`() {
         /** is admin of admin user */
-        run {
-            val isAdminResult = mm!!.isUserAdmin(Constants.ADMIN)
+        myRun {
+            val isAdminResult = mm!!.isUserAdmin(ADMIN)
             assert(isAdminResult.code == OutcomeCode.CODE_000_SUCCESS)
             assert(isAdminResult.boolean!!)
         }
 
         /** is admin of other user */
-        run {
+        myRun {
             assert(mm!!.addUser(Parameters.aliceUser).code == OutcomeCode.CODE_000_SUCCESS)
             val isAdminResult = mm!!.isUserAdmin(Parameters.aliceUser.name)
             assert(isAdminResult.code == OutcomeCode.CODE_000_SUCCESS)
@@ -87,13 +83,13 @@ internal abstract class MMInterfaceTest {
         }
 
         /** is admin of non-existing user */
-        run {
+        myRun {
             val isAdminResult = mm!!.isUserAdmin("bob")
             assert(isAdminResult.code == OutcomeCode.CODE_004_USER_NOT_FOUND)
         }
 
         /** is admin of deleted user */
-        run {
+        myRun {
             assert(mm!!.deleteUser(Parameters.aliceUser.name) == OutcomeCode.CODE_000_SUCCESS)
             val isAdminResult = mm!!.isUserAdmin(Parameters.aliceUser.name)
             assert(isAdminResult.code == OutcomeCode.CODE_004_USER_NOT_FOUND)
@@ -105,7 +101,7 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `add user once works`() {
         /** add user once */
-        run {
+        myRun {
             assert(mm!!.addUser(Parameters.aliceUser).code == OutcomeCode.CODE_000_SUCCESS)
         }
     }
@@ -114,18 +110,18 @@ internal abstract class MMInterfaceTest {
     open fun `add user twice or with admin name or with same name as previously deleted user fails`() {
 
         /** add user twice */
-        run {
+        myRun {
             assert(mm!!.addUser(Parameters.aliceUser).code == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.addUser(Parameters.aliceUser).code == OutcomeCode.CODE_001_USER_ALREADY_EXISTS)
         }
 
         /** add user with admin name */
-        run {
+        myRun {
             assert(mm!!.addUser(Parameters.adminUser).code == OutcomeCode.CODE_001_USER_ALREADY_EXISTS)
         }
 
         /** add user with same name as previously deleted user */
-        run {
+        myRun {
             addAndInitUser(Parameters.bobUser)
             assert(mm!!.deleteUser(Parameters.bobUser.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.addUser(Parameters.bobUser).code == OutcomeCode.CODE_013_USER_WAS_DELETED)
@@ -137,7 +133,7 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `add role once works`() {
         /** add role once */
-        run {
+        myRun {
             addRole("employee")
         }
     }
@@ -147,17 +143,17 @@ internal abstract class MMInterfaceTest {
         val studentRole = addRole("student")
 
         /** add role twice */
-        run {
+        myRun {
             assert(mm!!.addRole(studentRole) == OutcomeCode.CODE_002_ROLE_ALREADY_EXISTS)
         }
 
         /** add role with admin name */
-        run {
+        myRun {
             assert(mm!!.addRole(Parameters.adminRole) == OutcomeCode.CODE_002_ROLE_ALREADY_EXISTS)
         }
 
         /** add role with same name as previously deleted role */
-        run {
+        myRun {
             assert(mm!!.deleteRoleTuples(roleName = studentRole.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.deleteRole(studentRole.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.addRole(studentRole) == OutcomeCode.CODE_014_ROLE_WAS_DELETED)
@@ -169,7 +165,7 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `add file once works`() {
         /** add file once */
-        run {
+        myRun {
             addFile("exam")
         }
     }
@@ -179,12 +175,12 @@ internal abstract class MMInterfaceTest {
         val exam = addFile("exam")
 
         /** add file twice */
-        run {
+        myRun {
             assert(mm!!.addFile(exam) == OutcomeCode.CODE_003_FILE_ALREADY_EXISTS)
         }
 
         /** add file with same name as previously deleted file */
-        run {
+        myRun {
             assert(mm!!.deleteFile(exam.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.addFile(exam) == OutcomeCode.CODE_015_FILE_WAS_DELETED)
         }
@@ -200,17 +196,17 @@ internal abstract class MMInterfaceTest {
         val roleEmployee = addRole("employee")
 
         /** add no role tuples */
-        run {
+        myRun {
             assert(mm!!.addRoleTuples(HashSet()) == OutcomeCode.CODE_000_SUCCESS)
         }
 
         /** add one role tuple */
-        run {
+        myRun {
             addRoleTuple("Alice", roleEmployee)
         }
 
         /** add multiple role tuples */
-        run {
+        myRun {
             val bobRoleTuple = TestUtilities.createRoleTuple("Bob", roleEmployee)
             val carlRoleTuple = TestUtilities.createRoleTuple("Carl", roleEmployee)
             assert(
@@ -218,7 +214,6 @@ internal abstract class MMInterfaceTest {
                         OutcomeCode.CODE_000_SUCCESS
             )
         }
-
     }
 
     @Test
@@ -227,11 +222,11 @@ internal abstract class MMInterfaceTest {
         val roleEmployee = addRole("employee")
 
         /** add role tuple twice */
-        run {
+        myRun {
             val aliceRoleTuple = addRoleTuple("Alice", roleEmployee)
             assert(
                 mm!!.addRoleTuples(HashSet<RoleTuple>().apply { add(aliceRoleTuple) }) ==
-                        OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
             )
         }
     }
@@ -249,38 +244,38 @@ internal abstract class MMInterfaceTest {
         val roleNonExisting = TestUtilities.createRole("non-existing")
 
         /** add role tuple with non-existing user */
-        run {
+        myRun {
             val nonExistingUserRoleTuple = TestUtilities.createRoleTuple("non-existing", roleEmployee)
             assert(
                 mm!!.addRoleTuples(HashSet<RoleTuple>().apply { add(nonExistingUserRoleTuple) }) ==
-                        OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
             )
         }
 
         /** add role tuple with deleted user */
-        run {
+        myRun {
             val deleteUserRoleTuple = TestUtilities.createRoleTuple(userDeleted.name, roleEmployee)
             assert(
                 mm!!.addRoleTuples(HashSet<RoleTuple>().apply { add(deleteUserRoleTuple) }) ==
-                        OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
             )
         }
 
         /** add role tuple with non-existing role */
-        run {
+        myRun {
             val nonExistingRoleRoleTuple = TestUtilities.createRoleTuple(Parameters.aliceUser.name, roleNonExisting)
             assert(
                 mm!!.addRoleTuples(HashSet<RoleTuple>().apply { add(nonExistingRoleRoleTuple) }) ==
-                        OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
             )
         }
 
         /** add role tuple with deleted role */
-        run {
+        myRun {
             val userDeletedRoleTuple = TestUtilities.createRoleTuple(Parameters.aliceUser.name, roleDeleted)
             assert(
                 mm!!.addRoleTuples(HashSet<RoleTuple>().apply { add(userDeletedRoleTuple) }) ==
-                        OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
             )
         }
     }
@@ -296,17 +291,17 @@ internal abstract class MMInterfaceTest {
         val fileExam = addFile("exam")
 
         /** add no permission tuples */
-        run {
+        myRun {
             assert(mm!!.addPermissionTuples(HashSet()) == OutcomeCode.CODE_000_SUCCESS)
         }
 
         /** add one permission tuple */
-        run {
+        myRun {
             addPermissionTuple(roleEmployee, fileExam)
         }
 
         /** add multiple permission tuples */
-        run {
+        myRun {
             val studentPermissionTuple = TestUtilities.createPermissionTuple(roleStudent, fileExam)
             val directoryPermissionTuple = TestUtilities.createPermissionTuple(roleDirector, fileExam)
             assert(
@@ -323,11 +318,11 @@ internal abstract class MMInterfaceTest {
         val fileExam = addFile("exam")
 
         /** add permission tuple twice */
-        run {
+        myRun {
             val employeePermissionTuple = addPermissionTuple(roleEmployee, fileExam)
             assert(
                 mm!!.addPermissionTuples(HashSet<PermissionTuple>().apply { add(employeePermissionTuple) }) ==
-                        OutcomeCode.CODE_049_ROLE_OR_FILE_NOT_FOUND_OR_PERMISSIONTUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
             )
         }
     }
@@ -346,39 +341,39 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteFile(fileDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** add permission tuple with non-existing role */
-        run {
+        myRun {
             val nonExistingRolePermissionTuple = TestUtilities.createPermissionTuple(roleNonExisting, fileExam)
             assert(
                 mm!!.addPermissionTuples(HashSet<PermissionTuple>().apply { add(nonExistingRolePermissionTuple) }) ==
-                        OutcomeCode.CODE_049_ROLE_OR_FILE_NOT_FOUND_OR_PERMISSIONTUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
             )
         }
 
         /** add permission tuple with deleted role */
-        run {
+        myRun {
             val deletedRolePermissionTuple = TestUtilities.createPermissionTuple(roleNonExisting, fileExam)
             assert(
                 mm!!.addPermissionTuples(HashSet<PermissionTuple>().apply { add(deletedRolePermissionTuple) }) ==
-                        OutcomeCode.CODE_049_ROLE_OR_FILE_NOT_FOUND_OR_PERMISSIONTUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
             )
         }
 
         /** add permission tuple with non-existing file */
-        run {
+        myRun {
             val nonExistingFilePermissionTuple =
                 TestUtilities.createPermissionTuple(roleEmployee, fileNonExisting)
             assert(
                 mm!!.addPermissionTuples(HashSet<PermissionTuple>().apply { add(nonExistingFilePermissionTuple) }) ==
-                        OutcomeCode.CODE_049_ROLE_OR_FILE_NOT_FOUND_OR_PERMISSIONTUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
             )
         }
 
         /** add permission tuple with deleted file */
-        run {
+        myRun {
             val deletedFilePermissionTuple = TestUtilities.createPermissionTuple(roleEmployee, fileDeleted)
             assert(
                 mm!!.addPermissionTuples(HashSet<PermissionTuple>().apply { add(deletedFilePermissionTuple) }) ==
-                        OutcomeCode.CODE_049_ROLE_OR_FILE_NOT_FOUND_OR_PERMISSIONTUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
             )
         }
     }
@@ -393,17 +388,17 @@ internal abstract class MMInterfaceTest {
 
 
         /** add no file tuples */
-        run {
+        myRun {
             assert(mm!!.addFileTuples(HashSet()) == OutcomeCode.CODE_000_SUCCESS)
         }
 
         /** add one file tuple */
-        run {
+        myRun {
             addFileTuple(fileExam)
         }
 
         /** add multiple file tuples */
-        run {
+        myRun {
             val documentFileTuple = TestUtilities.createFileTuple(fileDocument)
             val excelFileTuple = TestUtilities.createFileTuple(fileExcel)
             assert(
@@ -419,11 +414,11 @@ internal abstract class MMInterfaceTest {
         val fileExam = addFile("exam")
 
         /** add file tuple twice */
-        run {
+        myRun {
             val examFileTuple = addFileTuple(fileExam)
             assert(
                 mm!!.addFileTuples(HashSet<FileTuple>().apply { add(examFileTuple) }) ==
-                        OutcomeCode.CODE_050_FILE_NOT_FOUND_OR_FILETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_012_FILETUPLE_ALREADY_EXISTS
             )
         }
     }
@@ -436,20 +431,20 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteFile(fileDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** add file tuple with non-existing file */
-        run {
+        myRun {
             val nonExistingFileFileTuple = TestUtilities.createFileTuple(fileNonExisting)
             assert(
                 mm!!.addFileTuples(HashSet<FileTuple>().apply { add(nonExistingFileFileTuple) }) ==
-                        OutcomeCode.CODE_050_FILE_NOT_FOUND_OR_FILETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_012_FILETUPLE_ALREADY_EXISTS
             )
         }
 
         /** add file tuple with deleted file */
-        run {
+        myRun {
             val deletedFileFileTuple = TestUtilities.createFileTuple(fileDeleted)
             assert(
                 mm!!.addFileTuples(HashSet<FileTuple>().apply { add(deletedFileFileTuple) }) ==
-                        OutcomeCode.CODE_050_FILE_NOT_FOUND_OR_FILETUPLE_ALREADY_EXISTS
+                        OutcomeCode.CODE_012_FILETUPLE_ALREADY_EXISTS
             )
         }
     }
@@ -457,7 +452,7 @@ internal abstract class MMInterfaceTest {
 
 
     @Test
-    open fun `get not-existing, incomplete, operational and deleted user by name or token works`() {
+    open fun `get not-existing, incomplete, operational and deleted user by name works`() {
         val incompleteUser = Parameters.aliceUser
         mm!!.addUser(incompleteUser)
         val operationalUser = Parameters.bobUser
@@ -466,43 +461,29 @@ internal abstract class MMInterfaceTest {
         addAndInitUser(deletedUser)
         assert(mm!!.deleteUser(deletedUser.name) == OutcomeCode.CODE_000_SUCCESS)
 
-        /** get not-existing user by name or token */
-        run {
+        /** get not-existing user by name */
+        myRun {
             assert(mm!!.getUsers(username = "non-existing").isEmpty())
-            assert(mm!!.getUsers(userToken = "non-existing").isEmpty())
         }
 
-        /** get incomplete user by name or token */
-        run {
+        /** get incomplete user by name */
+        myRun {
             val incompleteUserByName = mm!!.getUsers(username = incompleteUser.name)
             assert(incompleteUserByName.size == 1)
             /** if the user was not initialized, the token is equal to the name */
             assert(incompleteUserByName.firstOrNull()!!.token == incompleteUser.name)
-
-            val incompleteUserByToken = mm!!.getUsers(userToken = incompleteUser.name)
-            assert(incompleteUserByToken.size == 1)
-            assert(incompleteUserByToken.firstOrNull()!!.name == incompleteUser.name)
         }
 
-        /** get operational user by name or token */
-        run {
+        /** get operational user by name */
+        myRun {
             val operationalUserByName = mm!!.getUsers(username = operationalUser.name)
             assert(operationalUserByName.size == 1)
             assert(operationalUserByName.firstOrNull()!!.token == operationalUser.token)
-
-            val operationalUserByToken = mm!!.getUsers(userToken = operationalUser.token)
-            assert(operationalUserByToken.size == 1)
-            assert(operationalUserByToken.firstOrNull()!!.name == operationalUser.name)
         }
 
-        /** get deleted user by name or token */
-        run {
+        /** get deleted user by name */
+        myRun {
             assert(mm!!.getUsers(username = deletedUser.name).size == 0)
-            assert(mm!!.getUsers(userToken = deletedUser.token).size == 0)
-
-            val deletedUserByToken = mm!!.getUsers(userToken = deletedUser.token, status = ElementStatus.DELETED)
-            assert(deletedUserByToken.size == 1)
-            assert(deletedUserByToken.firstOrNull()!!.name == deletedUser.name)
             val deletedUserByName = mm!!.getUsers(username = deletedUser.name, status = ElementStatus.DELETED)
             assert(deletedUserByName.size == 1)
             assert(deletedUserByName.firstOrNull()!!.name == deletedUser.name)
@@ -512,7 +493,7 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `get all users works`() {
         /** get all users */
-        run {
+        myRun {
             addAndInitUser(Parameters.aliceUser)
             addAndInitUser(Parameters.bobUser)
             addAndInitUser(Parameters.carlUser)
@@ -522,44 +503,34 @@ internal abstract class MMInterfaceTest {
             assert(allUsers.filter { it.name == Parameters.aliceUser.name }.size == 1)
             assert(allUsers.filter { it.name == Parameters.bobUser.name }.size == 1)
             assert(allUsers.filter { it.name == Parameters.carlUser.name }.size == 1)
-            assert(allUsers.filter { it.name == Constants.ADMIN }.size == 1)
+            assert(allUsers.filter { it.name == ADMIN }.size == 1)
         }
     }
 
 
 
     @Test
-    open fun `get not-existing, operational and deleted role by name or token works`() {
+    open fun `get not-existing, operational and deleted role by name works`() {
         val operational = addRole("operational")
         val deleted = addRole("deleted")
         assert(mm!!.deleteRoleTuples(deleted.name) == OutcomeCode.CODE_000_SUCCESS)
         assert(mm!!.deleteRole(deleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
-        /** get not-existing role by name or token */
-        run {
+        /** get not-existing role by name */
+        myRun {
             assert(mm!!.getRoles(roleName = "non-existing").isEmpty())
-            assert(mm!!.getRoles(roleToken = "non-existing").isEmpty())
         }
 
-        /** get operational role by name or token */
-        run {
+        /** get operational role by name */
+        myRun {
             val operationalRoleByName = mm!!.getRoles(roleName = operational.name)
             assert(operationalRoleByName.size == 1)
             assert(operationalRoleByName.firstOrNull()!!.token == operational.token)
-
-            val operationalRoleByToken = mm!!.getRoles(roleToken = operational.token)
-            assert(operationalRoleByToken.size == 1)
-            assert(operationalRoleByToken.firstOrNull()!!.name == operational.name)
         }
 
-        /** get deleted role by name or token */
-        run {
+        /** get deleted role by name */
+        myRun {
             assert(mm!!.getRoles(roleName = deleted.name).size == 0)
-            assert(mm!!.getRoles(roleToken = deleted.token).size == 0)
-
-            val deletedRoleByToken = mm!!.getRoles(roleToken = deleted.token, status = ElementStatus.DELETED)
-            assert(deletedRoleByToken.size == 1)
-            assert(deletedRoleByToken.firstOrNull()!!.name == deleted.name)
             val deletedRoleByName = mm!!.getRoles(roleName = deleted.name, status = ElementStatus.DELETED)
             assert(deletedRoleByName.size == 1)
             assert(deletedRoleByName.firstOrNull()!!.name == deleted.name)
@@ -572,54 +543,46 @@ internal abstract class MMInterfaceTest {
         val employee  = addRole("employee")
         val director = addRole("director")
 
+
         /** get all roles */
-        run {
+        myRun {
             val allRoles = mm!!.getRoles()
             /** there is also the admin */
             assert(allRoles.size == 4)
             assert(allRoles.filter { it.name == student.name }.size == 1)
             assert(allRoles.filter { it.name == employee.name }.size == 1)
             assert(allRoles.filter { it.name == director.name }.size == 1)
-            assert(allRoles.filter { it.name == Constants.ADMIN }.size == 1)
+            assert(allRoles.filter { it.name == ADMIN }.size == 1)
         }
     }
 
 
 
     @Test
-    open fun `get not-existing, operational and deleted file by name or token works`() {
+    open fun `get not-existing, operational and deleted file by name works`() {
         val operational = addFile("operational")
         val deleted = addFile("deleted")
+        assertUnLockAndLock(mm!!)
         assert(mm!!.deleteFile(deleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
-        /** get not-existing file by name or token */
-        run {
+        /** get not-existing file by name */
+        myRun {
             assert(mm!!.getFiles(fileName = "non-existing").isEmpty())
-            assert(mm!!.getFiles(fileToken = "non-existing").isEmpty())
         }
 
-        /** get operational file by name or token */
-        run {
+        /** get operational file by name */
+        myRun {
             val operationalFileByName = mm!!.getFiles(fileName = operational.name)
             assert(operationalFileByName.size == 1)
             assert(operationalFileByName.firstOrNull()!!.token == operational.token)
-
-            val operationalFileByToken = mm!!.getFiles(fileToken = operational.token)
-            assert(operationalFileByToken.size == 1)
-            assert(operationalFileByToken.firstOrNull()!!.name == operational.name)
         }
 
-        /** get deleted file by name or token */
-        run {
+        /** get deleted file by name */
+        myRun {
             assert(mm!!.getFiles(fileName = deleted.name).isEmpty())
-            assert(mm!!.getFiles(fileToken = deleted.token).isEmpty())
-
             val deletedFileByName = mm!!.getFiles(fileName = deleted.name, status = ElementStatus.DELETED)
             assert(deletedFileByName.size == 1)
             assert(deletedFileByName.firstOrNull()!!.token == deleted.token)
-            val deletedFileByToken = mm!!.getFiles(fileToken = deleted.token, status = ElementStatus.DELETED)
-            assert(deletedFileByToken.size == 1)
-            assert(deletedFileByToken.firstOrNull()!!.name == deleted.name)
         }
     }
 
@@ -630,7 +593,7 @@ internal abstract class MMInterfaceTest {
         val excel = addFile("excel")
 
         /** get all files */
-        run {
+        myRun {
             val allFiles = mm!!.getFiles()
             assert(allFiles.size == 3)
             assert(allFiles.filter { it.name == exam.name }.size == 1)
@@ -648,26 +611,26 @@ internal abstract class MMInterfaceTest {
         addRoleTuple("alice", student)
 
         /** get role tuple of the administrator by username or role name */
-        run {
-            val adminRoleTuplesByUsername = mm!!.getRoleTuples(username = Constants.ADMIN)
+        myRun {
+            val adminRoleTuplesByUsername = mm!!.getRoleTuples(username = ADMIN)
             assert(adminRoleTuplesByUsername.size == 2)
-            assert(adminRoleTuplesByUsername.filter { it.roleName == Constants.ADMIN }.size == 1)
+            assert(adminRoleTuplesByUsername.filter { it.roleName == ADMIN }.size == 1)
             assert(adminRoleTuplesByUsername.filter { it.roleName == student.name }.size == 1)
 
-            val adminRoleTuplesByRoleName = mm!!.getRoleTuples(roleName = Constants.ADMIN)
+            val adminRoleTuplesByRoleName = mm!!.getRoleTuples(roleName = ADMIN)
             assert(adminRoleTuplesByRoleName.size == 1)
-            assert(adminRoleTuplesByRoleName.firstOrNull()!!.username == Constants.ADMIN)
+            assert(adminRoleTuplesByRoleName.firstOrNull()!!.username == ADMIN)
         }
 
         /** get role tuples of users by username or role name */
-        run {
+        myRun {
             val aliceRoleTuplesByUsername = mm!!.getRoleTuples(username = Parameters.aliceUser.name)
             assert(aliceRoleTuplesByUsername.size == 1)
             assert(aliceRoleTuplesByUsername.filter { it.roleName == student.name }.size == 1)
 
             val studentRoleTuplesByRoleName = mm!!.getRoleTuples(roleName = student.name)
             assert(studentRoleTuplesByRoleName.size == 2)
-            assert(studentRoleTuplesByRoleName.filter { it.username == Constants.ADMIN }.size == 1)
+            assert(studentRoleTuplesByRoleName.filter { it.username == ADMIN }.size == 1)
             assert(studentRoleTuplesByRoleName.filter { it.username == Parameters.aliceUser.name }.size == 1)
         }
     }
@@ -683,7 +646,7 @@ internal abstract class MMInterfaceTest {
         addPermissionTuple(roleStudent, fileExam)
 
         /** get permission tuples by role or file name */
-        run {
+        myRun {
             val examPermissionTuplesByName = mm!!.getPermissionTuples(fileName = fileExam.name)
             assert(examPermissionTuplesByName.size == 2)
             assert(examPermissionTuplesByName.filter { it.roleName == roleEmployee.name }.size == 1)
@@ -691,7 +654,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get permission tuples excluding role name */
-        run {
+        myRun {
             val examPermissionTuplesByName = mm!!.getPermissionTuples(
                 fileName = fileExam.name, roleNameToExclude = roleStudent.name
             )
@@ -700,9 +663,9 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get permission tuples by role or file version number */
-        run {
-            assert(mm!!.getPermissionTuples(roleVersionNumber = 1).size == 2)
-            assert(mm!!.getPermissionTuples(symKeyVersionNumber = 1).size == 2)
+        myRun {
+            assert(mm!!.getPermissionTuples(fileName = fileExam.name, roleVersionNumber = 1).size == 2)
+            assert(mm!!.getPermissionTuples(fileName = fileExam.name, symKeyVersionNumber = 1).size == 2)
         }
     }
 
@@ -716,7 +679,7 @@ internal abstract class MMInterfaceTest {
         addFileTuple(document)
 
         /** get file tuple by file name */
-        run {
+        myRun {
             val examFileTupleByName = mm!!.getFileTuples(fileName = exam.name)
             assert(examFileTupleByName.size == 1)
             assert(examFileTupleByName.firstOrNull()!!.fileName == exam.name)
@@ -724,11 +687,6 @@ internal abstract class MMInterfaceTest {
             val documentFileTupleByName = mm!!.getFileTuples(fileName = document.name)
             assert(documentFileTupleByName.size == 1)
             assert(documentFileTupleByName.firstOrNull()!!.fileName == document.name)
-
-            val allFileTuples = mm!!.getFileTuples()
-            assert(allFileTuples.size == 2)
-            assert(allFileTuples.filter { it.fileName == exam.name }.size == 1)
-            assert(allFileTuples.filter { it.fileName == document.name }.size == 1)
         }
     }
 
@@ -752,7 +710,7 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteRole(deletedRole.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** get public key of non-existing users by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getPublicKey(
                     name = nonExistingUser.name, elementType = ElementTypeWithKey.USER, asymKeyType = AsymKeysType.ENC
@@ -772,7 +730,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get public key of incomplete users by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getPublicKey(
                     name = incompleteUser.name, elementType = ElementTypeWithKey.USER, asymKeyType = AsymKeysType.ENC
@@ -792,7 +750,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get public key of operational users by name or token */
-        run {
+        myRun {
             val asymEncKeysBytesByName = mm!!.getPublicKey(
                 name = operationalUser.name, elementType = ElementTypeWithKey.USER, asymKeyType = AsymKeysType.ENC
             )
@@ -819,7 +777,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get public key of deleted users by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getPublicKey(
                     name = deleteUser.name, elementType = ElementTypeWithKey.USER, asymKeyType = AsymKeysType.ENC
@@ -839,7 +797,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get public key of non-existing roles by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getPublicKey(
                     name = nonExistingRole.name, elementType = ElementTypeWithKey.ROLE, asymKeyType = AsymKeysType.ENC
@@ -859,7 +817,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get public key of operational roles by name or token */
-        run {
+        myRun {
             val asymEncKeysBytesByName = mm!!.getPublicKey(
                 name = operationalRole.name, elementType = ElementTypeWithKey.ROLE, asymKeyType = AsymKeysType.ENC
             )
@@ -886,7 +844,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get public key of deleted roles by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getPublicKey(
                     name = deletedRole.name, elementType = ElementTypeWithKey.ROLE, asymKeyType = AsymKeysType.ENC
@@ -920,7 +878,7 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteFile(fileDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** get version number of non-existing roles by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getVersionNumber(
                     name = roleNonExisting.name, elementType = ElementTypeWithVersionNumber.ROLE,
@@ -932,7 +890,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get version number of operational roles by name or token */
-        run {
+        myRun {
             val versionNumbersByName = mm!!.getVersionNumber(
                 name = roleOperational.name, elementType = ElementTypeWithVersionNumber.ROLE
             )
@@ -947,7 +905,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get version number of deleted roles by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getVersionNumber(
                     name = roleDeleted.name, elementType = ElementTypeWithVersionNumber.ROLE,
@@ -959,7 +917,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get version number of non-existing files by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getVersionNumber(
                     name = fileNonExisting.name, elementType = ElementTypeWithVersionNumber.FILE,
@@ -971,7 +929,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get version number of operational files by name or token */
-        run {
+        myRun {
             val versionNumbersByName = mm!!.getVersionNumber(
                 name = fileOperational.name, elementType = ElementTypeWithVersionNumber.FILE
             )
@@ -986,7 +944,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get version number of deleted files by name or token */
-        run {
+        myRun {
             assert(
                 mm!!.getVersionNumber(
                     name = fileDeleted.name, elementType = ElementTypeWithVersionNumber.FILE,
@@ -1013,7 +971,7 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteFile(fileDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** get token of non-existing roles by name */
-        run {
+        myRun {
             assert(
                 mm!!.getToken(
                     name = roleNonExisting.name, type = ElementTypeWithStatus.ROLE,
@@ -1021,7 +979,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get token of operational roles by name */
-        run {
+        myRun {
             val versionNumbersByName = mm!!.getToken(
                 name = roleOperational.name, type = ElementTypeWithStatus.ROLE
             )
@@ -1030,7 +988,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get token of deleted roles by name */
-        run {
+        myRun {
             assert(
                 mm!!.getToken(
                     name = roleDeleted.name, type = ElementTypeWithStatus.ROLE,
@@ -1038,7 +996,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get token of non-existing files by name */
-        run {
+        myRun {
             assert(
                 mm!!.getToken(
                     name = fileNonExisting.name, type = ElementTypeWithStatus.FILE,
@@ -1046,7 +1004,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get token of operational files by name */
-        run {
+        myRun {
             val versionNumbersByName = mm!!.getToken(
                 name = fileOperational.name, type = ElementTypeWithStatus.FILE
             )
@@ -1055,7 +1013,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** get token of deleted files by name */
-        run {
+        myRun {
             assert(
                 mm!!.getToken(
                     name = fileDeleted.name, type = ElementTypeWithStatus.FILE,
@@ -1068,95 +1026,86 @@ internal abstract class MMInterfaceTest {
     open fun `get element status with existing, deleted and non-existing elements works`() {
 
         /** get status of administrator user */
-        run {
-            val statusResult = mm!!.getStatus(Constants.ADMIN, ElementTypeWithStatus.USER)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.OPERATIONAL)
+        myRun {
+            val status = mm!!.getStatus(ADMIN, ElementTypeWithStatus.USER)
+            assert(status == ElementStatus.OPERATIONAL)
         }
 
         /** get status of administrator role */
-        run {
-            val statusResult = mm!!.getStatus(Constants.ADMIN, ElementTypeWithStatus.ROLE)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.OPERATIONAL)
+        myRun {
+            val status = mm!!.getStatus(ADMIN, ElementTypeWithStatus.ROLE)
+            assert(status == ElementStatus.OPERATIONAL)
         }
 
         /** get status of non-existing user */
-        run {
-            val statusResult = mm!!.getStatus("not-existing", ElementTypeWithStatus.USER)
-            assert(statusResult.code == OutcomeCode.CODE_004_USER_NOT_FOUND)
+        myRun {
+            val status = mm!!.getStatus("not-existing", ElementTypeWithStatus.USER)
+            assert(status == null)
         }
 
         /** get status of existing but incomplete user */
-        run {
+        myRun {
             assert(mm!!.addUser(Parameters.aliceUser).code == OutcomeCode.CODE_000_SUCCESS)
-            val statusResult = mm!!.getStatus(Parameters.aliceUser.name, ElementTypeWithStatus.USER)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.INCOMPLETE)
+            val status = mm!!.getStatus(Parameters.aliceUser.name, ElementTypeWithStatus.USER)
+            assert(status == ElementStatus.INCOMPLETE)
         }
 
         /** get status of operational user */
-        run {
+        myRun {
             addAndInitUser(Parameters.bobUser)
-            val statusResult = mm!!.getStatus(Parameters.bobUser.name, ElementTypeWithStatus.USER)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.OPERATIONAL)
+            val status = mm!!.getStatus(Parameters.bobUser.name, ElementTypeWithStatus.USER)
+            assert(status == ElementStatus.OPERATIONAL)
         }
 
         /** get status of deleted user */
-        run {
+        myRun {
             addAndInitUser(Parameters.carlUser)
             assert(mm!!.deleteUser(Parameters.carlUser.name) == OutcomeCode.CODE_000_SUCCESS)
-            val statusResult = mm!!.getStatus(Parameters.carlUser.name, ElementTypeWithStatus.USER)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.DELETED)
+            val status = mm!!.getStatus(Parameters.carlUser.name, ElementTypeWithStatus.USER)
+            assert(status == ElementStatus.DELETED)
         }
 
         /** get status of non-existing role */
-        run {
-            val statusResult = mm!!.getStatus("not-existing", ElementTypeWithStatus.ROLE)
-            assert(statusResult.code == OutcomeCode.CODE_005_ROLE_NOT_FOUND)
+        myRun {
+            val status = mm!!.getStatus("not-existing", ElementTypeWithStatus.ROLE)
+            assert(status == null)
         }
 
         /** get status of operational role */
-        run {
+        myRun {
             val roleOperational = addRole("roleOperational")
-            val statusResult = mm!!.getStatus(roleOperational.name, ElementTypeWithStatus.ROLE)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.OPERATIONAL)
+            val status = mm!!.getStatus(roleOperational.name, ElementTypeWithStatus.ROLE)
+            assert(status == ElementStatus.OPERATIONAL)
         }
 
         /** get status of deleted role */
-        run {
+        myRun {
             val roleDeleted = addRole("roleDeleted")
             assert(mm!!.deleteRoleTuples(roleDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.deleteRole(roleDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
-            val statusResult = mm!!.getStatus(roleDeleted.name, ElementTypeWithStatus.ROLE)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.DELETED)
+            val status = mm!!.getStatus(roleDeleted.name, ElementTypeWithStatus.ROLE)
+            assert(status == ElementStatus.DELETED)
         }
 
         /** get status of non-existing file */
-        run {
-            val statusResult = mm!!.getStatus("not-existing", ElementTypeWithStatus.FILE)
-            assert(statusResult.code == OutcomeCode.CODE_006_FILE_NOT_FOUND)
+        myRun {
+            val status = mm!!.getStatus("not-existing", ElementTypeWithStatus.FILE)
+            assert(status == null)
         }
 
         /** get status of operational file */
-        run {
+        myRun {
             val fileOperational = addFile("fileOperational")
-            val statusResult = mm!!.getStatus(fileOperational.name, ElementTypeWithStatus.FILE)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.OPERATIONAL)
+            val status = mm!!.getStatus(fileOperational.name, ElementTypeWithStatus.FILE)
+            assert(status == ElementStatus.OPERATIONAL)
         }
 
         /** get status of deleted file */
-        run {
+        myRun {
             val fileDeleted = addFile("fileDeleted")
             assert(mm!!.deleteFile(fileDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
-            val statusResult = mm!!.getStatus(fileDeleted.name, ElementTypeWithStatus.FILE)
-            assert(statusResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(statusResult.status == ElementStatus.DELETED)
+            val status = mm!!.getStatus(fileDeleted.name, ElementTypeWithStatus.FILE)
+            assert(status == ElementStatus.DELETED)
         }
     }
 
@@ -1169,7 +1118,7 @@ internal abstract class MMInterfaceTest {
         addAndInitUser(operationalUser)
 
         /** delete incomplete users */
-        run {
+        myRun {
             assert(mm!!.deleteUser(incompleteUser.name) == OutcomeCode.CODE_000_SUCCESS)
             val deleteUsers = mm!!.getUsers(username = incompleteUser.name, status = ElementStatus.DELETED)
             assert(deleteUsers.size == 1)
@@ -1177,7 +1126,7 @@ internal abstract class MMInterfaceTest {
         }
 
         /** delete operational users */
-        run {
+        myRun {
             assert(mm!!.deleteUser(operationalUser.name) == OutcomeCode.CODE_000_SUCCESS)
             val deleteUsers = mm!!.getUsers(username = operationalUser.name, status = ElementStatus.DELETED)
             assert(deleteUsers.size == 1)
@@ -1193,12 +1142,12 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteUser(deletedUser.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** delete non-existing users */
-        run {
+        myRun {
             assert(mm!!.deleteUser(nonExistingUser.name) == OutcomeCode.CODE_004_USER_NOT_FOUND)
         }
 
         /** delete deleted users */
-        run {
+        myRun {
             assert(mm!!.deleteUser(deletedUser.name) == OutcomeCode.CODE_004_USER_NOT_FOUND)
         }
     }
@@ -1206,8 +1155,8 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `delete the administrator user by name fails`() {
         /** delete the administrator user */
-        run {
-            assert(mm!!.deleteUser(Constants.ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
+        myRun {
+            assert(mm!!.deleteUser(ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
         }
     }
 
@@ -1218,7 +1167,7 @@ internal abstract class MMInterfaceTest {
         val operational = addRole("operational")
 
         /** delete operational roles */
-        run {
+        myRun {
             assert(mm!!.deleteRoleTuples(roleName= operational.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.deleteRole(operational.name) == OutcomeCode.CODE_000_SUCCESS)
             val deleteRoles = mm!!.getRoles(roleName = operational.name, status = ElementStatus.DELETED)
@@ -1235,12 +1184,12 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteRole(deleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** delete non-existing roles */
-        run {
+        myRun {
             assert(mm!!.deleteRole(nonExisting.name) == OutcomeCode.CODE_005_ROLE_NOT_FOUND)
         }
 
         /** delete deleted roles */
-        run {
+        myRun {
             assert(mm!!.deleteRole(deleted.name) == OutcomeCode.CODE_005_ROLE_NOT_FOUND)
         }
     }
@@ -1248,8 +1197,8 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `delete the administrator role by name fails`() {
         /** delete the administrator role */
-        run {
-            assert(mm!!.deleteRole(Constants.ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
+        myRun {
+            assert(mm!!.deleteRole(ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
         }
     }
 
@@ -1260,7 +1209,7 @@ internal abstract class MMInterfaceTest {
         val operational = addFile("operational")
 
         /** delete operational files */
-        run {
+        myRun {
             assert(mm!!.deleteFile(operational.name) == OutcomeCode.CODE_000_SUCCESS)
             val deleteFiles = mm!!.getFiles(fileName = operational.name, status = ElementStatus.DELETED)
             assert(deleteFiles.size == 1)
@@ -1275,12 +1224,12 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteFile(deleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** delete non-existing files */
-        run {
+        myRun {
             assert(mm!!.deleteFile(nonExisting.name) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
         }
 
         /** delete deleted files */
-        run {
+        myRun {
             assert(mm!!.deleteFile(deleted.name) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
         }
     }
@@ -1296,7 +1245,7 @@ internal abstract class MMInterfaceTest {
         addRoleTuple(Parameters.bobUser.name, student)
 
         /** delete existing role tuples */
-        run {
+        myRun {
             assert(mm!!.getRoleTuples(roleName = student.name).size == 3)
             assert(mm!!.deleteRoleTuples(roleName = student.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.getRoleTuples(roleName = student.name).size == 0)
@@ -1307,13 +1256,13 @@ internal abstract class MMInterfaceTest {
     open fun `delete non-existing or the admin's role tuples by role name fails`() {
 
         /** delete non-existing role tuples */
-        run {
+        myRun {
             assert(mm!!.deleteRoleTuples(roleName = "non-existing") == OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND)
         }
 
         /** delete the admin's role tuples */
-        run {
-            assert(mm!!.deleteRoleTuples(roleName = Constants.ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
+        myRun {
+            assert(mm!!.deleteRoleTuples(roleName = ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
         }
     }
 
@@ -1330,41 +1279,41 @@ internal abstract class MMInterfaceTest {
         addPermissionTuple(employee, exam)
 
         /** delete existing permission tuples by role name */
-        run {
+        myRun {
             assert(mm!!.getPermissionTuples(fileName = exam.name).size == 3)
             assert(mm!!.deletePermissionTuples(roleName = student.name) == OutcomeCode.CODE_000_SUCCESS)
-            assert(mm!!.getPermissionTuples(fileName = exam.name).size == 2)
         }
+        assert(mm!!.getPermissionTuples(fileName = exam.name).size == 2)
 
         /** delete existing permission tuples by version number */
-        run {
-            assert(mm!!.deletePermissionTuples(roleVersionNumber = 1) == OutcomeCode.CODE_000_SUCCESS)
-            assert(mm!!.getPermissionTuples(fileName = exam.name).size == 1)
+        myRun {
+            assert(mm!!.deletePermissionTuples(fileName = exam.name, roleVersionNumber = 1) == OutcomeCode.CODE_000_SUCCESS)
         }
+        assert(mm!!.getPermissionTuples(fileName = exam.name).size == 1)
 
 
         /** delete existing permission tuples by file name */
-        run {
+        myRun {
             assert(mm!!.deletePermissionTuples(fileName = exam.name) == OutcomeCode.CODE_000_SUCCESS)
-            assert(mm!!.getPermissionTuples(fileName = exam.name).size == 0)
         }
+        assert(mm!!.getPermissionTuples(fileName = exam.name).size == 0)
     }
 
     @Test
     open fun `delete non-existing or the admin's permission tuples by role name fails`() {
 
         /** delete non-existing permission tuples */
-        run {
+        myRun {
             assert(mm!!.deletePermissionTuples(roleName = "non-existing") == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND)
-            assert(mm!!.deletePermissionTuples(roleVersionNumber = 1) == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND)
+            assert(mm!!.deletePermissionTuples(roleName = "non-existing", roleVersionNumber = 1) == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND)
             assert(mm!!.deletePermissionTuples(fileName = "non-existing") == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND)
         }
 
         /** delete the admin's role tuples */
-        run {
-            val exam = addFile("exam")
-            addPermissionTuple(Parameters.adminRole, exam)
-            assert(mm!!.deletePermissionTuples(roleName = Constants.ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
+        val exam = addFile("exam")
+        addPermissionTuple(Parameters.adminRole, exam)
+        myRun {
+            assert(mm!!.deletePermissionTuples(roleName = ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
         }
     }
 
@@ -1376,18 +1325,19 @@ internal abstract class MMInterfaceTest {
         addFileTuple(exam)
 
         /** delete existing file tuples */
-        run {
+        myRun {
             assert(mm!!.getFileTuples(fileName = exam.name).size == 1)
             assert(mm!!.deleteFileTuples(fileName = exam.name) == OutcomeCode.CODE_000_SUCCESS)
-            assert(mm!!.getFileTuples(fileName = exam.name).size == 0)
         }
+
+        assert(mm!!.getFileTuples(fileName = exam.name).size == 0)
     }
 
     @Test
     open fun `delete non-existing file tuples by file name fails`() {
 
         /** delete non-existing file tuples */
-        run {
+        myRun {
             assert(mm!!.deleteFileTuples(fileName = "non-existing") == OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND)
         }
     }
@@ -1399,7 +1349,7 @@ internal abstract class MMInterfaceTest {
         val exam = addFile("exam", 1)
 
         /** increment symmetric encryption key version number for operational file */
-        run {
+        myRun {
             assert(
                 mm!!.getVersionNumber(name = exam.name, elementType = ElementTypeWithVersionNumber.FILE) == 1
             )
@@ -1416,12 +1366,12 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteFile(exam.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** increment symmetric encryption key version number for non-existing file */
-        run {
+        myRun {
             assert(mm!!.incrementSymEncVersionNumberByOne("non-existing") == OutcomeCode.CODE_006_FILE_NOT_FOUND)
         }
 
         /** increment symmetric encryption key version number for deleted file */
-        run {
+        myRun {
             assert(mm!!.incrementSymEncVersionNumberByOne(exam.name) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
         }
     }
@@ -1433,7 +1383,7 @@ internal abstract class MMInterfaceTest {
         val roleOperational = addRole("roleOperational")
 
         /** update public keys of operational roles by name */
-        run {
+        myRun {
             val asymEncKeysBytesByName = mm!!.getPublicKey(
                 name = roleOperational.name, elementType = ElementTypeWithKey.ROLE, asymKeyType = AsymKeysType.ENC
             )
@@ -1474,7 +1424,7 @@ internal abstract class MMInterfaceTest {
         assert(mm!!.deleteRole(roleDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
 
         /** update public keys of deleted roles by name */
-        run {
+        myRun {
             val newAsymEncKeys = Parameters.cryptoObject.generateAsymEncKeys()
             val newAsymSigKeys = Parameters.cryptoObject.generateAsymSigKeys()
 
@@ -1493,7 +1443,7 @@ internal abstract class MMInterfaceTest {
         val studentExamPermissionTuple = addPermissionTuple(student, exam, PermissionType.READ)
 
         /** update existing permission tuple */
-        run {
+        myRun {
             val getBefore = mm!!.getPermissionTuples(roleName = student.name, fileName = exam.name)
             assert(getBefore.filter { it.roleName == student.name }.size == 1)
             assert(getBefore.firstOrNull { it.roleName == student.name }!!.permission == PermissionType.READ)
@@ -1506,7 +1456,7 @@ internal abstract class MMInterfaceTest {
                 encryptedSymKey = studentExamPermissionTuple.encryptedSymKey
             )
             val signature = Parameters.cryptoObject.createSignature(newPermissionTuple.getBytesForSignature(), Parameters.adminAsymSigKeys.private)
-            newPermissionTuple.updateSignature(signature, Constants.ADMIN, ElementTypeWithKey.USER)
+            newPermissionTuple.updateSignature(signature, ADMIN, ElementTypeWithKey.USER)
             assert(mm!!.updatePermissionTuple(newPermissionTuple) == OutcomeCode.CODE_000_SUCCESS)
 
             val getAfter = mm!!.getPermissionTuples(roleName = student.name, fileName = exam.name)
@@ -1518,7 +1468,7 @@ internal abstract class MMInterfaceTest {
     @Test
     open fun `update non-existing permission tuple works`() {
         /** update non-existing permission tuple */
-        run {
+        myRun {
             val roleNonExisting = TestUtilities.createRole("non-existing-role")
             val fileNonExisting = TestUtilities.createFile("non-existing-file", enforcement = EnforcementType.COMBINED)
             val nonExistingPermissionTuple =
@@ -1548,45 +1498,52 @@ internal abstract class MMInterfaceTest {
 
     private fun addRole(roleName: String, roleVersionNumber: Int = 1): Role {
         val newRole = TestUtilities.createRole(roleName, roleVersionNumber)
-        val newRoleTuple = TestUtilities.createRoleTuple(Constants.ADMIN, newRole)
+        val newRoleTuple = TestUtilities.createRoleTuple(ADMIN, newRole)
         assert(mm!!.addRole(newRole) == OutcomeCode.CODE_000_SUCCESS)
         assert(mm!!.addRoleTuples(HashSet<RoleTuple>().apply { add(newRoleTuple) }) == OutcomeCode.CODE_000_SUCCESS)
+        assertUnLockAndLock(mm!!)
         return newRole
     }
 
     private fun addFile(fileName: String, symEncKeyVersionNumber: Int = 1): File {
         val newFile = TestUtilities.createFile(fileName, symEncKeyVersionNumber, enforcement = EnforcementType.COMBINED)
         assert(mm!!.addFile(newFile) == OutcomeCode.CODE_000_SUCCESS)
+        assertUnLockAndLock(mm!!)
         return newFile
     }
 
     private fun addRoleTuple(username: String, role: Role): RoleTuple {
         val roleTuple = TestUtilities.createRoleTuple(username, role)
         assert(mm!!.addRoleTuples(HashSet<RoleTuple>().apply { add(roleTuple) }) == OutcomeCode.CODE_000_SUCCESS)
+        assertUnLockAndLock(mm!!)
         return roleTuple
     }
 
     private fun addPermissionTuple(role: Role, file: File, permission: PermissionType = PermissionType.READ): PermissionTuple {
         val permissionTuple = TestUtilities.createPermissionTuple(role, file, permission)
         assert(mm!!.addPermissionTuples(HashSet<PermissionTuple>().apply { add(permissionTuple) }) == OutcomeCode.CODE_000_SUCCESS)
+        assertUnLockAndLock(mm!!)
         return permissionTuple
     }
 
     private fun addFileTuple(file: File, enforcementType: EnforcementType = EnforcementType.COMBINED): FileTuple {
         val fileTuple = TestUtilities.createFileTuple(file, enforcementType)
         assert(mm!!.addFileTuples(HashSet<FileTuple>().apply { add(fileTuple) }) == OutcomeCode.CODE_000_SUCCESS)
+        assertUnLockAndLock(mm!!)
         return fileTuple
     }
 
-    private fun addAndInitUser(user: User): MMInterface {
-        val addUserResult = mm!!.addUser(user)
-        assert(addUserResult.code == OutcomeCode.CODE_000_SUCCESS)
-        val userMetadataStorage = MMInterfaceMySQL(addUserResult.parameters as MMInterfaceMySQLParameters)
-        assert(userMetadataStorage.lock() == OutcomeCode.CODE_000_SUCCESS)
-        userMetadataStorage.initUser(user)
-        assert(userMetadataStorage.unlock() == OutcomeCode.CODE_000_SUCCESS)
-        return userMetadataStorage
-    }
 
     // TODO test paginazione (limit e offset)
+
+    /** Before executing each block, commit the MM status */
+    private fun myRun(block: () -> Unit) {
+        assertUnLockAndLock(mm!!)
+        try {
+            block.invoke()
+        } catch (e: AssertionError) {
+            e.printStackTrace()
+        }
+        assertUnLockAndLock(mm!!)
+    }
 }

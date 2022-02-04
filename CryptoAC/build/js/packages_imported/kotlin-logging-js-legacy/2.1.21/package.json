@@ -1,0 +1,11 @@
+{
+  "name": "kotlin-logging-js-legacy",
+  "version": "2.1.21",
+  "customFields": {},
+  "main": "kotlin-logging-js-legacy.js",
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

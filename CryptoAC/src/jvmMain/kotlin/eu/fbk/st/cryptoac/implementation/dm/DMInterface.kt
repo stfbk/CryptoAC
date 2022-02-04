@@ -5,41 +5,41 @@ import eu.fbk.st.cryptoac.core.CoreParameters
 import eu.fbk.st.cryptoac.core.elements.*
 import java.io.InputStream
 
-/** Abstract class defining the methods to interface with the DM */
-abstract class DMInterface {
+/** Interface defining the methods to interact with the DM */
+interface DMInterface {
 
     /** The number of locks on the database for the lock-rollback-unlock mechanism */
-    var locks = 0
+    var locks: Int
 
     /**
      * Configure the DM with relevant
      * [parameters] and return the outcome code
      */
-    abstract fun configure(parameters: CoreParameters): OutcomeCode
+    fun configure(parameters: CoreParameters): OutcomeCode
 
     /**
      * Add the [content] of the [newFile]
      * in the DM and return the outcome code
      */
-    abstract fun addFile(newFile: File, content: InputStream): OutcomeCode
+    fun addFile(newFile: File, content: InputStream): OutcomeCode
 
     /**
      * Download the content of the file matching
      * the given [fileName] from the DM
      */
-    abstract fun readFile(fileName: String): WrappedInputStream
+    fun readFile(fileName: String): WrappedInputStream
 
     /**
      * Overwrite the [content] of the [updatedFile]
      * in the DM and return the outcome code
      */
-    abstract fun writeFile(updatedFile: File, content: InputStream): OutcomeCode
+    fun writeFile(updatedFile: File, content: InputStream): OutcomeCode
 
     /**
      * Delete the [fileName] from the data
      * storage and return the outcome code
      */
-    abstract fun deleteFile(fileName: String): OutcomeCode
+    fun deleteFile(fileName: String): OutcomeCode
 
 
 
@@ -50,7 +50,7 @@ abstract class DMInterface {
      * increment the number of [locks] by 1 at each invocation, effectively
      * starting a new transaction only when [locks] is 0
      */
-    abstract fun lock(): OutcomeCode
+    fun lock(): OutcomeCode
 
     /**
      * Signal an error during an atomic transaction so to restore the
@@ -58,7 +58,7 @@ abstract class DMInterface {
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0
      */
-    abstract fun rollback(): OutcomeCode
+    fun rollback(): OutcomeCode
 
     /**
      * Signal the end of an atomic transaction so commit the changes.
@@ -66,7 +66,7 @@ abstract class DMInterface {
      * number of [locks] by 1 at each invocation, effectively committing
      * the transaction only when [locks] becomes 0
      */
-    abstract fun unlock(): OutcomeCode
+    fun unlock(): OutcomeCode
 }
 
 /** Wrapper for the outcome [code] and a [stream] */

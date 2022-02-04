@@ -3,6 +3,7 @@ package eu.fbk.st.cryptoac.implementation.mm
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.Parameters
 import eu.fbk.st.cryptoac.TestUtilities.Companion.resetMMMySQL
+import eu.fbk.st.cryptoac.core.elements.User
 import eu.fbk.st.cryptoac.runCommand
 import org.junit.jupiter.api.*
 import java.io.File
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 internal class MMInterfaceMySQLTest: MMInterfaceTest() {
 
     override val mm: MMInterface =
-        MMInterfaceMySQL(Parameters.MMInterfaceMySQLParameters)
+        MMInterfaceMySQL(Parameters.mmInterfaceMySQLParameters)
 
 
     // TODO do not use "processBuild.waitFor", instead read
@@ -50,8 +51,17 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
         cleanProcess.waitFor(5, TimeUnit.SECONDS)
     }
 
-    
-    
+    override fun addAndInitUser(user: User): MMInterface {
+        val addUserResult = mm.addUser(user)
+        assert(addUserResult.code == OutcomeCode.CODE_000_SUCCESS)
+        val userMM = MMInterfaceMySQL(addUserResult.parameters as MMInterfaceMySQLParameters)
+        assert(userMM.lock() == OutcomeCode.CODE_000_SUCCESS)
+        userMM.initUser(user)
+        assert(userMM.unlock() == OutcomeCode.CODE_000_SUCCESS)
+        return userMM
+    }
+
+
     @Test
     fun `insert values in statement with right, less of no values works`() {
 
@@ -312,7 +322,6 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
                 whereParameters = whereParameters,
                 whereNotParameters = whereNotParameters,
             )
-            println(statement.toString())
             val expected = "com.mysql.cj.jdbc.ClientPreparedStatement: DELETE FROM table WHERE (column1='where') " +
                     "AND (column3='where3') AND (column2<>'whereNot')"
             assert(expected == statement.toString())

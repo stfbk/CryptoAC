@@ -8,10 +8,12 @@ import eu.fbk.st.cryptoac.core.tuples.*
 import eu.fbk.st.cryptoac.crypto.*
 import eu.fbk.st.cryptoac.decodeBase64
 import eu.fbk.st.cryptoac.encodeBase64
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCloud
+import eu.fbk.st.cryptoac.implementation.dm.DMFactory
+import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceRBACCLOUD
 import eu.fbk.st.cryptoac.implementation.mm.*
 import eu.fbk.st.cryptoac.implementation.opa.*
-import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCloud
+import eu.fbk.st.cryptoac.implementation.rm.RMFactory
+import eu.fbk.st.cryptoac.implementation.rm.RMInterface
 import mu.KotlinLogging
 import java.io.InputStream
 import java.lang.IllegalStateException
@@ -37,13 +39,13 @@ class CoreRBACCLOUD(
     //  and [ACI](https://docs.docker.com/engine/context/aci-integration/) deployment
 
     /** Interface toward the MM */
-    private val mm: MMInterfaceMySQL = MMInterfaceMySQL(coreParameters.mmMySQLInterfaceParameters)
+    val mm: MMInterface = MMFactory.getMM(coreParameters.mmInterfaceParameters)
 
     /** Interface toward the DM */
-    private val dm: DMInterfaceCloud = DMInterfaceCloud(coreParameters.dmCloudInterfaceParameters)
+    private val dm: DMInterfaceRBACCLOUD = DMFactory.getDM(coreParameters.dmInterfaceParameters)!! as DMInterfaceRBACCLOUD
 
     /** Interface toward the RM */
-    private val rm: RMInterfaceCloud = RMInterfaceCloud(coreParameters.rmCloudInterfaceParameters)
+    private val rm: RMInterface = RMFactory.getRM(coreParameters.rmInterfaceParameters)!!
 
     /** Interface toward the OPA */
     private val opa: OPAInterface = OPAInterface(coreParameters.opaInterfaceParameters)
@@ -164,9 +166,9 @@ class CoreRBACCLOUD(
                         user = User(name = username),
                         coreType = CoreType.RBAC_CLOUD,
                         cryptoType = coreParameters.cryptoType,
-                        rmCloudInterfaceParameters = coreParameters.rmCloudInterfaceParameters.apply { this.obscureSensitiveFields() },
-                        mmMySQLInterfaceParameters = addUserResult.parameters as MMInterfaceMySQLParameters,
-                        dmCloudInterfaceParameters = coreParameters.dmCloudInterfaceParameters.apply { this.obscureSensitiveFields() },
+                        rmInterfaceParameters = coreParameters.rmInterfaceParameters.apply { this.obscureSensitiveFields() },
+                        mmInterfaceParameters = addUserResult.parameters as MMInterfaceRBACCLOUDParameters,
+                        dmInterfaceParameters = coreParameters.dmInterfaceParameters.apply { this.obscureSensitiveFields() },
                         opaInterfaceParameters = coreParameters.opaInterfaceParameters.apply { this.obscureSensitiveFields() },
                     )
                 )
@@ -209,10 +211,12 @@ class CoreRBACCLOUD(
 
         /** Revoke the [username] from all roles */
         logger.info { "Revoking the user $username from all roles" }
-        userRoleTuples.forEach error@{
-            code = revokeUserFromRole(it.username, it.roleName)
-            if (code!= OutcomeCode.CODE_000_SUCCESS) {
-                return@error
+        run error@{
+            userRoleTuples.forEach {
+                code = revokeUserFromRole(it.username, it.roleName)
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
             }
         }
         return endOfMethod(code, opaLocked = false, dmLocked = false)
@@ -248,12 +252,12 @@ class CoreRBACCLOUD(
             asymEncKeys = AsymKeys(
                 public = asymEncKeys.public.encoded.encodeBase64(),
                 private = asymEncKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.ENC
+                keysType = AsymKeysType.ENC
             ),
             asymSigKeys = AsymKeys(
                 public = asymSigKeys.public.encoded.encodeBase64(),
                 private = asymSigKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.SIG
+                keysType = AsymKeysType.SIG
             )
         )
 
@@ -334,10 +338,12 @@ class CoreRBACCLOUD(
         val rolePermissionTuples = mm.getPermissionTuples(roleName = roleName, offset = 0, limit = NO_LIMIT)
 
         /** Revoke all permissions from the [roleName] */
-        rolePermissionTuples.forEach error@{
-            code = revokePermissionFromRole(it.roleName, it.fileName, PermissionType.READWRITE)
-            if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return@error
+        run error@{
+            rolePermissionTuples.forEach {
+                code = revokePermissionFromRole(it.roleName, it.fileName, PermissionType.READWRITE)
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
             }
         }
         return endOfMethod(code, dmLocked = false)
@@ -542,7 +548,7 @@ class CoreRBACCLOUD(
             encryptedAsymEncKeys = EncryptedAsymKeys(
                 private = adminRoleTuple.encryptedAsymEncKeys!!.private,
                 public  = adminRoleTuple.encryptedAsymEncKeys.public,
-                type = AsymKeysType.ENC,
+                keysType = AsymKeysType.ENC,
             )
         )
         val asymSigKeys = crypto.decryptAsymSigKeys(
@@ -551,7 +557,7 @@ class CoreRBACCLOUD(
             encryptedAsymSigKeys = EncryptedAsymKeys(
                 private = adminRoleTuple.encryptedAsymSigKeys!!.private,
                 public  = adminRoleTuple.encryptedAsymSigKeys.public,
-                type = AsymKeysType.SIG,
+                keysType = AsymKeysType.SIG,
             )
         )
 
@@ -563,10 +569,10 @@ class CoreRBACCLOUD(
         /** If we did not find the user's key, it means that the user does not exist (or was deleted) */
         if (userAsymEncPublicKeyBytes == null) {
             logger.warn { "User's key not found. Checking the user's status" }
-            val getStatusResult = mm.getStatus(username, ElementTypeWithStatus.USER)
-            return if (getStatusResult.code == OutcomeCode.CODE_000_SUCCESS) {
-                logger.warn { "User's status is ${getStatusResult.status}" }
-                when (getStatusResult.status!!) {
+            val status = mm.getStatus(username, ElementTypeWithStatus.USER)
+            return if (status != null) {
+                logger.warn { "User's status is $status" }
+                when (status) {
                     ElementStatus.INCOMPLETE -> endOfMethod(OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED, dmLocked = false)
                     ElementStatus.OPERATIONAL -> {
                         val message = "User's $username key not found but user is operational"
@@ -576,15 +582,7 @@ class CoreRBACCLOUD(
                     ElementStatus.DELETED -> endOfMethod(OutcomeCode.CODE_013_USER_WAS_DELETED, dmLocked = false)
                 }
             } else {
-                if (getStatusResult.code == OutcomeCode.CODE_004_USER_NOT_FOUND) {
-                    endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND, dmLocked = false)
-                }
-                else {
-                    val message =
-                        "Unexpected error code (${getStatusResult.code}) while getting the status of user $username"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
+                endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND)
             }
         }
 
@@ -608,8 +606,8 @@ class CoreRBACCLOUD(
         }
 
         code = mm.addRoleTuples(HashSet<RoleTuple>().apply { add(newRoleTuple) })
-        return if (code == OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS) {
-            endOfMethod(OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS, dmLocked = false)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            endOfMethod(code)
         } else {
             return endOfMethod(code, dmLocked = false)
         }
@@ -1475,68 +1473,53 @@ class CoreRBACCLOUD(
 
 
     /**
-     * Retrieve and return the users that the
-     * user can see, along with the outcome code
+     * Retrieve the list of users,
+     * along with the outcome code
      */
     override fun getUsers(): CodeUsers {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting users" }
 
-        /** Look up in the metadata only if the user is the admin */
-        return if (user.isAdmin) {
-            /** Lock the status of the interfaces */
-            val code = startOfMethod(opaLock = false, dmLock = false)
-            return if (code != OutcomeCode.CODE_000_SUCCESS) {
-                CodeUsers(code)
-            } else {
-                val users = mm.getUsers()
-                CodeUsers(endOfMethod(OutcomeCode.CODE_000_SUCCESS, opaLocked = false, dmLocked = false), users)
-            }
+        /** Lock the status of the interfaces */
+        val code = startOfMethod(dmLock = false)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            CodeUsers(code)
         } else {
-            CodeUsers(OutcomeCode.CODE_036_UNAUTHORIZED)
+            val users = mm.getUsers()
+            CodeUsers(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), users)
         }
     }
 
     /**
-     * Retrieve and return the roles that the
-     * user can see, along with the outcome code
+     * Retrieve the list of roles,
+     * along with the outcome code
      */
     override fun getRoles(): CodeRoles {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting roles" }
 
-        /** Look up in the metadata only if the user is the admin */
-        return if (user.isAdmin) {
-            /** Lock the status of the interfaces */
-            val code = startOfMethod(opaLock = false, dmLock = false)
-            return if (code != OutcomeCode.CODE_000_SUCCESS) {
-                CodeRoles(code)
-            } else {
-                val roles = mm.getRoles()
-                CodeRoles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, opaLocked = false, dmLocked = false), roles)
-            }
+        /** Lock the status of the interfaces */
+        val code = startOfMethod(dmLock = false)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            CodeRoles(code)
         } else {
-            CodeRoles(OutcomeCode.CODE_036_UNAUTHORIZED)
+            val roles = mm.getRoles()
+            CodeRoles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), roles)
         }
     }
 
     /**
-     * Retrieve and return the files that the
-     * user can see, along with the outcome code
+     * Retrieve the list of files,
+     * along with the outcome code
      */
     override fun getFiles(): CodeFiles {
-        logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting files" }
+        logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting topics" }
 
-        /** Look up in the metadata only if the user is the admin */
-        return if (user.isAdmin) {
-            /** Lock the status of the interfaces */
-            val code = startOfMethod(opaLock = false, dmLock = false)
-            return if (code != OutcomeCode.CODE_000_SUCCESS) {
-                CodeFiles(code)
-            } else {
-                val files = mm.getFiles()
-                CodeFiles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, opaLocked = false, dmLocked = false), files)
-            }
+        /** Lock the status of the interfaces */
+        val code = startOfMethod(dmLock = false)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            CodeFiles(code)
         } else {
-            CodeFiles(OutcomeCode.CODE_036_UNAUTHORIZED)
+            val files = mm.getFiles()
+            CodeFiles(endOfMethod(OutcomeCode.CODE_000_SUCCESS, dmLocked = false), files)
         }
     }
 
@@ -1598,7 +1581,7 @@ class CoreRBACCLOUD(
      */
     private fun startOfMethod(mmLock: Boolean = true, opaLock: Boolean = true, dmLock: Boolean = true): OutcomeCode {
         logger.info {
-            "Locking the following interfaces: ${if (mmLock) "MS " else ""}${if (opaLock) "OPA " else ""}${if (dmLock) "DM " else ""}"
+            "Locking the following interfaces: ${if (mmLock) "MM " else ""}${if (opaLock) "OPA " else ""}${if (dmLock) "DM " else ""}"
         }
         val mmLockCode = if (mmLock) mm.lock() else OutcomeCode.CODE_000_SUCCESS
         return if (mmLockCode == OutcomeCode.CODE_000_SUCCESS) {
@@ -1632,7 +1615,7 @@ class CoreRBACCLOUD(
         if (code == OutcomeCode.CODE_000_SUCCESS) {
             logger.info {
                 "Operation successful, unlocking the following interfaces: " +
-                if (mmLocked) "MS " else "" +
+                if (mmLocked) "MM " else "" +
                 if (opaLocked) "OPA " else "" +
                 if (dmLocked) "DM " else ""
             }
@@ -1642,7 +1625,7 @@ class CoreRBACCLOUD(
         } else {
             logger.info {
                 "Operation unsuccessful (code $code), rollbacking the following interfaces: " +
-                if (mmLocked) "MS " else "" +
+                if (mmLocked) "MM " else "" +
                 if (opaLocked) "OPA " else "" +
                 if (dmLocked) "DM " else ""
             }

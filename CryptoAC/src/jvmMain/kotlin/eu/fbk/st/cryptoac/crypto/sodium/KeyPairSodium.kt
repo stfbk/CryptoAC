@@ -9,14 +9,14 @@ import eu.fbk.st.cryptoac.crypto.PublicKeyCryptoAC
 
 /**
  * A pair of cryptographic keys composed of
- * a [public] key, a [private] key and a [type]
+ * a [public] key, a [private] key and a [keyType]
  * for the Sodium library
  */
 class KeyPairSodium(
     override val public: PublicKeySodium,
     override val private: PrivateKeySodium,
-    override val type: AsymKeysType,
-): KeyPairCryptoAC(public, private, type)
+    override val keyType: AsymKeysType,
+): KeyPairCryptoAC(public, private, keyType)
 
 /** A public cryptographic key for the Sodium library */
 class PublicKeySodium(val public: UByteArray) : PublicKeyCryptoAC {
@@ -36,13 +36,13 @@ class PrivateKeySodium(val private: UByteArray) : PrivateKeyCryptoAC {
 fun BoxKeyPair.toKeyPairSodium(): KeyPairSodium = KeyPairSodium(
     public = PublicKeySodium(this.publicKey),
     private = PrivateKeySodium(this.secretKey),
-    type = AsymKeysType.ENC,
+    keyType = AsymKeysType.ENC,
 )
 
 /** Extension function to convert a SignatureKeyPair to a KeyPairSodium */
 fun SignatureKeyPair.toKeyPairSodium(): KeyPairSodium = KeyPairSodium(
     public = PublicKeySodium(this.publicKey),
     private = PrivateKeySodium(this.secretKey),
-    type = AsymKeysType.SIG,
+    keyType = AsymKeysType.SIG,
 )
 

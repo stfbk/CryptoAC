@@ -7,11 +7,12 @@ import eu.fbk.st.cryptoac.core.elements.Role
 import eu.fbk.st.cryptoac.core.elements.User
 import eu.fbk.st.cryptoac.core.tuples.RoleTuple
 import eu.fbk.st.cryptoac.crypto.*
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCloudParameters
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMQTTParameters
+import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCryptoACParameters
+import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquittoParameters
 import eu.fbk.st.cryptoac.implementation.mm.MMInterfaceMySQLParameters
+import eu.fbk.st.cryptoac.implementation.mm.MMInterfaceRedisParameters
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters
-import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCloudParameters
+import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCryptoACParameters
 
 /**
  * This object contains test parameters. Change the implementation of the cryptoObject
@@ -20,7 +21,7 @@ import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCloudParameters
 object Parameters {
 
     /** Change these parameters to test different combinations */
-    val cryptoType = CryptoType.JAVA
+    val cryptoType = CryptoType.SODIUM
     val coreType = CoreType.RBAC_CLOUD
 
     private const val proxyURL = "0.0.0.0"
@@ -83,13 +84,13 @@ object Parameters {
 
 
     /** CLOUD Parameters */
-    val dmInterfaceCloudParameters = DMInterfaceCloudParameters(
+    val dmInterfaceCryptoACParameters = DMInterfaceCryptoACParameters(
         port = 8443, url = "10.1.0.7"
     )
-    val rmInterfaceCloudParameters = RMInterfaceCloudParameters(
+    val rmInterfaceCryptoACParameters = RMInterfaceCryptoACParameters(
         port = 8443, url = "10.1.0.6"
     )
-    val MMInterfaceMySQLParameters = MMInterfaceMySQLParameters(
+    val mmInterfaceMySQLParameters = MMInterfaceMySQLParameters(
         port = 3306, url = "10.1.0.5", password = "password", username = "admin"
     )
     val opaInterfaceParameters = OPAInterfaceParameters(
@@ -102,26 +103,29 @@ object Parameters {
             asymEncKeys = AsymKeys(
                 public = adminAsymEncKeys.public.encoded.encodeBase64(),
                 private = adminAsymEncKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.ENC
+                keysType = AsymKeysType.ENC
             ),
             asymSigKeys = AsymKeys(
                 public = adminAsymSigKeys.public.encoded.encodeBase64(),
                 private = adminAsymSigKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.SIG
+                keysType = AsymKeysType.SIG
             )
         ),
         cryptoType = cryptoType,
-        mmMySQLInterfaceParameters = MMInterfaceMySQLParameters,
-        rmCloudInterfaceParameters = rmInterfaceCloudParameters,
-        dmCloudInterfaceParameters = dmInterfaceCloudParameters,
+        mmInterfaceParameters = mmInterfaceMySQLParameters,
+        rmInterfaceParameters = rmInterfaceCryptoACParameters,
+        dmInterfaceParameters = dmInterfaceCryptoACParameters,
         opaInterfaceParameters = opaInterfaceParameters
     )
 
 
 
     /** MQTT Parameters */
-    val dmInterfaceMQTTParameters = DMInterfaceMQTTParameters(
+    val dmInterfaceMosquittoParameters = DMInterfaceMosquittoParameters(
         port = 1883, url = "0.0.0.0", password = "password".toByteArray(), username = ADMIN
+    )
+    val mmInterfaceRedisParameters = MMInterfaceRedisParameters(
+        port = 6379, url = "10.1.0.5", password = "password", username = "admin"
     )
     val adminCoreRBACMQTTParameters = CoreParametersMQTT(
         User(
@@ -130,18 +134,19 @@ object Parameters {
             asymEncKeys = AsymKeys(
                 public = adminAsymEncKeys.public.encoded.encodeBase64(),
                 private = adminAsymEncKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.ENC
+                keysType = AsymKeysType.ENC
             ),
             asymSigKeys = AsymKeys(
                 public = adminAsymSigKeys.public.encoded.encodeBase64(),
                 private = adminAsymSigKeys.private.encoded.encodeBase64(),
-                type = AsymKeysType.SIG
+                keysType = AsymKeysType.SIG
             )
         ),
         cryptoType = cryptoType,
-        mmMySQLInterfaceParameters = MMInterfaceMySQLParameters,
-        dmMQTTInterfaceParameters = dmInterfaceMQTTParameters
+        mmInterfaceParameters = mmInterfaceRedisParameters,
+        dmInterfaceParameters = dmInterfaceMosquittoParameters
     )
+
     val adminCoreRBACMOCKParameters = CoreParametersMOCK(
         user = adminUser,
         cryptoType = cryptoType,
@@ -158,37 +163,37 @@ object Parameters {
         asymEncKeys = AsymKeys(
             public = aliceAsymEncKeys.public.encoded.encodeBase64(),
             private = aliceAsymEncKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.ENC
+            keysType = AsymKeysType.ENC
         ),
         asymSigKeys = AsymKeys(
             public = aliceAsymSigKeys.public.encoded.encodeBase64(),
             private = aliceAsymSigKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.SIG
+            keysType = AsymKeysType.SIG
         )
     )
     private val aliceCoreRBACCLOUDParameters = CoreParametersCLOUD(
         user = aliceUser,
-        mmMySQLInterfaceParameters = MMInterfaceMySQLParameters(
-            port = MMInterfaceMySQLParameters.port,
-            url = MMInterfaceMySQLParameters.url,
+        mmInterfaceParameters = MMInterfaceMySQLParameters(
+            port = mmInterfaceMySQLParameters.port,
+            url = mmInterfaceMySQLParameters.url,
             username = aliceName,
             password = aliceName,
         ),
         cryptoType = cryptoType,
-        rmCloudInterfaceParameters = rmInterfaceCloudParameters,
-        dmCloudInterfaceParameters = dmInterfaceCloudParameters,
+        rmInterfaceParameters = rmInterfaceCryptoACParameters,
+        dmInterfaceParameters = dmInterfaceCryptoACParameters,
         opaInterfaceParameters = opaInterfaceParameters
     )
     private val aliceCoreRBACMQTTParameters = CoreParametersMQTT(
         user = aliceUser,
         cryptoType = cryptoType,
-        mmMySQLInterfaceParameters = MMInterfaceMySQLParameters(
-            port = MMInterfaceMySQLParameters.port,
-            url = MMInterfaceMySQLParameters.url,
+        mmInterfaceParameters = MMInterfaceRedisParameters(
+            port = mmInterfaceRedisParameters.port,
+            url = mmInterfaceRedisParameters.url,
             username = aliceName,
             password = aliceName,
         ),
-        dmMQTTInterfaceParameters = DMInterfaceMQTTParameters(
+        dmInterfaceParameters = DMInterfaceMosquittoParameters(
             port = 1883,
             url = "0.0.0.0",
             password = aliceName.toByteArray(),
@@ -215,37 +220,37 @@ object Parameters {
         asymEncKeys = AsymKeys(
             public = bobAsymEncKeys.public.encoded.encodeBase64(),
             private = bobAsymEncKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.ENC
+            keysType = AsymKeysType.ENC
         ),
         asymSigKeys = AsymKeys(
             public = bobAsymSigKeys.public.encoded.encodeBase64(),
             private = bobAsymSigKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.SIG
+            keysType = AsymKeysType.SIG
         )
     )
     private val bobCoreRBACCLOUDParameters = CoreParametersCLOUD(
         user = bobUser,
-        mmMySQLInterfaceParameters = MMInterfaceMySQLParameters(
-            port = MMInterfaceMySQLParameters.port,
-            url = MMInterfaceMySQLParameters.url,
+        mmInterfaceParameters = MMInterfaceMySQLParameters(
+            port = mmInterfaceMySQLParameters.port,
+            url = mmInterfaceMySQLParameters.url,
             username = bobName,
             password = bobName,
         ),
         cryptoType = cryptoType,
-        rmCloudInterfaceParameters = rmInterfaceCloudParameters,
-        dmCloudInterfaceParameters = dmInterfaceCloudParameters,
+        rmInterfaceParameters = rmInterfaceCryptoACParameters,
+        dmInterfaceParameters = dmInterfaceCryptoACParameters,
         opaInterfaceParameters = opaInterfaceParameters
     )
     private val bobCoreRBACMQTTParameters = CoreParametersMQTT(
         user = bobUser,
         cryptoType = cryptoType,
-        mmMySQLInterfaceParameters = MMInterfaceMySQLParameters(
-            port = MMInterfaceMySQLParameters.port,
-            url = MMInterfaceMySQLParameters.url,
+        mmInterfaceParameters = MMInterfaceRedisParameters(
+            port = mmInterfaceRedisParameters.port,
+            url = mmInterfaceRedisParameters.url,
             username = bobName,
             password = bobName,
         ),
-        dmMQTTInterfaceParameters = DMInterfaceMQTTParameters(
+        dmInterfaceParameters = DMInterfaceMosquittoParameters(
             port = 1883,
             url = "0.0.0.0",
             password = aliceName.toByteArray(),
@@ -271,12 +276,12 @@ object Parameters {
         asymEncKeys = AsymKeys(
             public = carlAsymEncKeys.public.encoded.encodeBase64(),
             private = carlAsymEncKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.ENC
+            keysType = AsymKeysType.ENC
         ),
         asymSigKeys = AsymKeys(
             public = carlAsymSigKeys.public.encoded.encodeBase64(),
             private = carlAsymSigKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.SIG
+            keysType = AsymKeysType.SIG
         )
     )
     private val deniseAsymEncKeys = cryptoObject.generateAsymEncKeys()
@@ -288,12 +293,12 @@ object Parameters {
         asymEncKeys = AsymKeys(
             public = deniseAsymEncKeys.public.encoded.encodeBase64(),
             private = deniseAsymEncKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.ENC
+            keysType = AsymKeysType.ENC
         ),
         asymSigKeys = AsymKeys(
             public = deniseAsymSigKeys.public.encoded.encodeBase64(),
             private = deniseAsymSigKeys.private.encoded.encodeBase64(),
-            type = AsymKeysType.SIG
+            keysType = AsymKeysType.SIG
         )
     )
 }

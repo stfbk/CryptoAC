@@ -42,6 +42,15 @@ object SERVER {
     /** Whether the user is an admin */
     const val IS_ADMIN = "Admin"
 
+    /** The rm */
+    const val RM = "RM"
+
+    /** The mm */
+    const val MM = "MM"
+
+    /** The dm */
+    const val DM = "DM"
+
     /** The URL of the rm */
     const val RM_URL = "RM_URL"
 
@@ -58,13 +67,13 @@ object SERVER {
     const val DM_PASSWORD = "DM_Password"
 
     /** The URL of the mm */
-    const val MS_URL = "MS_URL"
+    const val MM_URL = "MM_URL"
 
     /** The password of the mm */
-    const val MS_PASSWORD = "MS_Password"
+    const val MM_PASSWORD = "MM_Password"
 
     /** The port of the mm */
-    const val MS_PORT = "MS_Port"
+    const val MM_PORT = "MM_Port"
 
     /** The URL of the OPA */
     const val OPA_URL = "OPA_URL"

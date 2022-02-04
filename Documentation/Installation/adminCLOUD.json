@@ -1,24 +1,34 @@
 {
+   "type":"eu.fbk.st.cryptoac.core.CoreParametersCLOUD",
+   "coreType":"RBAC_CLOUD",
+   "cryptoType":"JAVA",
+   "versionNumber":1,
    "user":{
       "name":"admin",
       "isAdmin":true
    },
-   "cryptoType":"JAVA",
-   "rmCloudInterfaceParameters":{
+   "rmInterfaceParameters":{
+      "type":"eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCryptoACParameters",
+      "rmType":"CRYPTOAC",
       "port":8443,
       "url":"10.1.0.6"
    },
-   "msMySQLInterfaceParameters":{
+   "mmInterfaceParameters":{
+      "type":"eu.fbk.st.cryptoac.implementation.mm.MMInterfaceMySQLParameters",
+      "mmType":"MYSQL",
       "username":"admin",
       "password":"password",
       "port":3306,
       "url":"10.1.0.5"
    },
-   "dsCloudInterfaceParameters":{
+   "dmInterfaceParameters":{
+      "type":"eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCryptoACParameters",
+      "dmType":"CRYPTOAC",
       "port":8443,
       "url":"10.1.0.7"
    },
    "opaInterfaceParameters":{
+      "type":"eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters",
       "port":8181,
       "url":"10.1.0.8"
    }

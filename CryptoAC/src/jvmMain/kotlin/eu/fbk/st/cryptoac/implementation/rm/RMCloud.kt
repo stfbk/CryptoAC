@@ -10,6 +10,7 @@ import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.elements.ElementTypeWithKey
 import eu.fbk.st.cryptoac.core.elements.ElementTypeWithVersionNumber
 import eu.fbk.st.cryptoac.core.elements.File
+import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.core.tuples.FileTuple
 import eu.fbk.st.cryptoac.core.tuples.PermissionTuple
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
@@ -17,10 +18,8 @@ import eu.fbk.st.cryptoac.crypto.AsymKeysType
 import eu.fbk.st.cryptoac.crypto.Crypto
 import eu.fbk.st.cryptoac.crypto.CryptoFactory
 import eu.fbk.st.cryptoac.crypto.CryptoType
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCloud
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCloudParameters
-import eu.fbk.st.cryptoac.implementation.mm.MMInterfaceMySQL
-import eu.fbk.st.cryptoac.implementation.mm.MMInterfaceMySQLParameters
+import eu.fbk.st.cryptoac.implementation.dm.*
+import eu.fbk.st.cryptoac.implementation.mm.*
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterface
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters
 import eu.fbk.st.cryptoac.implementation.opa.PA
@@ -38,10 +37,10 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 /** The object to interact with the MM */
-private var mm: MMInterfaceMySQL? = null
+private var mm: MMInterface? = null
 
 /** The object to interact with the DM */
-private var dm: DMInterfaceCloud? = null
+private var dm: DMInterface? = null
 
 /** The object to interact with the OPA */
 private var opa: OPAInterface? = null
@@ -322,10 +321,8 @@ fun Route.filesRouting() {
                 }
 
                 /** Get the file tuple of the file to overwrite */
-                /** Get the file tuple of the file to overwrite */
                 val oldFileTuple = mm!!.getFileTuples(
                     fileName = fileTupleName,
-                    fileToken = fileTupleToken,
                     offset = 0, limit = 1,
                 ).firstOrNull() ?: return@patch ResponseRoutes.notFound(call,
                         "File $fileTupleName was not found",
@@ -462,9 +459,9 @@ fun Route.configureRouting() {
             //  but a bug in kotlinx serialization library prevents it. Therefore, receive as string and then serialize.
             //  When a new version of the kotlinx serialization library is provided, try again
             val parametersString = call.receive<String>()
-            val parameters: RMCloudParameters = Json.decodeFromString(parametersString)
-            mm = MMInterfaceMySQL(parameters.mmMySQLInterfaceParameters)
-            dm = DMInterfaceCloud(parameters.dmCloudInterfaceParameters)
+            val parameters: RMCloudParameters = myJson.decodeFromString(parametersString)
+            mm = MMFactory.getMM(parameters.mmMySQLInterfaceParameters)
+            dm = DMFactory.getDM(parameters.dmCloudInterfaceParameters)
             opa = OPAInterface(parameters.opaInterfaceParameters)
 
             // TODO get crypto parameters from request
@@ -491,7 +488,7 @@ fun Application.registerRMRoutes() {
 private fun startOfMethod(mmLock: Boolean = true, opaLock: Boolean = true, dmLock: Boolean = true): OutcomeCode {
     logger.info {
         "Locking the following interfaces: " +
-        if (mmLock) "MS " else "" +
+        if (mmLock) "MM " else "" +
         if (opaLock) "OPA " else "" +
         if (dmLock) "DM " else ""
     }
@@ -527,7 +524,7 @@ private fun endOfMethod(code: OutcomeCode, mmLocked: Boolean = true, opaLocked: 
     if (code == OutcomeCode.CODE_000_SUCCESS) {
         logger.info {
             "Operation successful, unlocking the following interfaces: " +
-            if (mmLocked) "MS " else "" +
+            if (mmLocked) "MM " else "" +
             if (opaLocked) "OPA " else "" +
             if (dmLocked) "DM " else ""
         }
@@ -537,7 +534,7 @@ private fun endOfMethod(code: OutcomeCode, mmLocked: Boolean = true, opaLocked: 
     } else {
         logger.info {
             "Operation unsuccessful (code $code), rollbacking the following interfaces: " +
-            if (mmLocked) "MS " else "" +
+            if (mmLocked) "MM " else "" +
             if (opaLocked) "OPA " else "" +
             if (dmLocked) "DM " else ""
         }
@@ -577,7 +574,7 @@ private fun unlockOrRollbackInterface(interfaze: String, rollback: Boolean = fal
 @Serializable
 data class RMCloudParameters(
     val crypto: CryptoType,
-    val mmMySQLInterfaceParameters: MMInterfaceMySQLParameters,
-    val dmCloudInterfaceParameters: DMInterfaceCloudParameters,
+    val mmMySQLInterfaceParameters: MMInterfaceParameters,
+    val dmCloudInterfaceParameters: DMInterfaceParameters,
     val opaInterfaceParameters: OPAInterfaceParameters,
 )

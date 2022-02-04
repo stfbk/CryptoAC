@@ -5,6 +5,7 @@ import eu.fbk.st.cryptoac.core.tuples.PermissionTuple
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
 import eu.fbk.st.cryptoac.core.tuples.RoleTuple
 import eu.fbk.st.cryptoac.API
+import eu.fbk.st.cryptoac.core.myJson
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
@@ -126,7 +127,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         val assignmentsCount = urAssignments[username]?.size ?: 0
 
         logger.info { "Updating the OPA document with the new UR assignment (user $username, role $roleName)" }
-        jsonPatch.append(createJsonPatchAddOperation(UR_KEY, username, assignmentsCount, Json.encodeToString(assignment)))
+        jsonPatch.append(createJsonPatchAddOperation(UR_KEY, username, assignmentsCount, myJson.encodeToString(assignment)))
         jsonPatch.setLength(jsonPatch.length - 2)
         jsonPatch.append("]")
 
@@ -151,7 +152,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         val assignmentsCount = paAssignments[roleName]?.size ?: 0
 
         logger.info { "Updating the OPA document with the new PA assignment (role $roleName, file $fileName)" }
-        jsonPatch.append(createJsonPatchAddOperation(PA_KEY, roleName, assignmentsCount, Json.encodeToString(assignment)))
+        jsonPatch.append(createJsonPatchAddOperation(PA_KEY, roleName, assignmentsCount, myJson.encodeToString(assignment)))
         jsonPatch.setLength(jsonPatch.length - 2)
         jsonPatch.append("]")
 
@@ -429,7 +430,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             } else {
                 val opaDocumentString = opaResponse.readText()
                 logger.debug { "The current OPA data is $opaDocumentString" }
-                StorageOPADocument(opaDocument = Json.decodeFromString<OPADocument>(opaDocumentString))
+                StorageOPADocument(opaDocument = myJson.decodeFromString<OPADocument>(opaDocumentString))
             }
         }
         return storageOPADocument
@@ -489,7 +490,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
                     logger.info { "Restore the RBAC data sending a PUT request to $opaURL" }
                     val opaResponse = client!!.put<HttpResponse>(opaURL) {
                         contentType(ContentType.Application.Json)
-                        body = Json.encodeToString(initialOPADocument)
+                        body = myJson.encodeToString(initialOPADocument)
                     }
                     logger.debug { "Received response from the OPA" }
                     /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */

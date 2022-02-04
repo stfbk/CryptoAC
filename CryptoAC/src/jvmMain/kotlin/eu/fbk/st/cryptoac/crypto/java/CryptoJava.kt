@@ -1,6 +1,5 @@
 package eu.fbk.st.cryptoac.crypto.java
 
-import com.ionspin.kotlin.crypto.box.BoxCorruptedOrTamperedDataException
 import eu.fbk.st.cryptoac.crypto.*
 import mu.KotlinLogging
 import org.apache.commons.codec.binary.Base64InputStream
@@ -145,7 +144,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         return EncryptedAsymKeys(
             public = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.public.encoded),
             private = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.private.encoded),
-            type = type,
+            keysType = type,
         )
     }
 
@@ -336,7 +335,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     fun checkAsymEncKeys(keyPair: KeyPairCryptoAC) {
         logger.debug { "Challenging an encryption key pair" }
 
-        val challenge = "I'm gonna make him an offer he can't refuse."
+        val challenge = "I'm gonna make him an offer he can't refuse"
         val encBytes = asymEncrypt(keyPair.public, challenge.toByteArray())
         try {
             if (!challenge.toByteArray().contentEquals(asymDecrypt(keyPair.private, encBytes))) {
@@ -359,7 +358,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     fun checkAsymSigKeys(keyPair: KeyPairCryptoAC) {
         logger.debug { "Challenging a signing key pair" }
 
-        val challenge = "Toto, I've a feeling we're not in Kansas anymore."
+        val challenge = "Toto, I've a feeling we're not in Kansas anymore"
         val signature = createSignature(challenge.toByteArray(), keyPair.private)
         try {
             verifySignature(signature, challenge.toByteArray(), keyPair.public)
@@ -378,14 +377,12 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     /** Encrypt the [bytes] with the [encryptingKey] */
     fun asymEncrypt(encryptingKey: PublicKey, bytes: ByteArray): ByteArray {
         val bytesSize = bytes.size
-        logger.debug { "Encrypting $bytesSize bytes" }
         require(bytes.isNotEmpty()) { "Empty ByteArray to encrypt" }
 
         asymCipher.init(Cipher.ENCRYPT_MODE, (encryptingKey as PublicKeyJava).public)
 
         val numBlocksToEncrypt = (bytesSize + encBlockLength - 1) / encBlockLength
         val encBytes = ByteArray(numBlocksToEncrypt * decBlockLength)
-        logger.debug { "Encrypting $numBlocksToEncrypt blocks of size $encBlockLength" }
 
         for (i in 0 until numBlocksToEncrypt) {
             val inputOffset = i * encBlockLength
@@ -405,7 +402,6 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     /** Decrypt the [encBytes] with the [decryptingKey] */
     fun asymDecrypt(decryptingKey: PrivateKey, encBytes: ByteArray): ByteArray {
         val encBytesSize = encBytes.size
-        logger.debug { "Decrypting $encBytesSize bytes" }
         require(encBytes.isNotEmpty()) { "Empty ByteArray to decrypt" }
 
         asymCipher.init(Cipher.DECRYPT_MODE, (decryptingKey as PrivateKeyJava).private)
@@ -413,7 +409,6 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         val numBlocksToEncrypt = (encBytesSize + decBlockLength - 1) / decBlockLength
         val bytes = ByteArray(numBlocksToEncrypt * decBlockLength)
         var decBytes = 0
-        logger.debug { "Decrypting $numBlocksToEncrypt blocks of size $decBlockLength" }
 
         for (i in 0 until numBlocksToEncrypt) {
             val inputOffset = i * decBlockLength

@@ -1,27 +1,63 @@
 package eu.fbk.st.cryptoac.implementation.mm
 
-import kotlinx.serialization.Serializable
-
 /** Parameters for configuring the MM */
-@Serializable
-sealed class MMInterfaceParameters {
+interface MMInterfaceParameters {
+
+    /** The type of this interface */
+    val mmType: MMType
 
     /** Check the parameters are valid through regular expressions and return true if they are, false otherwise */
-    abstract fun checkParameters(): Boolean
+    fun checkParameters(): Boolean
 
     /** Update updatable fields */
-    abstract fun update(updatedParameters: MMInterfaceParameters)
+    fun update(updatedParameters: MMInterfaceParameters)
 
     /** Obscure (e.g., overwrite values of) sensitive fields */
-    abstract fun obscureSensitiveFields()
+    fun obscureSensitiveFields()
+}
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        return true
-    }
+/**
+ * Parameters ([username], [password], [port] and [url])
+ * for configuring an MM compatible with the RBAC MQTT core
+ */
+interface MMInterfaceRBACMQTTParameters : MMInterfaceParameters {
+    /** The username for authentication */
+    var username: String
 
-    override fun hashCode(): Int {
-        return this::class.hashCode()
-    }
+    /** The password for authentication */
+    var password: String
+
+    /** The port of the MM */
+    var port: Int
+
+    /** The url of the MM */
+    var url: String
+}
+
+/**
+ * Parameters ([username], [password], [port] and [url])
+ * for configuring an MM compatible with the RBAC CLOUD core
+ */
+interface MMInterfaceRBACCLOUDParameters : MMInterfaceParameters {
+    /** The username for authentication */
+    var username: String
+
+    /** The password for authentication */
+    var password: String
+
+    /** The port of the MM */
+    var port: Int
+
+    /** The url of the MM */
+    var url: String
+}
+
+/**
+ * An MM interface can be implemented by:
+ * - MYSQL: MySQL8+ Docker container,
+ * - REDIS: Redis Docker container;
+ */
+enum class MMType {
+    MYSQL,
+    REDIS,
 }

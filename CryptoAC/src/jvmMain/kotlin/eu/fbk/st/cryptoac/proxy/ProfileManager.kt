@@ -29,10 +29,10 @@ class ProfileManager {
             FileSystemManager.saveFile(
                 path = getProfileKey(username, coreParameters.coreType),
                 content = when (coreParameters.coreType) {
-                    CoreType.RBAC_CLOUD -> Json.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
-                    CoreType.RBAC_MQTT -> Json.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
+                    CoreType.RBAC_CLOUD -> myJson.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
+                    CoreType.RBAC_MQTT -> myJson.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
                     CoreType.RBAC_MOCK -> if (development) {
-                        Json.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
+                        myJson.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
                     } else {
                         val message = "Using MOCK core when not in development mode"
                         logger.error { message }
@@ -49,10 +49,10 @@ class ProfileManager {
             FileSystemManager.saveFile(
                 path = getProfileKey(username, coreParameters.coreType),
                 content = when (coreParameters.coreType) {
-                    CoreType.RBAC_CLOUD -> Json.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
-                    CoreType.RBAC_MQTT -> Json.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
+                    CoreType.RBAC_CLOUD -> myJson.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
+                    CoreType.RBAC_MQTT -> myJson.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
                     CoreType.RBAC_MOCK -> if (development) {
-                        Json.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
+                        myJson.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
                     } else {
                         val message = "Using MOCK core when not in development mode"
                         logger.error { message }
@@ -70,10 +70,10 @@ class ProfileManager {
             return if (profileFile.exists()) {
                 val profileString = String(profileFile.inputStream().readAllBytes())
                 when (coreType) {
-                    CoreType.RBAC_CLOUD -> Json.decodeFromString<CoreParametersCLOUD>(profileString)
-                    CoreType.RBAC_MQTT -> Json.decodeFromString<CoreParametersMQTT>(profileString)
+                    CoreType.RBAC_CLOUD -> myJson.decodeFromString<CoreParametersCLOUD>(profileString)
+                    CoreType.RBAC_MQTT -> myJson.decodeFromString<CoreParametersMQTT>(profileString)
                     CoreType.RBAC_MOCK -> if (development) {
-                        Json.decodeFromString<CoreParametersMOCK>(profileString)
+                        myJson.decodeFromString<CoreParametersMOCK>(profileString)
                     } else {
                         val message = "Using MOCK core when not in development mode"
                         logger.error { message }

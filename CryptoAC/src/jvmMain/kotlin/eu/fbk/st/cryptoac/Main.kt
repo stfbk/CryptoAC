@@ -1,11 +1,14 @@
 package eu.fbk.st.cryptoac
 
 import eu.fbk.st.cryptoac.Constants.ADMIN
-import eu.fbk.st.cryptoac.proxy.UserSession
+import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.implementation.dm.registerDMRoutes
 import eu.fbk.st.cryptoac.implementation.rm.registerRMRoutes
+import eu.fbk.st.cryptoac.proxy.UserSession
 import eu.fbk.st.cryptoac.proxy.registerProxyRoutes
 import io.ktor.application.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.serialization.*
@@ -23,6 +26,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
 import java.util.*
+import kotlin.random.Random
+
 
 private val logger = KotlinLogging.logger {}
 
@@ -148,7 +153,7 @@ fun Application.module(testing: Boolean = true) {
     logger.info { "port is $port, sslPort is $sslPort" }
 
     install(ContentNegotiation) {
-        json()
+        json(json = myJson)
     }
     install(Sessions) {
         /**
@@ -303,4 +308,13 @@ tailrec suspend fun waitForCondition (timeout: Long = 5000, polling: Long = 100,
     }
     delay(polling)
     return waitForCondition(timeout - polling, polling, block)
+}
+
+/** Generate a random string */
+fun generateRandomString(): String {
+    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    return (1..20)
+        .map { Random.nextInt(0, charPool.size) }
+        .map(charPool::get)
+        .joinToString("")
 }

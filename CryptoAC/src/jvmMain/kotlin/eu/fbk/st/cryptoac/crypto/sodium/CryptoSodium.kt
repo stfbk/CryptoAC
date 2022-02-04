@@ -133,7 +133,7 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
         return EncryptedAsymKeys(
             public = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.public.encoded),
             private = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.private.encoded),
-            type = type,
+            keysType = type,
         )
     }
 
@@ -339,7 +339,7 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
         val keyPair = KeyPairSodium(
             public = PublicKeySodium(asymPublicKeyBytes.toUByteArray()),
             private = PrivateKeySodium(asymPrivateKeyBytes.toUByteArray()),
-            type = type
+            keyType = type
         )
 
         if (type == AsymKeysType.ENC) {
@@ -412,7 +412,7 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
     fun checkAsymSigKeys(keyPair: KeyPairCryptoAC) {
          logger.debug { "Challenging a signing key pair" }
 
-        val challenge = "Here's looking at you, kid."
+        val challenge = "Here's looking at you, kid"
         val signature = createSignature(challenge.toByteArray(), keyPair.private)
         try {
             verifySignature(signature, challenge.toByteArray(), keyPair.public)
@@ -442,7 +442,6 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
         bytes: ByteArray
     ): ByteArray {
         val bytesSize = bytes.size
-        logger.debug { "Encrypting $bytesSize bytes" }
         require(bytes.isNotEmpty()) { "Empty ByteArray to encrypt" }
         return seal(
             message = bytes.toUByteArray(),
@@ -464,7 +463,6 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
         encBytes: ByteArray
     ): ByteArray {
         val encBytesSize = encBytes.size
-        logger.debug { "Decrypting $encBytesSize bytes" }
         require(encBytes.isNotEmpty()) { "Empty ByteArray to decrypt" }
         return sealOpen(
             ciphertext = encBytes.toUByteArray(),

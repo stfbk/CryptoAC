@@ -305,7 +305,7 @@ internal abstract class CryptoTest {
         val encryptedAsymEncKeys = EncryptedAsymKeys(
             private = Random.nextBytes(asymEncKeys.private.encoded.size),
             public = Random.nextBytes(asymEncKeys.public.encoded.size),
-            type = AsymKeysType.ENC
+            keysType = AsymKeysType.ENC
         )
         assertThrows<CryptographicOperationException> {
             cryptoObject.decryptAsymEncKeys(asymEncKeys.public, asymEncKeys.private, encryptedAsymEncKeys)
@@ -321,7 +321,7 @@ internal abstract class CryptoTest {
         val diffEncryptedAsymKeys = EncryptedAsymKeys(
             public = encryptedAsymEncKeys1.public,
             private = encryptedAsymEncKeys2.private,
-            type = AsymKeysType.ENC
+            keysType = AsymKeysType.ENC
         )
         assertThrows<InvalidKeyException> {
             cryptoObject.decryptAsymEncKeys(asymEncKeys.public, asymEncKeys.private, diffEncryptedAsymKeys)
@@ -362,7 +362,7 @@ internal abstract class CryptoTest {
         val encryptedAsymSigKeys = EncryptedAsymKeys(
             private = Random.nextBytes(asymSigKeys.private.encoded.size),
             public = Random.nextBytes(asymSigKeys.public.encoded.size),
-            type = AsymKeysType.SIG
+            keysType = AsymKeysType.SIG
         )
         assertThrows<CryptographicOperationException> {
             cryptoObject.decryptAsymSigKeys(asymEncKeys.public, asymEncKeys.private, encryptedAsymSigKeys)
@@ -378,7 +378,7 @@ internal abstract class CryptoTest {
         val diffEncryptedAsymKeys = EncryptedAsymKeys(
             public = encryptedAsymSigKeys1.public,
             private = encryptedAsymSigKeys2.private,
-            type = AsymKeysType.SIG
+            keysType = AsymKeysType.SIG
         )
         assertThrows<InvalidKeyException> {
             cryptoObject.decryptAsymSigKeys(asymEncKeys.public, asymEncKeys.private, diffEncryptedAsymKeys)
@@ -453,7 +453,11 @@ internal abstract class CryptoTest {
         val bytesToEncrypt = Random.nextBytes(bytesEncLength)
         val otherKey = cryptoObject.generateSymKey()
         val encBytes = cryptoObject.encryptStream(symKey, ByteArrayInputStream(bytesToEncrypt)).readAllBytes()
-        val decBytes = cryptoObject.decryptStream(otherKey, ByteArrayInputStream(encBytes)).readAllBytes()
-        assert(!bytesToEncrypt.contentEquals(decBytes))
+        try {
+            val decBytes = cryptoObject.decryptStream(otherKey, ByteArrayInputStream(encBytes)).readAllBytes()
+            assert(!bytesToEncrypt.contentEquals(decBytes))
+        } catch (e: java.lang.IllegalArgumentException) {
+            assert(e.message!!.contains("Last encoded character (before the paddings if any) is a valid base 64 alphabet but not a possible value"))
+        }
     }
  }

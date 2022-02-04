@@ -1,11 +1,13 @@
 package eu.fbk.st.cryptoac.proxy
 
 import eu.fbk.st.cryptoac.*
+import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.Parameters.adminCoreRBACMOCKParameters
 import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.tuples.EnforcementType
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
 import io.ktor.http.*
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -39,15 +41,236 @@ internal class ProxyRoutesTest {
 
 
 
+    /** Profile routing testing */
+    @Test
+    fun `create profile of user as user or user as admin works`() {
+        /** create profile of user as user */
+        run {
+            val parameters = ProxyUtilities.addUserInRBAC_MOCK(username = "alice")
+            ProxyUtilities.initUserInRBAC_MOCK(parameters!!, loggedUser = "alice")
+        }
+
+        /** create profile of user as admin */
+        run {
+            val parameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+            ProxyUtilities.initUserInRBAC_MOCK(parameters!!, loggedUser = ADMIN)
+        }
+
+        /** Cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
+    }
+
+    @Test
+    fun `create profile of user as another user or while not logged-in fails`() {
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
+        /** create profile of user as another user */
+        runBlocking {
+            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_035_FORBIDDEN,
+                expectedStatus = HttpStatusCode.Forbidden, loggedUser = "alice")
+        }
+        /** create profile of user while not logged-in */
+        runBlocking {
+            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedStatus = HttpStatusCode.Unauthorized,
+                login = false
+            )
+        }
+
+        /** Cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
+    }
+
+    @Test
+    fun `get profile of admin as admin, user as user or user as admin works`() {
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+
+        /** get profile of admin as admin */
+        run {
+            val getAdminParameters = ProxyUtilities.getProfileInRBAC_MOCK(ADMIN)
+            assert(adminCoreRBACMOCKParameters.user.isAdmin == getAdminParameters!!.user.isAdmin)
+            assert(adminCoreRBACMOCKParameters.coreType == getAdminParameters.coreType)
+            assert(adminCoreRBACMOCKParameters.user.name == getAdminParameters.user.name)
+        }
+
+        /** get profile of user as user */
+        run {
+            val getAliceParameters = ProxyUtilities.getProfileInRBAC_MOCK("alice", loggedUser = "alice")
+            assert(aliceParameters.user.isAdmin == getAliceParameters!!.user.isAdmin)
+            assert(aliceParameters.coreType == getAliceParameters.coreType)
+            assert(aliceParameters.user.name == getAliceParameters.user.name)
+        }
+
+        /** get profile of user as admin */
+        run {
+            val getAliceParameters = ProxyUtilities.getProfileInRBAC_MOCK("alice")
+            assert(aliceParameters.user.isAdmin == getAliceParameters!!.user.isAdmin)
+            assert(aliceParameters.coreType == getAliceParameters.coreType)
+            assert(aliceParameters.user.name == getAliceParameters.user.name)
+        }
+
+        /** Cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+    }
+
+    @Test
+    fun `get profile of user as another user or while not logged-in fails`() {
+
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
+        /** get profile of user as another user */
+        run {
+            ProxyUtilities.getProfileInRBAC_MOCK("alice",
+                loggedUser = "bob",
+                expectedCode = OutcomeCode.CODE_004_USER_NOT_FOUND,
+                expectedStatus = HttpStatusCode.NotFound)
+        }
+
+        /** get profile of user while not logged-in */
+        run {
+            ProxyUtilities.getProfileInRBAC_MOCK("alice",
+                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedStatus = HttpStatusCode.Unauthorized,
+                login = false
+            )
+        }
+
+        /** Cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
+    }
+
+    @Test
+    fun `delete profile of user as admin works`() {
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+
+        /** delete profile of user as admin */
+        run {
+            ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+        }
+    }
+
+    @Test
+    fun `delete profile of admin as admin, user as user, user as another user or while not logged-in fails`() {
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
+        /** delete of admin as admin */
+        run {
+            ProxyUtilities.deleteProfileInRBAC_MOCK(
+                ADMIN,
+                expectedStatus = HttpStatusCode.UnprocessableEntity,
+                expectedCode = OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
+        }
+
+        /** delete profile of user as user */
+        run {
+            ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
+                loggedUser = "alice",
+                expectedCode = OutcomeCode.CODE_023_USER_CANNOT_BE_MODIFIED,
+                expectedStatus = HttpStatusCode.UnprocessableEntity)
+        }
+
+        /** delete profile of user as another user */
+        run {
+            ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
+                loggedUser = "bob",
+                expectedCode = OutcomeCode.CODE_004_USER_NOT_FOUND,
+                expectedStatus = HttpStatusCode.NotFound,
+            )
+        }
+
+        /** delete profile of user while not logged */
+        run {
+            ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
+                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedStatus = HttpStatusCode.Unauthorized,
+                login = false
+            )
+        }
+
+        /** Cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
+    }
+
+    @Test
+    fun `update profile of admin as admin, user as user or user as admin works`() {
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+
+        /** update profile of admin as admin */
+        run {
+            ProxyUtilities.updateProfileInRBAC_MOCK(adminCoreRBACMOCKParameters)
+        }
+
+        /** update profile of user as user */
+        run {
+            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters, loggedUser = "alice")
+        }
+
+        /** get profile of user as admin */
+        run {
+            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters)
+        }
+
+        /** Cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+    }
+
+    @Test
+    fun `update profile of user as another user or while not logged-in fails`() {
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
+        /** update profile of user as another user */
+        run {
+            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters,
+                loggedUser = "bob",
+                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedStatus = HttpStatusCode.Forbidden)
+        }
+
+        /** update profile of user while not logged-in */
+        run {
+            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters,
+                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedStatus = HttpStatusCode.Unauthorized,
+                login = false
+            )
+        }
+
+        /** Cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
+    }
 
 
+
+
+
+
+    /** Admin routing testing */
     @Test
     fun `add user works`() {
         /** add user */
         run {
             ProxyUtilities.addUserInRBAC_MOCK(
                 username = "alice",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -110,7 +333,6 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.deleteUserInRBAC_MOCK(
                 username = "alice",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -163,7 +385,6 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.addRoleInRBAC_MOCK(
                 roleName = "alice",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -225,7 +446,6 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.deleteRoleInRBAC_MOCK(
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -278,7 +498,6 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.deleteFileInRBAC_MOCK(
                 fileName = "test",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -332,7 +551,6 @@ internal class ProxyRoutesTest {
             ProxyUtilities.assignUserToRoleInRBAC_MOCK(
                 username = "alice",
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -410,7 +628,6 @@ internal class ProxyRoutesTest {
             ProxyUtilities.revokeUserFromRoleInRBAC_MOCK(
                 username = "alice",
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -469,7 +686,6 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
 
@@ -479,7 +695,6 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
 
@@ -489,7 +704,6 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -698,7 +912,6 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
 
@@ -708,7 +921,6 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
 
@@ -718,7 +930,6 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
             )
         }
     }
@@ -857,9 +1068,147 @@ internal class ProxyRoutesTest {
         }
     }
 
+    @Test
+    fun `get users works`() {
+        /** get users */
+        run {
+            assert(ProxyUtilities.getUsers(loggedUser = ADMIN)!!.isEmpty())
+        }
+    }
+
+    @Test
+    fun `get users not logged-in, not logged as admin or with wrong core parameter fails`() {
+        /** get users not logged-in */
+        run {
+            assert(ProxyUtilities.getUsers(
+                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedStatus = HttpStatusCode.Unauthorized,
+                login = false,
+            ) == null)
+        }
+
+        /** get users not logged as admin */
+        run {
+            assert(ProxyUtilities.getUsers(
+                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedStatus = HttpStatusCode.Forbidden,
+                loggedUser = "bob",
+                ) == null)
+        }
+
+        /** get users with wrong core parameter */
+        run {
+            assert(ProxyUtilities.getUsers(
+                core = "this_is_wrong",
+                expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
+                expectedStatus = HttpStatusCode.UnprocessableEntity,
+            ) == null)
+
+            assert(ProxyUtilities.getUsers(
+                core = CoreType.RBAC_CLOUD.toString(),
+                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedStatus = HttpStatusCode.NotFound,
+            ) == null)
+
+            // TODO test this by passing a non-RBAC core (e.g., ABAC core)
+        }
+    }
+
+    @Test
+    fun `get roles works`() {
+        /** get roles */
+        run {
+            assert(ProxyUtilities.getRoles(loggedUser = ADMIN)!!.isEmpty())
+        }
+    }
+
+    @Test
+    fun `get roles not logged-in, not logged as admin or with wrong core parameter fails`() {
+        /** get roles not logged-in */
+        run {
+            assert(ProxyUtilities.getRoles(
+                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedStatus = HttpStatusCode.Unauthorized,
+                login = false,
+            ) == null)
+        }
+
+        /** get roles not logged as admin */
+        run {
+            assert(ProxyUtilities.getRoles(
+                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedStatus = HttpStatusCode.Forbidden,
+                loggedUser = "bob",
+            ) == null)
+        }
+
+        /** get roles with wrong core parameter */
+        run {
+            assert(ProxyUtilities.getRoles(
+                core = "this_is_wrong",
+                expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
+                expectedStatus = HttpStatusCode.UnprocessableEntity,
+            ) == null)
+
+            assert(ProxyUtilities.getRoles(
+                core = CoreType.RBAC_CLOUD.toString(),
+                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedStatus = HttpStatusCode.NotFound,
+            ) == null)
+
+            // TODO test this by passing a non-RBAC core (e.g., ABAC core)
+        }
+    }
+
+    @Test
+    fun `get files works`() {
+        /** get files */
+        run {
+            assert(ProxyUtilities.getFiles(loggedUser = ADMIN)!!.isEmpty())
+        }
+    }
+
+    @Test
+    fun `get files not logged-in, not logged as admin or with wrong core parameter fails`() {
+        /** get files not logged-in */
+        run {
+            assert(ProxyUtilities.getFiles(
+                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedStatus = HttpStatusCode.Unauthorized,
+                login = false,
+            ) == null)
+        }
+
+        /** get files not logged as admin */
+        run {
+            assert(ProxyUtilities.getFiles(
+                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedStatus = HttpStatusCode.Forbidden,
+                loggedUser = "bob",
+            ) == null)
+        }
+
+        /** get files with wrong core parameter */
+        run {
+            assert(ProxyUtilities.getFiles(
+                core = "this_is_wrong",
+                expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
+                expectedStatus = HttpStatusCode.UnprocessableEntity,
+            ) == null)
+
+            assert(ProxyUtilities.getFiles(
+                core = CoreType.RBAC_CLOUD.toString(),
+                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedStatus = HttpStatusCode.NotFound,
+            ) == null)
+
+            // TODO test this by passing a non-RBAC core (e.g., ABAC core)
+        }
+    }
 
 
 
+    /** User routing testing */
     @Test
     fun `add combined or traditional file form or binary works`() {
         /** add file form */
@@ -867,13 +1216,13 @@ internal class ProxyRoutesTest {
             ProxyUtilities.addFileFormUrlEncodedInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
+                
             )
 
             ProxyUtilities.addFileFormUrlEncodedInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
+                
             )
         }
 
@@ -883,19 +1232,17 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 fileContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
+                
             )
 
             ProxyUtilities.addFileBinaryInRBAC_MOCK(
                 fileName = "test",
                 fileContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
+                
             )
         }
     }
-
-
 
     @Test
     fun `add combined or traditional file form or binary not logged-in, with no file name or content, null or wrong enforcement type or or with wrong core parameter fails`() {
@@ -1121,7 +1468,7 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.readFileInRBAC_MOCK(
                 fileName = "test",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
+                
             )
         }
     }
@@ -1166,7 +1513,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.writeFileFormUrlEncodedInRBAC_MOCK (
                 fileName = "test",
                 fileContent = "content",
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
+                
             )
         }
 
@@ -1175,7 +1522,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.writeFileBinaryInRBAC_MOCK (
                 fileName = "test",
                 fileContent = "content".inputStream(),
-                expectedCode = OutcomeCode.CODE_000_SUCCESS
+                
             )
         }
     }
@@ -1287,341 +1634,81 @@ internal class ProxyRoutesTest {
         }
     }
 
-
-    // TODO login testing
-
-/*
-
-
-
-
     @Test
-    fun `get users as admin or as user works`() {
-        /** get users as admin */
+    fun `get assignments works`() {
+        /** get assignments */
         run {
-            ProxyUtilities.getUsers(OutcomeCode.CODE_000_SUCCESS).apply {
-                assert(this!!.size == 1)
-                assert(first().name == Constants.ADMIN)
-            }
-
-            val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.getUsers(OutcomeCode.CODE_000_SUCCESS).apply {
-                assert(this!!.size == 2)
-                (filter { it.name == "alice" }).apply {
-                    assert(!first().isAdmin)
-                    assert(first().status == ElementStatus.INCOMPLETE)
-                }
-            }
-
-            ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!, OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.getUsers(OutcomeCode.CODE_000_SUCCESS).apply {
-                assert(this!!.size == 2)
-                (filter { it.name == "alice" }).apply {
-                    assert(first().status == ElementStatus.OPERATIONAL)
-                }
-            }
-        }
-
-        /** get users as user */
-        run {
-            ProxyUtilities.getUsers(OutcomeCode.CODE_000_SUCCESS, "alice").apply {
-                assert(this!!.first().name == "alice")
-            }
+            assert(ProxyUtilities.getAssignments(loggedUser = ADMIN)!!.isEmpty())
         }
     }
 
     @Test
-    fun `get assignments as admin or as user works`() {
-        /** get assignments as admin */
+    fun `get assignments not logged-in or with wrong core parameter fails`() {
+        /** get assignments not logged-in */
         run {
-            ProxyUtilities.getAssignments(OutcomeCode.CODE_000_SUCCESS).apply {
-                assert(this!!.size == 1)
-                first().apply {
-                    assert(username == Constants.ADMIN)
-                    assert(roleName == Constants.ADMIN)
-                }
-            }
-
-            ProxyUtilities.addRole("employee", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.getAssignments(OutcomeCode.CODE_000_SUCCESS).apply {
-                assert(this!!.size == 2)
-                first { roleTuple -> roleTuple.roleName == "employee" }.apply {
-                    assert(username == Constants.ADMIN)
-                }
-            }
-
-            val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!, OutcomeCode.CODE_000_SUCCESS)
-
-        }
-
-        /** get assignments as user */
-        run {
-            ProxyUtilities.assignUserToRole("alice", "employee", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.getAssignments(OutcomeCode.CODE_000_SUCCESS, "alice").apply {
-                assert(this!!.first().roleName == "employee")
-            }
-        }
-    }
-
-    @Test
-    fun `get permissions as admin or as user works`() {
-        /** get permissions as admin */
-        run {
-            ProxyUtilities.addFile("document",
-                "content".inputStream(),
-                EnforcementType.COMBINED.toString(),
-                OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.addFile("excel",
-                "content".inputStream(),
-                EnforcementType.COMBINED.toString(),
-                OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.getPermissions(OutcomeCode.CODE_000_SUCCESS).apply {
-                assert(this!!.size == 2)
-            }
-        }
-
-        /** get permissions as user */
-        run {
-            val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!, OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.addRole("employee", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.assignUserToRole("alice", "employee", OutcomeCode.CODE_000_SUCCESS)
-
-            ProxyUtilities.getPermissions(OutcomeCode.CODE_000_SUCCESS, "alice").apply {
-                assert(this!!.size == 0)
-            }
-            ProxyUtilities.assignPermissionToRole("employee",
-                "excel",
-                PermissionType.READ,
-                OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.getPermissions(OutcomeCode.CODE_000_SUCCESS, "alice").apply {
-                assert(this!!.first().fileName == "excel")
-            }
-        }
-    }*/
-
-
-
-
-
-
-
-/*
-    @Test
-    fun `create profile of user as user or user as admin works`() {
-        /** create profile of user as user */
-        run {
-            val parameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.initUserInRBAC_MOCK(parameters!!, OutcomeCode.CODE_000_SUCCESS, loggedUser = "alice")
-        }
-
-        /** create profile of user as admin */
-        run {
-            val parameters = ProxyUtilities.addUserInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-            ProxyUtilities.initUserInRBAC_MOCK(parameters!!, OutcomeCode.CODE_000_SUCCESS, loggedUser = Constants.ADMIN)
-        }
-
-        /** Cleanup */
-        ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.deleteProfileInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-    }
-
-    @Test
-    fun `create profile of user as another user or while not logged-in fails`() {
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
-
-        /** create profile of user as another user */
-        runBlocking {
-            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_035_FORBIDDEN,
-                expectedStatus = HttpStatusCode.Forbidden, loggedUser = "alice")
-        }
-        /** create profile of user while not logged-in */
-        runBlocking {
-            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_036_UNAUTHORIZED,
-                expectedStatus = HttpStatusCode.Unauthorized,
-                login = false
-            )
-        }
-
-        /** Cleanup */
-        ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.deleteProfileInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-    }
-
-    @Test
-    fun `get profile of admin as admin, user as user or user as admin works`() {
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-
-        /** get profile of admin as admin */
-        run {
-            val getAdminParameters = ProxyUtilities.getProfileInRBAC_MOCK(Constants.ADMIN)
-            assert(adminCoreRBACMOCKParameters.user.isAdmin == getAdminParameters!!.user.isAdmin)
-            assert(adminCoreRBACMOCKParameters.coreType == getAdminParameters.coreType)
-            assert(adminCoreRBACMOCKParameters.user.name == getAdminParameters.user.name)
-        }
-
-        /** get profile of user as user */
-        run {
-            val getAliceParameters = ProxyUtilities.getProfileInRBAC_MOCK("alice", loggedUser = "alice")
-            assert(aliceParameters.user.isAdmin == getAliceParameters!!.user.isAdmin)
-            assert(aliceParameters.coreType == getAliceParameters.coreType)
-            assert(aliceParameters.user.name == getAliceParameters.user.name)
-        }
-
-        /** get profile of user as admin */
-        run {
-            val getAliceParameters = ProxyUtilities.getProfileInRBAC_MOCK("alice")
-            assert(aliceParameters.user.isAdmin == getAliceParameters!!.user.isAdmin)
-            assert(aliceParameters.coreType == getAliceParameters.coreType)
-            assert(aliceParameters.user.name == getAliceParameters.user.name)
-        }
-
-        /** Cleanup */
-        ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-    }
-
-    @Test
-    fun `get profile of user as another user or while not logged-in fails`() {
-
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
-
-        /** get profile of user as another user */
-        run {
-            ProxyUtilities.getProfileInRBAC_MOCK("alice",
-                loggedUser = "bob",
-                expectedCode = OutcomeCode.CODE_004_USER_NOT_FOUND,
-                expectedStatus = HttpStatusCode.NotFound)
-        }
-
-        /** get profile of user while not logged-in */
-        run {
-            ProxyUtilities.getProfileInRBAC_MOCK("alice",
+            assert(ProxyUtilities.getAssignments(
                 expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
-                login = false
-            )
+                login = false,
+            ) == null)
         }
 
-        /** Cleanup */
-        ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.deleteProfileInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-    }
-
-    @Test
-    fun `delete profile of user as admin works`() {
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-
-        /** delete profile of user as admin */
+        /** get assignments with wrong core parameter */
         run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        }
-    }
-
-    @Test
-    fun `delete profile of admin as admin, user as user, user as another user or while not logged-in fails`() {
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
-
-        /** delete of admin as admin */
-        run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK(
-                Constants.ADMIN,
+            assert(ProxyUtilities.getAssignments(
+                core = "this_is_wrong",
+                expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
-                expectedCode = OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
-        }
+            ) == null)
 
-        /** delete profile of user as user */
-        run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
-                loggedUser = "alice",
-                expectedCode = OutcomeCode.CODE_023_USER_CANNOT_BE_MODIFIED,
-                expectedStatus = HttpStatusCode.UnprocessableEntity)
-        }
-
-        /** delete profile of user as another user */
-        run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
-                loggedUser = "bob",
-                expectedCode = OutcomeCode.CODE_004_USER_NOT_FOUND,
+            assert(ProxyUtilities.getAssignments(
+                core = CoreType.RBAC_CLOUD.toString(),
+                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
-            )
-        }
+            ) == null)
 
-        /** delete profile of user while not logged */
+            // TODO test this by passing a non-RBAC core (e.g., ABAC core)
+        }
+    }
+
+    @Test
+    fun `get permissions works`() {
+        /** get permissions */
         run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
+            assert(ProxyUtilities.getPermissions(loggedUser = ADMIN)!!.isEmpty())
+        }
+    }
+
+    @Test
+    fun `get permissions not logged-in or with wrong core parameter fails`() {
+        /** get permissions not logged-in */
+        run {
+            assert(ProxyUtilities.getPermissions(
                 expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
-                login = false
-            )
+                login = false,
+            ) == null)
         }
 
-        /** Cleanup */
-        ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.deleteProfileInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
+        /** get permissions with wrong core parameter */
+        run {
+            assert(ProxyUtilities.getPermissions(
+                core = "this_is_wrong",
+                expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
+                expectedStatus = HttpStatusCode.UnprocessableEntity,
+            ) == null)
+
+            assert(ProxyUtilities.getPermissions(
+                core = CoreType.RBAC_CLOUD.toString(),
+                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedStatus = HttpStatusCode.NotFound,
+            ) == null)
+
+            // TODO test this by passing a non-RBAC core (e.g., ABAC core)
+        }
     }
 
-    @Test
-    fun `update profile of admin as admin, user as user or user as admin works`() {
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-
-        /** update profile of admin as admin */
-        run {
-            ProxyUtilities.updateProfileInRBAC_MOCK(adminCoreRBACMOCKParameters)
-        }
-
-        /** update profile of user as user */
-        run {
-            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters, loggedUser = "alice")
-        }
-
-        /** get profile of user as admin */
-        run {
-            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters)
-        }
-
-        /** Cleanup */
-        ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-    }
-
-    @Test
-    fun `update profile of user as another user or while not logged-in fails`() {
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
-
-        /** update profile of user as another user */
-        run {
-            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters,
-                loggedUser = "bob",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
-                expectedStatus = HttpStatusCode.Forbidden)
-        }
-
-        /** update profile of user while not logged-in */
-        run {
-            ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters,
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
-                expectedStatus = HttpStatusCode.Unauthorized)
-        }
-
-        /** Cleanup */
-        ProxyUtilities.deleteProfileInRBAC_MOCK("alice", OutcomeCode.CODE_000_SUCCESS)
-        ProxyUtilities.deleteProfileInRBAC_MOCK("bob", OutcomeCode.CODE_000_SUCCESS)
-    }
-*/
+    // TODO test websocket mechanism
+    // TODO test login procedures
 }
 

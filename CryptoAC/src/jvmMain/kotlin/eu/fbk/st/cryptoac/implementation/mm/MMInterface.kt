@@ -17,7 +17,7 @@ const val DEFAULT_LIMIT = 100
 /** The unlimited value for rows in queries */
 const val NO_LIMIT = -1
 
-/** Abstract class defining the methods to interface with the MM */
+/** Interface defining the methods to interact with the MM */
 abstract class MMInterface {
 
     /** The number of locks on the database for the lock-rollback-unlock mechanism */
@@ -88,53 +88,47 @@ abstract class MMInterface {
 
 
     /**
-     * Retrieve data of the users matching the specified [username] and
-     * [userToken] and having the specified [status], if given, starting
-     * from the [offset] limiting the number of users to return to the
-     * given [limit]
+     * Retrieve data of the users matching the specified [username]
+     * and [status], if given, starting from the [offset] limiting
+     * the number of users to return to the given [limit]
      */
     abstract fun getUsers(
-        username: String? = null, userToken: String? = null,
+        username: String? = null,
         status: ElementStatus? = null,
         offset: Int = DEFAULT_OFFSET, limit: Int = DEFAULT_LIMIT,
     ): HashSet<User>
 
     /**
-     * Retrieve data of the roles matching the specified [roleName] and
-     * [roleToken] and having the specified [status], if given, starting
-     * from the [offset] limiting the number of roles to return to the
-     * given [limit]
+     * Retrieve data of the roles matching the specified [roleName]
+     * and [status], if given, starting from the [offset] limiting
+     * the number of roles to return to the given [limit]
      */
     abstract fun getRoles(
-        roleName: String? = null, roleToken: String? = null,
+        roleName: String? = null,
         status: ElementStatus? = null,
         offset: Int = DEFAULT_OFFSET, limit: Int = DEFAULT_LIMIT,
     ): HashSet<Role>
 
-
-
     /**
-     * Retrieve data of the files matching the specified [fileName] and
-     * [fileToken] and having the specified [status] and [enforcement],
-     * if given, starting from the [offset] limiting the number of files
-     * to return to the given [limit]. Fetch the file from either the
-     * file table or the file view, depending on whether the user [isAdmin]
+     * Retrieve data of the files matching the specified [fileName]
+     * and [status], if given, starting from the [offset] limiting
+     * the number of files to return to the given [limit] and with
+     * the (possibly) relevant information of whether the user
+     * invoking this function [isAdmin]
      */
     abstract fun getFiles(
-        fileName: String? = null, fileToken: String? = null,
+        fileName: String? = null,
         status: ElementStatus? = null,
-        enforcement: EnforcementType? = null,
         isAdmin: Boolean = true,
         offset: Int = DEFAULT_OFFSET, limit: Int = DEFAULT_LIMIT,
     ): HashSet<File>
 
 
-
     /**
-     * Retrieve the role tuples matching the [username] and the [roleName],
-     * if given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit]. Fetch the tuples from either the
-     * tuples table or the tuples view, depending on whether the user [isAdmin]
+     * Retrieve the role tuples matching the [username] and/or the [roleName],
+     * starting from the [offset] limiting the number of tuples to return to
+     * the given [limit] and with the (possibly) relevant information of
+     * whether the user invoking this function [isAdmin]
      */
     abstract fun getRoleTuples(
         username: String? = null, roleName: String? = null,
@@ -143,12 +137,13 @@ abstract class MMInterface {
     ): HashSet<RoleTuple>
 
     /**
-     * Retrieve the permission tuples matching the [roleName], [fileName],
-     * [roleToken], [fileToken], [permission], [roleVersionNumber] and
-     * [symKeyVersionNumber] and not matching the [roleNameToExclude],
-     * if given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit]. Fetch the tuples from either the
-     * tuples table or the tuples view, depending on whether the user [isAdmin]
+     * Retrieve the permission tuples matching the [roleName] and/or
+     * the [fileName], further filtering by [roleToken], [fileToken],
+     * [permission], [roleVersionNumber] and [symKeyVersionNumber] and
+     * not matching the [roleNameToExclude], if given, starting from
+     * the [offset] limiting the number of tuples to return to the given
+     * [limit] and with the (possibly) relevant information of whether
+     * the user invoking this function [isAdmin]
      */
     abstract fun getPermissionTuples(
         roleName: String? = null, fileName: String? = null,
@@ -161,14 +156,13 @@ abstract class MMInterface {
     ): HashSet<PermissionTuple>
 
     /**
-     * Retrieve the file tuples matching the [fileName] and [fileToken],
-     * if given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit]. Fetch the tuples from either the
-     * tuples table or the tuples view, depending on whether the user [isAdmin]
+     * Retrieve the file tuples matching the [fileName] starting
+     * from the [offset] limiting the number of tuples to return
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function [isAdmin]
      */
     abstract fun getFileTuples(
-        fileName: String? = null,
-        fileToken: String? = null,
+        fileName: String,
         isAdmin: Boolean = true,
         offset: Int = DEFAULT_OFFSET, limit: Int = DEFAULT_LIMIT,
     ): HashSet<FileTuple>
@@ -177,8 +171,8 @@ abstract class MMInterface {
     /**
      * Retrieve the public asymmetric key of the given [asymKeyType] belonging
      * to the element of the specified [elementType] by matching the [name] or
-     * the [token]. Note that only operational elements are considered, and
-     * files do not have public keys
+     * the [token] (at least one required). Note that only operational elements
+     * are considered, and files do not have public keys
      */
     abstract fun getPublicKey(
         name: String? = null, token: String? = null, elementType: ElementTypeWithKey, asymKeyType: AsymKeysType,
@@ -186,9 +180,10 @@ abstract class MMInterface {
 
     /**
      * Retrieve the version number belonging to the element of the specified
-     * [elementType] by matching the [name] or [token]. Note that only operational
-     * elements are considered, and users do not have version numbers. Note also
-     * that only encryption files version numbers are considered
+     * [elementType] by matching the [name] or [token] (at least one required).
+     * Note that only operational elements are considered, and users do not
+     * have version numbers. Note also that only encryption files version
+     * numbers are considered
      */
     abstract fun getVersionNumber(
         name: String? = null, token: String? = null, elementType: ElementTypeWithVersionNumber
@@ -204,8 +199,7 @@ abstract class MMInterface {
      * Retrieve the status of the element of the
      * given [type] matching the given [name]
      */
-    abstract fun getStatus(name: String, type: ElementTypeWithStatus): WrappedElementStatus
-
+    abstract fun getStatus(name: String, type: ElementTypeWithStatus): ElementStatus?
 
 
     /**
@@ -243,12 +237,11 @@ abstract class MMInterface {
     abstract fun deleteRoleTuples(roleName: String): OutcomeCode
 
     /**
-     * Delete the permission tuple matching the [roleName],
-     * [roleVersionNumber] and [fileName], if given. Note
-     * that at least one parameter has to be specified.
-     * Finally, return the outcome code
+     * Delete the permission tuples matching the [roleName] and/or
+     * the [fileName] (at least one required), further filtering by
+     * [roleVersionNumber], if given. Finally, return the outcome code
      */
-    abstract fun deletePermissionTuples(roleName: String? = null, roleVersionNumber: Int? = null, fileName: String? = null): OutcomeCode
+    abstract fun deletePermissionTuples(roleName: String? = null, fileName: String? = null, roleVersionNumber: Int? = null): OutcomeCode
 
     /**
      * Delete the file tuple matching the given
@@ -313,9 +306,6 @@ abstract class MMInterface {
 
 /** Wrapper for the outcome [code] and a [boolean] value */
 data class WrappedBoolean(val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, val boolean: Boolean? = null)
-
-/** Wrapper for the outcome [code] and a [status] of an element */
-data class WrappedElementStatus(val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, val status: ElementStatus? = null)
 
 /** Wrapper for the outcome [code] and eventual [parameters] */
 @Serializable

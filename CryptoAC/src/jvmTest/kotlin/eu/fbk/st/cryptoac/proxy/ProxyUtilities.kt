@@ -13,6 +13,8 @@ import eu.fbk.st.cryptoac.SERVER.PERMISSION
 import eu.fbk.st.cryptoac.SERVER.ROLE_NAME
 import eu.fbk.st.cryptoac.SERVER.USERNAME
 import eu.fbk.st.cryptoac.core.*
+import eu.fbk.st.cryptoac.core.elements.File
+import eu.fbk.st.cryptoac.core.elements.Role
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -40,10 +42,10 @@ class ProxyUtilities {
                     if (login) loginProxy(it, ADMIN)
                     val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
                         contentType(ContentType.Application.Json)
-                        body = Json.encodeToString(coreParameters as CoreParametersMOCK)
+                        body = myJson.encodeToString(coreParameters as CoreParametersMOCK)
                     }
                     Assertions.assertEquals(HttpStatusCode.OK, response.status)
-                    Assertions.assertEquals(OutcomeCode.CODE_000_SUCCESS, Json.decodeFromString<OutcomeCode>(response.readText()))
+                    Assertions.assertEquals(OutcomeCode.CODE_000_SUCCESS, myJson.decodeFromString<OutcomeCode>(response.readText()))
                     if (login) logoutProxy(it)
                 }
             }
@@ -61,11 +63,11 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.post<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
                         contentType(ContentType.Application.Json)
-                        body = Json.encodeToString(coreParameters as CoreParametersMOCK)
+                        body = myJson.encodeToString(coreParameters as CoreParametersMOCK)
                     }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode != OutcomeCode.CODE_000_SUCCESS) {
-                        assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
+                        assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.readText()))
                     } else {
                         /** We do not care about mock core parameters */
                     }
@@ -77,7 +79,7 @@ class ProxyUtilities {
         fun addUserInRBAC_MOCK(
             username: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -92,13 +94,13 @@ class ProxyUtilities {
                     }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        coreParameters = Json.decodeFromString<CoreParametersMOCK>(response.readText()).apply {
+                        coreParameters = myJson.decodeFromString<CoreParametersMOCK>(response.readText()).apply {
                             assertEquals(CoreType.RBAC_MOCK, coreType)
                             assertEquals(username, this.user.name)
                         }
                     }
                     else {
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -111,7 +113,7 @@ class ProxyUtilities {
        fun deleteUserInRBAC_MOCK(
            username: String?,
            core: String? = CoreType.RBAC_MOCK.toString(),
-           expectedCode: OutcomeCode,
+           expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
            loggedUser: String = ADMIN,
            login: Boolean = true,
@@ -121,7 +123,7 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}users/${core}/${username}")
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -132,7 +134,7 @@ class ProxyUtilities {
         fun addRoleInRBAC_MOCK(
             roleName: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -145,7 +147,7 @@ class ProxyUtilities {
                         body = listOf(ROLE_NAME to roleName).formUrlEncode()
                     }
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -156,7 +158,7 @@ class ProxyUtilities {
         fun deleteRoleInRBAC_MOCK(
             roleName: String,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -166,7 +168,7 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}roles/${core}/${roleName}")
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -179,7 +181,7 @@ class ProxyUtilities {
             fileContent: InputStream?,
             core: String? = CoreType.RBAC_MOCK.toString(),
             enforcementType: String?,
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -206,7 +208,7 @@ class ProxyUtilities {
                         }
                     )
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -218,7 +220,7 @@ class ProxyUtilities {
             fileName: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
             enforcementType: String?,
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -231,7 +233,7 @@ class ProxyUtilities {
                         body = listOf(FILE_NAME to fileName, ENFORCEMENT to enforcementType).formUrlEncode()
                     }
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -242,7 +244,7 @@ class ProxyUtilities {
         fun deleteFileInRBAC_MOCK(
             fileName: String,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -252,7 +254,7 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/${fileName}")
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -263,7 +265,7 @@ class ProxyUtilities {
         fun readFileInRBAC_MOCK(
             fileName: String,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -279,7 +281,7 @@ class ProxyUtilities {
                         inputStream = response.content.toInputStream().readAllBytes().inputStream() // TODO fix
                     }
                     else {
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -293,7 +295,7 @@ class ProxyUtilities {
             fileName: String?,
             fileContent: InputStream?,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -318,7 +320,7 @@ class ProxyUtilities {
                         method = HttpMethod.Patch
                     }
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -330,7 +332,7 @@ class ProxyUtilities {
             fileName: String?,
             fileContent: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -343,7 +345,7 @@ class ProxyUtilities {
                         body = listOf(FILE_NAME to fileName, SERVER.FILE_CONTENT to fileContent).formUrlEncode()
                     }
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -356,7 +358,7 @@ class ProxyUtilities {
             username: String?,
             roleName: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -369,7 +371,7 @@ class ProxyUtilities {
                         body = listOf(USERNAME to username, ROLE_NAME to roleName).formUrlEncode()
                     }
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -381,7 +383,7 @@ class ProxyUtilities {
             username: String, 
             roleName: String,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -391,7 +393,7 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}assignments/${core}/${username}/${roleName}")
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -404,7 +406,7 @@ class ProxyUtilities {
             fileName: String?,
             permission: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -417,7 +419,7 @@ class ProxyUtilities {
                         body = listOf(ROLE_NAME to roleName, FILE_NAME to fileName, PERMISSION to permission).formUrlEncode()
                     }
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -430,7 +432,7 @@ class ProxyUtilities {
             fileName: String, 
             permission: String,
             core: String? = CoreType.RBAC_MOCK.toString(),
-            expectedCode: OutcomeCode,
+             expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, 
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -440,7 +442,7 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}permissions/${core}/${roleName}/${fileName}/${permission}")
                     assertEquals(expectedStatus, response.status)
-                    Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutProxy(it)
@@ -462,13 +464,13 @@ class ProxyUtilities {
                     val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/?$USERNAME=$username")
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        coreParameters = Json.decodeFromString<CoreParametersMOCK>(response.readText()).apply {
+                        coreParameters = myJson.decodeFromString<CoreParametersMOCK>(response.readText()).apply {
                             assertEquals(CoreType.RBAC_MOCK, coreType)
                             assertEquals(username, this.user.name)
                         }
                     }
                     else {
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -490,7 +492,7 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.delete<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/$username")
                     assertEquals(expectedStatus, response.status)
-                    assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
+                    assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.readText()))
                     if (login) logoutProxy(it)
                 }
             }
@@ -508,17 +510,18 @@ class ProxyUtilities {
                     if (login) loginProxy(it, loggedUser)
                     val response = it.patch<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
                         contentType(ContentType.Application.Json)
-                        body = Json.encodeToString(coreParameters as CoreParametersMOCK)
+                        body = myJson.encodeToString(coreParameters as CoreParametersMOCK)
                     }
                     assertEquals(expectedStatus, response.status)
-                    assertEquals(expectedCode, Json.decodeFromString<OutcomeCode>(response.readText()))
+                    assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.readText()))
                     if (login) logoutProxy(it)
                 }
             }
         }
 
         fun getUsers(
-            expectedCode: OutcomeCode,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -527,13 +530,13 @@ class ProxyUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}users/${CoreType.RBAC_MOCK}/")
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}users/${core}/")
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        users = Json.decodeFromString<HashSet<User>>(response.readText())
+                        users = myJson.decodeFromString<HashSet<User>>(response.readText())
                     }
                     else {
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -542,9 +545,64 @@ class ProxyUtilities {
             }
             return users
         }
+
+        fun getRoles(
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ): HashSet<Role>? {
+            var roles: HashSet<Role>? = null
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}roles/${core}/")
+                    assertEquals(expectedStatus, response.status)
+                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
+                        roles = myJson.decodeFromString<HashSet<Role>>(response.readText())
+                    }
+                    else {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                            assertEquals(expectedCode, this)
+                        }
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+            return roles
+        }
+
+        fun getFiles(
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+            expectedStatus: HttpStatusCode = HttpStatusCode.OK,
+            loggedUser: String = ADMIN,
+            login: Boolean = true,
+        ): HashSet<File>? {
+            var files: HashSet<File>? = null
+            runBlocking {
+                TestUtilities.getKtorClientJetty().use {
+                    if (login) loginProxy(it, loggedUser)
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}files/${core}/")
+                    assertEquals(expectedStatus, response.status)
+                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
+                        files = myJson.decodeFromString<HashSet<File>>(response.readText())
+                    }
+                    else {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                            assertEquals(expectedCode, this)
+                        }
+                    }
+                    if (login) logoutProxy(it)
+                }
+            }
+            return files
+        }
         
         fun getAssignments(
-            expectedCode: OutcomeCode,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -553,13 +611,13 @@ class ProxyUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}assignments/${CoreType.RBAC_MOCK}/")
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}assignments/${core}/")
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        roleTuples = Json.decodeFromString<HashSet<RoleTuple>>(response.readText())
+                        roleTuples = myJson.decodeFromString<HashSet<RoleTuple>>(response.readText())
                     }
                     else {
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -570,7 +628,8 @@ class ProxyUtilities {
         }
         
         fun getPermissions(
-            expectedCode: OutcomeCode,
+            core: String? = CoreType.RBAC_MOCK.toString(),
+            expectedCode: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
             expectedStatus: HttpStatusCode = HttpStatusCode.OK,
             loggedUser: String = ADMIN,
             login: Boolean = true,
@@ -579,13 +638,13 @@ class ProxyUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}permissions/${CoreType.RBAC_MOCK}/")
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI${API.PROXY}permissions/${core}/")
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        permissionTuples = Json.decodeFromString<HashSet<PermissionTuple>>(response.readText())
+                        permissionTuples = myJson.decodeFromString<HashSet<PermissionTuple>>(response.readText())
                     }
                     else {
-                        Json.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }

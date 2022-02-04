@@ -2,8 +2,9 @@ package eu.fbk.st.cryptoac
 
 import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.Parameters.cryptoObject
-import eu.fbk.st.cryptoac.Parameters.dmInterfaceCloudParameters
-import eu.fbk.st.cryptoac.Parameters.MMInterfaceMySQLParameters
+import eu.fbk.st.cryptoac.Parameters.dmInterfaceCryptoACParameters
+import eu.fbk.st.cryptoac.Parameters.mmInterfaceMySQLParameters
+import eu.fbk.st.cryptoac.Parameters.mmInterfaceRedisParameters
 import eu.fbk.st.cryptoac.Parameters.opaBaseAPI
 import eu.fbk.st.cryptoac.core.*
 import eu.fbk.st.cryptoac.core.elements.ElementTypeWithKey
@@ -13,8 +14,9 @@ import eu.fbk.st.cryptoac.core.tuples.*
 import eu.fbk.st.cryptoac.crypto.AsymKeys
 import eu.fbk.st.cryptoac.crypto.AsymKeysType
 import eu.fbk.st.cryptoac.crypto.PrivateKeyCryptoAC
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCloud
-import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMQTT
+import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceRBACCryptoAC
+import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquitto
+import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceRBACMQTT
 import eu.fbk.st.cryptoac.implementation.mm.*
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -24,6 +26,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import redis.clients.jedis.JedisPool
+import redis.clients.jedis.JedisPoolConfig
 import java.io.File
 
 private val logger = KotlinLogging.logger {}
@@ -48,7 +52,7 @@ class TestUtilities {
         fun resetDMCloud() {
             logger.warn { "Resetting Cloud DM" }
 
-            val mm = MMInterfaceMySQL(MMInterfaceMySQLParameters)
+            val mm = MMInterfaceMySQL(mmInterfaceMySQLParameters)
             assert(mm.lock() == OutcomeCode.CODE_000_SUCCESS)
             val files = HashSet<String>()
             mm.connection!!.prepareStatement(
@@ -61,7 +65,7 @@ class TestUtilities {
             }
             assert(mm.unlock() == OutcomeCode.CODE_000_SUCCESS)
 
-            val dm = DMInterfaceCloud(dmInterfaceCloudParameters)
+            val dm = DMInterfaceRBACCryptoAC(dmInterfaceCryptoACParameters)
             assert(dm.lock() == OutcomeCode.CODE_000_SUCCESS)
             files.forEach {
                 logger.warn { "Deleting file $it from the DM" }
@@ -70,44 +74,15 @@ class TestUtilities {
             assert(dm.unlock() == OutcomeCode.CODE_000_SUCCESS)
         }
 
-        fun resetDMMQTT(dm: DMInterfaceMQTT) {
+        fun resetDMMQTT(dm: DMInterfaceRBACMQTT) {
             logger.warn { "Resetting MQTT DM" }
 
-            val mm = MMInterfaceMySQL(MMInterfaceMySQLParameters)
+            val mm = MMInterfaceRedis(mmInterfaceRedisParameters)
             assert(mm.lock() == OutcomeCode.CODE_000_SUCCESS)
-
-
-            val users = HashSet<String>()
-            mm.connection!!.prepareStatement(
-                "SELECT $usernameColumn FROM $usersTable WHERE ($usernameColumn<>\"$ADMIN\")"
-            ).use {
-                val usernames = it.executeQuery()
-                while (usernames.next()) {
-                    users.add(usernames.getString(1))
-                }
-            }
-
-            val roles = HashSet<String>()
-            mm.connection!!.prepareStatement(
-                "SELECT $roleNameColumn FROM $rolesTable WHERE ($roleNameColumn<>\"$ADMIN\")"
-            ).use {
-                val roleNames = it.executeQuery()
-                while (roleNames.next()) {
-                    roles.add(roleNames.getString(1))
-                }
-            }
-
-            val files = HashSet<String>()
-            mm.connection!!.prepareStatement(
-                "SELECT $fileNameColumn FROM $filesTable"
-            ).use {
-                val fileNames = it.executeQuery()
-                while (fileNames.next()) {
-                    files.add(fileNames.getString(1))
-                }
-            }
+            val users = mm.getUsers().filter { it.name != ADMIN }.map { it.name }
+            val roles = mm.getRoles().filter { it.name != ADMIN }.map { it.name }
+            val files = mm.getFiles().filter { it.name != ADMIN }.map { it.name }
             assert(mm.unlock() == OutcomeCode.CODE_000_SUCCESS)
-
 
             assert(dm.lock() == OutcomeCode.CODE_000_SUCCESS)
 
@@ -156,7 +131,7 @@ class TestUtilities {
         fun resetMMMySQL() {
             logger.warn { "Resetting MySQL" }
 
-            val mm = MMInterfaceMySQL(MMInterfaceMySQLParameters)
+            val mm = MMInterfaceMySQL(mmInterfaceMySQLParameters)
             assert(mm.lock() == OutcomeCode.CODE_000_SUCCESS)
 
             val users = HashSet<String>()
@@ -198,6 +173,16 @@ class TestUtilities {
             assert(mm.unlock() == OutcomeCode.CODE_000_SUCCESS)
         }
 
+        fun resetMMRedis() {
+            logger.warn { "Resetting Redis" }
+            val pool = JedisPool(JedisPoolConfig(), mmInterfaceRedisParameters.url, mmInterfaceRedisParameters.port)
+            pool.resource.use { jedis ->
+                jedis.auth("default", mmInterfaceRedisParameters.password)
+                jedis.keys("*").forEach {
+                    jedis.del(it)
+                }
+            }
+        }
 
         fun addUser(core: CoreRBAC, username: String): CoreRBAC {
             val addUserResult = core.addUser(username)
@@ -211,12 +196,12 @@ class TestUtilities {
                 asymEncKeys = AsymKeys(
                     public = asymEncKeys.public.encoded.encodeBase64(),
                     private = asymEncKeys.private.encoded.encodeBase64(),
-                    type = AsymKeysType.ENC
+                    keysType = AsymKeysType.ENC
                 ),
                 asymSigKeys = AsymKeys(
                     public = asymSigKeys.public.encoded.encodeBase64(),
                     private = asymSigKeys.private.encoded.encodeBase64(),
-                    type = AsymKeysType.SIG
+                    keysType = AsymKeysType.SIG
                 )
             )
             val userCore = when (core.coreParameters.coreType) {
@@ -224,9 +209,9 @@ class TestUtilities {
                     coreParameters = CoreParametersCLOUD(
                         user = user,
                         cryptoType = Parameters.cryptoType,
-                        mmMySQLInterfaceParameters = (userParameters as CoreParametersCLOUD).mmMySQLInterfaceParameters,
-                        rmCloudInterfaceParameters = userParameters.rmCloudInterfaceParameters,
-                        dmCloudInterfaceParameters = userParameters.dmCloudInterfaceParameters,
+                        mmInterfaceParameters = (userParameters as CoreParametersCLOUD).mmInterfaceParameters,
+                        rmInterfaceParameters = userParameters.rmInterfaceParameters,
+                        dmInterfaceParameters = userParameters.dmInterfaceParameters,
                         opaInterfaceParameters = userParameters.opaInterfaceParameters,
                     ),
                 )
@@ -234,8 +219,8 @@ class TestUtilities {
                     coreParameters = CoreParametersMQTT(
                         user = user,
                         cryptoType = Parameters.cryptoType,
-                        mmMySQLInterfaceParameters = (userParameters as CoreParametersMQTT).mmMySQLInterfaceParameters,
-                        dmMQTTInterfaceParameters = userParameters.dmMQTTInterfaceParameters
+                        mmInterfaceParameters = (userParameters as CoreParametersMQTT).mmInterfaceParameters,
+                        dmInterfaceParameters = userParameters.dmInterfaceParameters
                     ),
                 )
                 CoreType.RBAC_MOCK -> CoreFactory.getCore(
@@ -246,12 +231,6 @@ class TestUtilities {
                 )
             } as CoreRBAC
             return userCore
-        }
-
-        fun addAndInitUser(coreRBAC: CoreRBAC, username: String): CoreRBAC {
-            val core = addUser(coreRBAC, username)
-            assert(core.initUser() == OutcomeCode.CODE_000_SUCCESS)
-            return core
         }
 
         fun getKtorClientJetty(): HttpClient {
@@ -358,6 +337,20 @@ class TestUtilities {
             fileTuple.updateSignature(signature, ADMIN, ElementTypeWithKey.USER)
             return fileTuple
         }
+
+        fun assertUnLockAndLock(mm: MMInterface) {
+            assertUnlock(mm)
+            assertLock(mm)
+        }
+
+        fun assertLock(mm: MMInterface) {
+            assert(mm.lock() == OutcomeCode.CODE_000_SUCCESS)
+        }
+
+        fun assertUnlock(mm: MMInterface) {
+            assert(mm.unlock() == OutcomeCode.CODE_000_SUCCESS)
+        }
+
     }
 }
 

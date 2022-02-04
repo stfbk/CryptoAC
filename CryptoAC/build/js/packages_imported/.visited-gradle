@@ -1,0 +1,135 @@
+{
+  "version": "9",
+  "items": {
+    "8c6f1b86938387ea06014e3dac9b3939": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-serialization-core-js/1.3.1/cb5458c48056ef8de1f60feb4213d7a61f5cc87c/kotlinx-serialization-core-jslegacy-1.3.1.jar",
+      "target": "kotlinx-serialization-kotlinx-serialization-core-js-legacy/1.3.1"
+    },
+    "ed032da5c8a8aa561a34ad2ce16c6fef": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-js/1.6.10/c5ec19c0cb2291017562f852321b4cfcc8064150/kotlin-stdlib-js-1.6.10.jar",
+      "target": "kotlin/1.6.10"
+    },
+    "eb99eba8e3875878ac955c380a5f6ac2": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.6.10/c118700e3a33c8a0d9adc920e9dec0831171925/kotlin-stdlib-common-1.6.10.jar"
+    },
+    "4a0fca3adbb48ac7c24186953e8769d3": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-serialization-json-js/1.3.1/392d1d4a242a432c28e9bcf772682c420fbb5a2b/kotlinx-serialization-json-jslegacy-1.3.1.jar",
+      "target": "kotlinx-serialization-kotlinx-serialization-json-js-legacy/1.3.1"
+    },
+    "265b003a9de50d7f05b0c611b3c73e9f": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-client-core-js/1.6.5/5774e1613ada514e3ed8137e99363e267f227297/ktor-client-core-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-client-core-js-legacy/1.6.5"
+    },
+    "c8e1a0f7cf55a8b822ec67811ddbf2c7": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-http-cio-js/1.6.5/22e7a8f06e653ce2be30ac8a4bcdaf63713c9494/ktor-http-cio-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-http-cio-js-legacy/1.6.5"
+    },
+    "6845e75414e813485e67feca8c14bdf2": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-http-js/1.6.5/c5e6f7e55601878bafd66b91ad93c4bebf295d5b/ktor-http-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-http-js-legacy/1.6.5"
+    },
+    "888a93e80004cf8c6368eb42104e4ab1": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-utils-js/1.6.5/4fdfc5ffde0c116c15a82e6b4833dee64ea2bb2f/ktor-utils-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-utils-js-legacy/1.6.5"
+    },
+    "2083c297427c4a09b106b737a56bac2b": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-io-js/1.6.5/29de238386dfcdf8600463fa258a4cec1a8e5c87/ktor-io-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-io-js-legacy/1.6.5"
+    },
+    "515f7489e4154923cb95c6bc4f6007dd": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core-js/1.6.0/5dce2abceb80bd939e8fabb14c29adf7ed5cd1bd/kotlinx-coroutines-core-jslegacy-1.6.0.jar",
+      "target": "kotlinx-coroutines-core/1.6.0"
+    },
+    "fa7081941f125a84ef11565d63816ddc": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/atomicfu-js/0.17.0/297fbbfac824ecb38bd4d58cf95557d07b6fa813/atomicfu-jslegacy-0.17.0.jar",
+      "target": "kotlinx-atomicfu/0.17.0"
+    },
+    "1e599108c64b893e7d7d768e7edb7d92": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.github.microutils/kotlin-logging-js/2.1.21/b1592b2b524487c8e53998ba131184874970ca3c/kotlin-logging-jslegacy-2.1.21.jar",
+      "target": "kotlin-logging-js-legacy/2.1.21"
+    },
+    "1e63b1aa1f4ba05a028fedf3ca643f3f": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.6.10/b8af3fe6f1ca88526914929add63cf5e7c5049af/kotlin-stdlib-1.6.10.jar"
+    },
+    "72ac29dee68b63d11710f49a42861308": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar"
+    },
+    "b2c209c973d531e6f13d7506c7643e2a": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.6.10/1cbe9c92c12a94eea200d23c2bbaedaf3daf5132/kotlin-reflect-1.6.10.jar"
+    },
+    "f45b638f106e943772515d080bbcbe42": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-benchmark-runtime-js/0.4.2/c9d6d735484174bc78958d8552f00a815cd1d1ba/kotlinx-benchmark-runtime-jslegacy-0.4.2.jar",
+      "target": "kotlinx-benchmark-kotlinx-benchmark-runtime-js-legacy/0.4.2"
+    },
+    "2c93f84ac0a754a149ec635a3de50f3d": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-client-js/1.6.5/688d41ad6e2cc416469dc9270f2735eeab0acf01/ktor-client-js-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-client-js-js-legacy/1.6.5"
+    },
+    "226017a86c548d87c01a3304793f3034": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-client-websockets-js/1.6.5/17c6dad76c21328ac8394b4a569b8c732ab7bf87/ktor-client-websockets-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-client-websockets-js-legacy/1.6.5"
+    },
+    "cd1f78bb989416294689bdff737cac0a": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-client-json-js/1.6.5/2b7bd42dd127daa94d8279d3c8fc3825689dc08e/ktor-client-json-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-client-json-js-legacy/1.6.5"
+    },
+    "de32a577fd5c5cfc23d9acd0ae893806": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-client-serialization-js/1.6.5/4988d3ac8bddcab1764910a341c499d893bf8436/ktor-client-serialization-jslegacy-1.6.5.jar",
+      "target": "ktor-ktor-client-serialization-js-legacy/1.6.5"
+    },
+    "de84e38497957300d1b1481c0812ad24": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-react/17.0.2-pre.291-kotlin-1.6.10/ce55712d84719807a0c33f42621a7a7df9cd4e2/kotlin-react-17.0.2-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-react/17.0.2-pre.291-kotlin-1.6.10"
+    },
+    "8168a23cf39243a185f6bf2e5ce382c0": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-react-core/17.0.2-pre.291-kotlin-1.6.10/8c5fcdf44dc3b123592a3ccc745074530aab675/kotlin-react-core-17.0.2-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-react-core/17.0.2-pre.291-kotlin-1.6.10"
+    },
+    "5c08e516c8e9114a5800a9d95b6425d1": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-csstype/3.0.10-pre.291-kotlin-1.6.10/503d3bf47e1d5d05247ab5fc5b85998e3b084b92/kotlin-csstype-3.0.10-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-csstype/3.0.10-pre.291-kotlin-1.6.10"
+    },
+    "2303b2213301044826e7e685e6093013": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-extensions/1.0.1-pre.291-kotlin-1.6.10/e5320ef79cbb97e4c183806b6fca21cbb658451e/kotlin-extensions-1.0.1-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-extensions/1.0.1-pre.291-kotlin-1.6.10"
+    },
+    "92d2d289badf59c061c4321494114ae7": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-react-dom/17.0.2-pre.291-kotlin-1.6.10/b0c92b0eaf1aed85daf8cdbb78205c62e7cf1381/kotlin-react-dom-17.0.2-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-react-dom/17.0.2-pre.291-kotlin-1.6.10"
+    },
+    "7b05884b9bf1e4112f307407baa8387a": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-styled/5.3.3-pre.291-kotlin-1.6.10/f0a08ba7684b0b45faa0cb2fcd2f8db6e31734c3/kotlin-styled-5.3.3-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-styled/5.3.3-pre.291-kotlin-1.6.10"
+    },
+    "0f6b18e1c5b6d410383493447f5e67ab": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-react-dom-legacy/17.0.2-pre.291-kotlin-1.6.10/d54b95baa255ca3121a7a8fdb66323b9dbe060e2/kotlin-react-dom-legacy-17.0.2-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-react-dom-legacy/17.0.2-pre.291-kotlin-1.6.10"
+    },
+    "beb2bff38671896ee711decdc83832b9": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-react-legacy/17.0.2-pre.291-kotlin-1.6.10/aeefc8442447a5a343307ac4daa8e8a5f64cd783/kotlin-react-legacy-17.0.2-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-react-legacy/17.0.2-pre.291-kotlin-1.6.10"
+    },
+    "c880d38851a2e171d22b75c6e754af7d": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-html-js/0.7.3/93a1ab4269d3a567e05088d1237eedbc2efd03c9/kotlinx-html-jslegacy-0.7.3.jar",
+      "target": "kotlinx-html-js/0.7.3"
+    },
+    "d4f1046baa0bdc710c6969b8b5928d94": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin-wrappers/kotlin-css-js/1.0.0-pre.291-kotlin-1.6.10/7d36fc56f0a0e685fa4724290ef9d2bcb4df3bf4/kotlin-css-jslegacy-1.0.0-pre.291-kotlin-1.6.10.jar",
+      "target": "kotlin-css/1.0.0-pre.291-kotlin-1.6.10"
+    },
+    "337ff817e087aded273dfc9ba494baf4": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test-js-runner/1.6.10/20ef83e15f8c2cde090f3bfd8c1eba72947f7ab8/kotlin-test-js-runner-1.6.10.jar",
+      "target": "kotlin-test-js-runner/1.6.10"
+    },
+    "fcd62bcdff404b8751a46a32a04ffe15": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test-js/1.6.10/bb40521e101f15c6a9e86be85e0fae5f2349beb3/kotlin-test-js-1.6.10.jar",
+      "target": "kotlin-test/1.6.10"
+    },
+    "b414b992d36504870d1615b494807d6f": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test-common/1.6.10/76cd822dc49f45edd67d950275ef43e63e841f76/kotlin-test-common-1.6.10.jar"
+    },
+    "e9cfad131fc27c598194fb391150e558": {
+      "src": "/home/sberlato/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test-annotations-common/1.6.10/aae238f02a670cf4c645549c7fa30787e15fc33c/kotlin-test-annotations-common-1.6.10.jar"
+    }
+  }
+}

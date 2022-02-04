@@ -1,6 +1,6 @@
 # CryptoAC | Documentation
 
-> Last Update: 17/12/2021
+> Last Update: 04/02/2022
 
 
 ## Introduction
@@ -10,7 +10,7 @@
 
 ## Architecture
 
-*CryptoAC* implements and integrates several software modules which are differently combined based on the chosen scenario (e.g., IoT, Cloud) and CAC scheme. At high-level, *CryptoAC* provides the following modules:
+*CryptoAC* implements and integrates several software modules which are differently combined based on the chosen scenario (e.g., Cloud. IoT) and CAC schemes. At high-level, *CryptoAC* provides the following modules:
 * [**Proxy**](./Proxy) - the core of *CryptoAC*: it performs cryptographic computations and allows agents to interface with the system through both a React web app and RESTful APIs.;
 * [**Reference Monitor**](./RM) - mediates users' requests to add and write files and ensures compliance with the AC policy;
 * [**Metadata Manager**](./MM) - manages metadata such as public cryptographic keys and the AC policy;

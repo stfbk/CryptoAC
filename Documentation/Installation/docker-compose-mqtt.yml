@@ -14,15 +14,13 @@ services:
     image: cryptoac_mosquitto:latest
     ports:
       - "${CRYPTOACMOSQUITTOHOSTPORT}:${CRYPTOACMOSQUITTOMOSQUITTOPORT}"
-  cryptoac_mysql:
+  cryptoac_redis:
     networks:
       test:
-        ipv4_address: "${CRYPTOACMYSQLHOSTIP}"
-    image: cryptoac_mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: "${CRYPTOACMYSQLPASSWORD}"
+        ipv4_address: "${CRYPTOACREDISHOSTIP}"
+    image: cryptoac_redis:latest
     ports:
-      - "${CRYPTOACMYSQLHOSTPORT}:${CRYPTOACMYSQLMYSQLPORT}"
+      - "${CRYPTOACREDISHOSTPORT}:${CRYPTOACREDISPORT}"
 networks:
   test:
     driver: bridge

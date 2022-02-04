@@ -1,6 +1,5 @@
 package eu.fbk.st.cryptoac.core
 
-import eu.fbk.st.cryptoac.CryptoACFormField
 import eu.fbk.st.cryptoac.core.elements.User
 import eu.fbk.st.cryptoac.crypto.CryptoType
 import kotlinx.serialization.Serializable
@@ -14,10 +13,5 @@ class CoreParametersMOCK(
     override val versionNumber: Int = 1,
 ) : CoreParameters() {
 
-    companion object {
-        fun fromMap(): CoreParametersMQTT? = null
-        fun toMap(): List<List<CryptoACFormField>> = listOf()
-    }
-    override fun update(updatedParameters: CoreParameters) {
-    }
+    override fun update(updatedParameters: CoreParameters) {}
 }

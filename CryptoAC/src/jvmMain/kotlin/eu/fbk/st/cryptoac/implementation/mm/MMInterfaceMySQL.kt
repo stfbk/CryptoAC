@@ -5,6 +5,7 @@ import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.core.elements.*
 import eu.fbk.st.cryptoac.core.tuples.*
+import eu.fbk.st.cryptoac.crypto.AsymKeys
 import eu.fbk.st.cryptoac.crypto.AsymKeysType
 import eu.fbk.st.cryptoac.crypto.EncryptedAsymKeys
 import eu.fbk.st.cryptoac.crypto.EncryptedSymKey
@@ -31,7 +32,6 @@ const val INIT_SQL_CODE = "/cryptoac/mysqldatabase.sql"
 /** The name of the schema in the database */
 const val databaseName = "cryptoac"
 
-/** TODO need to find a way to get rid of these */
 const val usersTable = "$databaseName.users"
 const val deletedUsersTable = "$databaseName.deletedUsers"
 const val usersView = "$databaseName.user_specific_users"
@@ -71,7 +71,7 @@ const val enforcementColumn = "enforcement"
 
 
 /**
- * Implementation of the methods to interface with the MS
+ * Implementation of the methods to interface with the MM
  * as a MySQL8+ database configured with the given [mmMySQLInterfaceParameters].
  * Note that the database is configured to avoid the disclosure of the AC policy to users with tokens and views.
  * Note that the name of the user connecting to the database is the same as the name in the AC policy.
@@ -105,12 +105,16 @@ class MMInterfaceMySQL(
      * with the commands contained in the [INIT_SQL_CODE]
      */
     override fun initAdmin(admin: User, adminRoleTuple: RoleTuple): OutcomeCode {
-        logger.info { "Initializing the database and adding the admin in the MS" }
+        logger.info { "Initializing the database and adding the admin in the MM" }
 
         /** Guard clauses */
+        if (admin.name != ADMIN) {
+            logger.warn { "Admin user has name ${admin.name}, but admin name should be $ADMIN" }
+            return OutcomeCode.CODE_060_ADMIN_NAME
+        }
         try {
-            if (getUsers(username = admin.name).isNotEmpty()) {
-                logger.warn { "Admin ${admin.name} already initialized." }
+            if (getUsers(username = ADMIN).isNotEmpty()) {
+                logger.warn { "Admin $ADMIN already initialized" }
                 return OutcomeCode.CODE_034_ADMIN_ALREADY_INITIALIZED
             }
         }
@@ -179,27 +183,27 @@ class MMInterfaceMySQL(
             .apply { add(ElementStatus.OPERATIONAL) }
         createInsertStatement(usersTable, ArrayList<ArrayList<Any?>>().apply { add(adminUserValues) }).use {
             if (it.executeUpdate() != 1) {
-                logger.warn { "Admin user already present in the metadata." }
+                logger.warn { "Admin user already present in the metadata" }
                 return OutcomeCode.CODE_001_USER_ALREADY_EXISTS
             }
         }
 
         /** Add the admin as Role in the metadata */
         logger.debug { "Adding the admin as Role" }
-        val adminRoleValues = ArrayList<Any?>()
-            .apply { add(ADMIN) }.apply { add(ADMIN) }
-            .apply { add(asymEncPublicKeyEncoded) }.apply { add(asymSigPublicKeyEncoded) }
-            .apply { add(1) }
-            .apply { add(ElementStatus.OPERATIONAL) }
-        createInsertStatement(rolesTable, ArrayList<ArrayList<Any?>>().apply { add(adminRoleValues) }).use {
-            if (it.executeUpdate() != 1) {
-                logger.warn { "Admin role already present in the metadata." }
-                return OutcomeCode.CODE_002_ROLE_ALREADY_EXISTS
-            }
-        }
+        val code = addRole(Role(
+            name = ADMIN,
+            status = ElementStatus.OPERATIONAL,
+            versionNumber = 1,
+            asymEncKeys = AsymKeys(public = asymEncPublicKeyEncoded, private = "", keysType = AsymKeysType.ENC),
+            asymSigKeys = AsymKeys(public = asymSigPublicKeyEncoded, private = "", keysType = AsymKeysType.SIG),
+        ))
 
-        /** Add the RoleTuple linking the admin User to the admin Role to the metadata */
-        return addRoleTuples(HashSet<RoleTuple>().apply { add(adminRoleTuple) })
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            code
+        } else {
+            /** Add the RoleTuple linking the admin User to the admin Role to the metadata */
+            addRoleTuples(HashSet<RoleTuple>().apply { add(adminRoleTuple) })
+        }
     }
 
     /**
@@ -208,7 +212,8 @@ class MMInterfaceMySQL(
      * the status flag, and return the outcome code
      */
     override fun initUser(user: User): OutcomeCode {
-        logger.info { "Initializing user ${user.name} in the metadata" }
+        val username = user.name
+        logger.info { "Initializing user $username in the metadata" }
 
         /** Update the users' metadata */
         logger.debug { "Updating the user metadata" }
@@ -219,7 +224,7 @@ class MMInterfaceMySQL(
             .apply { put(statusColumn, ElementStatus.OPERATIONAL) }
         createUpdateStatement(usersView, userValues).use {
             if (it.executeUpdate() != 1) {
-                logger.warn { "User ${user.name} does not exist in the metadata." }
+                logger.warn { "User $username does not exist in the metadata" }
                 return OutcomeCode.CODE_004_USER_NOT_FOUND
             }
         }
@@ -276,7 +281,7 @@ class MMInterfaceMySQL(
         logger.info { "Adding the user ${newUser.name} in the metadata and in the database" }
 
         if (getUsers(username = newUser.name, status = ElementStatus.DELETED).isNotEmpty()) {
-            logger.warn { "User ${newUser.name} was previously deleted." }
+            logger.warn { "User ${newUser.name} was previously deleted" }
             return WrapperMMParameters(OutcomeCode.CODE_013_USER_WAS_DELETED)
         }
 
@@ -293,7 +298,7 @@ class MMInterfaceMySQL(
             .apply { add(ElementStatus.INCOMPLETE) }
         createInsertStatement(usersTable, ArrayList<ArrayList<Any?>>().apply { add(adminUserValues) }).use {
             if (it.executeUpdate() != 1) {
-                logger.warn { "User ${newUser.name} already present in the metadata." }
+                logger.warn { "User ${newUser.name} already present in the metadata" }
                 return WrapperMMParameters(OutcomeCode.CODE_001_USER_ALREADY_EXISTS)
             }
         }
@@ -388,7 +393,7 @@ class MMInterfaceMySQL(
         logger.info { "Adding the role ${newRole.name} in the metadata" }
 
         if (getRoles(roleName = newRole.name, status = ElementStatus.DELETED).isNotEmpty()) {
-            logger.warn { "Role ${newRole.name} was previously deleted." }
+            logger.warn { "Role ${newRole.name} was previously deleted" }
             return OutcomeCode.CODE_014_ROLE_WAS_DELETED
         }
 
@@ -405,7 +410,7 @@ class MMInterfaceMySQL(
             if (it.executeUpdate() == 1) {
                 OutcomeCode.CODE_000_SUCCESS
             } else {
-                logger.warn { "Role ${newRole.name} already present in the metadata." }
+                logger.warn { "Role ${newRole.name} already present in the metadata" }
                 OutcomeCode.CODE_002_ROLE_ALREADY_EXISTS
             }
         }
@@ -419,7 +424,7 @@ class MMInterfaceMySQL(
         logger.info { "Adding the file ${newFile.name} in the metadata" }
 
         if (getFiles(fileName = newFile.name, status = ElementStatus.DELETED).isNotEmpty()) {
-            logger.warn { "File ${newFile.name} was previously deleted." }
+            logger.warn { "File ${newFile.name} was previously deleted" }
             return OutcomeCode.CODE_015_FILE_WAS_DELETED
         }
 
@@ -435,7 +440,7 @@ class MMInterfaceMySQL(
             if (it.executeUpdate() == 1) {
                 OutcomeCode.CODE_000_SUCCESS
             } else {
-                logger.warn { "File ${newFile.name} already present in the metadata." }
+                logger.warn { "File ${newFile.name} already present in the metadata" }
                 OutcomeCode.CODE_003_FILE_ALREADY_EXISTS
             }
         }
@@ -450,10 +455,10 @@ class MMInterfaceMySQL(
     override fun addRoleTuples(newRoleTuples: HashSet<RoleTuple>): OutcomeCode {
         val size = newRoleTuples.size
         if (size == 0) {
-            logger.warn { "No RoleTuples given" }
+            logger.warn { "No role tuples given" }
             return OutcomeCode.CODE_000_SUCCESS
         }
-        logger.info { "Adding $size RoleTuples in the metadata (one per row below):" }
+        logger.info { "Adding $size role tuples in the metadata (one per row below):" }
         newRoleTuples.forEachIndexed { index, roleTuple ->
             logger.info { "$index: user ${roleTuple.username} to role ${roleTuple.roleName}" }
         }
@@ -465,12 +470,14 @@ class MMInterfaceMySQL(
             roleTuples.add(createArray(it))
         }
 
-        /** Add the RoleTuples in the metadata */
+        /** Add the role tuples in the metadata */
         return createInsertStatement(roleTuplesTable, roleTuples).use {
             val rowCount = it.executeUpdate()
             if (rowCount != size) {
                 logger.warn { "One ore more RoleTuples were not added (expected $size, actual $rowCount)" }
-                OutcomeCode.CODE_048_USER_OR_ROLE_NOT_FOUND_OR_ROLETUPLE_ALREADY_EXISTS
+                // TODO we should check whether the operation failed because the tuple already
+                //  exists or the user/role/file are missing, and return proper codes
+                OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
             }
             else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -485,10 +492,10 @@ class MMInterfaceMySQL(
     override fun addPermissionTuples(newPermissionTuples: HashSet<PermissionTuple>): OutcomeCode {
         val size = newPermissionTuples.size
         if (size == 0) {
-            logger.warn { "No PermissionTuples given" }
+            logger.warn { "No permission tuples given" }
             return OutcomeCode.CODE_000_SUCCESS
         }
-        logger.info { "Adding $size PermissionTuples in the metadata (one per row below):" }
+        logger.info { "Adding $size permission tuples in the metadata (one per row below):" }
         newPermissionTuples.forEachIndexed { index, permissionTuple ->
             logger.info { "$index: role ${permissionTuple.roleName} to file ${permissionTuple.fileName}" }
         }
@@ -500,12 +507,14 @@ class MMInterfaceMySQL(
             permissionTuples.add(createArray(it))
         }
 
-        /** Add the RoleTuples in the metadata */
+        /** Add the role tuples in the metadata */
         return createInsertStatement(permissionTuplesTable, permissionTuples).use {
             val rowCount = it.executeUpdate()
             if (rowCount != size) {
                 logger.warn { "One ore more permission tuples were not added (expected $size, actual $rowCount)" }
-                OutcomeCode.CODE_049_ROLE_OR_FILE_NOT_FOUND_OR_PERMISSIONTUPLE_ALREADY_EXISTS
+                // TODO we should check whether the operation failed because the tuple already
+                //  exists or the user/role/file are missing, and return proper codes
+                OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
             }
             else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -535,12 +544,14 @@ class MMInterfaceMySQL(
             fileTuples.add(createArray(it))
         }
 
-        /** Add the RoleTuples in the metadata */
+        /** Add the role tuples in the metadata */
         return createInsertStatement(fileTuplesTable, fileTuples).use {
             val rowCount = it.executeUpdate()
             if (rowCount != size) {
                 logger.warn { "One ore more file tuples were not added (expected $size, actual $rowCount)" }
-                OutcomeCode.CODE_050_FILE_NOT_FOUND_OR_FILETUPLE_ALREADY_EXISTS
+                // TODO we should check whether the operation failed because the tuple already
+                //  exists or the user/role/file are missing, and return proper codes
+                OutcomeCode.CODE_012_FILETUPLE_ALREADY_EXISTS
             }
             else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -551,13 +562,12 @@ class MMInterfaceMySQL(
 
 
     /**
-     * Retrieve data of the users matching the specified [username] and
-     * [userToken] and having the specified [status], if given, starting
-     * from the [offset] limiting the number of users to return to the
-     * given [limit]
+     * Retrieve data of the users matching the specified [username]
+     * and [status], if given, starting from the [offset] limiting
+     * the number of users to return to the given [limit]
      */
     override fun getUsers(
-        username: String?, userToken: String?,
+        username: String?,
         status: ElementStatus?,
         offset: Int, limit: Int,
     ): HashSet<User> {
@@ -568,11 +578,7 @@ class MMInterfaceMySQL(
             logger.info { "Filtering by matching username $username" }
             whereParameters[usernameColumn] = username
         }
-        if (!userToken.isNullOrBlank()) {
-            logger.info { "Filtering by matching user token $userToken" }
-            whereParameters[userTokenColumn] = userToken
-        }
-        if (status != null && status != ElementStatus.DELETED) {
+        if (status != null) {
             logger.info { "Filtering by matching status $status" }
             whereParameters[statusColumn] = status
         }
@@ -580,33 +586,52 @@ class MMInterfaceMySQL(
         val users = HashSet<User>()
 
         createSelectStatement(
-            table = if (status == ElementStatus.DELETED) deletedUsersTable else usersTable,
+            table = usersTable,
             whereParameters = whereParameters,
             limit = limit, offset = offset,
-        ).use {
-            val rs = it.executeQuery()
-            while (rs.next()) {
-                val user = User(
-                    name = sanitizeStringFromHTLM(rs.getString(usernameColumn)),
-                    status = status ?: ElementStatus.valueOf(sanitizeStringFromHTLM(rs.getString(statusColumn))),
-                    isAdmin = sanitizeStringFromHTLM(rs.getString(usernameColumn)) == ADMIN
-                )
-                user.token = sanitizeStringFromHTLM(rs.getString(userTokenColumn))
-                users.add(user)
+        ).use { firstStatement ->
+            createSelectStatement(
+                table = deletedUsersTable,
+                whereParameters = whereParameters,
+                limit = limit, offset = offset,
+            ).use { secondStatement ->
+                val finalStatement = when (status) {
+                    null -> {
+                        "(${firstStatement.asString()}) UNION (${secondStatement.asString()})"
+                    }
+                    ElementStatus.DELETED -> {
+                        secondStatement.asString()
+                    }
+                    else -> {
+                        firstStatement.asString()
+                    }
+                }
+                connection!!.prepareStatement(finalStatement).use {
+                    val rs = it.executeQuery()
+                    while (rs.next()) {
+                        val user = User(
+                            name = sanitizeStringFromHTLM(rs.getString(usernameColumn)),
+                            status = status ?: ElementStatus.valueOf(sanitizeStringFromHTLM(rs.getString(statusColumn))),
+                            isAdmin = sanitizeStringFromHTLM(rs.getString(usernameColumn)) == ADMIN
+                        )
+                        user.token = sanitizeStringFromHTLM(rs.getString(userTokenColumn))
+                        users.add(user)
+                    }
+                }
             }
         }
+
         logger.debug { "Found ${users.size} users" }
         return users
     }
 
     /**
-     * Retrieve data of the roles matching the specified [roleName] and
-     * [roleToken] and having the specified [status], if given, starting
-     * from the [offset] limiting the number of roles to return to the
-     * given [limit]
+     * Retrieve data of the roles matching the specified [roleName]
+     * and [status], if given, starting from the [offset] limiting
+     * the number of roles to return to the given [limit]
      */
     override fun getRoles(
-        roleName: String?, roleToken: String?,
+        roleName: String?,
         status: ElementStatus?,
         offset: Int, limit: Int,
     ): HashSet<Role> {
@@ -617,10 +642,6 @@ class MMInterfaceMySQL(
             logger.info { "Filtering by matching role name $roleName" }
             whereParameters[roleNameColumn] = roleName
         }
-        if (!roleToken.isNullOrBlank()) {
-            logger.info { "Filtering by matching role token $roleToken" }
-            whereParameters[roleTokenColumn] = roleToken
-        }
         if (status != null && status != ElementStatus.DELETED) {
             logger.info { "Filtering by matching status $status" }
             whereParameters[statusColumn] = status
@@ -629,38 +650,57 @@ class MMInterfaceMySQL(
         val roles = HashSet<Role>()
 
         createSelectStatement(
-            table = if (status == ElementStatus.DELETED) deletedRolesTable else rolesTable,
+            table = rolesTable,
             whereParameters = whereParameters,
             limit = limit, offset = offset,
-        ).use {
-            val rs = it.executeQuery()
-            while (rs.next()) {
-                val role = Role(
-                    name = sanitizeStringFromHTLM(rs.getString(roleNameColumn)),
-                    status = status ?: ElementStatus.valueOf(sanitizeStringFromHTLM(rs.getString(statusColumn))),
-                    versionNumber = rs.getInt(roleVersionNumberColumn),
-                )
-                role.token = sanitizeStringFromHTLM(rs.getString(roleTokenColumn))
-                roles.add(role)
+        ).use { firstStatement ->
+            createSelectStatement(
+                table = deletedRolesTable,
+                whereParameters = whereParameters,
+                limit = limit, offset = offset,
+            ).use { secondStatement ->
+                val finalStatement = when (status) {
+                    null -> {
+                        "(${firstStatement.asString()}) UNION (${secondStatement.asString()})"
+                    }
+                    ElementStatus.DELETED -> {
+                        secondStatement.asString()
+                    }
+                    else -> {
+                        firstStatement.asString()
+                    }
+                }
+                connection!!.prepareStatement(finalStatement).use {
+                    val rs = it.executeQuery()
+                    while (rs.next()) {
+                        val role = Role(
+                            name = sanitizeStringFromHTLM(rs.getString(roleNameColumn)),
+                            status = status ?: ElementStatus.valueOf(sanitizeStringFromHTLM(rs.getString(statusColumn))),
+                            versionNumber = rs.getInt(roleVersionNumberColumn),
+                        )
+                        role.token = sanitizeStringFromHTLM(rs.getString(roleTokenColumn))
+                        roles.add(role)
+                    }
+                }
             }
         }
+
         logger.debug { "Found ${roles.size} roles" }
         return roles
     }
 
     /**
-     * Retrieve data of the files matching the specified [fileName] and
-     * [fileToken] and having the specified [status] and [enforcement],
-     * if given, starting from the [offset] limiting the number of files
-     * to return to the given [limit]. Fetch the file from either the
-     * file table or the file view, depending on whether the user [isAdmin]
+     * Retrieve data of the files matching the specified [fileName]
+     * and [status], if given, starting from the [offset] limiting
+     * the number of files to return to the given [limit] and with
+     * the (possibly) relevant information of whether the user
+     * invoking this function [isAdmin]
      */
     override fun getFiles(
-        fileName: String?, fileToken: String?,
+        fileName: String?,
         status: ElementStatus?,
-        enforcement: EnforcementType?,
         isAdmin: Boolean,
-        offset: Int, limit: Int,
+        offset: Int, limit: Int
     ): HashSet<File> {
         logger.info { "Getting data of files (offset $offset, limit $limit)" }
 
@@ -669,42 +709,55 @@ class MMInterfaceMySQL(
             logger.info { "Filtering by matching file name $fileName" }
             whereParameters[fileNameColumn] = fileName
         }
-        if (!fileToken.isNullOrBlank()) {
-            logger.info { "Filtering by matching file token $fileToken" }
-            whereParameters[fileTokenColumn] = fileToken
-        }
         if (status != null && status != ElementStatus.DELETED) {
             logger.info { "Filtering by matching status $status" }
             whereParameters[statusColumn] = status
         }
-        if (enforcement != null) {
-            logger.info { "Filtering by matching enforcement $enforcement" }
-            whereParameters[enforcementColumn] = enforcement
-        }
+
         val files = HashSet<File>()
 
         createSelectStatement(
-            table = if (status == ElementStatus.DELETED) {
-                deletedFilesTable
-            } else {
-                if (isAdmin) filesTable else filesView
-            },
+            table = if (isAdmin) filesTable else filesView,
             whereParameters = whereParameters,
             limit = limit, offset = offset,
-        ).use {
-            val rs = it.executeQuery()
-            while (rs.next()) {
-                val file = File(
-                    name = sanitizeStringFromHTLM(rs.getString(fileNameColumn)),
-                    symEncKeyVersionNumber = rs.getInt(symEncKeyVersionNumberColumn),
-                    status = status ?: ElementStatus.valueOf(sanitizeStringFromHTLM(rs.getString(statusColumn))),
-                    enforcement = enforcement ?: EnforcementType.valueOf(sanitizeStringFromHTLM(rs.getString(
-                        enforcementColumn))),
-                )
-                file.token = sanitizeStringFromHTLM(rs.getString(fileTokenColumn))
-                files.add(file)
+        ).use { firstStatement ->
+            createSelectStatement(
+                table = deletedFilesTable,
+                whereParameters = whereParameters,
+                limit = limit, offset = offset,
+            ).use { secondStatement ->
+                val finalStatement = if (!isAdmin) {
+                    firstStatement.asString()
+                } else {
+                    when (status) {
+                        null -> {
+                            "(${firstStatement.asString()}) UNION (${secondStatement.asString()})"
+                        }
+                        ElementStatus.DELETED -> {
+                            secondStatement.asString()
+                        }
+                        else -> {
+                            firstStatement.asString()
+                        }
+                    }
+                }
+                connection!!.prepareStatement(finalStatement).use {
+                    val rs = it.executeQuery()
+                    while (rs.next()) {
+                        val file = File(
+                            name = sanitizeStringFromHTLM(rs.getString(fileNameColumn)),
+                            symEncKeyVersionNumber = rs.getInt(symEncKeyVersionNumberColumn),
+                            status = status ?: ElementStatus.valueOf(sanitizeStringFromHTLM(rs.getString(statusColumn))),
+                            enforcement = EnforcementType.valueOf(sanitizeStringFromHTLM(rs.getString(
+                                enforcementColumn))),
+                        )
+                        file.token = sanitizeStringFromHTLM(rs.getString(fileTokenColumn))
+                        files.add(file)
+                    }
+                }
             }
         }
+
         logger.debug { "Found ${files.size} files" }
         return files
     }
@@ -712,10 +765,10 @@ class MMInterfaceMySQL(
 
 
     /**
-     * Retrieve the role tuples matching the [username] and the [roleName],
-     * if given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit]. Fetch the tuples from either the
-     * tuples table or the tuples view, depending on whether the user [isAdmin]
+     * Retrieve the role tuples matching the [username] and/or the [roleName],
+     * starting from the [offset] limiting the number of tuples to return to
+     * the given [limit] and with the (possibly) relevant information of
+     * whether the user invoking this function [isAdmin]
      */
     override fun getRoleTuples(
         username: String?, roleName: String?, isAdmin: Boolean, offset: Int, limit: Int
@@ -748,12 +801,12 @@ class MMInterfaceMySQL(
                     encryptedAsymEncKeys = EncryptedAsymKeys(
                         public = sanitizeStringFromHTLM(rs.getString(encryptedAsymEncPublicKeyColumn)).decodeBase64(),
                         private = sanitizeStringFromHTLM(rs.getString(encryptedAsymEncPrivateKeyColumn)).decodeBase64(),
-                        type = AsymKeysType.ENC,
+                        keysType = AsymKeysType.ENC,
                     ),
                     encryptedAsymSigKeys = EncryptedAsymKeys(
                         public = sanitizeStringFromHTLM(rs.getString(encryptedAsymSigPublicKeyColumn)).decodeBase64(),
                         private = sanitizeStringFromHTLM(rs.getString(encryptedAsymSigPrivateKeyColumn)).decodeBase64(),
-                        type = AsymKeysType.SIG,
+                        keysType = AsymKeysType.SIG,
                     ),
                 )
                 roleTuple.updateSignature(
@@ -769,12 +822,13 @@ class MMInterfaceMySQL(
     }
 
     /**
-     * Retrieve the permission tuples matching the [roleName], [fileName],
-     * [roleToken], [fileToken], [permission], [roleVersionNumber] and
-     * [symKeyVersionNumber] and not matching the [roleNameToExclude],
-     * if given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit]. Fetch the tuples from either the
-     * tuples table or the tuples view, depending on whether the user [isAdmin]
+     * Retrieve the permission tuples matching the [roleName] and/or
+     * the [fileName], further filtering by [roleToken], [fileToken],
+     * [permission], [roleVersionNumber] and [symKeyVersionNumber] and
+     * not matching the [roleNameToExclude], if given, starting from
+     * the [offset] limiting the number of tuples to return to the given
+     * [limit] and with the (possibly) relevant information of whether
+     * the user invoking this function [isAdmin]
      */
     override fun getPermissionTuples(
         roleName: String?, fileName: String?,
@@ -796,6 +850,8 @@ class MMInterfaceMySQL(
             logger.info { "Filtering by matching file name $fileName" }
             whereParameters[fileNameColumn] = fileName
         }
+
+
         if (!roleToken.isNullOrBlank()) {
             logger.info { "Filtering by matching role token $roleToken" }
             whereParameters[roleTokenColumn] = roleToken
@@ -857,28 +913,21 @@ class MMInterfaceMySQL(
     }
 
     /**
-     * Retrieve the file tuples matching the [fileName] and [fileToken],
-     * if given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit]. Fetch the tuples from either the
-     * tuples table or the tuples view, depending on whether the user [isAdmin]
+     * Retrieve the file tuples matching the [fileName] starting
+     * from the [offset] limiting the number of tuples to return
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function [isAdmin]
      */
     override fun getFileTuples(
-        fileName: String?,
-        fileToken: String?,
+        fileName: String,
         isAdmin: Boolean,
         offset: Int, limit: Int,
     ): HashSet<FileTuple>  {
         logger.info { "Getting data of file tuples (offset $offset, limit $limit)" }
 
         val whereParameters = LinkedHashMap<String, Any?>()
-        if (!fileName.isNullOrBlank()) {
-            logger.info { "Filtering by matching file name $fileName" }
-            whereParameters[fileNameColumn] = fileName
-        }
-        if (!fileToken.isNullOrBlank()) {
-            logger.info { "Filtering by matching file token $fileToken" }
-            whereParameters[fileTokenColumn] = fileToken
-        }
+        logger.info { "Filtering by matching file name $fileName" }
+        whereParameters[fileNameColumn] = fileName
 
         val fileTuples = HashSet<FileTuple>()
 
@@ -913,8 +962,8 @@ class MMInterfaceMySQL(
     /**
      * Retrieve the public asymmetric key of the given [asymKeyType] belonging
      * to the element of the specified [elementType] by matching the [name] or
-     * the [token]. Note that only operational elements are considered, and
-     * files do not have public keys
+     * the [token] (at least one required). Note that only operational elements
+     * are considered, and files do not have public keys
      */
     override fun getPublicKey(
         name: String?, token: String?, elementType: ElementTypeWithKey, asymKeyType: AsymKeysType,
@@ -961,9 +1010,10 @@ class MMInterfaceMySQL(
 
     /**
      * Retrieve the version number belonging to the element of the specified
-     * [elementType] by matching the [name] or [token]. Note that only operational
-     * elements are considered, and users do not have version numbers. Note also
-     * that only encryption file version numbers (i.e., the latest) are considered
+     * [elementType] by matching the [name] or [token] (at least one required).
+     * Note that only operational elements are considered, and users do not
+     * have version numbers. Note also that only encryption files version
+     * numbers are considered
      */
     override fun getVersionNumber(
         name: String?, token: String?, elementType: ElementTypeWithVersionNumber,
@@ -1012,6 +1062,13 @@ class MMInterfaceMySQL(
     override fun getToken(name: String, type: ElementTypeWithStatus): String? {
         logger.info { "Getting token of a $type" }
 
+        /** Guard clauses */
+        if (name.isBlank()) {
+            val message = "Name given blank for query"
+            logger.error { message }
+            throw IllegalStateException(message)
+        }
+
         val whereParameters = LinkedHashMap<String, Any?>()
         logger.info { "Filtering by matching name $name" }
         whereParameters[
@@ -1054,13 +1111,14 @@ class MMInterfaceMySQL(
      * Retrieve the status of the element of the
      * given [type] matching the given [name]
      */
-    override fun getStatus(name: String, type: ElementTypeWithStatus): WrappedElementStatus {
-        logger.debug { "Get the status of element $type with name $name" }
+    override fun getStatus(name: String, type: ElementTypeWithStatus): ElementStatus? {
+        logger.debug { "Getting the status of element $type with name $name" }
 
         /** Guard clauses */
         if (name.isBlank()) {
-            logger.warn { "Name is blank" }
-            return WrappedElementStatus(OutcomeCode.CODE_020_INVALID_PARAMETER)
+            val message = "Name given blank for query"
+            logger.error { message }
+            throw IllegalStateException(message)
         }
 
         val table1: String
@@ -1088,13 +1146,9 @@ class MMInterfaceMySQL(
                     val rs = it.executeQuery()
                     return if (rs.isBeforeFirst) {
                         rs.next()
-                        WrappedElementStatus(status = ElementStatus.valueOf(rs.getString(statusColumn)))
+                        ElementStatus.valueOf(rs.getString(statusColumn))
                     } else {
-                        when (type) {
-                            ElementTypeWithStatus.USER -> WrappedElementStatus(OutcomeCode.CODE_004_USER_NOT_FOUND)
-                            ElementTypeWithStatus.ROLE -> WrappedElementStatus(OutcomeCode.CODE_005_ROLE_NOT_FOUND)
-                            ElementTypeWithStatus.FILE -> WrappedElementStatus(OutcomeCode.CODE_006_FILE_NOT_FOUND)
-                        }
+                        null
                     }
                 }
             }
@@ -1109,7 +1163,7 @@ class MMInterfaceMySQL(
      * return the outcome code.
      *
      * In this implementation, move the [username] in the deleted
-     * users table abd delete the user at database level
+     * users' table abd delete the user at database level
      */
     override fun deleteUser(username: String): OutcomeCode {
         logger.info { "Deleting user $username" }
@@ -1135,8 +1189,16 @@ class MMInterfaceMySQL(
         ).use { selectStatement ->
             connection!!.prepareStatement("INSERT INTO $deletedUsersTable (${selectStatement.asString()})").use {
                 if (it.executeUpdate() != 1) {
-                    logger.warn { "User $username not found in the metadata." }
-                    return OutcomeCode.CODE_004_USER_NOT_FOUND
+                    logger.warn { "User $username not found in the metadata" }
+                    return when (getStatus(username, ElementTypeWithStatus.USER)) {
+                        ElementStatus.DELETED -> OutcomeCode.CODE_013_USER_WAS_DELETED
+                        null -> OutcomeCode.CODE_004_USER_NOT_FOUND
+                        else -> {
+                            val message = "User not found but user is in table"
+                            logger.error { message }
+                            throw IllegalArgumentException(message)
+                        }
+                    }
                 }
             }
         }
@@ -1147,7 +1209,7 @@ class MMInterfaceMySQL(
             whereParameters = whereParameters
         ).use {
             if (it.executeUpdate() != 1) {
-                logger.warn { "User $username not found in the metadata." }
+                logger.warn { "User $username not found in the metadata" }
                 return OutcomeCode.CODE_004_USER_NOT_FOUND
             }
         }
@@ -1191,8 +1253,16 @@ class MMInterfaceMySQL(
         ).use { selectStatement ->
             connection!!.prepareStatement("INSERT INTO $deletedRolesTable (${selectStatement.asString()})").use {
                 if (it.executeUpdate() != 1) {
-                    logger.warn { "Role $roleName not found in the metadata." }
-                    return OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                    logger.warn { "Role $roleName not found in the metadata" }
+                    return when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                        ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                        null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                        else -> {
+                            val message = "Role not found but role is in table"
+                            logger.error { message }
+                            throw IllegalArgumentException(message)
+                        }
+                    }
                 }
             }
         }
@@ -1203,7 +1273,7 @@ class MMInterfaceMySQL(
             whereParameters = whereParameters
         ).use {
             return if (it.executeUpdate() != 1) {
-                logger.warn { "Role $roleName not found in the metadata." }
+                logger.warn { "Role $roleName not found in the metadata" }
                 OutcomeCode.CODE_005_ROLE_NOT_FOUND
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1235,8 +1305,16 @@ class MMInterfaceMySQL(
         ).use { selectStatement ->
             connection!!.prepareStatement("INSERT INTO $deletedFilesTable (${selectStatement.asString()})").use {
                 if (it.executeUpdate() != 1) {
-                    logger.warn { "File $fileName not found in the metadata." }
-                    return OutcomeCode.CODE_006_FILE_NOT_FOUND
+                    logger.warn { "File $fileName not found in the metadata" }
+                    return when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                        ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
+                        null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                        else -> {
+                            val message = "File not found but file is in table"
+                            logger.error { message }
+                            throw IllegalArgumentException(message)
+                        }
+                    }
                 }
             }
         }
@@ -1247,7 +1325,7 @@ class MMInterfaceMySQL(
             whereParameters = whereParameters
         ).use {
             return if (it.executeUpdate() != 1) {
-                logger.warn { "File $fileName not found in the metadata." }
+                logger.warn { "File $fileName not found in the metadata" }
                 OutcomeCode.CODE_006_FILE_NOT_FOUND
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1262,7 +1340,7 @@ class MMInterfaceMySQL(
      * [roleName] and return the outcome code
      */
     override fun deleteRoleTuples(roleName: String): OutcomeCode {
-        logger.info { "Deleting role tuples" }
+        logger.info { "Deleting role tuples for role name $roleName" }
 
         /** Guard Clauses */
         if (roleName == ADMIN) {
@@ -1282,7 +1360,7 @@ class MMInterfaceMySQL(
             val affectedRows = it.executeUpdate()
             logger.debug { "$affectedRows role tuples were deleted" }
             return if (affectedRows <= 0) {
-                logger.warn { "No role tuple was deleted." }
+                logger.warn { "No role tuple was deleted" }
                 OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1291,15 +1369,14 @@ class MMInterfaceMySQL(
     }
 
     /**
-     * Delete the permission tuple matching the [roleName],
-     * [roleVersionNumber] and [fileName], if given. Note
-     * that at least one parameter has to be specified.
-     * Finally, return the outcome code
+     * Delete the permission tuples matching the [roleName] and/or
+     * the [fileName] (at least one required), further filtering by
+     * [roleVersionNumber], if given. Finally, return the outcome code
      */
      override fun deletePermissionTuples(
         roleName: String?,
-        roleVersionNumber: Int?,
-        fileName: String?
+        fileName: String?,
+        roleVersionNumber: Int?
     ): OutcomeCode {
         logger.info { "Deleting permission tuples" }
 
@@ -1308,7 +1385,6 @@ class MMInterfaceMySQL(
             logger.warn { "Cannot delete the $ADMIN permission tuple" }
             return OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED
         }
-
 
         val whereParameters = LinkedHashMap<String, Any?>()
         if (!roleName.isNullOrBlank()) {
@@ -1341,7 +1417,7 @@ class MMInterfaceMySQL(
             val affectedRows = it.executeUpdate()
             logger.debug { "$affectedRows permission tuples were deleted" }
             return if (affectedRows <= 0) {
-                logger.warn { "No permission tuple was deleted." }
+                logger.warn { "No permission tuple was deleted" }
                 OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1354,7 +1430,7 @@ class MMInterfaceMySQL(
      * [fileName] and return the outcome code
      */
     override fun deleteFileTuples(fileName: String): OutcomeCode {
-        logger.info { "Deleting file tuples" }
+        logger.info { "Deleting file tuples for file name $fileName" }
 
         logger.info { "Filtering by matching file name $fileName" }
         val whereParameters = LinkedHashMap<String, Any?>().apply { put(fileNameColumn, fileName) }
@@ -1367,7 +1443,7 @@ class MMInterfaceMySQL(
             val affectedRows = it.executeUpdate()
             logger.debug { "$affectedRows file tuples were deleted" }
             return if (affectedRows <= 0) {
-                logger.warn { "No file tuple was deleted." }
+                logger.warn { "No file tuple was deleted" }
                 OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1382,6 +1458,13 @@ class MMInterfaceMySQL(
      */
     override fun incrementSymEncVersionNumberByOne(fileName: String): OutcomeCode {
         logger.info { "Incrementing the symmetric encryption version number of file $fileName by 1" }
+
+        /** Guard clauses */
+        if (fileName.isBlank()) {
+            val message = "Name given blank for query"
+            logger.error { message }
+            throw IllegalStateException(message)
+        }
 
         val whereParameters = LinkedHashMap<String, Any?>().apply { put(fileNameColumn, fileName) }
         val values = LinkedHashMap<String, Any?>()
@@ -1413,6 +1496,13 @@ class MMInterfaceMySQL(
         newAsymEncPublicKey: PublicKey, newAsymSigPublicKey: PublicKey
     ): OutcomeCode {
         logger.info { "Updating the asymmetric encryption and signing public keys of $roleName" }
+
+        /** Guard clauses */
+        if (roleName.isBlank()) {
+            val message = "Name given blank for query"
+            logger.error { message }
+            throw IllegalStateException(message)
+        }
 
         val whereParameters = LinkedHashMap<String, Any?>().apply { put(roleNameColumn, roleName) }
         val values = LinkedHashMap<String, Any?>()
@@ -1485,7 +1575,7 @@ class MMInterfaceMySQL(
     override fun lock(): OutcomeCode {
         return if (locks == 0) {
 
-            logger.info { "Locking the status of the MS" }
+            logger.info { "Locking the status of the MM" }
             try {
                 if (connection == null || connection!!.isClosed) {
                     connection = DriverManager.getConnection(jDBUrl, connectionProperties)
@@ -1502,15 +1592,15 @@ class MMInterfaceMySQL(
                 }
             } catch(e: CommunicationsException) {
                 if ((e.message ?: "").contains("Communications link failure")) {
-                    logger.warn { "MS MySQL - connection timeout" }
-                    OutcomeCode.CODE_044_MS_CONNECTION_TIMEOUT
+                    logger.warn { "MM MySQL - connection timeout" }
+                    OutcomeCode.CODE_044_MM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
             }
             catch(e: SQLException) {
                 if ((e.message ?: "").contains("Access denied for user")) {
-                    logger.warn { "MS MySQL - access denied for user" }
+                    logger.warn { "MM MySQL - access denied for user" }
                     OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED
                 } else {
                     throw e
@@ -1529,10 +1619,12 @@ class MMInterfaceMySQL(
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0
+     *
+     * In this implementation, rollback the transaction
      */
     override fun rollback(): OutcomeCode {
         return if (locks == 1) {
-            logger.info { "Rollback the status of the MS" }
+            logger.info { "Rollback the status of the MM" }
             locks--
             if (!connection!!.isClosed) {
                 connection!!.rollback()
@@ -1557,10 +1649,12 @@ class MMInterfaceMySQL(
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
      * the transaction only when [locks] becomes 0
+     *
+     * In this implementation, commit the transaction
      */
     override fun unlock(): OutcomeCode {
         return if (locks == 1) {
-            logger.info { "Unlocking the status of the MS" }
+            logger.info { "Unlocking the status of the MM" }
             locks--
             if (!connection!!.isClosed) {
                 connection!!.commit()

@@ -35,11 +35,6 @@ internal abstract class DMInterfaceTest {
     abstract fun `configure twice works`()
 
     @Test
-    abstract fun `configure with wrong parameters fails`()
-
-
-
-    @Test
     open fun `add file once or empty or deleted file works`() {
         val emptyFile = File(name = "empty", enforcement = EnforcementType.COMBINED)
         val newFile = File(name = "exam", enforcement = EnforcementType.COMBINED)

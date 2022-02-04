@@ -14,7 +14,6 @@ internal abstract class CoreRBACTest : CoreTest() {
 
     private val coreRBAC: CoreRBAC by lazy { core as CoreRBAC }
 
-    
     @Test
     fun `add user of non-existing user works`() {
         /** add user of non-existing user */
@@ -53,13 +52,13 @@ internal abstract class CoreRBACTest : CoreTest() {
 
         /** add user of existing (operational) user */
         run {
-            TestUtilities.addAndInitUser(coreRBAC, "bob")
+            addAndInitUser(coreRBAC, "bob")
             assert(coreRBAC.addUser("bob").code == OutcomeCode.CODE_001_USER_ALREADY_EXISTS)
         }
 
         /** add user of deleted user */
         run {
-            TestUtilities.addAndInitUser(coreRBAC, "carl")
+            addAndInitUser(coreRBAC, "carl")
             assert(coreRBAC.deleteUser("carl") == OutcomeCode.CODE_000_SUCCESS)
             assert(coreRBAC.addUser("carl").code == OutcomeCode.CODE_013_USER_WAS_DELETED)
         }
@@ -75,7 +74,7 @@ internal abstract class CoreRBACTest : CoreTest() {
 
         /** delete user of existing (operational) user */
         run {
-            TestUtilities.addAndInitUser(coreRBAC, "bob")
+            addAndInitUser(coreRBAC, "bob")
             assert(coreRBAC.deleteUser("bob") == OutcomeCode.CODE_000_SUCCESS)
         }
     }
@@ -100,9 +99,12 @@ internal abstract class CoreRBACTest : CoreTest() {
 
         /** delete user of deleted user */
         run {
-            TestUtilities.addAndInitUser(coreRBAC, "alice")
+            addAndInitUser(coreRBAC, "alice")
             assert(coreRBAC.deleteUser("alice") == OutcomeCode.CODE_000_SUCCESS)
-            assert(coreRBAC.deleteUser("alice") == OutcomeCode.CODE_004_USER_NOT_FOUND)
+
+            val code = coreRBAC.deleteUser("alice")
+            println(code)
+            assert(code == OutcomeCode.CODE_013_USER_WAS_DELETED)
         }
     }
 
@@ -190,7 +192,10 @@ internal abstract class CoreRBACTest : CoreTest() {
         run {
             assert(coreRBAC.addRole("student") == OutcomeCode.CODE_000_SUCCESS)
             assert(coreRBAC.deleteRole("student") == OutcomeCode.CODE_000_SUCCESS)
-            assert(coreRBAC.deleteRole("student") == OutcomeCode.CODE_005_ROLE_NOT_FOUND)
+
+            val code = coreRBAC.deleteRole("student")
+            println(code)
+            assert(code == OutcomeCode.CODE_014_ROLE_WAS_DELETED)
         }
     }
 
@@ -249,6 +254,7 @@ internal abstract class CoreRBACTest : CoreTest() {
 
     @Test
     fun `delete file of operational file works`() {
+
         /** delete file of operational file */
         run {
             val exam = "exam"
@@ -258,9 +264,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             val examTuples = coreRBAC.getPermissions(fileName = exam)
             assert(examTuples.code == OutcomeCode.CODE_000_SUCCESS)
             assert(examTuples.permissionTuples!!.size == 0)
-
-            val files = coreRBAC.getFiles().files
-            assert(files!!.size == 0)
+            assert(coreRBAC.getFiles().files!!.first { it.status == ElementStatus.DELETED }.name == exam)
         }
     }
 
@@ -283,7 +287,10 @@ internal abstract class CoreRBACTest : CoreTest() {
             val examContent = "exam".inputStream()
             assert(coreRBAC.addFile(exam, examContent, EnforcementType.COMBINED) == OutcomeCode.CODE_000_SUCCESS)
             assert(coreRBAC.deleteFile(exam) == OutcomeCode.CODE_000_SUCCESS)
-            assert(coreRBAC.deleteFile(exam) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
+
+            val code = coreRBAC.deleteFile(exam)
+            println(code)
+            assert(code == OutcomeCode.CODE_015_FILE_WAS_DELETED)
         }
     }
 
@@ -291,7 +298,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     fun `assign operational user to operational role works`() {
         val alice = "alice"
         val employee = "employee"
-        TestUtilities.addAndInitUser(coreRBAC, alice)
+        addAndInitUser(coreRBAC, alice)
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
 
         /** assign operational user to operational role */
@@ -313,7 +320,7 @@ internal abstract class CoreRBACTest : CoreTest() {
         val userIncomplete = "userIncomplete"
         assert(coreRBAC.addUser(userIncomplete).code == OutcomeCode.CODE_000_SUCCESS)
         val userOperational = "userOperational"
-        TestUtilities.addAndInitUser(coreRBAC, userOperational)
+        addAndInitUser(coreRBAC, userOperational)
         val userDeleted = "userDeleted"
         assert(coreRBAC.addUser(userDeleted).code == OutcomeCode.CODE_000_SUCCESS)
         assert(coreRBAC.deleteUser(userDeleted) == OutcomeCode.CODE_000_SUCCESS)
@@ -435,7 +442,7 @@ internal abstract class CoreRBACTest : CoreTest() {
         /** assign operational user to admin role */
         run {
             val alice = "alice"
-            TestUtilities.addAndInitUser(coreRBAC, alice)
+            addAndInitUser(coreRBAC, alice)
             assert(coreRBAC.assignUserToRole(alice, ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
         }
     }
@@ -444,7 +451,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     fun `assign operational user to operational role twice fails`() {
         val alice = "alice"
         val employee = "employee"
-        TestUtilities.addAndInitUser(coreRBAC, alice)
+        addAndInitUser(coreRBAC, alice)
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
 
         /** assign operational user to operational role twice */
@@ -459,7 +466,7 @@ internal abstract class CoreRBACTest : CoreTest() {
         val alice = "alice"
         val employee = "employee"
         val excel = "excel"
-        TestUtilities.addAndInitUser(coreRBAC, alice)
+        addAndInitUser(coreRBAC, alice)
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
         assert(coreRBAC.assignUserToRole(alice, employee) == OutcomeCode.CODE_000_SUCCESS)
         assert(
@@ -504,7 +511,6 @@ internal abstract class CoreRBACTest : CoreTest() {
             assert(afterAdminRoleTuple.roleVersionNumber == 2)
             val afterPermissionTuples = coreRBAC.getPermissions(fileName = excel)
             assert(afterPermissionTuples.code == OutcomeCode.CODE_000_SUCCESS)
-            println(afterPermissionTuples.permissionTuples!!.size)
             assert(afterPermissionTuples.permissionTuples!!.size == 3)
             afterPermissionTuples.permissionTuples!!.filter { it.roleName == employee && it.symKeyVersionNumber == 2 }.apply {
                 assert(size == 1)
@@ -529,7 +535,7 @@ internal abstract class CoreRBACTest : CoreTest() {
         val userIncomplete = "userIncomplete"
         assert(coreRBAC.addUser(userIncomplete).code == OutcomeCode.CODE_000_SUCCESS)
         val userOperational = "userOperational"
-        TestUtilities.addAndInitUser(coreRBAC, userOperational)
+        addAndInitUser(coreRBAC, userOperational)
         val userDeleted = "userDeleted"
         assert(coreRBAC.addUser(userDeleted).code == OutcomeCode.CODE_000_SUCCESS)
         assert(coreRBAC.deleteUser(userDeleted) == OutcomeCode.CODE_000_SUCCESS)
@@ -651,7 +657,7 @@ internal abstract class CoreRBACTest : CoreTest() {
         /** revoke user from admin role */
         run {
             val alice = "alice"
-            TestUtilities.addAndInitUser(coreRBAC, alice)
+            addAndInitUser(coreRBAC, alice)
             assert(coreRBAC.revokeUserFromRole(alice, ADMIN) == OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
         }
 
@@ -672,7 +678,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     fun `revoke user to assigned role twice fails`() {
         val alice = "alice"
         val employee = "employee"
-        TestUtilities.addAndInitUser(coreRBAC, alice)
+        addAndInitUser(coreRBAC, alice)
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
         assert(coreRBAC.assignUserToRole(alice, employee) == OutcomeCode.CODE_000_SUCCESS)
 
@@ -1145,7 +1151,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     @Test
     open fun `revoke assigned permission and reassign lower permission works`() {
         val alice = "alice"
-        val aliceCoreRBAC = TestUtilities.addAndInitUser(coreRBAC, alice)
+        val aliceCoreRBAC = addAndInitUser(coreRBAC, alice)
 
         val employee = "employee"
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -1171,7 +1177,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     @Test
     open fun `admin or user read file having permission over file works`() {
         val alice = "alice"
-        val aliceCoreRBAC = TestUtilities.addAndInitUser(coreRBAC, alice)
+        val aliceCoreRBAC = addAndInitUser(coreRBAC, alice)
 
         val employee = "employee"
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -1203,7 +1209,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     @Test
     open fun `not assigned or revoked user read file fails`() {
         val alice = "alice"
-        val aliceCoreRBAC = TestUtilities.addAndInitUser(coreRBAC, alice)
+        val aliceCoreRBAC = addAndInitUser(coreRBAC, alice)
 
         val employee = "employee"
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -1237,7 +1243,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     open fun `admin or user write file having permission over file works`() {
 
         val alice = "alice"
-        val aliceCoreRBAC = TestUtilities.addAndInitUser(coreRBAC, alice)
+        val aliceCoreRBAC = addAndInitUser(coreRBAC, alice)
         val employee = "employee"
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
         val exam = "exam"
@@ -1275,7 +1281,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     @Test
     open fun `not assigned or revoked user write file fails`() {
         val alice = "alice"
-        val aliceCoreRBAC = TestUtilities.addAndInitUser(coreRBAC, alice)
+        val aliceCoreRBAC = addAndInitUser(coreRBAC, alice)
 
         val employee = "employee"
         assert(coreRBAC.addRole(employee) == OutcomeCode.CODE_000_SUCCESS)
@@ -1303,60 +1309,60 @@ internal abstract class CoreRBACTest : CoreTest() {
     }
 
     @Test
-    fun `get user of incomplete or operational user works`() {
+    fun `get user of incomplete or operational or deleted user works`() {
         assert(coreRBAC.addUser("incomplete").code == OutcomeCode.CODE_000_SUCCESS)
-        TestUtilities.addAndInitUser(coreRBAC, "operational")
+        addAndInitUser(coreRBAC, "operational")
+        addAndInitUser(coreRBAC, "deleted")
+        assert(coreRBAC.deleteUser("deleted") == OutcomeCode.CODE_000_SUCCESS)
 
         /** get user of incomplete user */
         run {
-            assert(coreRBAC.getUsers().users!!.filter { it.name == "incomplete" }.size == 1)
+            assert(coreRBAC.getUsers().users!!.first { it.status == ElementStatus.INCOMPLETE }.name == "incomplete")
         }
 
         /** get user of operational user */
         run {
-            assert(coreRBAC.getUsers().users!!.filter { it.name == "operational" }.size == 1)
+            assert(coreRBAC.getUsers().users!!.filter { it.status == ElementStatus.OPERATIONAL }.size == 2)
+        }
+
+        /** get user of deleted user */
+        run {
+            assert(coreRBAC.getUsers().users!!.first { it.status == ElementStatus.DELETED }.name == "deleted")
         }
     }
 
     @Test
-    fun `get user of non-existing or deleted user fails`() {
-        TestUtilities.addAndInitUser(coreRBAC, "deleted")
-        assert(coreRBAC.deleteUser("deleted") == OutcomeCode.CODE_000_SUCCESS)
+    fun `get user of non-existing fails`() {
 
         /** get user of non-existing user */
         run {
             assert(coreRBAC.getUsers().users!!.none { it.name == "not-existing" })
         }
-
-        /** get user of deleted user */
-        run {
-            assert(coreRBAC.getUsers().users!!.none { it.name == "deleted" })
-        }
     }
 
     @Test
-    fun `get role of operational role works`() {
+    fun `get role of operational or deleted role works`() {
         assert(coreRBAC.addRole("operational") == OutcomeCode.CODE_000_SUCCESS)
+        assert(coreRBAC.addRole("deleted") == OutcomeCode.CODE_000_SUCCESS)
+        assert(coreRBAC.deleteRole("deleted") == OutcomeCode.CODE_000_SUCCESS)
 
         /** get role of operational role */
         run {
             assert(coreRBAC.getRoles().roles!!.filter { it.name == "operational" }.size == 1)
         }
+
+        /** get role of deleted role */
+        run {
+            assert(coreRBAC.getRoles().roles!!.first { it.status == ElementStatus.DELETED }.name == "deleted")
+        }
     }
 
     @Test
-    fun `get role of non-existing or deleted role fails`() {
-        assert(coreRBAC.addRole("deleted") == OutcomeCode.CODE_000_SUCCESS)
-        assert(coreRBAC.deleteRole("deleted") == OutcomeCode.CODE_000_SUCCESS)
+    fun `get role of non-existing fails`() {
 
         /** get role of non-existing role */
         run {
             assert(coreRBAC.getRoles().roles!!.none { it.name == "not-existing" })
-        }
-
-        /** get role of deleted role */
-        run {
-            assert(coreRBAC.getRoles().roles!!.none { it.name == "deleted" })
         }
     }
 
@@ -1367,15 +1373,6 @@ internal abstract class CoreRBACTest : CoreTest() {
                 "operational", "operational".inputStream(), EnforcementType.COMBINED
             ) == OutcomeCode.CODE_000_SUCCESS
         )
-
-        /** get file of operational file */
-        run {
-            assert(coreRBAC.getFiles().files!!.filter { it.name == "operational" }.size == 1)
-        }
-    }
-
-    @Test
-    fun `get file of non-existing or deleted file fails`() {
         assert(
             coreRBAC.addFile(
                 "deleted", "deleted".inputStream(), EnforcementType.COMBINED
@@ -1383,20 +1380,29 @@ internal abstract class CoreRBACTest : CoreTest() {
         )
         assert(coreRBAC.deleteFile("deleted") == OutcomeCode.CODE_000_SUCCESS)
 
-        /** get file of non-existing file */
+        /** get file of operational file */
         run {
-            assert(coreRBAC.getFiles().files!!.none { it.name == "not-existing" })
+            assert(coreRBAC.getFiles().files!!.first { it.status == ElementStatus.OPERATIONAL }.name == "operational")
         }
 
         /** get file of deleted file */
         run {
-            assert(coreRBAC.getFiles().files!!.none { it.name == "deleted" })
+            assert(coreRBAC.getFiles().files!!.first { it.status == ElementStatus.DELETED }.name == "deleted")
+        }
+    }
+
+    @Test
+    fun `get file of non-existing or deleted file fails`() {
+
+        /** get file of non-existing file */
+        run {
+            assert(coreRBAC.getFiles().files!!.none { it.name == "not-existing" })
         }
     }
 
     @Test
     fun `get existing assignment specifying any combination of username and role name works`() {
-        TestUtilities.addAndInitUser(coreRBAC, "alice")
+        addAndInitUser(coreRBAC, "alice")
         assert(coreRBAC.addRole("student") == OutcomeCode.CODE_000_SUCCESS)
         assert(coreRBAC.assignUserToRole("alice", "student") == OutcomeCode.CODE_000_SUCCESS)
 
@@ -1408,7 +1414,6 @@ internal abstract class CoreRBACTest : CoreTest() {
         /** get existing assignment specifying the role name */
         run {
             assert(coreRBAC.getAssignments(roleName = "student").roleTuples!!.filter { it.username == "alice" }.size == 1)
-
         }
 
         /** get existing assignment specifying both the username and the role name */
@@ -1429,7 +1434,7 @@ internal abstract class CoreRBACTest : CoreTest() {
 
         /** get deleted assignment */
         run {
-            TestUtilities.addAndInitUser(coreRBAC, "alice")
+            addAndInitUser(coreRBAC, "alice")
             assert(coreRBAC.addRole("student") == OutcomeCode.CODE_000_SUCCESS)
             assert(coreRBAC.assignUserToRole("alice", "student") == OutcomeCode.CODE_000_SUCCESS)
             assert(coreRBAC.revokeUserFromRole("alice", "student") == OutcomeCode.CODE_000_SUCCESS)
@@ -1442,7 +1447,7 @@ internal abstract class CoreRBACTest : CoreTest() {
 
     @Test
     fun `get existing permission specifying any combination of username, role name and file name works`() {
-        TestUtilities.addAndInitUser(coreRBAC, "alice")
+        addAndInitUser(coreRBAC, "alice")
         assert(coreRBAC.addRole("student") == OutcomeCode.CODE_000_SUCCESS)
         assert(
             coreRBAC.addFile(
@@ -1497,7 +1502,7 @@ internal abstract class CoreRBACTest : CoreTest() {
 
         /** get deleted permission */
         run {
-            TestUtilities.addAndInitUser(coreRBAC, "alice")
+            addAndInitUser(coreRBAC, "alice")
             assert(coreRBAC.addRole("student") == OutcomeCode.CODE_000_SUCCESS)
             assert(
                 coreRBAC.addFile(
@@ -1539,6 +1544,12 @@ internal abstract class CoreRBACTest : CoreTest() {
     override fun `init user twice fails`() {
         val bobCore = TestUtilities.addUser(coreRBAC, "bob")
         assert(bobCore.initUser() == OutcomeCode.CODE_000_SUCCESS)
-        assert(bobCore.initUser() == OutcomeCode.CODE_004_USER_NOT_FOUND)
+        assert(bobCore.initUser() == OutcomeCode.CODE_061_USER_ALREADY_INITIALIZED)
+    }
+
+    fun addAndInitUser(coreRBAC: CoreRBAC, username: String): CoreRBAC {
+        val userCore = TestUtilities.addUser(coreRBAC, username)
+        assert(userCore.initUser() == OutcomeCode.CODE_000_SUCCESS)
+        return userCore
     }
 }

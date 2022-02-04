@@ -1,5 +1,6 @@
 package eu.fbk.st.cryptoac.core
 
+import kotlinx.coroutines.CoroutineScope
 import org.junit.jupiter.api.*
 
 /** Test class for class "Core" */
@@ -32,4 +33,7 @@ internal abstract class CoreTest {
 
     @Test
     abstract fun `init user twice fails`()
+
+    abstract fun myRun(coreRBAC: CoreRBAC? = null, block: () -> Unit)
+    abstract fun myRunBlocking(coreRBAC: CoreRBAC? = null, block: suspend CoroutineScope.() -> Unit)
 }

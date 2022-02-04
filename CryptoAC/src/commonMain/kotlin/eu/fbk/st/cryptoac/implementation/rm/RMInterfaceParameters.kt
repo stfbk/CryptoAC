@@ -1,27 +1,39 @@
 package eu.fbk.st.cryptoac.implementation.rm
 
-import kotlinx.serialization.Serializable
-
 /** Parameters for configuring the RM */
-@Serializable
-sealed class RMInterfaceParameters {
+interface RMInterfaceParameters {
+
+    /** The type of this interface */
+    val rmType: RMType
 
     /** Check the parameters are valid through regular expressions and return true if they are, false otherwise */
-    abstract fun checkParameters(): Boolean
+    fun checkParameters(): Boolean
 
     /** Update updatable fields */
-    abstract fun update(updatedParameters: RMInterfaceParameters)
+    fun update(updatedParameters: RMInterfaceParameters)
 
     /** Obscure (e.g., overwrite values of) sensitive fields */
-    abstract fun obscureSensitiveFields()
+    fun obscureSensitiveFields()
+}
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        return true
-    }
+/**
+ * Parameters ([port] and [url]) for configuring
+ * an RM compatible with the RBAC MQTT core
+ */
+interface RMInterfaceRBACCLOUDParameters : RMInterfaceParameters {
+    /** The port of the RM */
+    var port: Int
 
-    override fun hashCode(): Int {
-        return this::class.hashCode()
-    }
+    /** The url of the RM */
+    var url: String
+}
+
+/**
+ * An RM interface can be implemented by:
+ * - CRYPTOAC: CryptoAC Docker container;
+ * - NONE: No RM chosen
+ */
+enum class RMType {
+    CRYPTOAC,
+    NONE,
 }

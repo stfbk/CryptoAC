@@ -92,20 +92,20 @@ abstract class CoreRBAC(
 
 
     /**
-     * Retrieve and return the users that the
-     * user can see, along with the outcome code
+     * Retrieve the list of users,
+     * along with the outcome code
      */
     abstract fun getUsers(): CodeUsers
 
     /**
-     * Retrieve and return the roles that the
-     * user can see, along with the outcome code
+     * Retrieve the list of roles,
+     * along with the outcome code
      */
     abstract fun getRoles(): CodeRoles
 
     /**
-     * Retrieve and return the files that the
-     * user can see, along with the outcome code
+     * Retrieve the list of files,
+     * along with the outcome code
      */
     abstract fun getFiles(): CodeFiles
 
