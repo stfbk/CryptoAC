@@ -4,4 +4,6 @@ WORKDIR /cryptoac
 
 COPY ./CryptoAC-1.0-SNAPSHOT/ /cryptoac
 
+COPY ./mosquittoCACertificate.jks /mosquittoCACertificate.jks
+
 ENTRYPOINT ["/cryptoac/bin/CryptoAC"]

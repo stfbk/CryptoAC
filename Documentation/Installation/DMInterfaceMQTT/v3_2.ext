@@ -1,0 +1,3 @@
+keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign
+subjectAltName         = IP:10.1.0.8
+issuerAltName          = issuer:copy
