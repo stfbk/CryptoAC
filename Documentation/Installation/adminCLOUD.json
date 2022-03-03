@@ -5,7 +5,8 @@
    "versionNumber":1,
    "user":{
       "name":"admin",
-      "isAdmin":true
+      "isAdmin":true,
+      "status":"INCOMPLETE"
    },
    "rmInterfaceParameters":{
       "type":"eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCryptoACParameters",

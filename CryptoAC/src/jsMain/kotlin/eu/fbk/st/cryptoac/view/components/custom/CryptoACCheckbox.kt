@@ -4,6 +4,9 @@ import eu.fbk.st.cryptoac.view.components.materialui.checkbox
 import eu.fbk.st.cryptoac.view.components.materialui.formControlLabel
 import react.*
 
+// TODO document
+const val divider = "4%&£$5"
+
 external interface CryptoACCheckboxProps : Props {
     /** Default value for the input */
     var defaultValue: String
@@ -33,14 +36,14 @@ class CryptoACCheckbox: RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>
                     checkbox {
                         attrs {
                             value = state.value
-                            checked = state.value.split("_")[0].toBoolean()
+                            checked = state.value.split(divider)[0].toBoolean()
                             onChange = {
                                 setState {
                                     changedByUser = true
-                                    value = if (state.value == "true_${props.label}")
-                                        "false_${props.label}"
+                                    value = if (state.value == "true$divider${props.label}")
+                                        "false$divider${props.label}"
                                     else
-                                        "true_${props.label}"
+                                        "true$divider${props.label}"
                                 }
                             }
                         }
@@ -61,13 +64,12 @@ class CryptoACCheckbox: RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>
         CryptoACCheckbox::class.js.asDynamic().getDerivedStateFromProps = {
                 props: CryptoACCheckboxProps, state: CryptoACCheckboxState ->
             if (state.justMounted || !state.changedByUser) {
-                state.value = "${props.defaultValue}_${props.label}"
+                state.value = "${props.defaultValue}$divider${props.label}"
             }
             state.changedByUser = false
             state.justMounted = false
         }
     }
-
 }
 
 /** Extend RBuilder for easier use of this React component */

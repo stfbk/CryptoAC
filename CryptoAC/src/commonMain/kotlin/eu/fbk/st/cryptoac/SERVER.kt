@@ -60,6 +60,9 @@ object SERVER {
     /** The URL of the dm */
     const val DM_URL = "DM_URL"
 
+    /** Whether to use TLS with the dm */
+    const val DM_TLS = "DM_TLS"
+
     /** The port of the dm */
     const val DM_PORT = "DM_Port"
 
@@ -77,6 +80,9 @@ object SERVER {
 
     /** The URL of the OPA */
     const val OPA_URL = "OPA_URL"
+
+    /** The policy model for OPA */
+    const val OPA_POLICY_MODEL = "OPA_POLICY_MODEL"
 
     /** The port of the OPA */
     const val OPA_PORT = "OPA_Port"

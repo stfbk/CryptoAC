@@ -32,6 +32,9 @@ interface DMInterfaceRBACMQTTParameters : DMInterfaceParameters {
 
     /** The url of the DM */
     var url: String
+
+    /** Whether to use TLS or not */
+    var tls: Boolean
 }
 
 /**

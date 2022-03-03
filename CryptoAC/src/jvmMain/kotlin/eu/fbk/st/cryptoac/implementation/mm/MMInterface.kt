@@ -20,26 +20,41 @@ const val NO_LIMIT = -1
 /** Interface defining the methods to interact with the MM */
 abstract class MMInterface {
 
-    /** The number of locks on the database for the lock-rollback-unlock mechanism */
+    /**
+     * The number of locks for the
+     * lock-rollback-unlock mechanism
+     */
     var locks = 0
 
     /**
      * Initialize the admin by adding in the metadata the
      * [admin] as both user and role and the [adminRoleTuple]
-     * and return the outcome code
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_002_ROLE_ALREADY_EXISTS
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_034_ADMIN_ALREADY_INITIALIZED
+     * - CODE_060_ADMIN_NAME
      */
     abstract fun initAdmin(admin: User, adminRoleTuple: RoleTuple): OutcomeCode
 
     /**
      * Initialize the user by adding in the metadata the
      * public keys and token of the [user], updating also
-     * the status flag, and return the outcome code
+     * the status flag, and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_061_USER_ALREADY_INITIALIZED
      */
     abstract fun initUser(user: User): OutcomeCode
 
     /**
      * Return whether the user with the given [username]
-     * is an admin user or not
+     * is an admin user or not, along with the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
      */
     abstract fun isUserAdmin(username: String): WrappedBoolean
 
@@ -48,20 +63,30 @@ abstract class MMInterface {
     /**
      * Add the [newUser] in the metadata. The user's asymmetric encryption
      * and signing public keys and token will be set by the user him/herself
-     * later on (initUser function). Finally, return the outcome code together
-     * with user's MM configuration parameters
+     * later on (initUser function). Finally, return the user's MM configuration
+     * parameters together with the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_001_USER_ALREADY_EXISTS
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_062_CREATE_USER_MM
      */
     abstract fun addUser(newUser: User): WrapperMMParameters
 
     /**
      * Add the [newRole] in the metadata
-     * and return the outcome code
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_002_ROLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
      */
     abstract fun addRole(newRole: Role): OutcomeCode
 
     /**
      * Add the [newFile] in the metadata
-     * and return the outcome code
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_003_FILE_ALREADY_EXISTS
+     * - CODE_015_FILE_WAS_DELETED
      */
     abstract fun addFile(newFile: File): OutcomeCode
 
@@ -69,19 +94,25 @@ abstract class MMInterface {
 
     /**
      * Add the [newRoleTuples] in the metadata and
-     * return the outcome code
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
      */
     abstract fun addRoleTuples(newRoleTuples: HashSet<RoleTuple>): OutcomeCode
 
     /**
      * Add the [newPermissionTuples] in the metadata and
-     * return the outcome code
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
      */
     abstract fun addPermissionTuples(newPermissionTuples: HashSet<PermissionTuple>): OutcomeCode
 
     /**
      * Add the [newFileTuples] in the metadata and
-     * return the outcome code
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_012_FILETUPLE_ALREADY_EXISTS
      */
     abstract fun addFileTuples(newFileTuples: HashSet<FileTuple>): OutcomeCode
 
@@ -205,26 +236,28 @@ abstract class MMInterface {
     /**
      * Delete the [username] but keep at least the public key,
      * so to verify digital signatures signed by the user and
-     * return the outcome code.
-     *
-     * In this implementation, move the [username] in the deleted
-     * users table and delete the user at database level
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      */
     abstract fun deleteUser(username: String): OutcomeCode
 
     /**
-     * Delete the [roleName] and return the outcome code.
-     *
-     * In this implementation, move the [roleName] in the
-     * deleted roles table
+     * Delete the [roleName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      */
     abstract fun deleteRole(roleName: String): OutcomeCode
 
     /**
-     * Delete the [fileName] and return the outcome code.
-     *
-     * In this implementation, move the [fileName] in the
-     * deleted files table
+     * Delete the [fileName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_015_FILE_WAS_DELETED
      */
     abstract fun deleteFile(fileName: String): OutcomeCode
 
@@ -232,20 +265,28 @@ abstract class MMInterface {
 
     /**
      * Delete the role tuple matching the given
-     * [roleName] and return the outcome code
+     * [roleName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_007_ROLETUPLE_NOT_FOUND
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      */
     abstract fun deleteRoleTuples(roleName: String): OutcomeCode
 
     /**
      * Delete the permission tuples matching the [roleName] and/or
      * the [fileName] (at least one required), further filtering by
-     * [roleVersionNumber], if given. Finally, return the outcome code
+     * [roleVersionNumber], if given. Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      */
     abstract fun deletePermissionTuples(roleName: String? = null, fileName: String? = null, roleVersionNumber: Int? = null): OutcomeCode
 
     /**
      * Delete the file tuple matching the given
-     * [fileName] and return the outcome code
+     * [fileName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_009_FILETUPLE_NOT_FOUND
      */
     abstract fun deleteFileTuples(fileName: String): OutcomeCode
 
@@ -253,7 +294,10 @@ abstract class MMInterface {
 
     /**
      * Increment the symmetric encryption version number
-     * of the [fileName] by 1 and return the outcome code
+     * of the [fileName] by 1 and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_015_FILE_WAS_DELETED
      */
     abstract fun incrementSymEncVersionNumberByOne(fileName: String): OutcomeCode
 
@@ -262,7 +306,10 @@ abstract class MMInterface {
     /**
      * Update the asymmetric encryption and signing public keys
      * of the given [roleName] with the new [newAsymEncPublicKey]
-     * and [newAsymSigPublicKey] and return the outcome code
+     * and [newAsymSigPublicKey] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_014_ROLE_WAS_DELETED
      */
     abstract fun updateRoleAsymKeys(roleName: String, newAsymEncPublicKey: PublicKey, newAsymSigPublicKey: PublicKey): OutcomeCode
 
@@ -270,7 +317,9 @@ abstract class MMInterface {
 
     /**
      * Update the permission, signature and signer token of the
-     * given [updatedPermissionTuple] and return the outcome code
+     * given [updatedPermissionTuple] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
      */
     abstract fun updatePermissionTuple(updatedPermissionTuple: PermissionTuple): OutcomeCode
 
@@ -281,7 +330,12 @@ abstract class MMInterface {
      * previous status in case of errors. As this method could be invoked
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
-     * starting a new transaction only when [locks] is 0
+     * starting a new transaction only when [locks] is 0. Finally, return
+     * the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * - CODE_064_ACCESS_DENIED_TO_MM
      */
     abstract fun lock(): OutcomeCode
 
@@ -289,7 +343,10 @@ abstract class MMInterface {
      * Signal an error during an atomic transaction so to restore the
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
-     * rollbacking to the previous status only when [locks] becomes 0
+     * rollbacking to the previous status only when [locks] becomes 0.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS
      */
     abstract fun rollback(): OutcomeCode
 
@@ -297,7 +354,11 @@ abstract class MMInterface {
      * Signal the end of an atomic transaction so commit the changes.
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
-     * the transaction only when [locks] becomes 0
+     * the transaction only when [locks] becomes 0. Finally, return the
+     * outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_058_UNLOCK_FAILED
      */
     abstract fun unlock(): OutcomeCode
 }
@@ -305,8 +366,14 @@ abstract class MMInterface {
 
 
 /** Wrapper for the outcome [code] and a [boolean] value */
-data class WrappedBoolean(val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, val boolean: Boolean? = null)
+data class WrappedBoolean(
+    val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+    val boolean: Boolean? = null
+)
 
 /** Wrapper for the outcome [code] and eventual [parameters] */
 @Serializable
-data class WrapperMMParameters(val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS, val parameters: MMInterfaceParameters? = null)
+data class WrapperMMParameters(
+    val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
+    val parameters: MMInterfaceParameters? = null
+)

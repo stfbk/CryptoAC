@@ -30,10 +30,13 @@ import java.net.ConnectException
 private val logger = KotlinLogging.logger {}
 
 /**
- * Implementation of the methods to interface with the DM
- * as a microservice container configured with the given [interfaceParameters]
+ * Implementation of the methods to interface with
+ * the DM as a microservice container configured
+ * with the given [interfaceParameters]
  */
-class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCryptoACParameters) : DMInterfaceRBACCLOUD {
+class DMInterfaceRBACCryptoAC(
+    private val interfaceParameters: DMInterfaceCryptoACParameters,
+) : DMInterfaceRBACCLOUD {
 
     /** The base API path (url + port) of the DM */
     private val dmBaseAPI = "${interfaceParameters.url}:${interfaceParameters.port}"
@@ -41,12 +44,17 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
     /** The Http client */
     private var client: HttpClient? = null
 
-    /** The number of locks on the database for the lock-rollback-unlock mechanism */
+    /**
+     * The number of locks for the
+     * lock-rollback-unlock mechanism
+     */
     override var locks = 0
 
     /**
-     * Configure the DM with relevant
-     * [parameters] and return the outcome code
+     * Configure the DM with relevant [parameters]
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
      */
     override fun configure(parameters: CoreParameters): OutcomeCode {
 
@@ -88,7 +96,11 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
 
     /**
      * Add the [content] of the [newFile]
-     * in the DM and return the outcome code
+     * in the DM and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_003_FILE_ALREADY_EXISTS
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_043_DM_CONNECTION_TIMEOUT
      */
     override fun addFile(newFile: File, content: InputStream): OutcomeCode {
 
@@ -129,7 +141,12 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
 
     /**
      * Download the content of the file matching
-     * the given [fileName] from the DM
+     * the given [fileName] from the DM and return
+     * it along with the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_043_DM_CONNECTION_TIMEOUT
      */
     override fun readFile(fileName: String): WrappedInputStream {
 
@@ -167,7 +184,12 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
 
     /**
      * Overwrite the [content] of the [updatedFile]
-     * in the DM and return the outcome code.
+     * in the DM and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_025_FILE_RENAMING
+     * - CODE_043_DM_CONNECTION_TIMEOUT
      *
      * In this implementation, ask the DM to move the
      * new file from the upload folder to the download
@@ -202,7 +224,11 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
 
     /**
      * Delete the [fileName] from the data
-     * storage and return the outcome code
+     * storage and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_043_DM_CONNECTION_TIMEOUT
      */
     override fun deleteFile(fileName: String): OutcomeCode {
 
@@ -235,7 +261,12 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
     // TODO refactor this
     /**
      * Delete the [fileName] from the temporary
-     * storage and return the outcome code
+     * storage and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_024_FILE_DELETE
+     * - CODE_043_DM_CONNECTION_TIMEOUT
      */
     override fun deleteTemporaryFile(fileName: String): OutcomeCode {
 
@@ -271,7 +302,9 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
      * previous status in case of errors. As this method could be invoked
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
-     * starting a new transaction only when [locks] is 0.
+     * starting a new transaction only when [locks] is 0. Finally, return
+     * the outcome code:
+     * - CODE_000_SUCCESS
      *
      * In this implementation, the lock-unlock-rollback mechanism is not needed,
      * as the RM is the entity which validates users' operations. However, to keep
@@ -302,6 +335,8 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
      *
      * In this implementation, close the Http client
      */
@@ -321,7 +356,9 @@ class DMInterfaceRBACCryptoAC(private val interfaceParameters: DMInterfaceCrypto
      * Signal the end of an atomic transaction so commit the changes.
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
-     * the transaction only when [locks] becomes 0.
+     * the transaction only when [locks] becomes 0. Finally, return the
+     * outcome code:
+     * - CODE_000_SUCCESS
      *
      * In this implementation, close the Http client
      */

@@ -1,7 +1,6 @@
 package eu.fbk.st.cryptoac.crypto
 
 import eu.fbk.st.cryptoac.crypto.java.CryptoJava
-import eu.fbk.st.cryptoac.crypto.openssl.CryptoOpenSSL
 import eu.fbk.st.cryptoac.crypto.sodium.CryptoSodium
 import mu.KotlinLogging
 

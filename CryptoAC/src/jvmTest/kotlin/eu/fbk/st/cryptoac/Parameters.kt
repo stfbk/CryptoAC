@@ -91,7 +91,10 @@ object Parameters {
         port = 8443, url = "10.1.0.6"
     )
     val mmInterfaceMySQLParameters = MMInterfaceMySQLParameters(
-        port = 3306, url = "10.1.0.5", password = "password", username = "admin"
+        port = 3306,
+        url = "10.1.0.5",
+        password = "password",
+        username = ADMIN
     )
     val opaInterfaceParameters = OPAInterfaceParameters(
         port = 8181, url = "10.1.0.8"
@@ -122,10 +125,17 @@ object Parameters {
 
     /** MQTT Parameters */
     val dmInterfaceMosquittoParameters = DMInterfaceMosquittoParameters(
-        port = 1883, url = "0.0.0.0", password = "password".toByteArray(), username = ADMIN
+        port = 1883,
+        url = "0.0.0.0",
+        password = "password".toByteArray(),
+        username = ADMIN,
+        tls = false,
     )
     val mmInterfaceRedisParameters = MMInterfaceRedisParameters(
-        port = 6379, url = "10.1.0.5", password = "password", username = "admin"
+        port = 6379,
+        url = "10.1.0.5",
+        password = "password",
+        username = ADMIN
     )
     val adminCoreRBACMQTTParameters = CoreParametersMQTT(
         User(
@@ -198,6 +208,7 @@ object Parameters {
             url = "0.0.0.0",
             password = aliceName.toByteArray(),
             username = aliceName,
+            tls = false
         ),
     )
     private val aliceCoreRBACMOCKParameters = CoreParametersMOCK(
@@ -255,6 +266,7 @@ object Parameters {
             url = "0.0.0.0",
             password = aliceName.toByteArray(),
             username = aliceName,
+            tls = false
         ),
     )
     private val bobCoreRBACMOCKParameters = CoreParametersMOCK(

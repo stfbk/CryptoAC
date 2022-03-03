@@ -1,0 +1,382 @@
+openapi: "3.0.0"
+info:
+  version: 0.1.0
+  title: "CryptoAC - RM"
+  description: "This is the documentation of the APIs of [CryptoAC](https://github.com/stfbk/CryptoAC) when configured to act as a Reference Monitor (RM). Please see the [repository](https://github.com/stfbk/CryptoAC) for information about CryptoAC. When acting as a RM, CryptoAC exposes three RESTful APIs. One API is reserved to the administrator and allows to configure the RM (e.g., by providing URLs of the MM and DM). The other two APIs are for checking add and write files operations. Whenever a user wants to add a new file, the RM checks whether the user is granting to the administrator all permissions over the file. When a user wants to write over a file, the RM queries the AC policy to ensure that the user has permission to do so. Mandatory parameters are rendered as path parameters, while optional parameters are rendered as query parameters."
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: FBK - Security and Trust
+    email: sberlato@fbk.eu
+    url: https://st.fbk.eu/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:8443/v1/rm
+paths:
+
+  /:
+    post:
+      summary: "Configure the RM."
+      description: "Configure the RM. Possible outcome codes are: CODE_000_SUCCESS."
+      operationId: configureDM
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      requestBody:
+        description: "Information about the file."
+        content: 
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RMCloudParameters'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+  
+  /files/{CORE}:
+    post:
+      summary: "Ask the RM to approve the upload of a new file in the DM."
+      description: "Ask the RM to approve the upload of a new file in the DM. Possible outcome codes: CODE_000_SUCCESS, CODE_003_FILE_ALREADY_EXISTS, CODE_004_USER_NOT_FOUND, CODE_006_FILE_NOT_FOUND, CODE_015_FILE_WAS_DELETED, CODE_016_INVALID_PERMISSION, CODE_017_INVALID_VERSION_NUMBER, CODE_020_INVALID_PARAMETER, CODE_021_RM_CONFIGURATION, CODE_025_FILE_RENAMING, CODE_026_TUPLE_FORMAT, CODE_043_DM_CONNECTION_TIMEOUT."
+      operationId: checkFileAdd
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: CORE
+          in: path
+          description: "The core."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: "Information about the file."
+        content: 
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/checkAddFile'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+        '404':
+          description: "Not Found."
+          content:
+            text/plain:
+              examples:
+                CODE_004_USER_NOT_FOUND:
+                  summary: "Signer user not found."
+                  value: "CODE_004_USER_NOT_FOUND"
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            text/plain:
+              examples:
+                CODE_016_INVALID_PERMISSION:
+                  summary: "Specified permission is incorrect."
+                  value: "CODE_016_INVALID_PERMISSION"
+                CODE_017_INVALID_VERSION_NUMBER:
+                  summary: "Version numbers are incorrect."
+                  value: "CODE_017_INVALID_VERSION_NUMBER"
+                CODE_020_INVALID_PARAMETER:
+                  summary: "Supplied a wrong parameter."
+                  value: "CODE_020_INVALID_PARAMETER"
+                CODE_026_TUPLE_FORMAT:
+                  summary: "Tuples do not present coherent values."
+                  value: "CODE_026_TUPLE_FORMAT"
+        '500':
+          description: "Internal Server Error."
+          content:
+            text/plain:
+              examples:
+                outcomeCode:
+                  summary: "An outcome code describing the error."
+                  value: "CODE_047_UNEXPECTED"           
+        '503':
+          description: "Service Unavailable."
+          content:
+            text/plain:
+              examples:
+                CODE_021_RM_CONFIGURATION:
+                  summary: "This RM was not configured."
+                  value: "CODE_021_RM_CONFIGURATION"
+    patch:
+      summary: "Ask the RM to approve the overwrite of a file in the DM."
+      description: "Ask the RM to approve the overwrite of a file in the DM. Possible outcome codes: CODE_000_SUCCESS, CODE_004_USER_NOT_FOUND, CODE_006_FILE_NOT_FOUND, CODE_009_FILETUPLE_NOT_FOUND, CODE_015_FILE_WAS_DELETED, CODE_017_INVALID_VERSION_NUMBER, CODE_020_INVALID_PARAMETER, CODE_021_RM_CONFIGURATION, CODE_025_FILE_RENAMING, CODE_027_AC_ENFORCEMENT_INCONSISTENT, CODE_043_DM_CONNECTION_TIMEOUT."
+      operationId: checkFileWrite
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: CORE
+          in: path
+          description: "The core."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: "Information about the file."
+        content: 
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/checkWriteFile'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+        '404':
+          description: "Not Found."
+          content:
+            text/plain:
+              examples:
+                CODE_004_USER_NOT_FOUND:
+                  summary: "Signer user not found."
+                  value: "CODE_004_USER_NOT_FOUND"
+                CODE_006_FILE_NOT_FOUND:
+                  summary: "File not found."
+                  value: "CODE_006_FILE_NOT_FOUND"
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            text/plain:
+              examples:
+                CODE_017_INVALID_VERSION_NUMBER:
+                  summary: "Symmetric key number is not the latest one."
+                  value: "CODE_017_INVALID_VERSION_NUMBER"
+                CODE_020_INVALID_PARAMETER:
+                  summary: "Supplied a wrong parameter."
+                  value: "CODE_020_INVALID_PARAMETER"
+                CODE_027_AC_ENFORCEMENT_INCONSISTENT:
+                  summary: "Specified permission is incorrect."
+                  value: "CODE_027_AC_ENFORCEMENT_INCONSISTENT"
+        '500':
+          description: "Internal Server Error."
+          content:
+            text/plain:
+              examples:
+                outcomeCode:
+                  summary: "An outcome code describing the error."
+                  value: "CODE_047_UNEXPECTED"           
+        '503':
+          description: "Service Unavailable."
+          content:
+            text/plain:
+              examples:
+                CODE_021_RM_CONFIGURATION:
+                  summary: "This RM was not configured."
+                  value: "CODE_021_RM_CONFIGURATION"
+
+
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
+    basicAuth:
+      type: http
+      scheme: basic
+      
+  
+  schemas:
+  
+    checkAddFile:
+      required:
+        - fileTuple
+        - permissionTuple
+        - symKeyVersionNumber
+      type: "object"
+      properties:
+        fileTuple:
+          type: "object"
+          properties:
+              fileName:
+                type: string
+                example: "document"
+              fileToken:
+                type: string
+                example: "dt3yWF5=="
+              roleToken:
+                type: string
+                example: "dt3yWF5=="
+              enforcement: 
+                type: string
+                enum: [TRADITIONAL, COMBINED]
+              symDecKeyVersionNumber:
+                type: integer
+                example: 1
+              signerType:
+                type: string
+                enum: [USER, ROLE]
+              signer:
+                type: string
+                example: "admin"
+              signature:
+                type: array
+                items:
+                  type: integer
+                example: "[-34, 56, 34, 67, ...] (array of bytes)"
+        permissionTuple:
+          type: "object"
+          properties:
+            roleName:
+              type: string
+              example: "employee"
+            fileName:
+              type: string
+              example: "document"
+            fileToken:
+              type: string
+              example: "dt3yWF5=="
+            roleToken:
+              type: string
+              example: "dt3yWF5=="
+            permission: 
+              type: string
+              enum: [READ, WRITE, READWRITE] 
+            encryptedSymKey:
+              type: "object"
+              properties:
+                key:
+                  type: array
+                  items:
+                    type: integer
+                  example: "[-34, 56, 34, 67, ...] (array of bytes)"
+            roleVersionNumber:
+              type: integer
+              example: 1
+            symKeyVersionNumber:
+              type: integer
+              example: 1
+            signerType:
+              type: string
+              enum: [USER, ROLE]
+            signer:
+              type: string
+              example: "admin"
+            signature:
+              type: array
+              items:
+                type: integer
+              example: "[-34, 56, 34, 67, ...] (array of bytes)"
+        symKeyVersionNumber:
+              type: integer
+              example: 1
+              
+    checkWriteFile:
+      required:
+        - fileTuple
+        - symKeyVersionNumber
+      type: "object"
+      properties:
+        fileTuple:
+          type: "object"
+          properties:
+              fileName:
+                type: string
+                example: "document"
+              fileToken:
+                type: string
+                example: "dt3yWF5=="
+              roleToken:
+                type: string
+                example: "dt3yWF5=="
+              enforcement: 
+                type: string
+                enum: [TRADITIONAL, COMBINED]
+              symDecKeyVersionNumber:
+                type: integer
+                example: 1
+              signerType:
+                type: string
+                enum: [USER, ROLE]
+              signer:
+                type: string
+                example: "admin"
+              signature:
+                type: array
+                items:
+                  type: integer
+                example: "[-34, 56, 34, 67, ...] (array of bytes)"
+        symKeyVersionNumber:
+              type: integer
+              example: 1
+                  
+    RMCloudParameters:
+      required:
+        - crypto
+        - mmMySQLInterfaceParameters
+        - dmCloudInterfaceParameters
+        - opaInterfaceParameters
+      type: "object"
+      properties:
+        crypto:
+          type: string
+          enum: [JAVA, SODIUM]
+        mmMySQLInterfaceParameters:
+          type: "object"
+          properties:
+              username:
+                type: string
+                example: "admin"
+              password:
+                type: string
+                example: "dt3yWF5=="
+              port:
+                type: integer
+                example: "3306"
+              url: 
+                type: string
+                example: "https://www.mysql.com/"
+              mmType:
+                type: string
+                enum: [MYSQL, REDIS]
+        dmCloudInterfaceParameters:
+          type: "object"
+          properties:
+              port:
+                type: integer
+                example: "8445"
+              url: 
+                type: string
+                example: "https://dm.fbk.eu/"
+              mmType:
+                type: string
+                enum: [CRYPTOAC, MOSQUITTO]
+        opaInterfaceParameters:
+          type: "object"
+          properties:
+            port:
+              type: integer
+              example: 1883
+            url:
+              type: string
+              example: "https://www.openpolicyagent.org/"
+            policyModel: 
+              type: string
+              enum: [RBAC, ABAC]
+                      
+                      
+                      

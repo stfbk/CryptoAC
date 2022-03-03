@@ -12,7 +12,7 @@ class DMFactory {
 
     companion object {
         /** Return a DM interface configured with the given [dmParameters] */
-        fun getDM(dmParameters: DMInterfaceParameters): DMInterface? {
+        fun getDM(dmParameters: DMInterfaceParameters): DMInterface {
             logger.debug { "Creating DM object of type ${dmParameters.dmType}" }
             return when (dmParameters.dmType) {
                 DMType.CRYPTOAC -> {
@@ -26,7 +26,7 @@ class DMFactory {
                 }
                 DMType.MOSQUITTO -> {
                     if (dmParameters is DMInterfaceMosquittoParameters) {
-                        val brokerBaseAPI = "tcp://${dmParameters.url}:${dmParameters.port}"
+                        val brokerBaseAPI = "${if (dmParameters.tls) "ssl" else "tcp"}://${dmParameters.url}:${dmParameters.port}"
                         val client = CryptoACMqttClient(brokerBaseAPI, generateRandomString(), MemoryPersistence()) // TODO check configuration is ok
                         DMInterfaceMosquitto(dmParameters, client)
                     } else {

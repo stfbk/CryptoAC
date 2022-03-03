@@ -13,21 +13,202 @@ private val logger = KotlinLogging.logger {}
 
 
 /**
- * Implementation of the methods to interface with the DM
- * as a MQTT broker configured with the given [interfaceParameters]
+ * Implementation of the methods to interface with
+ * the DM as a Mosquitto MQTT broker configured with
+ * the given [interfaceParameters]
  */
 class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquittoParameters,
                            override val client: CryptoACMqttClient
 ) : DMInterfaceRBACMQTT {
 
-    // TODO logs, docs, refactor
-
+    /**
+     * The topic to interact with
+     * the dynsec plugin
+     */
     private val dynsecTopic = "\$CONTROL/dynamic-security/v1"
 
-    /** The number of locks on the database for the lock-rollback-unlock mechanism */
+    /**
+     * The number of locks for the
+     * lock-rollback-unlock mechanism
+     */
     override var locks = 0
 
-    override fun getCreateClientCommand(username: String, password: String): String {
+    /**
+     * Configure the DM with relevant
+     * [parameters] and return the outcome code:
+     * - CODE_000_SUCCESS
+     *
+     * In this implementation, no configuration is needed
+     */
+    override fun configure(parameters: CoreParameters): OutcomeCode {
+        logger.info { "No configuration needed for DM MQTT" }
+        return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * Add the [content] of the [newFile]
+     * in the DM and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     *
+     * In this implementation, create a topic with
+     * the name of the [newFile] and send the [content]
+     * as a retained message
+     */
+    override fun addFile(newFile: File, content: InputStream): OutcomeCode {
+        logger.info("Creating a topic with name ${newFile.name} in the MQTT Mosquitto " +
+                "broker by sending a retained message with the last key version number")
+        val message = MqttMessage(content.readAllBytes())
+        message.qos = 1
+        message.isRetained = true
+        client.publish(newFile.name, message)
+        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+        return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * Download the content of the file matching
+     * the given [fileName] from the DM and return
+     * it along with the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     *
+     * In this implementation, subscribe to the
+     * topic with name [fileName]
+     */
+    override fun readFile(fileName: String): WrappedInputStream {
+        logger.info("Subscribing to the topic $fileName")
+        client.subscribe(fileName, 1)
+        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+        // TODO allow to select the QoS
+        return WrappedInputStream(OutcomeCode.CODE_000_SUCCESS)
+    }
+
+    /**
+     * Overwrite the [content] of the [updatedFile]
+     * in the DM and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     *
+     * In this implementation, send the [content] as a
+     * message in the topic with the name of the [updatedFile]
+     */
+    override fun writeFile(updatedFile: File, content: InputStream): OutcomeCode {
+        logger.info("Sending a message in the topic with name ${updatedFile.name} in the MQTT Mosquitto broker")
+        val message = MqttMessage(content.readAllBytes())
+        message.qos = 1
+        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+        // TODO allow to select the QoS
+        client.publish(updatedFile.name, message)
+        return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * Delete the [fileName] from the data
+     * storage and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     *
+     * In this implementation, remove the
+     * retained message from the topic
+     * with name [fileName]
+     */
+    override fun deleteFile(fileName: String): OutcomeCode {
+        logger.info("Deleting topic $fileName from the MQTT Mosquitto broker")
+        val message = MqttMessage(byteArrayOf())
+        message.qos = 2
+        message.isRetained = true
+        client.publish(fileName, message)
+        // TODO allow to select the QoS
+        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+        return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * Signal the start of a new atomic transaction so to rollback to the
+     * previous status in case of errors. As this method could be invoked
+     * multiple times before committing or rollbacking the transactions,
+     * increment the number of [locks] by 1 at each invocation, effectively
+     * starting a new transaction only when [locks] is 0. Finally, return
+     * the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     *
+     * In this implementation, check whether the MQTT client is already
+     * connected. If not, check whether the MQTT client is already connecting
+     * (because, e.g., it was disconnected from the broker). If so, block
+     * until the client gets connected. Otherwise, simply connect the client.
+     * Remember that "client.connect()" is a blocking method that returns
+     * once connect completes
+     */
+    override fun lock(): OutcomeCode {
+        if (locks == 0) {
+            logger.info { "Locking the status of the DM" }
+            client.connectSync(
+                false, interfaceParameters.tls,
+                interfaceParameters.username, interfaceParameters.password
+            )// TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+        }
+        else {
+            logger.debug { "Increment lock number to $locks" }
+        }
+        locks++
+        return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * Signal an error during an atomic transaction so to restore the
+     * previous status. As this method could be invoked multiple times,
+     * decrement the number of [locks] by 1 at each invocation, effectively
+     * rollbacking to the previous status only when [locks] becomes 0.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     *
+     * In this implementation, TODO
+     */
+    override fun rollback(): OutcomeCode {
+        if (locks == 1) {
+            logger.info { "Rollback the status of the DM" }
+            locks--
+            // TODO
+            // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+        } else if (locks > 0) {
+            logger.debug { "Decrement lock number to ${locks - 1}" }
+            locks--
+        }
+        return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * Signal the end of an atomic transaction so commit the changes.
+     * As this method could be invoked multiple times, decrement the
+     * number of [locks] by 1 at each invocation, effectively committing
+     * the transaction only when [locks] becomes 0. Finally, return the
+     * outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     *
+     * In this implementation, TODO
+     */
+    override fun unlock(): OutcomeCode {
+        if (locks == 1) {
+            logger.info { "Unlock the status of the DM" }
+            locks--
+            // TODO
+            // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+        } else if (locks > 0) {
+            logger.debug { "Decrement lock number to ${locks - 1}" }
+            locks--
+        }
+        return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * Return the command for creating a client
+     * with the given [username] and [password]
+     */
+    fun getCreateClientCommand(username: String, password: String): String {
         logger.info("Creating client $username in the MQTT Mosquitto broker")
 
         return """
@@ -39,7 +220,11 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         """.trimIndent()
     }
 
-    override fun getDeleteClientCommand(username: String): String {
+    /**
+     * Return the command for deleting the client
+     * with the given [username]
+     */
+    fun getDeleteClientCommand(username: String): String {
         logger.info("Deleting client $username from the MQTT Mosquitto broker")
         return """
             {
@@ -49,7 +234,11 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         """.trimIndent()
     }
 
-    override fun getCreateRoleCommand(roleName: String): String {
+    /**
+     * Return the command for creating a role
+     * with the given [roleName]
+     */
+    fun getCreateRoleCommand(roleName: String): String {
         logger.info("Creating role $roleName in the MQTT Mosquitto broker")
         return """
             {
@@ -59,7 +248,11 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         """.trimIndent()
     }
 
-    override fun getAddClientRoleCommand(username: String, roleName: String): String {
+    /**
+     * Return the command for adding the client
+     * [username] to the role [roleName]
+     */
+    fun getAddClientRoleCommand(username: String, roleName: String): String {
         logger.info("Adding client $username to role $roleName in the MQTT Mosquitto broker")
         return """
             {
@@ -70,7 +263,11 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         """.trimIndent()
     }
 
-    override fun getDeleteRoleCommand(roleName: String): String {
+    /**
+     * Return the command for deleting the role
+     * with the given [roleName]
+     */
+    fun getDeleteRoleCommand(roleName: String): String {
         logger.info("Deleting role $roleName from the MQTT Mosquitto broker")
         return """
             {
@@ -80,7 +277,11 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         """.trimIndent()
     }
 
-    override fun getRemoveClientRoleCommand(username: String, roleName: String): String {
+    /**
+     * Return the command for removing the client
+     * [username] form the role [roleName]
+     */
+    fun getRemoveClientRoleCommand(username: String, roleName: String): String {
         logger.info("Removing client $username from role $roleName in the MQTT Mosquitto broker")
         return """
             {
@@ -91,33 +292,50 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         """.trimIndent()
     }
 
-    override fun getAddRoleACLCommand(roleName: String, aclType: AclType, topic: String): String {
-        logger.info("Adding to role $roleName ACL $aclType for topic $topic in the MQTT Mosquitto broker")
+    /**
+     * Return the command for adding the [aclType]
+     * permission to the role [roleName] over the
+     * topic [topicName]
+     */
+    fun getAddRoleACLCommand(roleName: String, aclType: AclType, topicName: String): String {
+        logger.info("Adding to role $roleName ACL $aclType for topic $topicName in the MQTT Mosquitto broker")
         return """
             {
                 "command": "addRoleACL",
                 "rolename": "$roleName",
                 "acltype": "$aclType",
-                "topic": "$topic",
+                "topic": "$topicName",
                 "priority": -1,
                 "allow": true
             }
         """.trimIndent()
     }
 
-    override fun getRemoveRoleACLCommand(roleName: String, aclType: AclType, topic: String): String {
-        logger.info("Removing rom role $roleName ACL $aclType for topic $topic in the MQTT Mosquitto broker")
+    /**
+     * Return the command for removing the [aclType]
+     * permission from the role [roleName] over the
+     * topic [topicName]
+     */
+    fun getRemoveRoleACLCommand(roleName: String, aclType: AclType, topicName: String): String {
+        logger.info("Removing rom role $roleName ACL $aclType for topic $topicName in the MQTT Mosquitto broker")
         return """
             {
                 "command": "removeRoleACL",
                 "rolename": "$roleName",
                 "acltype": "$aclType",
-                "topic": "$topic"
+                "topic": "$topicName"
             }
         """.trimIndent()
     }
 
-    override fun sendDynsecCommand(commands: HashSet<String>): OutcomeCode {
+    /**
+     * Send the list of [commands] to the DYNSEC plugin
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_019_MISSING_PARAMETERS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     */
+    fun sendDynsecCommand(commands: HashSet<String>): OutcomeCode {
         return if (commands.isNotEmpty()) {
             logger.info("Sending ${commands.size} dynsec commands to the MQTT Mosquitto broker")
             val commandsBuilder = StringBuilder("""{ "commands": [""")
@@ -133,7 +351,8 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
                 OutcomeCode.CODE_019_MISSING_PARAMETERS
             } else {
                 val messageMQTT = MqttMessage(message.toByteArray())
-                messageMQTT.qos = 1
+                messageMQTT.qos = 2
+                // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
                 client.publish(dynsecTopic, messageMQTT)
                 OutcomeCode.CODE_000_SUCCESS
             }
@@ -142,150 +361,5 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
             logger.info("Asked to send dynsec commands to the MQTT Mosquitto broker but no commands were given")
             OutcomeCode.CODE_000_SUCCESS
         }
-    }
-
-    /**
-     * Configure the DM with relevant
-     * [parameters] and return the outcome code.
-     *
-     * In this implementation, no configuration is needed
-     */
-    override fun configure(parameters: CoreParameters): OutcomeCode {
-        logger.info { "No configuration needed for DM MQTT" }
-        return OutcomeCode.CODE_000_SUCCESS
-    }
-
-    /**
-     * Add the [content] of the [newFile]
-     * in the DM and return the outcome code.
-     *
-     * In this implementation, create a topic with
-     * the name of the [newFile] and send the [content]
-     * as a retained message
-     */
-    override fun addFile(newFile: File, content: InputStream): OutcomeCode {
-        logger.info("Creating a topic with name ${newFile.name} in the MQTT Mosquitto " +
-                "broker by sending a retained message with the last key version number")
-        val message = MqttMessage(content.readAllBytes())
-        message.qos = 1
-        message.isRetained = true
-        client.publish(newFile.name, message)
-        return OutcomeCode.CODE_000_SUCCESS
-    }
-
-    /**
-     * Download the content of the file matching
-     * the given [fileName] from the DM.
-     *
-     * In this implementation, subscribe to the
-     * topic with name [fileName]
-     */
-    override fun readFile(fileName: String): WrappedInputStream {
-        logger.info("Subscribing to the topic $fileName")
-        try { // TODO catch mqtt exception (no denied, but like network issues)
-            client.subscribe(fileName, 1)
-        } catch (e: Exception) {
-            logger.error { "AAAAA" }
-            logger.error { e }
-        }
-        return WrappedInputStream(OutcomeCode.CODE_000_SUCCESS)
-    }
-
-    /**
-     * Overwrite the [content] of the [updatedFile]
-     * in the DM and return the outcome code.
-     *
-     * In this implementation, send the [content] as a
-     * message in the topic with the name of the [updatedFile]
-     */
-    override fun writeFile(updatedFile: File, content: InputStream): OutcomeCode {
-        logger.info("Sending a message in the topic with name ${updatedFile.name} in the MQTT Mosquitto broker")
-        val message = MqttMessage(content.readAllBytes())
-        message.qos = 1
-        client.publish(updatedFile.name, message) // TODO catch mqtt exception (no denied, but like network issues)
-        return OutcomeCode.CODE_000_SUCCESS
-    }
-
-    /**
-     * Delete the [fileName] from the data
-     * storage and return the outcome code.
-     *
-     * In this implementation, remove the
-     * retained message from the topic
-     * with name [fileName]
-     */
-    override fun deleteFile(fileName: String): OutcomeCode {
-        logger.info("Deleting topic $fileName from the MQTT Mosquitto broker")
-        val message = MqttMessage(byteArrayOf())
-        message.qos = 1
-        message.isRetained = true
-        client.publish(fileName, message) // TODO catch mqtt exception (no denied, but like network issues)
-        return OutcomeCode.CODE_000_SUCCESS
-    }
-
-    /**
-     * Signal the start of a new atomic transaction so to rollback to the
-     * previous status in case of errors. As this method could be invoked
-     * multiple times before committing or rollbacking the transactions,
-     * increment the number of [locks] by 1 at each invocation, effectively
-     * starting a new transaction only when [locks] is 0.
-     *
-     * In this implementation, check whether the MQTT client is already
-     * connected. If not, check whether the MQTT client is already connecting
-     * (because, e.g., it was disconnected from the broker). If so, block
-     * until the client gets connected. Otherwise, simply connect the client.
-     * Remember that "client.connect()" is a blocking method that returns
-     * once connect completes
-     */
-    override fun lock(): OutcomeCode {
-        if (locks == 0) {
-            logger.info { "Locking the status of the DM" }
-            client.connectSync(false, interfaceParameters.username, interfaceParameters.password)
-        }
-        else {
-            logger.debug { "Increment lock number to $locks" }
-        }
-        locks++
-        return OutcomeCode.CODE_000_SUCCESS
-    }
-
-    /**
-     * Signal an error during an atomic transaction so to restore the
-     * previous status. As this method could be invoked multiple times,
-     * decrement the number of [locks] by 1 at each invocation, effectively
-     * rollbacking to the previous status only when [locks] becomes 0.
-     *
-     * In this implementation, TODO
-     */
-    override fun rollback(): OutcomeCode {
-        if (locks == 1) {
-            logger.info { "Rollback the status of the DM" }
-            locks--
-            // TODO
-        } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks - 1}" }
-            locks--
-        }
-        return OutcomeCode.CODE_000_SUCCESS
-    }
-
-    /**
-     * Signal the end of an atomic transaction so commit the changes.
-     * As this method could be invoked multiple times, decrement the
-     * number of [locks] by 1 at each invocation, effectively committing
-     * the transaction only when [locks] becomes 0.
-     *
-     * In this implementation, TODO
-     */
-    override fun unlock(): OutcomeCode {
-        if (locks == 1) {
-            logger.info { "Unlock the status of the DM" }
-            locks--
-            // TODO
-        } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks - 1}" }
-            locks--
-        }
-        return OutcomeCode.CODE_000_SUCCESS
     }
 }

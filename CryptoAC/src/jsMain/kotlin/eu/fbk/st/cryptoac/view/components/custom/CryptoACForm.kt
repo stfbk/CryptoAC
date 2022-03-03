@@ -281,7 +281,7 @@ class CryptoACForm: RComponent<CryptoACProps, State>() {
         var expectedValues = 0
         props.cryptoACFormFields.forEach { expectedValues += it.size }
 
-        /** If all inputs were provided and collected.  */
+        /** If all inputs were provided and collected */
         if (expectedValues == collectedValues) {
             // TODO dunno if wrapping with "MainScope().launch" is correct
             MainScope().launch {
@@ -310,7 +310,7 @@ class CryptoACForm: RComponent<CryptoACProps, State>() {
                         InputType.text.toString() -> values[name] = value
                         InputType.number.toString() -> values[name] = value
                         InputType.radio.toString() -> if (checked) { values[name] = value }
-                        InputType.checkBox.toString().lowercase() -> values[value.split("_")[1]] = value.split("_")[0]
+                        InputType.checkBox.toString().lowercase() -> values[value.split(divider)[1]] = value.split(divider)[0]
                         else -> {
                             console.log("TODO FIX") // TODO fix
                         }

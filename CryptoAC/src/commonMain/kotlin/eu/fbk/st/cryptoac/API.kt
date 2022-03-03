@@ -22,7 +22,7 @@ object API {
     private const val CURRENT_VERSION = VERSION1
 
     /** (proxy mode) base URL for proxy APIs */
-    const val PROXY = "${CURRENT_VERSION}proxy/"
+    const val CRYPTOAC = "${CURRENT_VERSION}CryptoAC/"
 
     /** (rm mode) base URL for rm APIs */
     const val RM = "${CURRENT_VERSION}rm/"

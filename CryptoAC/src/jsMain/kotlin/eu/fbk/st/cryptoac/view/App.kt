@@ -26,6 +26,7 @@ import eu.fbk.st.cryptoac.view.sidebar.configuration
 import eu.fbk.st.cryptoac.view.sidebar.evaluation
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.features.*
 import io.ktor.client.features.cookies.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -488,11 +489,11 @@ class App : RComponent<Props, AppState>() {
         alertSeverity = CryptoACAlertSeverity.SUCCESS
         httpClient = HttpClient { // TODO check configuration
             expectSuccess = false
+            install(WebSockets)
+            install(HttpCookies)
             install(JsonFeature) {
                 serializer = KotlinxSerializer(json = myJson)
             }
-            install(WebSockets)
-            install(HttpCookies)
         }
 
         metric = Metric.Goals

@@ -4,11 +4,9 @@ import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.implementation.dm.registerDMRoutes
 import eu.fbk.st.cryptoac.implementation.rm.registerRMRoutes
-import eu.fbk.st.cryptoac.proxy.UserSession
-import eu.fbk.st.cryptoac.proxy.registerProxyRoutes
+import eu.fbk.st.cryptoac.server.UserSession
+import eu.fbk.st.cryptoac.server.registerCryptoACRoutes
 import io.ktor.application.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.serialization.*
@@ -162,7 +160,7 @@ fun Application.module(testing: Boolean = true) {
          */
         cookie<UserSession>("LOGIN_SESSION", storage = SessionStorageMemory()) {
             cookie.secure = true
-            cookie.maxAgeInSeconds = 0
+            cookie.maxAgeInSeconds = 0// TODO config
         }
     }
     install(Velocity) {
@@ -189,7 +187,7 @@ fun Application.module(testing: Boolean = true) {
         }
         initializeProxy()
         initializeDM()
-        registerProxyRoutes()
+        registerCryptoACRoutes()
         registerRMRoutes()
         registerDMRoutes()
     }
@@ -200,7 +198,7 @@ fun Application.module(testing: Boolean = true) {
                     // TODO config
                 }
                 initializeProxy()
-                registerProxyRoutes()
+                registerCryptoACRoutes()
             }
             OperationMode.RM -> {
                 registerRMRoutes()

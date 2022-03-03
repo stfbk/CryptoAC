@@ -17,7 +17,7 @@ Once logged in, users have access to three functionalities:
 
 ## RESTful APIs
 
-*CryptoAC* uses [**Ktor**](https://ktor.io/) as a server framework to expose RESTful APIs returning JSON-formatted responses to guarantee maximum flexibility; see the [**documentation**](./CryptoACAPISwagger.yaml) for more information on the APIs.
+*CryptoAC* uses [**Ktor**](https://ktor.io/) as a server framework to expose RESTful APIs returning JSON-formatted responses to guarantee maximum flexibility; see the [**documentation**](./swagger_CryptoAC.yaml) for more information on the APIs.
 
 
 ## Security

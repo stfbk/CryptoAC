@@ -22,7 +22,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import org.w3c.files.File
 import org.w3c.files.FileReader
@@ -394,7 +393,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserPlus,
             key = "add_user",
             submitButtonText = "Add User",
-            endpoint = API.PROXY + API.USERS,
+            endpoint = API.CRYPTOAC + API.USERS,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -410,7 +409,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserSecret,
             key = "add_role",
             submitButtonText = "Add Role",
-            endpoint = API.PROXY + API.ROLES,
+            endpoint = API.CRYPTOAC + API.ROLES,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -426,7 +425,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserFriends,
             key = "assign_user_to_role",
             submitButtonText = "Assign User to Role",
-            endpoint = API.PROXY + API.ASSIGNMENTS,
+            endpoint = API.CRYPTOAC + API.ASSIGNMENTS,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -443,7 +442,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserShield,
             key = "assign_permission_to_role",
             submitButtonText = "Assign Permission to Role",
-            endpoint = API.PROXY + API.PERMISSIONS,
+            endpoint = API.CRYPTOAC + API.PERMISSIONS,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -464,7 +463,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserMinus,
             key = "delete_user",
             submitButtonText = "Delete User",
-            endpoint = API.PROXY + API.USERS,
+            endpoint = API.CRYPTOAC + API.USERS,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -480,7 +479,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserNinja,
             key = "delete_role",
             submitButtonText = "Delete Role",
-            endpoint = API.PROXY + API.ROLES,
+            endpoint = API.CRYPTOAC + API.ROLES,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -496,7 +495,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileExcel,
             key = "delete_file",
             submitButtonText = "Delete File",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -513,7 +512,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserTimes,
             key = "revoke_user_from_role",
             submitButtonText = "Revoke User from Role",
-            endpoint = API.PROXY + API.ASSIGNMENTS,
+            endpoint = API.CRYPTOAC + API.ASSIGNMENTS,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -530,7 +529,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserLock,
             key = "revoke_permission_from_role",
             submitButtonText = "Revoke Permission from Role",
-            endpoint = API.PROXY + API.PERMISSIONS,
+            endpoint = API.CRYPTOAC + API.PERMISSIONS,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -555,7 +554,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileMedical,
             key = "add_file",
             submitButtonText = "Add File",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, files ->
@@ -574,7 +573,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileSignature,
             key = "write_file",
             submitButtonText = "Write File",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Patch,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, files ->
@@ -590,7 +589,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileDownload,
             key = "read_file",
             submitButtonText = "Read File",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Get,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
@@ -610,7 +609,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserPlus,
             key = "add_user",
             submitButtonText = "Add User",
-            endpoint = API.PROXY + API.USERS,
+            endpoint = API.CRYPTOAC + API.USERS,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -626,7 +625,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserSecret,
             key = "add_role",
             submitButtonText = "Add Role",
-            endpoint = API.PROXY + API.ROLES,
+            endpoint = API.CRYPTOAC + API.ROLES,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -642,7 +641,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileMedical,
             key = "add_file",
             submitButtonText = "Add Topic",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -661,7 +660,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserFriends,
             key = "assign_user_to_role",
             submitButtonText = "Assign User to Role",
-            endpoint = API.PROXY + API.ASSIGNMENTS,
+            endpoint = API.CRYPTOAC + API.ASSIGNMENTS,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -678,7 +677,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserShield,
             key = "assign_permission_to_role",
             submitButtonText = "Assign Permission to Role",
-            endpoint = API.PROXY + API.PERMISSIONS,
+            endpoint = API.CRYPTOAC + API.PERMISSIONS,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -699,7 +698,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserMinus,
             key = "delete_user",
             submitButtonText = "Delete User",
-            endpoint = API.PROXY + API.USERS,
+            endpoint = API.CRYPTOAC + API.USERS,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -715,7 +714,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserNinja,
             key = "delete_role",
             submitButtonText = "Delete Role",
-            endpoint = API.PROXY + API.ROLES,
+            endpoint = API.CRYPTOAC + API.ROLES,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -731,7 +730,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileExcel,
             key = "delete_file",
             submitButtonText = "Delete Topic",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -748,7 +747,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserTimes,
             key = "revoke_user_from_role",
             submitButtonText = "Revoke User from Role",
-            endpoint = API.PROXY + API.ASSIGNMENTS,
+            endpoint = API.CRYPTOAC + API.ASSIGNMENTS,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -765,7 +764,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faUserLock,
             key = "revoke_permission_from_role",
             submitButtonText = "Revoke Permission from Role",
-            endpoint = API.PROXY + API.PERMISSIONS,
+            endpoint = API.CRYPTOAC + API.PERMISSIONS,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -790,7 +789,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileSignature,
             key = "write_file",
             submitButtonText = "Publish to Topic",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Patch,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -807,7 +806,7 @@ class Actions: RComponent<ActionsProps, State>() {
             icon = faFileDownload,
             key = "read_file",
             submitButtonText = "Subscribe to Topic",
-            endpoint = API.PROXY + API.FILES,
+            endpoint = API.CRYPTOAC + API.FILES,
             method = HttpMethod.Get,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->

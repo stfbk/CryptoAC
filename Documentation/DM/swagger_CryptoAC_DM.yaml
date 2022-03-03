@@ -1,0 +1,343 @@
+openapi: "3.0.0"
+info:
+  version: 0.1.0
+  title: "CryptoAC - DM"
+  description: "This is the documentation of the APIs of [CryptoAC](https://github.com/stfbk/CryptoAC) when configured to act as a Data Manager (DM). Please see the [repository](https://github.com/stfbk/CryptoAC) for information about CryptoAC. When acting as a DM, CryptoAC exposes six RESTful APIs. One API is reserved to the administrator and allows to configure the DM (e.g., by providing URLs of OPA). Four APIs follow the Create, Read, Update and Delete (CRUD) paradigm. Normal users can invoke the Read API, while Create, Update and Delete can be invoked by the administrator only. New or updated files are stored in a temporary upload directory. Only when the RM confirms the compliance of the operation, the DM moves the files to the actual storage directory from which users can download them. Otherwise, the sixth API allows to delete temporary files in case of errors. Mandatory parameters are rendered as path parameters, while optional parameters are rendered as query parameters."
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: FBK - Security and Trust
+    email: sberlato@fbk.eu
+    url: https://st.fbk.eu/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:8443/v1/dm
+paths:
+
+  /:
+    post:
+      summary: "Configure the DM."
+      description: "Configure the DM. Possible outcome codes are: CODE_000_SUCCESS."
+      operationId: configureDM
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      requestBody:
+        description: "Information about the file."
+        content: 
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/OPAInterfaceParameters'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+  
+  
+  
+  /files/{CORE}:
+    post:
+      summary: "Upload a file in the DM for the given core."
+      description: "Upload a file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_003_FILE_ALREADY_EXISTS, CODE_020_INVALID_PARAMETER."
+      operationId: addFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: CORE
+          in: path
+          description: "The core."
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                File:
+                  type: string
+                  format: binary
+                  description: "The file to add."
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+        '409':
+          description: "Conflict."
+          content:
+            text/plain:
+              examples:
+                CODE_003_FILE_ALREADY_EXISTS:
+                  summary: "File already exists."
+                  value: "CODE_003_FILE_ALREADY_EXISTS"
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            text/plain:
+              examples:
+                CODE_020_INVALID_PARAMETER:
+                  summary: "Supplied a wrong parameter."
+                  value: "CODE_020_INVALID_PARAMETER"
+
+  /files/{CORE}/{File_Name}:   
+    get:
+      summary: "Download the specified file in the DM for the given core."
+      description: "Download the specified file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER."
+      operationId: getFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: CORE
+          in: path
+          description: "The core."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200': 
+          description: ok 
+          content: 
+            application/octet-stream: 
+              schema: 
+                type: string 
+                format: binary 
+          headers: 
+            Content-Disposition: 
+              schema: 
+                type: string 
+                description: Used only with `application/octet-stream` responses 
+                example: attachment; filename="name.pdf"
+        '404':
+          description: "Not found."
+          content:
+            text/plain:
+              examples:
+                CODE_006_FILE_NOT_FOUND:
+                  summary: "File not found."
+                  value: "CODE_006_FILE_NOT_FOUND"
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            text/plain:
+              examples:
+                CODE_020_INVALID_PARAMETER:
+                  summary: "Supplied a wrong parameter."
+                  value: "CODE_020_INVALID_PARAMETER"
+    put:
+      summary: "Move the specified file in the DM from the upload to the download folder for the given core."
+      description: "Move the specified file in the DM from the upload to the download folder for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER, CODE_025_FILE_RENAMING."
+      operationId: moveFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: CORE
+          in: path
+          description: "The core."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+        '404':
+          description: "Not found."
+          content:
+            text/plain:
+              examples:
+                CODE_006_FILE_NOT_FOUND:
+                  summary: "File not found."
+                  value: "CODE_006_FILE_NOT_FOUND"
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            text/plain:
+              examples:
+                CODE_020_INVALID_PARAMETER:
+                  summary: "Supplied a wrong parameter."
+                  value: "CODE_020_INVALID_PARAMETER"
+        '500':
+          description: "Internal Server Error."
+          content:
+            text/plain:
+              examples:
+                outcomeCode:
+                  summary: "An outcome code describing the error."
+                  value: "CODE_025_FILE_RENAMING"
+    delete:
+      summary: "Delete the specified file in the DM for the given core."
+      description: "Delete the specified file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER, CODE_024_FILE_DELETE."
+      operationId: deleteFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: CORE
+          in: path
+          description: "The core."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+        '404':
+          description: "Not found."
+          content:
+            text/plain:
+              examples:
+                CODE_006_FILE_NOT_FOUND:
+                  summary: "File not found."
+                  value: "CODE_006_FILE_NOT_FOUND"
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            text/plain:
+              examples:
+                CODE_020_INVALID_PARAMETER:
+                  summary: "Supplied a wrong parameter."
+                  value: "CODE_020_INVALID_PARAMETER"
+        '500':
+          description: "Internal Server Error."
+          content:
+            text/plain:
+              examples:
+                outcomeCode:
+                  summary: "An outcome code describing the error."
+                  value: "CODE_024_FILE_DELETE"
+
+
+
+  /temporaryFiles/{CORE}/{File_Name}:
+    delete:
+      summary: "Delete the specified temporary file in the DM for the given core."
+      description: "Delete the specified temporary file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER, CODE_024_FILE_DELETE."
+      operationId: deleteTemporaryFile
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+      parameters:
+        - name: CORE
+          in: path
+          description: "The core."
+          required: true
+          schema:
+            type: string
+        - name: File_Name
+          in: path
+          description: "The name of the file."
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Success."
+          content:
+            text/plain:
+              examples:
+                CODE_000_SUCCESS:
+                  summary: "Success."
+                  value: "CODE_000_SUCCESS"
+        '404':
+          description: "Not found."
+          content:
+            text/plain:
+              examples:
+                CODE_006_FILE_NOT_FOUND:
+                  summary: "File not found."
+                  value: "CODE_006_FILE_NOT_FOUND"
+        '422':
+          description: "Unprocessable Entity."
+          content:
+            text/plain:
+              examples:
+                CODE_020_INVALID_PARAMETER:
+                  summary: "Supplied a wrong parameter."
+                  value: "CODE_020_INVALID_PARAMETER"
+        '500':
+          description: "Internal Server Error."
+          content:
+            text/plain:
+              examples:
+                outcomeCode:
+                  summary: "An outcome code describing the error."
+                  value: "CODE_024_FILE_DELETE"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
+    basicAuth:
+      type: http
+      scheme: basic
+      
+  schemas:
+
+    OPAInterfaceParameters:
+      required:
+        - port
+        - url
+        - policyModel
+      type: "object"
+      properties:
+        port:
+          type: integer
+          example: 1883
+        url:
+          type: string
+          example: "https://www.openpolicyagent.org/"
+        policyModel: 
+          type: string
+          enum: [RBAC, ABAC]
+        
+              
+                

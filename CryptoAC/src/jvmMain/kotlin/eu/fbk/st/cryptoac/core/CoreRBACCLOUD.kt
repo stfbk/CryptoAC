@@ -22,7 +22,8 @@ import kotlin.collections.HashSet
 
 private val logger = KotlinLogging.logger {}
 
-// TODO implementa la possibilità di dare READ permissions only anche nel cloud? Però attenti che il CSP può colludere
+// TODO implementa la possibilità di dare WRITE permissions
+//  only anche nel cloud? Però attenti che il CSP può colludere
 
 /**
  * The CoreRBACCloud implements a role-based cryptographic access
@@ -35,14 +36,11 @@ class CoreRBACCLOUD(
     override val coreParameters: CoreParametersCLOUD
 ) : CoreRBAC(crypto, coreParameters) {
 
-    // TODO Remember automatic [ECS](https://docs.docker.com/engine/context/ecs-integration/)
-    //  and [ACI](https://docs.docker.com/engine/context/aci-integration/) deployment
-
     /** Interface toward the MM */
     val mm: MMInterface = MMFactory.getMM(coreParameters.mmInterfaceParameters)
 
     /** Interface toward the DM */
-    private val dm: DMInterfaceRBACCLOUD = DMFactory.getDM(coreParameters.dmInterfaceParameters)!! as DMInterfaceRBACCLOUD
+    private val dm: DMInterfaceRBACCLOUD = DMFactory.getDM(coreParameters.dmInterfaceParameters) as DMInterfaceRBACCLOUD
 
     /** Interface toward the RM */
     private val rm: RMInterface = RMFactory.getRM(coreParameters.rmInterfaceParameters)!!
@@ -68,11 +66,25 @@ class CoreRBACCLOUD(
     )
 
     /**
-     * Initialize the admin and return the outcome code.
-     *
+     * This function is invoked by the admin, and it should
+     * initialize the admin's status, configure eventual
+     * parameters and eventually return the outcome code.
+
      * In this implementation, add the admin [user]'s encrypting and
      * verifying public keys in the metadata, the role assignment
-     * in OPA and return the outcome code
+     * in OPA and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_002_ROLE_ALREADY_EXISTS
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_028_OPA_POLICY_CREATION
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_034_ADMIN_ALREADY_INITIALIZED
+     * - CODE_042_RM_CONNECTION_TIMEOUT
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * - CODE_060_ADMIN_NAME
      */
     override fun initAdmin(): OutcomeCode {
         logger.info { "Initializing admin's keys for user ${user.name}" }
@@ -93,34 +105,46 @@ class CoreRBACCLOUD(
 
         /** Lock the status of the interfaces */
         var code = startOfMethod()
-        return if (code != OutcomeCode.CODE_000_SUCCESS) {
-            code
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
+            return code
         }
-        else {
-            code = rm.configure(coreParameters)
-            if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return endOfMethod(code)
-            }
-            code = dm.configure(coreParameters)
-            if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return endOfMethod(code)
-            }
-            code = opa.configure()
-            if (code != OutcomeCode.CODE_000_SUCCESS) {
-                return endOfMethod(code)
-            }
 
-            // TODO ADD ADMIN-ROLE ASSIGNMENT IN OPA
+        code = rm.configure(coreParameters)
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
+            return endOfMethod(code)
+        }
+        code = dm.configure(coreParameters)
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
+            return endOfMethod(code)
+        }
+        code = opa.configure()
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
+            return endOfMethod(code)
+        }
 
-            endOfMethod(mm.initAdmin(user, adminRoleTuple))
+        /** Update the metadata */
+        code = mm.initAdmin(user, adminRoleTuple)
+        return if (code != OutcomeCode.CODE_000_SUCCESS) {
+            endOfMethod(code)
+        } else {
+            endOfMethod(opa.addURAssignment(UR.extractUR(adminRoleTuple)))
         }
     }
 
     /**
-     * Initialize the [user]'s and then return the outcome code.
+     * This function is invoked by the user, and it should
+     * initialize the user's status, configure eventual
+     * parameters and eventually return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * - CODE_061_USER_ALREADY_INITIALIZED
      *
      * In this implementation, add the [user]'s public key and
-     * token in the metadata and then return the outcome code
+     * token in the metadata
      */
     override fun initUser(): OutcomeCode {
         logger.info { "Initializing token and public key of user ${user.name}" }
@@ -136,10 +160,18 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Add a user with the given [username] by accordingly updating the metadata and
-     * returning the outcome code, along with eventual configuration parameters.
-     * Note that other user's metadata (e.g., public keys) can be updated by the user
-     * him/herself in the "initUser" function
+     * Add a user with the given [username] to the policy
+     * and return eventual configuration parameters along
+     * with the outcome code (if an error occurred, the
+     * configuration parameters will be null):
+     * - CODE_000_SUCCESS
+     * - CODE_001_USER_ALREADY_EXISTS
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * - CODE_062_CREATE_USER_MM
      */
     override fun addUser(username: String): CodeCoreParameters {
         logger.info { "Adding user $username" }
@@ -177,8 +209,26 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Delete the user with the matching [username] from the metadata and
-     * revoking the user from all roles. Finally, return the outcome code
+     * Delete the user with the matching [username] from
+     * the policy and revoke the user from all assigned roles.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_007_ROLETUPLE_NOT_FOUND
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_015_FILE_WAS_DELETED
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_040_UR_ASSIGNMENTS_NOT_FOUND
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun deleteUser(username: String): OutcomeCode {
         logger.info { "Deleting user $username" }
@@ -223,10 +273,17 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Add a new role with the given [roleName] by creating the role's keys and
-     * assigning the admin to the new role. Finally, return the outcome code.
-     *
-     * In this implementation, also add the admin-role assignment to OPA
+     * Add a new role with the given [roleName] to the policy
+     * and assign the admin to the new role.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_002_ROLE_ALREADY_EXISTS
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun addRole(roleName: String): OutcomeCode {
         logger.info { "Adding role $roleName" }
@@ -289,9 +346,27 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Delete the role with the matching [roleName] from the metadata and
-     * revoking all users and permissions from the role. Finally, return
-     * the outcome code
+     * Delete the role with the matching [roleName] from
+     * the policy and revoke all users and permissions
+     * from the role.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_007_ROLETUPLE_NOT_FOUND
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_015_FILE_WAS_DELETED
+     * - CODE_016_INVALID_PERMISSION
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
+     * - CODE_040_UR_ASSIGNMENTS_NOT_FOUND
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun deleteRole (roleName: String): OutcomeCode {
         logger.info { "Deleting role $roleName" }
@@ -350,9 +425,31 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Add a new file with the given name [fileName] and [fileContent] and
-     * apply the specified [enforcement]. Also, assign permission to the
-     * admin over the file. Finally, return the outcome code
+     * Add a new file with the given name [fileName],
+     * [fileContent], [enforcement] type to the policy.
+     * Encrypt and sign, if necessary, and upload the
+     * new [fileContent] for the file [fileName].
+     * Also, assign all permissions to the admin over
+     * the file.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_003_FILE_ALREADY_EXISTS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_015_FILE_WAS_DELETED
+     * - CODE_016_INVALID_PERMISSION
+     * - CODE_017_INVALID_VERSION_NUMBER
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_021_RM_CONFIGURATION
+     * - CODE_024_FILE_DELETE
+     * - CODE_025_FILE_RENAMING
+     * - CODE_026_TUPLE_FORMAT
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_042_RM_CONNECTION_TIMEOUT
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * - CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM
      */
     override fun addFile(fileName: String, fileContent: InputStream, enforcement: EnforcementType): OutcomeCode {
         logger.info { "Adding file $fileName with enforcement $enforcement" }
@@ -368,8 +465,6 @@ class CoreRBACCLOUD(
         if (code != OutcomeCode.CODE_000_SUCCESS) {
             return code
         }
-
-        /* TODO add mechanism to sign the content of files, and also to verify the content in the read function */
 
         /** Based on the [enforcement], encrypt or not the [fileContent] of the [fileName] */
         val encryptedFileContent: InputStream
@@ -419,43 +514,40 @@ class CoreRBACCLOUD(
         return if (code != OutcomeCode.CODE_000_SUCCESS) {
             endOfMethod(code, opaLocked = false)
         } else {
-
-            // TODO refactor, there has to be a way to configure the RM if it is not configured, but not by configuring it every time
-            code = if (user.name == ADMIN) rm.configure(coreParameters) else OutcomeCode.CODE_000_SUCCESS
+            code = rm.checkAddFile(newFileTuple, adminPermissionTuple)
             if (code != OutcomeCode.CODE_000_SUCCESS) {
                 val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
                 if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
                     logger.error {
-                        "Added file in the DM, the RM could not be configured and we were not able to" +
+                        "Added file in the DM, the RM could not check it and we were not able to" +
                         "delete the (temporary) file from the DM; contact the system administrator"
                     }
                     endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
-                }
-                endOfMethod(code, opaLocked = false)
+                } else
+                    endOfMethod(code)
             } else {
-                code = endOfMethod(rm.checkAddFile(newFileTuple, adminPermissionTuple), opaLocked = false)
-                if (code != OutcomeCode.CODE_000_SUCCESS) {
-                    val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
-                    if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
-                        logger.error {
-                            "Added file in the DM, the RM could not check it and we were not able to" +
-                            "delete the (temporary) file from the DM; contact the system administrator"
-                        }
-                        endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
-                    }
-                }
                 endOfMethod(code, opaLocked = false)
             }
-
-
-            // endOfMethod(rm.checkAddFile(newFileTuple, adminPermissionTuple), opaLocked = false)
         }
     }
 
     /**
-     * Delete the file with the matching [fileName] from the metadata and
-     * delete all the related file and permission tuples. Finally, return
-     * the outcome code
+     * Delete the file with the matching [fileName] from
+     * the policy, and delete all the related permissions.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_009_FILETUPLE_NOT_FOUND
+     * - CODE_015_FILE_WAS_DELETED
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun deleteFile(fileName: String): OutcomeCode {
         logger.info { "Deleting file $fileName" }
@@ -507,8 +599,20 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Assigns the user [username] to the role [roleName] by
-     * creating a role tuple and then return the outcome code
+     * Assigns the user [username] to the role [roleName]
+     * in the policy.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun assignUserToRole(username: String, roleName: String): OutcomeCode {
         logger.info { "Assigning user $username to role $roleName" }
@@ -614,8 +718,25 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Revoke the user [username] from the role [roleName] by updating
-     * role and permission tuples and then return the outcome code
+     * Revoke the user [username] from the role [roleName]
+     * from the policy.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_007_ROLETUPLE_NOT_FOUND
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_015_FILE_WAS_DELETED
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_040_UR_ASSIGNMENTS_NOT_FOUND
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun revokeUserFromRole(username: String, roleName: String): OutcomeCode {
         logger.info { "Revoking user $username from role $roleName" }
@@ -846,10 +967,26 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Assigns the permission [permission] to the role [roleName] over the file
-     * [fileName] by creating a permission tuple and then return the outcome code
+     * Assigns the [permission] to the role [roleName] over
+     * the file [fileName] in the policy.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
+     * - CODE_016_INVALID_PERMISSION
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
-    override fun assignPermissionToRole(roleName: String, fileName: String, permission: PermissionType): OutcomeCode {
+    override fun assignPermissionToRole(
+        roleName: String,
+        fileName: String,
+        permission: PermissionType
+    ): OutcomeCode {
         logger.info { "Assigning permission $permission to role $roleName over file $fileName" }
 
         /** Guard clauses */
@@ -1022,10 +1159,28 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Revoke the [permission] from the [roleName] over the [fileName]
-     * by updating permission tuples and then return the outcome code
+     * Revoke the [permission] from the role [roleName] over
+     * the file [fileName] in the policy.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
+     * - CODE_015_FILE_WAS_DELETED
+     * - CODE_016_INVALID_PERMISSION
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
-    override fun revokePermissionFromRole(roleName: String, fileName: String, permission: PermissionType): OutcomeCode {
+    override fun revokePermissionFromRole(
+        roleName: String,
+        fileName: String,
+        permission: PermissionType
+    ): OutcomeCode {
         logger.info { "Revoking permission $permission from role $roleName over file $fileName" }
 
         /** Guard clauses */
@@ -1175,8 +1330,18 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Read the file [fileName] by downloading and decrypting
-     * its content, if possible, and return the outcome code
+     * Download, decrypt and check the integrity of,
+     * if necessary, the content of the file [fileName]
+     * and return it along with the outcome code (if
+     * an error occurred, the content of the file will
+     * be null):
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun readFile(fileName: String): CodeFile {
         logger.info { "Reading file $fileName by user ${user.name}" }
@@ -1269,8 +1434,27 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Write the new [fileContent] for the file [fileName],
-     * if possible, and return the outcome code
+     * Encrypt and sign, if necessary, and upload the
+     * new [fileContent] for the file [fileName].
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_003_FILE_ALREADY_EXISTS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_009_FILETUPLE_NOT_FOUND
+     * - CODE_015_FILE_WAS_DELETED
+     * - CODE_017_INVALID_VERSION_NUMBER
+     * - CODE_020_INVALID_PARAMETER
+     * - CODE_021_RM_CONFIGURATION
+     * - CODE_024_FILE_DELETE
+     * - CODE_025_FILE_RENAMING
+     * - CODE_027_AC_ENFORCEMENT_INCONSISTENT
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_042_RM_CONNECTION_TIMEOUT
+     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * - CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM
      */
     override fun writeFile(fileName: String, fileContent: InputStream): OutcomeCode {
         logger.info { "Writing file $fileName by user ${user.name}" }
@@ -1369,46 +1553,25 @@ class CoreRBACCLOUD(
                 newSignature = signature, newSigner = user.token, newSignerType = ElementTypeWithKey.USER
             )
 
-
-
-
-
-
-
             code = dm.addFile(newFile, fileStream)
             return if (code != OutcomeCode.CODE_000_SUCCESS) {
                 endOfMethod(code, opaLocked = false)
             } else {
-
-                // TODO refactor, there has to be a way to configure the RM if it is not configured, but not by configuring it every time
-                code = if (user.name == ADMIN) rm.configure(coreParameters) else OutcomeCode.CODE_000_SUCCESS
+                code = rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple)
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
                     if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
                         logger.error {
-                            "Added file in the DM, the RM could not be configured and we were not able to" +
+                            "Added file in the DM, the RM could not check it and we were not able to" +
                             "delete the (temporary) file from the DM; contact the system administrator"
                         }
                         endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
+                    } else {
+                        endOfMethod(code, opaLocked = false)
                     }
-                    endOfMethod(code, opaLocked = false)
                 } else {
-                    code = endOfMethod(rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple), opaLocked = false)
-                    if (code != OutcomeCode.CODE_000_SUCCESS) {
-                        val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
-                        if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
-                            logger.error {
-                                "Added file in the DM, the RM could not check it and we were not able to" +
-                                "delete the (temporary) file from the DM; contact the system administrator"
-                            }
-                            endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
-                        }
-                    }
                     endOfMethod(code, opaLocked = false)
                 }
-
-
-                //endOfMethod(rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple), opaLocked = false)
             }
         }
         else {
@@ -1436,36 +1599,21 @@ class CoreRBACCLOUD(
             if (code != OutcomeCode.CODE_000_SUCCESS) {
                 endOfMethod(code, opaLocked = false)
             } else {
-
-
-                // TODO refactor, there has to be a way to configure the RM if it is not configured, but not by configuring it every time
-                code = if (user.name == ADMIN) rm.configure(coreParameters) else OutcomeCode.CODE_000_SUCCESS
+                code = rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple)
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
                     if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
                         logger.error {
-                            "Added file in the DM, the RM could not be configured and we were not able to" +
+                            "Added file in the DM, the RM could not check it and we were not able to" +
                                     "delete the (temporary) file from the DM; contact the system administrator"
                         }
                         endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
+                    } else {
+                        endOfMethod(code, opaLocked = false)
                     }
-                    endOfMethod(code, opaLocked = false)
                 } else {
-                    code = endOfMethod(rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple), opaLocked = false)
-                    if (code != OutcomeCode.CODE_000_SUCCESS) {
-                        val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
-                        if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
-                            logger.error {
-                                "Added file in the DM, the RM could not check it and we were not able to" +
-                                        "delete the (temporary) file from the DM; contact the system administrator"
-                            }
-                            endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
-                        }
-                    }
                     endOfMethod(code, opaLocked = false)
                 }
-
-                //endOfMethod(rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple), opaLocked = false)
             }
         }
     }
@@ -1473,8 +1621,13 @@ class CoreRBACCLOUD(
 
 
     /**
-     * Retrieve the list of users,
-     * along with the outcome code
+     * Return the set of users, along with the
+     * outcome code (if an error occurred, the
+     * set of users will be null):
+     * - CODE_000_SUCCESS
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun getUsers(): CodeUsers {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting users" }
@@ -1490,8 +1643,13 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Retrieve the list of roles,
-     * along with the outcome code
+     * Return the set of roles, along with the
+     * outcome code (if an error occurred, the
+     * set of roles will be null):
+     * - CODE_000_SUCCESS
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun getRoles(): CodeRoles {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting roles" }
@@ -1507,8 +1665,13 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Retrieve the list of files,
-     * along with the outcome code
+     * Return the set of files, along with the
+     * outcome code (if an error occurred, the
+     * set of files will be null):
+     * - CODE_000_SUCCESS
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun getFiles(): CodeFiles {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting topics" }
@@ -1524,8 +1687,14 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Retrieve and return the role tuples of the [username] and
-     * the [roleName], if given, along with the outcome code
+     * Return the user-role assignments filtering
+     * by the [username] and [roleName], if given,
+     * along with the outcome code (if an error
+     * occurred, the set of users will be null):
+     * - CODE_000_SUCCESS
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun getAssignments(username: String?, roleName: String?): CodeRoleTuples {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting role tuples" }
@@ -1545,8 +1714,14 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * Retrieve and return the permission tuples of the [username],
-     * [roleName] and [fileName], if given, along with the outcome code
+     * Return the role-file permissions filtering
+     * by the [username], [roleName] and [fileName],
+     * if given, along with the outcome code (if an error
+     * occurred, the set of users will be null):
+     * - CODE_000_SUCCESS
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     override fun getPermissions(username: String?, roleName: String?, fileName: String?): CodePermissionTuples {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting permission tuples" }
@@ -1577,7 +1752,11 @@ class CoreRBACCLOUD(
 
     /**
      * Lock the specified interfaces
-     * and return the outcome code
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
      */
     private fun startOfMethod(mmLock: Boolean = true, opaLock: Boolean = true, dmLock: Boolean = true): OutcomeCode {
         logger.info {
@@ -1608,8 +1787,12 @@ class CoreRBACCLOUD(
     }
 
     /**
-     * If the [code] is a success, unlock the specified interfaces (i.e., commit the changes).
-     * Otherwise, rollback to the previous status. In both cases, return the outcome code
+     * If the [code] is a success, unlock the
+     * specified interfaces (i.e., commit the
+     * changes). Otherwise, rollback to the
+     * previous status. In both cases, return
+     * the outcome code:
+     * - CODE_000_SUCCESS
      */
     private fun endOfMethod(code: OutcomeCode, mmLocked: Boolean = true, opaLocked: Boolean = true, dmLocked: Boolean = true): OutcomeCode {
         if (code == OutcomeCode.CODE_000_SUCCESS) {
@@ -1664,7 +1847,7 @@ class CoreRBACCLOUD(
 
     /**
      * Unlock or rollback the specified [interfaze],
-     * depending on the [rollback] flag
+     * depending on the [rollback] flag.
      */
     private fun unlockOrRollbackInterface(interfaze: String, rollback: Boolean = false) {
         val code = when (interfaze) {

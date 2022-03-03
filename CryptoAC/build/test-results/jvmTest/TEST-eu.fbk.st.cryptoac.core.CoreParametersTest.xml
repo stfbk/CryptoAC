@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="eu.fbk.st.cryptoac.core.CoreParametersTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-02-04T08:30:26" hostname="sberlato" time="0.322">
-  <properties/>
-  <testcase name="enforcing positive numbers positive values works()[jvm]" classname="eu.fbk.st.cryptoac.core.CoreParametersTest" time="0.322"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

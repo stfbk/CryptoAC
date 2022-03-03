@@ -1,8 +1,8 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
-    define(['exports', 'kotlin', 'kotlinx-serialization-kotlinx-serialization-core-js-legacy', 'kotlin-logging-js-legacy', 'kotlinx-serialization-kotlinx-serialization-json-js-legacy', 'ktor-ktor-io-js-legacy', 'kotlin-css', 'kotlin-styled', '@material-ui/core', 'kotlin-react-legacy', 'react-icons/fa', 'react-pro-sidebar', 'kotlin-react-dom-legacy', 'ktor-ktor-client-json-js-legacy', 'ktor-ktor-client-serialization-js-legacy', 'ktor-ktor-client-core-js-legacy', 'kotlinx-coroutines-core', 'ktor-ktor-http-js-legacy', '@material-ui/lab', 'kotlinx-html-js', 'kotlin-react-dom', 'ktor-ktor-http-cio-js-legacy', 'kotlin-react-core'], factory);
+    define(['exports', 'kotlin', 'kotlinx-serialization-kotlinx-serialization-core-js-legacy', 'kotlin-logging-js-legacy', 'kotlinx-serialization-kotlinx-serialization-json-js-legacy', 'ktor-ktor-io-js-legacy', 'kotlin-css', 'kotlin-styled', '@material-ui/core', 'kotlin-react-legacy', 'react-icons/fa', 'react-pro-sidebar', 'kotlin-react-dom-legacy', 'ktor-ktor-client-core-js-legacy', 'ktor-ktor-client-json-js-legacy', 'ktor-ktor-client-serialization-js-legacy', 'kotlinx-coroutines-core', 'ktor-ktor-http-js-legacy', '@material-ui/lab', 'kotlinx-html-js', 'kotlin-react-dom', 'ktor-ktor-http-cio-js-legacy', 'kotlin-react-core'], factory);
   else if (typeof exports === 'object')
-    factory(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-core-js-legacy'), require('kotlin-logging-js-legacy'), require('kotlinx-serialization-kotlinx-serialization-json-js-legacy'), require('ktor-ktor-io-js-legacy'), require('kotlin-css'), require('kotlin-styled'), require('@material-ui/core'), require('kotlin-react-legacy'), require('react-icons/fa'), require('react-pro-sidebar'), require('kotlin-react-dom-legacy'), require('ktor-ktor-client-json-js-legacy'), require('ktor-ktor-client-serialization-js-legacy'), require('ktor-ktor-client-core-js-legacy'), require('kotlinx-coroutines-core'), require('ktor-ktor-http-js-legacy'), require('@material-ui/lab'), require('kotlinx-html-js'), require('kotlin-react-dom'), require('ktor-ktor-http-cio-js-legacy'), require('kotlin-react-core'));
+    factory(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-core-js-legacy'), require('kotlin-logging-js-legacy'), require('kotlinx-serialization-kotlinx-serialization-json-js-legacy'), require('ktor-ktor-io-js-legacy'), require('kotlin-css'), require('kotlin-styled'), require('@material-ui/core'), require('kotlin-react-legacy'), require('react-icons/fa'), require('react-pro-sidebar'), require('kotlin-react-dom-legacy'), require('ktor-ktor-client-core-js-legacy'), require('ktor-ktor-client-json-js-legacy'), require('ktor-ktor-client-serialization-js-legacy'), require('kotlinx-coroutines-core'), require('ktor-ktor-http-js-legacy'), require('@material-ui/lab'), require('kotlinx-html-js'), require('kotlin-react-dom'), require('ktor-ktor-http-cio-js-legacy'), require('kotlin-react-core'));
   else {
     if (typeof kotlin === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'CryptoAC'.");
@@ -28,12 +28,12 @@
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'react-pro-sidebar' was not found. Please, check whether 'react-pro-sidebar' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlin-react-dom-legacy'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin-react-dom-legacy' was not found. Please, check whether 'kotlin-react-dom-legacy' is loaded prior to 'CryptoAC'.");
+    }if (typeof this['ktor-ktor-client-core-js-legacy'] === 'undefined') {
+      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-core-js-legacy' was not found. Please, check whether 'ktor-ktor-client-core-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['ktor-ktor-client-json-js-legacy'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-json-js-legacy' was not found. Please, check whether 'ktor-ktor-client-json-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['ktor-ktor-client-serialization-js-legacy'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-serialization-js-legacy' was not found. Please, check whether 'ktor-ktor-client-serialization-js-legacy' is loaded prior to 'CryptoAC'.");
-    }if (typeof this['ktor-ktor-client-core-js-legacy'] === 'undefined') {
-      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-core-js-legacy' was not found. Please, check whether 'ktor-ktor-client-core-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'CryptoAC'.");
     }if (typeof this['ktor-ktor-http-js-legacy'] === 'undefined') {
@@ -48,9 +48,9 @@
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-http-cio-js-legacy' was not found. Please, check whether 'ktor-ktor-http-cio-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlin-react-core'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin-react-core' was not found. Please, check whether 'kotlin-react-core' is loaded prior to 'CryptoAC'.");
-    }root.CryptoAC = factory(typeof CryptoAC === 'undefined' ? {} : CryptoAC, kotlin, this['kotlinx-serialization-kotlinx-serialization-core-js-legacy'], this['kotlin-logging-js-legacy'], this['kotlinx-serialization-kotlinx-serialization-json-js-legacy'], this['ktor-ktor-io-js-legacy'], this['kotlin-css'], this['kotlin-styled'], this['@material-ui/core'], this['kotlin-react-legacy'], this['react-icons/fa'], this['react-pro-sidebar'], this['kotlin-react-dom-legacy'], this['ktor-ktor-client-json-js-legacy'], this['ktor-ktor-client-serialization-js-legacy'], this['ktor-ktor-client-core-js-legacy'], this['kotlinx-coroutines-core'], this['ktor-ktor-http-js-legacy'], this['@material-ui/lab'], this['kotlinx-html-js'], this['kotlin-react-dom'], this['ktor-ktor-http-cio-js-legacy'], this['kotlin-react-core']);
+    }root.CryptoAC = factory(typeof CryptoAC === 'undefined' ? {} : CryptoAC, kotlin, this['kotlinx-serialization-kotlinx-serialization-core-js-legacy'], this['kotlin-logging-js-legacy'], this['kotlinx-serialization-kotlinx-serialization-json-js-legacy'], this['ktor-ktor-io-js-legacy'], this['kotlin-css'], this['kotlin-styled'], this['@material-ui/core'], this['kotlin-react-legacy'], this['react-icons/fa'], this['react-pro-sidebar'], this['kotlin-react-dom-legacy'], this['ktor-ktor-client-core-js-legacy'], this['ktor-ktor-client-json-js-legacy'], this['ktor-ktor-client-serialization-js-legacy'], this['kotlinx-coroutines-core'], this['ktor-ktor-http-js-legacy'], this['@material-ui/lab'], this['kotlinx-html-js'], this['kotlin-react-dom'], this['ktor-ktor-http-cio-js-legacy'], this['kotlin-react-core']);
   }
-}(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy, $module$kotlin_logging_js_legacy, $module$kotlinx_serialization_kotlinx_serialization_json_js_legacy, $module$ktor_ktor_io_js_legacy, $module$kotlin_css, $module$kotlin_styled, $module$_material_ui_core, $module$kotlin_react_legacy, $module$react_icons_fa, $module$react_pro_sidebar, $module$kotlin_react_dom_legacy, $module$ktor_ktor_client_json_js_legacy, $module$ktor_ktor_client_serialization_js_legacy, $module$ktor_ktor_client_core_js_legacy, $module$kotlinx_coroutines_core, $module$ktor_ktor_http_js_legacy, $module$_material_ui_lab, $module$kotlinx_html_js, $module$kotlin_react_dom, $module$ktor_ktor_http_cio_js_legacy, $module$kotlin_react_core) {
+}(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy, $module$kotlin_logging_js_legacy, $module$kotlinx_serialization_kotlinx_serialization_json_js_legacy, $module$ktor_ktor_io_js_legacy, $module$kotlin_css, $module$kotlin_styled, $module$_material_ui_core, $module$kotlin_react_legacy, $module$react_icons_fa, $module$react_pro_sidebar, $module$kotlin_react_dom_legacy, $module$ktor_ktor_client_core_js_legacy, $module$ktor_ktor_client_json_js_legacy, $module$ktor_ktor_client_serialization_js_legacy, $module$kotlinx_coroutines_core, $module$ktor_ktor_http_js_legacy, $module$_material_ui_lab, $module$kotlinx_html_js, $module$kotlin_react_dom, $module$ktor_ktor_http_cio_js_legacy, $module$kotlin_react_core) {
   'use strict';
   var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
@@ -106,6 +106,7 @@
   var replace = Kotlin.kotlin.text.replace_680rmw$;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var listOf_0 = Kotlin.kotlin.collections.listOf_mh5how$;
+  var toBooleanStrict = Kotlin.kotlin.text.toBooleanStrict_pdl1vz$;
   var String_0 = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.core.String_xge8xe$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var trimMargin = Kotlin.kotlin.text.trimMargin_rjktp$;
@@ -145,10 +146,10 @@
   var set_textOverflow = $module$kotlin_css.kotlinx.css.set_textOverflow_67zq6f$;
   var Overflow = $module$kotlin_css.kotlinx.css.Overflow;
   var set_overflow = $module$kotlin_css.kotlinx.css.set_overflow_qhpm6s$;
-  var JsonFeature = $module$ktor_ktor_client_json_js_legacy.io.ktor.client.features.json.JsonFeature;
-  var KotlinxSerializer = $module$ktor_ktor_client_serialization_js_legacy.io.ktor.client.features.json.serializer.KotlinxSerializer;
   var WebSockets = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.features.websocket.WebSockets;
   var HttpCookies = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.features.cookies.HttpCookies;
+  var JsonFeature = $module$ktor_ktor_client_json_js_legacy.io.ktor.client.features.json.JsonFeature;
+  var KotlinxSerializer = $module$ktor_ktor_client_serialization_js_legacy.io.ktor.client.features.json.serializer.KotlinxSerializer;
   var HttpClient = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.HttpClient_f0veat$;
   var MainScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.MainScope;
   var HttpResponse = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.HttpResponse;
@@ -298,6 +299,8 @@
   InputType_0.prototype.constructor = InputType_0;
   OutcomeCode.prototype = Object.create(Enum.prototype);
   OutcomeCode.prototype.constructor = OutcomeCode;
+  PolicyModel.prototype = Object.create(Enum.prototype);
+  PolicyModel.prototype.constructor = PolicyModel;
   CoreType.prototype = Object.create(Enum.prototype);
   CoreType.prototype.constructor = CoreType;
   CoreParametersCLOUD.prototype = Object.create(CoreParameters.prototype);
@@ -449,7 +452,7 @@
     this.HTTPS = 'https://';
     this.VERSION1_0 = '/v1/';
     this.CURRENT_VERSION_0 = this.VERSION1_0;
-    this.PROXY = '/v1/proxy/';
+    this.CRYPTOAC = '/v1/CryptoAC/';
     this.RM = '/v1/rm/';
     this.DM = '/v1/dm/';
     this.OPA = '/v1/';
@@ -834,6 +837,7 @@
     OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_instance = new OutcomeCode('CODE_061_USER_ALREADY_INITIALIZED', 58);
     OutcomeCode$CODE_062_CREATE_USER_MM_instance = new OutcomeCode('CODE_062_CREATE_USER_MM', 59);
     OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_instance = new OutcomeCode('CODE_063_INTERFACE_TYPE_UPDATED', 60);
+    OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_instance = new OutcomeCode('CODE_064_ACCESS_DENIED_TO_MM', 61);
     OutcomeCode$Companion_getInstance();
   }
   var OutcomeCode$CODE_000_SUCCESS_instance;
@@ -1141,6 +1145,11 @@
     OutcomeCode_initFields();
     return OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_instance;
   }
+  var OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_instance;
+  function OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance() {
+    OutcomeCode_initFields();
+    return OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_instance;
+  }
   OutcomeCode.prototype.getNumber = function () {
     return split(this.toString(), ['_']).get_za3lpa$(1);
   };
@@ -1176,7 +1185,7 @@
     }return OutcomeCode$Companion_instance;
   }
   function OutcomeCode$$serializer() {
-    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 61);
+    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 62);
     this.descriptor.addElement_ivxn3r$('CODE_000_SUCCESS');
     this.descriptor.addElement_ivxn3r$('CODE_001_USER_ALREADY_EXISTS');
     this.descriptor.addElement_ivxn3r$('CODE_002_ROLE_ALREADY_EXISTS');
@@ -1238,6 +1247,7 @@
     this.descriptor.addElement_ivxn3r$('CODE_061_USER_ALREADY_INITIALIZED');
     this.descriptor.addElement_ivxn3r$('CODE_062_CREATE_USER_MM');
     this.descriptor.addElement_ivxn3r$('CODE_063_INTERFACE_TYPE_UPDATED');
+    this.descriptor.addElement_ivxn3r$('CODE_064_ACCESS_DENIED_TO_MM');
     OutcomeCode$$serializer_instance = this;
   }
   Object.defineProperty(OutcomeCode$$serializer.prototype, 'descriptor', {
@@ -1272,7 +1282,7 @@
     interfaces: [Enum]
   };
   function OutcomeCode$values() {
-    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_035_FORBIDDEN_getInstance(), OutcomeCode$CODE_036_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_getInstance(), OutcomeCode$CODE_038_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_getInstance(), OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_getInstance(), OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_047_UNEXPECTED_getInstance(), OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_getInstance(), OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_055_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_056_ALREADY_LOGGED_IN_getInstance(), OutcomeCode$CODE_057_LOCK_FAILED_getInstance(), OutcomeCode$CODE_058_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_059_ROLLBACK_FAILED_getInstance(), OutcomeCode$CODE_060_ADMIN_NAME_getInstance(), OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_062_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance()];
+    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_035_FORBIDDEN_getInstance(), OutcomeCode$CODE_036_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_getInstance(), OutcomeCode$CODE_038_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_getInstance(), OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_getInstance(), OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_047_UNEXPECTED_getInstance(), OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_getInstance(), OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_055_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_056_ALREADY_LOGGED_IN_getInstance(), OutcomeCode$CODE_057_LOCK_FAILED_getInstance(), OutcomeCode$CODE_058_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_059_ROLLBACK_FAILED_getInstance(), OutcomeCode$CODE_060_ADMIN_NAME_getInstance(), OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_062_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance(), OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance()];
   }
   OutcomeCode.values = OutcomeCode$values;
   function OutcomeCode$valueOf(name) {
@@ -1399,10 +1409,103 @@
         return OutcomeCode$CODE_062_CREATE_USER_MM_getInstance();
       case 'CODE_063_INTERFACE_TYPE_UPDATED':
         return OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance();
+      case 'CODE_064_ACCESS_DENIED_TO_MM':
+        return OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance();
       default:throwISE('No enum constant eu.fbk.st.cryptoac.OutcomeCode.' + name);
     }
   }
   OutcomeCode.valueOf_61zpoe$ = OutcomeCode$valueOf;
+  function PolicyModel(name, ordinal) {
+    PolicyModel$Companion_getInstance();
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function PolicyModel_initFields() {
+    PolicyModel_initFields = function () {
+    };
+    PolicyModel$RBAC_instance = new PolicyModel('RBAC', 0);
+    PolicyModel$ABAC_instance = new PolicyModel('ABAC', 1);
+    PolicyModel$Companion_getInstance();
+  }
+  var PolicyModel$RBAC_instance;
+  function PolicyModel$RBAC_getInstance() {
+    PolicyModel_initFields();
+    return PolicyModel$RBAC_instance;
+  }
+  var PolicyModel$ABAC_instance;
+  function PolicyModel$ABAC_getInstance() {
+    PolicyModel_initFields();
+    return PolicyModel$ABAC_instance;
+  }
+  function PolicyModel$Companion() {
+    PolicyModel$Companion_instance = this;
+  }
+  PolicyModel$Companion.prototype.serializer = function () {
+    return PolicyModel$$serializer_getInstance();
+  };
+  PolicyModel$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PolicyModel$Companion_instance = null;
+  function PolicyModel$Companion_getInstance() {
+    if (PolicyModel$Companion_instance === null) {
+      new PolicyModel$Companion();
+    }return PolicyModel$Companion_instance;
+  }
+  function PolicyModel$$serializer() {
+    this.descriptor_k0xgdd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.PolicyModel', 2);
+    this.descriptor.addElement_ivxn3r$('RBAC');
+    this.descriptor.addElement_ivxn3r$('ABAC');
+    PolicyModel$$serializer_instance = this;
+  }
+  Object.defineProperty(PolicyModel$$serializer.prototype, 'descriptor', {
+    configurable: true,
+    get: function () {
+      return this.descriptor_k0xgdd$_0;
+    }
+  });
+  PolicyModel$$serializer.prototype.serialize_55azsf$ = function (encoder, value) {
+    encoder.encodeEnum_szpzho$(this.descriptor, value.ordinal);
+  };
+  PolicyModel$$serializer.prototype.deserialize_bq71mq$ = function (decoder) {
+    return PolicyModel$values()[decoder.decodeEnum_24f42q$(this.descriptor)];
+  };
+  PolicyModel$$serializer.prototype.childSerializers = function () {
+    return [];
+  };
+  PolicyModel$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var PolicyModel$$serializer_instance = null;
+  function PolicyModel$$serializer_getInstance() {
+    if (PolicyModel$$serializer_instance === null) {
+      new PolicyModel$$serializer();
+    }return PolicyModel$$serializer_instance;
+  }
+  PolicyModel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PolicyModel',
+    interfaces: [Enum]
+  };
+  function PolicyModel$values() {
+    return [PolicyModel$RBAC_getInstance(), PolicyModel$ABAC_getInstance()];
+  }
+  PolicyModel.values = PolicyModel$values;
+  function PolicyModel$valueOf(name) {
+    switch (name) {
+      case 'RBAC':
+        return PolicyModel$RBAC_getInstance();
+      case 'ABAC':
+        return PolicyModel$ABAC_getInstance();
+      default:throwISE('No enum constant eu.fbk.st.cryptoac.PolicyModel.' + name);
+    }
+  }
+  PolicyModel.valueOf_61zpoe$ = PolicyModel$valueOf;
   function SERVER() {
     SERVER_instance = this;
     this.CRYPTO = 'Cryptography';
@@ -1422,12 +1525,14 @@
     this.RM_URL = 'RM_URL';
     this.RM_PORT = 'RM_Port';
     this.DM_URL = 'DM_URL';
+    this.DM_TLS = 'DM_TLS';
     this.DM_PORT = 'DM_Port';
     this.DM_PASSWORD = 'DM_Password';
     this.MM_URL = 'MM_URL';
     this.MM_PASSWORD = 'MM_Password';
     this.MM_PORT = 'MM_Port';
     this.OPA_URL = 'OPA_URL';
+    this.OPA_POLICY_MODEL = 'OPA_POLICY_MODEL';
     this.OPA_PORT = 'OPA_Port';
   }
   SERVER.$metadata$ = {
@@ -5043,12 +5148,13 @@
     return Unit;
   }
   var logger_3;
-  function DMInterfaceMosquittoParameters(username, password, port, url) {
+  function DMInterfaceMosquittoParameters(username, password, port, url, tls) {
     DMInterfaceMosquittoParameters$Companion_getInstance();
     this.username_b5dn5d$_0 = username;
     this.password_wc15zq$_0 = password;
     this.port_gbp5q4$_0 = port;
     this.url_nfqqow$_0 = url;
+    this.tls_nfrhyk$_0 = tls;
     this.dmType_pxppcu$_0 = DMType$MOSQUITTO_getInstance();
   }
   Object.defineProperty(DMInterfaceMosquittoParameters.prototype, 'username', {
@@ -5083,6 +5189,14 @@
       this.url_nfqqow$_0 = url;
     }
   });
+  Object.defineProperty(DMInterfaceMosquittoParameters.prototype, 'tls', {
+    get: function () {
+      return this.tls_nfrhyk$_0;
+    },
+    set: function (tls) {
+      this.tls_nfrhyk$_0 = tls;
+    }
+  });
   Object.defineProperty(DMInterfaceMosquittoParameters.prototype, 'dmType', {
     configurable: true,
     get: function () {
@@ -5098,13 +5212,13 @@
     tmp$_0 = toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DM_PORT)));
     tmp$_1 = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DM_URL));
     var $receiver = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DM_PASSWORD));
-    return new DMInterfaceMosquittoParameters(tmp$, encodeToByteArray(charsets.Charsets.UTF_8.newEncoder(), $receiver, 0, $receiver.length), tmp$_0, tmp$_1);
+    return new DMInterfaceMosquittoParameters(tmp$, encodeToByteArray(charsets.Charsets.UTF_8.newEncoder(), $receiver, 0, $receiver.length), tmp$_0, tmp$_1, toBooleanStrict(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().DM_TLS))));
   };
   DMInterfaceMosquittoParameters$Companion.prototype.toMap_4xwjay$ = function (parameters) {
     if (parameters === void 0)
       parameters = null;
     var tmp$;
-    return listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().DM_URL, replace(SERVER_getInstance().DM_URL, '_', ' '), InputType$text_getInstance(), void 0, parameters != null ? parameters.url : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().DM_PASSWORD, replace(SERVER_getInstance().DM_PASSWORD, '_', ' '), InputType$password_getInstance(), void 0, (tmp$ = parameters != null ? parameters.password : null) != null ? String_0(tmp$) : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().DM_PORT, replace(SERVER_getInstance().DM_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(parameters != null ? parameters.port : null), 'darkTextField')]));
+    return listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().DM_URL, replace(SERVER_getInstance().DM_URL, '_', ' '), InputType$text_getInstance(), void 0, parameters != null ? parameters.url : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().DM_PASSWORD, replace(SERVER_getInstance().DM_PASSWORD, '_', ' '), InputType$password_getInstance(), void 0, (tmp$ = parameters != null ? parameters.password : null) != null ? String_0(tmp$) : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().DM_PORT, replace(SERVER_getInstance().DM_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(parameters != null ? parameters.port : null), 'darkTextField'), new CryptoACFormField(SERVER_getInstance().DM_TLS, SERVER_getInstance().DM_TLS, InputType$checkBox_getInstance(), void 0, toString(parameters != null ? parameters.tls : null), 'darkTextField')]));
   };
   DMInterfaceMosquittoParameters$Companion.prototype.serializer = function () {
     return DMInterfaceMosquittoParameters$$serializer_getInstance();
@@ -5175,8 +5289,6 @@
       return true;
     if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
       return false;
-    if (this !== other)
-      return false;
     Kotlin.isType(tmp$_0 = other, DMInterfaceMosquittoParameters) ? tmp$_0 : throwCCE();
     if (!equals(this.username, other.username))
       return false;
@@ -5186,22 +5298,28 @@
       return false;
     if (!equals(this.url, other.url))
       return false;
+    if (this.tls !== other.tls)
+      return false;
+    if (this.dmType !== other.dmType)
+      return false;
     return true;
   };
   DMInterfaceMosquittoParameters.prototype.hashCode = function () {
-    var result = hashCode(this);
-    result = (31 * result | 0) + hashCode(this.username) | 0;
+    var result = hashCode(this.username);
     result = (31 * result | 0) + contentHashCode(this.password) | 0;
     result = (31 * result | 0) + this.port | 0;
     result = (31 * result | 0) + hashCode(this.url) | 0;
+    result = (31 * result | 0) + hashCode(this.tls) | 0;
+    result = (31 * result | 0) + this.dmType.hashCode() | 0;
     return result;
   };
   function DMInterfaceMosquittoParameters$$serializer() {
-    this.descriptor_telz6q$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquittoParameters', this, 5);
+    this.descriptor_telz6q$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquittoParameters', this, 6);
     this.descriptor.addElement_ivxn3r$('username', false);
     this.descriptor.addElement_ivxn3r$('password', false);
     this.descriptor.addElement_ivxn3r$('port', false);
     this.descriptor.addElement_ivxn3r$('url', false);
+    this.descriptor.addElement_ivxn3r$('tls', false);
     this.descriptor.addElement_ivxn3r$('dmType', true);
     DMInterfaceMosquittoParameters$$serializer_instance = this;
   }
@@ -5217,8 +5335,9 @@
     output.encodeSerializableElement_r4qlx7$(this.descriptor, 1, internal.ByteArraySerializer, value.password);
     output.encodeIntElement_ptg7oe$(this.descriptor, 2, value.port);
     output.encodeStringElement_iij8qq$(this.descriptor, 3, value.url);
-    if (!equals(value.dmType, DMType$MOSQUITTO_getInstance()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 4))
-      output.encodeSerializableElement_r4qlx7$(this.descriptor, 4, new EnumSerializer('eu.fbk.st.cryptoac.implementation.dm.DMType', DMType$values()), value.dmType);
+    output.encodeBooleanElement_qh7jdn$(this.descriptor, 4, value.tls);
+    if (!equals(value.dmType, DMType$MOSQUITTO_getInstance()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 5))
+      output.encodeSerializableElement_r4qlx7$(this.descriptor, 5, new EnumSerializer('eu.fbk.st.cryptoac.implementation.dm.DMType', DMType$values()), value.dmType);
     output.endStructure_24f42q$(this.descriptor);
   };
   DMInterfaceMosquittoParameters$$serializer.prototype.deserialize_bq71mq$ = function (decoder) {
@@ -5228,7 +5347,8 @@
     , local1
     , local2
     , local3
-    , local4;
+    , local4
+    , local5;
     var input = decoder.beginStructure_24f42q$(this.descriptor);
     loopLabel: while (true) {
       index = input.decodeElementIndex_24f42q$(this.descriptor);
@@ -5250,8 +5370,12 @@
           bitMask0 |= 8;
           break;
         case 4:
-          local4 = input.decodeSerializableElement_12e8id$(this.descriptor, 4, new EnumSerializer('eu.fbk.st.cryptoac.implementation.dm.DMType', DMType$values()), local4);
+          local4 = input.decodeBooleanElement_szpzho$(this.descriptor, 4);
           bitMask0 |= 16;
+          break;
+        case 5:
+          local5 = input.decodeSerializableElement_12e8id$(this.descriptor, 5, new EnumSerializer('eu.fbk.st.cryptoac.implementation.dm.DMType', DMType$values()), local5);
+          bitMask0 |= 32;
           break;
         case -1:
           break loopLabel;
@@ -5259,10 +5383,10 @@
       }
     }
     input.endStructure_24f42q$(this.descriptor);
-    return DMInterfaceMosquittoParameters_init(bitMask0, local0, local1, local2, local3, local4, null);
+    return DMInterfaceMosquittoParameters_init(bitMask0, local0, local1, local2, local3, local4, local5, null);
   };
   DMInterfaceMosquittoParameters$$serializer.prototype.childSerializers = function () {
-    return [internal.StringSerializer, internal.ByteArraySerializer, internal.IntSerializer, internal.StringSerializer, new EnumSerializer('eu.fbk.st.cryptoac.implementation.dm.DMType', DMType$values())];
+    return [internal.StringSerializer, internal.ByteArraySerializer, internal.IntSerializer, internal.StringSerializer, internal.BooleanSerializer, new EnumSerializer('eu.fbk.st.cryptoac.implementation.dm.DMType', DMType$values())];
   };
   DMInterfaceMosquittoParameters$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -5275,7 +5399,7 @@
       new DMInterfaceMosquittoParameters$$serializer();
     }return DMInterfaceMosquittoParameters$$serializer_instance;
   }
-  function DMInterfaceMosquittoParameters_init(seen1, username, password, port, url, dmType, serializationConstructorMarker) {
+  function DMInterfaceMosquittoParameters_init(seen1, username, password, port, url, tls, dmType, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(DMInterfaceMosquittoParameters.prototype);
     if ((seen1 & 1) === 0)
       throw MissingFieldException_init('username');
@@ -5294,6 +5418,10 @@
     else
       $this.url_nfqqow$_0 = url;
     if ((seen1 & 16) === 0)
+      throw MissingFieldException_init('tls');
+    else
+      $this.tls_nfrhyk$_0 = tls;
+    if ((seen1 & 32) === 0)
       $this.dmType_pxppcu$_0 = DMType$MOSQUITTO_getInstance();
     else
       $this.dmType_pxppcu$_0 = dmType;
@@ -6167,10 +6295,11 @@
     return Unit;
   }
   var logger_6;
-  function OPAInterfaceParameters(port, url) {
+  function OPAInterfaceParameters(port, url, policyModel) {
     OPAInterfaceParameters$Companion_getInstance();
     this.port = port;
     this.url = url;
+    this.policyModel = policyModel;
   }
   function OPAInterfaceParameters$checkParameters$lambda(this$OPAInterfaceParameters) {
     return function () {
@@ -6197,6 +6326,7 @@
   OPAInterfaceParameters.prototype.update_3yqp66$ = function (updatedParameters) {
     this.port = updatedParameters.port;
     this.url = updatedParameters.url;
+    this.policyModel = updatedParameters.policyModel;
   };
   OPAInterfaceParameters.prototype.obscureSensitiveFields = function () {
   };
@@ -6211,11 +6341,14 @@
       return false;
     if (!equals(this.url, other.url))
       return false;
+    if (this.policyModel !== other.policyModel)
+      return false;
     return true;
   };
   OPAInterfaceParameters.prototype.hashCode = function () {
     var result = this.port;
     result = (31 * result | 0) + hashCode(this.url) | 0;
+    result = (31 * result | 0) + this.policyModel.hashCode() | 0;
     return result;
   };
   function OPAInterfaceParameters$Companion() {
@@ -6236,9 +6369,10 @@
     }return OPAInterfaceParameters$Companion_instance;
   }
   function OPAInterfaceParameters$$serializer() {
-    this.descriptor_nv7o15$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters', this, 2);
+    this.descriptor_nv7o15$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters', this, 3);
     this.descriptor.addElement_ivxn3r$('port', false);
     this.descriptor.addElement_ivxn3r$('url', false);
+    this.descriptor.addElement_ivxn3r$('policyModel', false);
     OPAInterfaceParameters$$serializer_instance = this;
   }
   Object.defineProperty(OPAInterfaceParameters$$serializer.prototype, 'descriptor', {
@@ -6251,13 +6385,15 @@
     var output = encoder.beginStructure_24f42q$(this.descriptor);
     output.encodeIntElement_ptg7oe$(this.descriptor, 0, value.port);
     output.encodeStringElement_iij8qq$(this.descriptor, 1, value.url);
+    output.encodeSerializableElement_r4qlx7$(this.descriptor, 2, PolicyModel$$serializer_getInstance(), value.policyModel);
     output.endStructure_24f42q$(this.descriptor);
   };
   OPAInterfaceParameters$$serializer.prototype.deserialize_bq71mq$ = function (decoder) {
     var index;
     var bitMask0 = 0;
     var local0
-    , local1;
+    , local1
+    , local2;
     var input = decoder.beginStructure_24f42q$(this.descriptor);
     loopLabel: while (true) {
       index = input.decodeElementIndex_24f42q$(this.descriptor);
@@ -6270,16 +6406,20 @@
           local1 = input.decodeStringElement_szpzho$(this.descriptor, 1);
           bitMask0 |= 2;
           break;
+        case 2:
+          local2 = input.decodeSerializableElement_12e8id$(this.descriptor, 2, PolicyModel$$serializer_getInstance(), local2);
+          bitMask0 |= 4;
+          break;
         case -1:
           break loopLabel;
         default:throw new UnknownFieldException(index);
       }
     }
     input.endStructure_24f42q$(this.descriptor);
-    return OPAInterfaceParameters_init(bitMask0, local0, local1, null);
+    return OPAInterfaceParameters_init(bitMask0, local0, local1, local2, null);
   };
   OPAInterfaceParameters$$serializer.prototype.childSerializers = function () {
-    return [internal.IntSerializer, internal.StringSerializer];
+    return [internal.IntSerializer, internal.StringSerializer, PolicyModel$$serializer_getInstance()];
   };
   OPAInterfaceParameters$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -6292,7 +6432,7 @@
       new OPAInterfaceParameters$$serializer();
     }return OPAInterfaceParameters$$serializer_instance;
   }
-  function OPAInterfaceParameters_init(seen1, port, url, serializationConstructorMarker) {
+  function OPAInterfaceParameters_init(seen1, port, url, policyModel, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(OPAInterfaceParameters.prototype);
     if ((seen1 & 1) === 0)
       throw MissingFieldException_init('port');
@@ -6302,6 +6442,10 @@
       throw MissingFieldException_init('url');
     else
       $this.url = url;
+    if ((seen1 & 4) === 0)
+      throw MissingFieldException_init('policyModel');
+    else
+      $this.policyModel = policyModel;
     return $this;
   }
   OPAInterfaceParameters.$metadata$ = {
@@ -7245,9 +7389,9 @@
   }
   function App$init$lambda_0($receiver) {
     $receiver.expectSuccess = false;
-    $receiver.install_xlxg29$(JsonFeature.Feature, App$init$lambda$lambda);
     $receiver.install_xlxg29$(WebSockets.Feature);
     $receiver.install_xlxg29$(HttpCookies.Companion);
+    $receiver.install_xlxg29$(JsonFeature.Feature, App$init$lambda$lambda);
     return Unit;
   }
   App.prototype.init_b4e81d$ = function ($receiver) {
@@ -8536,13 +8680,14 @@
   function cryptoACButtonAndIconGroup(handler) {
     return ensureNotNull(createElement(cryptoACButtonAndIconGroup$lambda(handler)));
   }
+  var divider;
   function CryptoACCheckbox() {
     RComponent_init(this);
   }
   function CryptoACCheckbox$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$CryptoACCheckbox) {
     return function ($receiver) {
       $receiver.changedByUser = true;
-      $receiver.value = equals(this$CryptoACCheckbox.state.value, 'true_' + this$CryptoACCheckbox.props.label) ? 'false_' + this$CryptoACCheckbox.props.label : 'true_' + this$CryptoACCheckbox.props.label;
+      $receiver.value = equals(this$CryptoACCheckbox.state.value, 'true' + divider + this$CryptoACCheckbox.props.label) ? 'false' + divider + this$CryptoACCheckbox.props.label : 'true' + divider + this$CryptoACCheckbox.props.label;
       return Unit;
     };
   }
@@ -8555,7 +8700,7 @@
   function CryptoACCheckbox$render$lambda$lambda$lambda$lambda$lambda(this$CryptoACCheckbox) {
     return function ($receiver) {
       $receiver.value = this$CryptoACCheckbox.state.value;
-      $receiver.checked = toBoolean(split(this$CryptoACCheckbox.state.value, ['_']).get_za3lpa$(0));
+      $receiver.checked = toBoolean(split(this$CryptoACCheckbox.state.value, [divider]).get_za3lpa$(0));
       $receiver.onChange = CryptoACCheckbox$render$lambda$lambda$lambda$lambda$lambda$lambda(this$CryptoACCheckbox);
       return Unit;
     };
@@ -8592,7 +8737,7 @@
   };
   function CryptoACCheckbox$init$lambda(props, state) {
     if (state.justMounted || !state.changedByUser) {
-      state.value = props.defaultValue + '_' + props.label;
+      state.value = props.defaultValue + divider + props.label;
     }state.changedByUser = false;
     state.justMounted = false;
     return Unit;
@@ -9127,8 +9272,8 @@
             values.put_xwzc9p$(key_2, value_2);
           }} else {
           if (equals(tmp$_0, InputType$checkBox_getInstance().toString().toLowerCase())) {
-            var key_3 = split($receiver.value, ['_']).get_za3lpa$(1);
-            var value_3 = split($receiver.value, ['_']).get_za3lpa$(0);
+            var key_3 = split($receiver.value, [divider]).get_za3lpa$(1);
+            var value_3 = split($receiver.value, [divider]).get_za3lpa$(0);
             values.put_xwzc9p$(key_3, value_3);
           } else {
             console.log('TODO FIX');
@@ -11125,7 +11270,7 @@
       var cryptoType = CryptoType$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().CRYPTO)));
       switch (this.props.coreType.name) {
         case 'RBAC_CLOUD':
-          tmp$_6 = new CoreParametersCLOUD(user, void 0, cryptoType, void 0, ensureNotNull(rmParameters), Kotlin.isType(tmp$_2 = mmParameters, MMInterfaceRBACCLOUDParameters) ? tmp$_2 : throwCCE(), Kotlin.isType(tmp$_3 = dmParameters, DMInterfaceRBACCLOUDParameters) ? tmp$_3 : throwCCE(), new OPAInterfaceParameters(toInt(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_URL))));
+          tmp$_6 = new CoreParametersCLOUD(user, void 0, cryptoType, void 0, ensureNotNull(rmParameters), Kotlin.isType(tmp$_2 = mmParameters, MMInterfaceRBACCLOUDParameters) ? tmp$_2 : throwCCE(), Kotlin.isType(tmp$_3 = dmParameters, DMInterfaceRBACCLOUDParameters) ? tmp$_3 : throwCCE(), new OPAInterfaceParameters(toInt(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_URL)), PolicyModel$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_POLICY_MODEL)))));
           break;
         case 'RBAC_MQTT':
           tmp$_6 = new CoreParametersMQTT(user, void 0, cryptoType, void 0, Kotlin.isType(tmp$_4 = mmParameters, MMInterfaceRBACMQTTParameters) ? tmp$_4 : throwCCE(), Kotlin.isType(tmp$_5 = dmParameters, DMInterfaceRBACMQTTParameters) ? tmp$_5 : throwCCE());
@@ -11230,7 +11375,7 @@
           case 0:
             if (this.local$username === void 0)
               this.local$username = this.$this.props.username;
-            var actualEndpoint = baseURL + replace(API_getInstance().PROFILES, '{Core}', this.$this.props.coreType.toString()) + '?' + SERVER_getInstance().USERNAME + '=' + toString(this.local$username);
+            var actualEndpoint = baseURL + replace(API_getInstance().PROFILES, '{Core}', this.$this.props.coreType.toString()) + '/' + toString(this.local$username);
             logger_12.info_nq59yw$(Dashboard$getProfileFromProxy$lambda(this.local$username, actualEndpoint));
             var $receiver_0 = this.$this.props.httpClient;
             var host_0;
@@ -12666,15 +12811,15 @@
     RComponent_init(this);
   }
   RBACDashboard.prototype.getUsers = function (continuation) {
-    var actualEndpoint = baseURL + API_getInstance().PROXY + replace(API_getInstance().USERS, '{Core}', this.props.coreType.toString());
+    var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().USERS, '{Core}', this.props.coreType.toString());
     return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), ElementType$USER_getInstance(), continuation);
   };
   RBACDashboard.prototype.getRoles = function (continuation) {
-    var actualEndpoint = baseURL + API_getInstance().PROXY + replace(API_getInstance().ROLES, '{Core}', this.props.coreType.toString());
+    var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().ROLES, '{Core}', this.props.coreType.toString());
     return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), ElementType$ROLE_getInstance(), continuation);
   };
   RBACDashboard.prototype.getFiles = function (continuation) {
-    var actualEndpoint = baseURL + API_getInstance().PROXY + replace(API_getInstance().FILES, '{Core}', this.props.coreType.toString());
+    var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().FILES, '{Core}', this.props.coreType.toString());
     return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), ElementType$FILE_getInstance(), continuation);
   };
   RBACDashboard.prototype.getAssignments_rkkr90$ = function (username, roleName, continuation) {
@@ -12682,7 +12827,7 @@
       username = null;
     if (roleName === void 0)
       roleName = null;
-    var actualEndpoint = baseURL + API_getInstance().PROXY + replace(API_getInstance().ASSIGNMENTS, '{Core}', this.props.coreType.toString()) + '?' + (username != null ? SERVER_getInstance().USERNAME + '=' + toString(username) : '' + (roleName != null ? SERVER_getInstance().ROLE_NAME + '=' + toString(roleName) : ''));
+    var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().ASSIGNMENTS, '{Core}', this.props.coreType.toString()) + '?' + (username != null ? SERVER_getInstance().USERNAME + '=' + toString(username) : '' + (roleName != null ? SERVER_getInstance().ROLE_NAME + '=' + toString(roleName) : ''));
     return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), ElementType$ASSIGNMENT_getInstance(), continuation);
   };
   RBACDashboard.prototype.getPermissions_rkkr90$ = function (roleName, fileName, continuation) {
@@ -12690,7 +12835,7 @@
       roleName = null;
     if (fileName === void 0)
       fileName = null;
-    var actualEndpoint = baseURL + API_getInstance().PROXY + replace(API_getInstance().PERMISSIONS, '{Core}', this.props.coreType.toString()) + '?' + (roleName != null ? SERVER_getInstance().ROLE_NAME + '=' + toString(roleName) : '' + (fileName != null ? SERVER_getInstance().FILE_NAME + '=' + toString(fileName) : ''));
+    var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().PERMISSIONS, '{Core}', this.props.coreType.toString()) + '?' + (roleName != null ? SERVER_getInstance().ROLE_NAME + '=' + toString(roleName) : '' + (fileName != null ? SERVER_getInstance().FILE_NAME + '=' + toString(fileName) : ''));
     return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), ElementType$PERMISSION_getInstance(), continuation);
   };
   function RBACDashboard$getElements$lambda(closure$type) {
@@ -14182,7 +14327,7 @@
             this.state_0 = 10;
             continue;
           case 10:
-            var path = API_getInstance().PROXY + replace(API_getInstance().FILES, '{Core}', this.local$this$MQTTDashboard.props.coreType.toString());
+            var path = API_getInstance().CRYPTOAC + replace(API_getInstance().FILES, '{Core}', this.local$this$MQTTDashboard.props.coreType.toString());
             this.state_0 = 11;
             this.result_0 = webSocketSession(this.local$this$MQTTDashboard.props.httpClient, HttpMethod_0.Companion.Get, window.location.hostname, toInt(window.location.port), path, MQTTDashboard$init$lambda$lambda(path), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -17719,10 +17864,10 @@
   var logger_18;
   function Actions() {
     RComponent_init(this);
-    this.adminCryptoACFormsRBACCLOUD_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().PROXY + API_getInstance().USERS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().PROXY + API_getInstance().ROLES, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_0(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().PROXY + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_1(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().PROXY + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_2(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().PROXY + API_getInstance().USERS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_3(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().PROXY + API_getInstance().ROLES, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_4(this)), new CryptoACFormData('delete_file', 'Delete File', $module$react_icons_fa.FaFileExcel, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_5(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().PROXY + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_6(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().PROXY + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_7(this), true)]);
-    this.userCryptoACFormsRBACCloud_0 = listOf([new CryptoACFormData('add_file', 'Add File', $module$react_icons_fa.FaFileMedical, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$userCryptoACFormsRBACCloud$lambda(this)), new CryptoACFormData('write_file', 'Write File', $module$react_icons_fa.FaFileSignature, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Patch, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_0(this)), new CryptoACFormData('read_file', 'Read File', $module$react_icons_fa.FaFileDownload, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Get, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_1(this))]);
-    this.adminCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().PROXY + API_getInstance().USERS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().PROXY + API_getInstance().ROLES, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_0(this)), new CryptoACFormData('add_file', 'Add Topic', $module$react_icons_fa.FaFileMedical, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_1(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().PROXY + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_2(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().PROXY + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_3(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().PROXY + API_getInstance().USERS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_4(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().PROXY + API_getInstance().ROLES, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_5(this)), new CryptoACFormData('delete_file', 'Delete Topic', $module$react_icons_fa.FaFileExcel, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_6(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().PROXY + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_7(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().PROXY + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_8(this), true)]);
-    this.userCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('write_file', 'Publish to Topic', $module$react_icons_fa.FaFileSignature, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Patch, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()), new CryptoACFormField(SERVER_getInstance().FILE_CONTENT, 'Message', InputType$text_getInstance())])), Actions$userCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('read_file', 'Subscribe to Topic', $module$react_icons_fa.FaFileDownload, API_getInstance().PROXY + API_getInstance().FILES, HttpMethod_0.Companion.Get, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$userCryptoACFormsRBACMQTT$lambda_0(this))]);
+    this.adminCryptoACFormsRBACCLOUD_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_0(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_1(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_2(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_3(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_4(this)), new CryptoACFormData('delete_file', 'Delete File', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_5(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_6(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_7(this), true)]);
+    this.userCryptoACFormsRBACCloud_0 = listOf([new CryptoACFormData('add_file', 'Add File', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$userCryptoACFormsRBACCloud$lambda(this)), new CryptoACFormData('write_file', 'Write File', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Patch, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_0(this)), new CryptoACFormData('read_file', 'Read File', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Get, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_1(this))]);
+    this.adminCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_0(this)), new CryptoACFormData('add_file', 'Add Topic', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_1(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_2(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_3(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_4(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_5(this)), new CryptoACFormData('delete_file', 'Delete Topic', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_6(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_7(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_8(this), true)]);
+    this.userCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('write_file', 'Publish to Topic', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Patch, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()), new CryptoACFormField(SERVER_getInstance().FILE_CONTENT, 'Message', InputType$text_getInstance())])), Actions$userCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('read_file', 'Subscribe to Topic', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Get, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$userCryptoACFormsRBACMQTT$lambda_0(this))]);
     this.adminCryptoACFormsRBACMOCK_0 = emptyList();
     this.userCryptoACFormsRBACMOCK_0 = emptyList();
   }
@@ -19944,6 +20089,9 @@
   Object.defineProperty(OutcomeCode, 'CODE_063_INTERFACE_TYPE_UPDATED', {
     get: OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance
   });
+  Object.defineProperty(OutcomeCode, 'CODE_064_ACCESS_DENIED_TO_MM', {
+    get: OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance
+  });
   Object.defineProperty(OutcomeCode, 'Companion', {
     get: OutcomeCode$Companion_getInstance
   });
@@ -19951,6 +20099,19 @@
     get: OutcomeCode$$serializer_getInstance
   });
   package$cryptoac.OutcomeCode = OutcomeCode;
+  Object.defineProperty(PolicyModel, 'RBAC', {
+    get: PolicyModel$RBAC_getInstance
+  });
+  Object.defineProperty(PolicyModel, 'ABAC', {
+    get: PolicyModel$ABAC_getInstance
+  });
+  Object.defineProperty(PolicyModel, 'Companion', {
+    get: PolicyModel$Companion_getInstance
+  });
+  Object.defineProperty(PolicyModel, '$serializer', {
+    get: PolicyModel$$serializer_getInstance
+  });
+  package$cryptoac.PolicyModel = PolicyModel;
   Object.defineProperty(package$cryptoac, 'SERVER', {
     get: SERVER_getInstance
   });
@@ -20226,7 +20387,7 @@
   Object.defineProperty(DMInterfaceMosquittoParameters, '$serializer', {
     get: DMInterfaceMosquittoParameters$$serializer_getInstance
   });
-  package$dm.DMInterfaceMosquittoParameters_init_ait2io$ = DMInterfaceMosquittoParameters_init;
+  package$dm.DMInterfaceMosquittoParameters_init_k30w7f$ = DMInterfaceMosquittoParameters_init;
   package$dm.DMInterfaceMosquittoParameters = DMInterfaceMosquittoParameters;
   Object.defineProperty(AclType, 'publishClientSend', {
     get: AclType$publishClientSend_getInstance
@@ -20299,7 +20460,7 @@
     get: OPAInterfaceParameters$$serializer_getInstance
   });
   var package$opa = package$implementation.opa || (package$implementation.opa = {});
-  package$opa.OPAInterfaceParameters_init_woby6u$ = OPAInterfaceParameters_init;
+  package$opa.OPAInterfaceParameters_init_p3y8yb$ = OPAInterfaceParameters_init;
   package$opa.OPAInterfaceParameters = OPAInterfaceParameters;
   Object.defineProperty(RMInterfaceCryptoACParameters, 'Companion', {
     get: RMInterfaceCryptoACParameters$Companion_getInstance
@@ -20368,6 +20529,11 @@
   package$custom.CryptoACButtonAndIconData = CryptoACButtonAndIconData;
   package$custom.CryptoACButtonAndIconGroup = CryptoACButtonAndIconGroup;
   package$custom.cryptoACButtonAndIconGroup_z0kyko$ = cryptoACButtonAndIconGroup;
+  Object.defineProperty(package$custom, 'divider', {
+    get: function () {
+      return divider;
+    }
+  });
   package$custom.CryptoACCheckbox = CryptoACCheckbox;
   package$custom.cryptoACCheckbox_t7vnd2$ = cryptoACCheckbox;
   package$custom.CryptoACDivider = CryptoACDivider;
@@ -20698,6 +20864,7 @@
   package$sidebar.Evaluation = Evaluation;
   package$sidebar.evaluation_ors640$ = evaluation;
   OutcomeCode$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
+  PolicyModel$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   CoreParametersCLOUD$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   CoreParametersMOCK$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   CoreParametersMQTT$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
@@ -20790,6 +20957,7 @@
   logger_9 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_9);
   baseURL = window.location.protocol + '//' + window.location.host;
   logger_10 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_10);
+  divider = '4%&\xA3$5';
   logger_11 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_11);
   userColumns = [new CryptoACTableColumn('name', 'Name', 'The name of the user'), new CryptoACTableColumn('status', 'Status', 'The current status of the user (INCOMPLETE, OPERATIONAL or DELETED)'), new CryptoACTableColumn('isAdmin', 'Admin', 'Whether the user has administrative privileges', 'boolean'), new CryptoACTableColumn('token', 'Token', 'The token of the user')];
   roleColumns = [new CryptoACTableColumn('name', 'Name', 'The name of the role'), new CryptoACTableColumn('status', 'Status', 'The current status of the role (OPERATIONAL or DELETED)'), new CryptoACTableColumn('token', 'Token', 'The token of the role')];

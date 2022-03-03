@@ -30,7 +30,6 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 
 
@@ -58,25 +57,42 @@ fun Route.filesRouting() {
 
         route(FILES) {
 
-            /** Check an add file operation */
+            /**
+             * Check an add file operation.
+             * Possible outcome codes:
+             * - CODE_000_SUCCESS
+             * - CODE_003_FILE_ALREADY_EXISTS
+             * - CODE_004_USER_NOT_FOUND
+             * - CODE_006_FILE_NOT_FOUND
+             * - CODE_015_FILE_WAS_DELETED
+             * - CODE_016_INVALID_PERMISSION
+             * - CODE_017_INVALID_VERSION_NUMBER
+             * - CODE_020_INVALID_PARAMETER
+             * - CODE_021_RM_CONFIGURATION
+             * - CODE_025_FILE_RENAMING
+             * - CODE_026_TUPLE_FORMAT
+             * - CODE_043_DM_CONNECTION_TIMEOUT
+             */
             post {
                 // TODO authenticate user (login as in the proxy?)
 
                 /** If the RM was not configured yet */
                 if (mm == null || opa == null || dm == null || crypto == null) {
                     return@post ResponseRoutes.serviceUnavailable(
-                        call, "This RM was not configured",
+                        call,
+                        "This RM was not configured",
                         OutcomeCode.CODE_021_RM_CONFIGURATION
                     )
                 }
 
                 // TODO the core parameter is not needed, this is the cloud implementation? or do we need it?
                 logger.debug { "Retrieving the core parameter" }
-                val coreParam = call.parameters[SERVER.CORE] ?: return@post ResponseRoutes.unprocessableEntity(
-                    call,
-                    "Missing ${SERVER.CORE} parameter",
-                    OutcomeCode.CODE_020_INVALID_PARAMETER
-                )
+                val coreParam = call.parameters[SERVER.CORE] ?:
+                    return@post ResponseRoutes.unprocessableEntity(
+                        call,
+                        "Missing ${SERVER.CORE} parameter",
+                        OutcomeCode.CODE_020_INVALID_PARAMETER
+                    )
                 val core: CoreType = CoreType.valueOf(coreParam)
 
                 logger.debug { "Retrieving the add file request" }
@@ -91,7 +107,10 @@ fun Route.filesRouting() {
                 val symKeyVersionNumber = permissionTuple.symKeyVersionNumber
                 val permissionTupleSignature = permissionTuple.signature
 
-                logger.info { "User is asking to add a file with name $fileTupleName for core $core" } // TODO add username
+                logger.info {
+                    "User is asking to add a file with " +
+                    "name $fileTupleName for core $core"
+                } // TODO add username
 
                 val file = File(
                     name = fileTupleName,
@@ -112,7 +131,8 @@ fun Route.filesRouting() {
                 if (fileTupleSignature == null || permissionTupleSignature == null) {
                     return@post ResponseRoutes.unprocessableEntity(
                         call,
-                        "Missing digital signatures", OutcomeCode.CODE_020_INVALID_PARAMETER
+                        "Missing digital signatures",
+                        OutcomeCode.CODE_020_INVALID_PARAMETER
                     )
                 }
 
@@ -120,8 +140,8 @@ fun Route.filesRouting() {
                 if (symDecKeyVersionNumber != 1 || symKeyVersionNumber != 1) {
                     return@post ResponseRoutes.unprocessableEntity(
                         call,
-                        "Version numbers are not 1 " +
-                                "(sym dec is $symDecKeyVersionNumber and sym is $symKeyVersionNumber)",
+                        "Version numbers are not 1 (sym dec is " +
+                                "$symDecKeyVersionNumber and sym is $symKeyVersionNumber)",
                         OutcomeCode.CODE_017_INVALID_VERSION_NUMBER
                     )
                 }
@@ -140,8 +160,8 @@ fun Route.filesRouting() {
                 if (fileTupleName != permissionTuple.fileName) {
                     return@post ResponseRoutes.unprocessableEntity(
                         call,
-                        "File name is not the same across file and permission tuples " +
-                                "(file tuple is $fileTupleName and permission tuple is ${permissionTuple.fileName})",
+                        "File name is not the same across file and permission tuples (file tuple" +
+                                " is $fileTupleName and permission tuple is ${permissionTuple.fileName})",
                         OutcomeCode.CODE_026_TUPLE_FORMAT
                     )
                 }
@@ -150,8 +170,8 @@ fun Route.filesRouting() {
                 if (fileTupleToken != permissionTuple.fileToken) {
                     return@post ResponseRoutes.unprocessableEntity(
                         call,
-                        "File token is not the same across file and permission tuples " +
-                                "(file tuple is $fileTupleToken and permission tuple is ${permissionTuple.fileToken})",
+                        "File token is not the same across file and permission tuples (file tuple" +
+                                " is $fileTupleToken and permission tuple is ${permissionTuple.fileToken})",
                         OutcomeCode.CODE_026_TUPLE_FORMAT
                     )
                 }
@@ -180,8 +200,8 @@ fun Route.filesRouting() {
                 if (permissionTuple.roleName != ADMIN || permissionTuple.roleToken != ADMIN) {
                     return@post ResponseRoutes.unprocessableEntity(
                         call,
-                        "Role name or token is not $ADMIN in permission tuple " +
-                                "(name is ${permissionTuple.roleName} and token is ${permissionTuple.roleToken})",
+                        "Role name or token is not $ADMIN in permission tuple (name is" +
+                                " ${permissionTuple.roleName} and token is ${permissionTuple.roleToken})",
                         OutcomeCode.CODE_026_TUPLE_FORMAT
                     )
                 }
@@ -191,7 +211,8 @@ fun Route.filesRouting() {
                 var code = startOfMethod()
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     return@post ResponseRoutes.internalError(
-                        call, "Error while locking interfaces ($code)",
+                        call,
+                        "Error while locking interfaces ($code)",
                         code
                     )
                 }
@@ -225,7 +246,8 @@ fun Route.filesRouting() {
                 code = mm!!.addFile(file)
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     return@post ResponseRoutes.internalError(
-                        call, "Error while adding the file ($code)",
+                        call,
+                        "Error while adding the file ($code)",
                         endOfMethod(code)
                     )
                 }
@@ -234,7 +256,8 @@ fun Route.filesRouting() {
                 code = mm!!.addFileTuples(HashSet<FileTuple>().apply { add(fileTuple) })
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     return@post ResponseRoutes.internalError(
-                        call, "Error while adding the file tuple ($code)",
+                        call,
+                        "Error while adding the file tuple ($code)",
                         endOfMethod(code)
                     )
                 }
@@ -242,7 +265,8 @@ fun Route.filesRouting() {
                 code = opa!!.addPAAssignment(PA.extractPA(permissionTuple))
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     return@post ResponseRoutes.internalError(
-                        call, "Error while adding PA assignments ($code)",
+                        call,
+                        "Error while adding PA assignments ($code)",
                         endOfMethod(code)
                     )
                 }
@@ -250,7 +274,8 @@ fun Route.filesRouting() {
                 code = mm!!.addPermissionTuples(HashSet<PermissionTuple>().apply { add(permissionTuple) })
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     return@post ResponseRoutes.internalError(
-                        call, "Error while adding the permission tuple ($code)",
+                        call,
+                        "Error while adding the permission tuple ($code)",
                         endOfMethod(code)
                     )
                 }
@@ -273,7 +298,21 @@ fun Route.filesRouting() {
 
 
             // TODO perhaps the file name should be a path parameter?
-            /** Check a write file operation */
+            /**
+             * Check a write file operation.
+             * Possible outcome codes:
+             * - CODE_000_SUCCESS
+             * - CODE_004_USER_NOT_FOUND
+             * - CODE_006_FILE_NOT_FOUND
+             * - CODE_009_FILETUPLE_NOT_FOUND
+             * - CODE_015_FILE_WAS_DELETED
+             * - CODE_017_INVALID_VERSION_NUMBER
+             * - CODE_020_INVALID_PARAMETER
+             * - CODE_021_RM_CONFIGURATION
+             * - CODE_025_FILE_RENAMING
+             * - CODE_027_AC_ENFORCEMENT_INCONSISTENT
+             * - CODE_043_DM_CONNECTION_TIMEOUT
+             */
             patch {
                 // TODO authenticate user (login as in the proxy?)
 
@@ -281,14 +320,17 @@ fun Route.filesRouting() {
                 if (mm == null || opa == null || dm == null || crypto == null) {
                     return@patch ResponseRoutes.serviceUnavailable(
                         call, "This RM was not configured",
-                        OutcomeCode.CODE_021_RM_CONFIGURATION)
+                        OutcomeCode.CODE_021_RM_CONFIGURATION
+                    )
                 }
 
                 logger.debug { "Retrieving the core parameter" }
-                val coreParam = call.parameters[SERVER.CORE] ?: return@patch ResponseRoutes.unprocessableEntity(
-                    call,
-                    "Missing ${SERVER.CORE} parameter",
-                    OutcomeCode.CODE_020_INVALID_PARAMETER)
+                val coreParam = call.parameters[SERVER.CORE] ?:
+                    return@patch ResponseRoutes.unprocessableEntity(
+                        call,
+                        "Missing ${SERVER.CORE} parameter",
+                        OutcomeCode.CODE_020_INVALID_PARAMETER
+                    )
                 val core: CoreType = CoreType.valueOf(coreParam)
 
                 logger.debug { "Retrieving the write file request" }
@@ -301,7 +343,10 @@ fun Route.filesRouting() {
                 val fileTupleSignature = fileTuple.signature
                 val roleToken = fileTuple.roleToken
 
-                logger.info { "User is asking to write file with name $fileTupleName for cory $core" } // TODO add username
+                logger.info {
+                    "User is asking to write file with " +
+                    "name $fileTupleName for cory $core"
+                } // TODO add username
 
                 val file = File(
                     name = fileTupleName,
@@ -324,9 +369,12 @@ fun Route.filesRouting() {
                 val oldFileTuple = mm!!.getFileTuples(
                     fileName = fileTupleName,
                     offset = 0, limit = 1,
-                ).firstOrNull() ?: return@patch ResponseRoutes.notFound(call,
+                ).firstOrNull() ?:
+                    return@patch ResponseRoutes.notFound(
+                        call,
                         "File $fileTupleName was not found",
-                        endOfMethod(OutcomeCode.CODE_006_FILE_NOT_FOUND))
+                        endOfMethod(OutcomeCode.CODE_006_FILE_NOT_FOUND)
+                    )
 
                 /**
                  * The RM has to check that:
@@ -338,16 +386,22 @@ fun Route.filesRouting() {
 
                 logger.debug { "Checking signature was given" }
                 if (fileTupleSignature == null) {
-                    return@patch ResponseRoutes.unprocessableEntity(call,
+                    return@patch ResponseRoutes.unprocessableEntity(
+                        call,
                         "Missing digital signature",
-                        endOfMethod(OutcomeCode.CODE_020_INVALID_PARAMETER))
+                        endOfMethod(OutcomeCode.CODE_020_INVALID_PARAMETER)
+                    )
                 }
 
                 logger.debug { "Checking enforcement is the same as old one" }
                 if (fileTuple.enforcement != oldFileTuple.enforcement) {
-                    return@patch ResponseRoutes.unprocessableEntity(call,
-                        "Specified enforcement (${fileTuple.enforcement}) does not correspond to the old one (${oldFileTuple.enforcement})",
-                        endOfMethod(OutcomeCode.CODE_027_AC_ENFORCEMENT_INCONSISTENT))
+                    return@patch ResponseRoutes.unprocessableEntity(
+                        call,
+                        "Specified enforcement (${fileTuple.enforcement}) does " +
+                        "not correspond to the old one (${oldFileTuple.enforcement})",
+                        endOfMethod(OutcomeCode.CODE_027_AC_ENFORCEMENT_INCONSISTENT
+                        )
+                    )
                 }
 
                 logger.debug { "Checking that the file version number is the latest one (i.e., the file was encrypted with the latest key)" }
@@ -355,9 +409,12 @@ fun Route.filesRouting() {
                     name = fileTupleName, elementType = ElementTypeWithVersionNumber.FILE
                 )
                 if (symDecKeyVersionNumber != oldSymDecKeyVersionNumber) {
-                    return@patch ResponseRoutes.unprocessableEntity(call,
-                        "Specified symmetric key version number ($symDecKeyVersionNumber) does not correspond to the latest one ($oldSymDecKeyVersionNumber)",
-                        endOfMethod(OutcomeCode.CODE_017_INVALID_VERSION_NUMBER))
+                    return@patch ResponseRoutes.unprocessableEntity(
+                        call,
+                        "Specified symmetric key version number ($symDecKeyVersionNumber) " +
+                        "does not correspond to the latest one ($oldSymDecKeyVersionNumber)",
+                        endOfMethod(OutcomeCode.CODE_017_INVALID_VERSION_NUMBER)
+                    )
                 }
 
                 logger.debug { "Retrieving the file tuple signer's public key to check the digital signature" }
@@ -365,9 +422,12 @@ fun Route.filesRouting() {
                     token = fileTupleSigner,
                     elementType = ElementTypeWithKey.USER,
                     asymKeyType = AsymKeysType.SIG,
-                ) ?: return@patch ResponseRoutes.notFound(call,
+                ) ?:
+                    return@patch ResponseRoutes.notFound(
+                        call,
                         "Signer user not found (token is $fileTupleSigner)",
-                        endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND))
+                        endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND)
+                    )
 
                 val asymSigPubKey = crypto!!.recreateAsymPublicKey(
                     asymPublicKeyBytes = asymSigPubKeyBytes,
@@ -385,9 +445,11 @@ fun Route.filesRouting() {
                     permission = PermissionType.READWRITE
                 ).firstOrNull() ?:
                     /** Return a 404 instead of a 403 to avoid information leakage */
-                    return@patch ResponseRoutes.notFound(call,
+                    return@patch ResponseRoutes.notFound(
+                        call,
                         "File $fileTupleName was not found",
-                        endOfMethod(OutcomeCode.CODE_006_FILE_NOT_FOUND))
+                        endOfMethod(OutcomeCode.CODE_006_FILE_NOT_FOUND)
+                    )
 
 
                 logger.debug { "Retrieving the permission tuple signer's public key to check the digital signature" }
@@ -395,9 +457,13 @@ fun Route.filesRouting() {
                     token = permissionTuple.signer,
                     elementType = ElementTypeWithKey.USER,
                     asymKeyType = AsymKeysType.SIG,
-                ) ?: return@patch ResponseRoutes.notFound(call,
-                        "Signer user for permission tuple not found (token is $permissionTuple.signer)",
-                        endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND))
+                ) ?:
+                    return@patch ResponseRoutes.notFound(
+                        call,
+                        "Signer user for permission tuple " +
+                        "not found (token is $permissionTuple.signer)",
+                        endOfMethod(OutcomeCode.CODE_004_USER_NOT_FOUND)
+                    )
 
                 val adminAsymSigPubKey = crypto!!.recreateAsymPublicKey(
                     asymPublicKeyBytes = adminAsymSigPubKeyBytes,
@@ -415,7 +481,8 @@ fun Route.filesRouting() {
                 code = mm!!.deleteFileTuples(fileTupleName)
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     return@patch ResponseRoutes.internalError(
-                        call, "Error while deleting the file tuple ($code)",
+                        call,
+                        "Error while deleting the file tuple ($code)",
                         endOfMethod(code)
                     )
                 }
@@ -423,7 +490,8 @@ fun Route.filesRouting() {
                 code = mm!!.addFileTuples(HashSet<FileTuple>().apply { add(fileTuple) })
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
                     return@patch ResponseRoutes.internalError(
-                        call, "Error while adding the file tuple ($code)",
+                        call,
+                        "Error while adding the file tuple ($code)",
                         endOfMethod(code)
                     )
                 }
@@ -449,6 +517,10 @@ fun Route.configureRouting() {
     /** Configure the RM */
     route(RM) {
 
+        /**
+         * Possible outcome codes:
+         * - CODE_000_SUCCESS
+         */
         post {
 
             // TODO authenticate user (login as in the proxy?)
@@ -463,8 +535,6 @@ fun Route.configureRouting() {
             mm = MMFactory.getMM(parameters.mmMySQLInterfaceParameters)
             dm = DMFactory.getDM(parameters.dmCloudInterfaceParameters)
             opa = OPAInterface(parameters.opaInterfaceParameters)
-
-            // TODO get crypto parameters from request
             crypto = CryptoFactory.getCrypto(parameters.crypto)
 
             ResponseRoutes.ok(call)
@@ -483,7 +553,11 @@ fun Application.registerRMRoutes() {
 
 /**
  * Lock the specified interfaces
- * and return the outcome code
+ * and return the outcome code:
+ * - CODE_000_SUCCESS
+ * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+ * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+ * - CODE_044_MM_CONNECTION_TIMEOUT
  */
 private fun startOfMethod(mmLock: Boolean = true, opaLock: Boolean = true, dmLock: Boolean = true): OutcomeCode {
     logger.info {

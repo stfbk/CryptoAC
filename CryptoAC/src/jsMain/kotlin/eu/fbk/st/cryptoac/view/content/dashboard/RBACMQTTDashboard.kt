@@ -1,7 +1,7 @@
 package eu.fbk.st.cryptoac.view.content.dashboard
 
 import eu.fbk.st.cryptoac.API.FILES
-import eu.fbk.st.cryptoac.API.PROXY
+import eu.fbk.st.cryptoac.API.CRYPTOAC
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.implementation.dm.MQTTMessage
@@ -17,7 +17,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import react.*
 import styled.css
@@ -382,7 +381,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
 
 
             /** Create the socket to receive MQTT messages from the proxy */
-            val path = "$PROXY${FILES.replace("{Core}", props.coreType.toString())}"
+            val path = "$CRYPTOAC${FILES.replace("{Core}", props.coreType.toString())}"
             val tempWSS = props.httpClient.webSocketSession(
                 method = HttpMethod.Get,
                 host = window.location.hostname,

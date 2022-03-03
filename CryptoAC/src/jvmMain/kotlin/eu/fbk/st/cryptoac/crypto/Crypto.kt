@@ -6,6 +6,8 @@ import java.security.GeneralSecurityException
 /** Interface for cryptographic operations and parameters in CryptoAC */
 interface Crypto {
 
+    // TODO interesting? => https://github.com/wolfSSL/wolfcrypt-jni
+
     /** TODO wipe keys after use.
      * One solution to mitigate the heap state is to run a program with try-finally statement
      * At least we can ensure that the finalization routines are run at program exit
@@ -57,7 +59,11 @@ interface Crypto {
      * If the signature is not valid, throw a SignatureException
      * If either [bytes] or [signature] is empty, throw an IllegalArgumentException
      */
-    fun verifySignature(signature: ByteArray, bytes: ByteArray, verifyingKey: PublicKeyCryptoAC)
+    fun verifySignature(
+        signature: ByteArray,
+        bytes: ByteArray,
+        verifyingKey: PublicKeyCryptoAC
+    )
 
     /**
      * Return a digital signature calculated on the [bytes] with the
@@ -107,7 +113,10 @@ interface Crypto {
      * Encrypt the [symKey] with the
      * [encryptingKey] and return the encrypted key
      */
-    fun encryptSymKey(encryptingKey: PublicKeyCryptoAC, symKey: SymmetricKeyCryptoAC): EncryptedSymKey
+    fun encryptSymKey(
+        encryptingKey: PublicKeyCryptoAC,
+        symKey: SymmetricKeyCryptoAC
+    ): EncryptedSymKey
 
     /**
      * Decrypt the [encryptedSymKey] encrypted with the
@@ -128,6 +137,7 @@ interface Crypto {
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
      * consuming it
+     * // TODO ensure that authenticated encryption like sodium is used
      */
     fun encryptStream(encryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream
 
@@ -137,6 +147,7 @@ interface Crypto {
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
      * consuming it
+     * // TODO ensure that authenticated encryption like sodium is used
      */
     fun decryptStream(decryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream
 

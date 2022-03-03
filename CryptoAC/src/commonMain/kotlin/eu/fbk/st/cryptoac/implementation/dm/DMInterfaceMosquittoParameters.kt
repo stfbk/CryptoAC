@@ -11,13 +11,14 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 /**
- * Parameters ([username], [password], [port] and [url])
+ * Parameters ([username], [password], [port], [url] and [tls])
  * for configuring the DM as a MQTT Mosquitto broker
  */
 @Serializable
 class DMInterfaceMosquittoParameters(
     override var username: String, override var password: ByteArray,
     override var port: Int, override var url: String,
+    override var tls: Boolean
 ) : DMInterfaceRBACMQTTParameters {
 
     /** The type of this interface */
@@ -31,7 +32,8 @@ class DMInterfaceMosquittoParameters(
         fun fromMap(parameters: HashMap<String, String>): DMInterfaceMosquittoParameters {
             return DMInterfaceMosquittoParameters(
                 username = parameters[SERVER.USERNAME]!!, port = parameters[SERVER.DM_PORT]!!.toInt(),
-                url = parameters[SERVER.DM_URL]!!, password = parameters[SERVER.DM_PASSWORD]!!.toByteArray()
+                url = parameters[SERVER.DM_URL]!!, password = parameters[SERVER.DM_PASSWORD]!!.toByteArray(),
+                tls = parameters[SERVER.DM_TLS]!!.toBooleanStrict()
             )
         }
 
@@ -62,6 +64,13 @@ class DMInterfaceMosquittoParameters(
                     className = "darkTextField",
                     defaultValue = parameters?.port.toString()
                 ),
+                CryptoACFormField(
+                    SERVER.DM_TLS,
+                    SERVER.DM_TLS,
+                    InputType.checkBox,
+                    className = "darkTextField",
+                    defaultValue = parameters?.tls.toString()
+                ),
             )
         )
     }
@@ -86,6 +95,7 @@ class DMInterfaceMosquittoParameters(
         if (updatedParameters is DMInterfaceMosquittoParameters) {
             port = updatedParameters.port
             // password = updatedParameters.password
+            // tls = updatedParameters.tls
             url = updatedParameters.url
         }
         else {
@@ -103,7 +113,6 @@ class DMInterfaceMosquittoParameters(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        if (!super.equals(other)) return false
 
         other as DMInterfaceMosquittoParameters
 
@@ -111,16 +120,19 @@ class DMInterfaceMosquittoParameters(
         if (!password.contentEquals(other.password)) return false
         if (port != other.port) return false
         if (url != other.url) return false
+        if (tls != other.tls) return false
+        if (dmType != other.dmType) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + username.hashCode()
+        var result = username.hashCode()
         result = 31 * result + password.contentHashCode()
         result = 31 * result + port
         result = 31 * result + url.hashCode()
+        result = 31 * result + tls.hashCode()
+        result = 31 * result + dmType.hashCode()
         return result
     }
 

@@ -1,5 +1,6 @@
 package eu.fbk.st.cryptoac.implementation.opa
 
+import eu.fbk.st.cryptoac.PolicyModel
 import eu.fbk.st.cryptoac.SafeRegex
 import io.ktor.utils.io.core.*
 import kotlinx.serialization.Serializable
@@ -7,11 +8,17 @@ import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
-/** Parameters, [port] and [url], for configuring the OPA */
+/**
+ * Parameters ([port], [url] and policy model)
+ * for configuring the Open Policy Agent
+ */
 @Serializable
-class OPAInterfaceParameters(var port: Int, var url: String) {
+class OPAInterfaceParameters(var port: Int, var url: String, var policyModel: PolicyModel) {
 
-    /** Check the parameters are valid through regular expressions and return true if they are, false otherwise */
+    /**
+     * Check the parameters are valid through regular
+     * expressions and return true if they are, false otherwise
+     */
     fun checkParameters(): Boolean =
         if (!SafeRegex.URL_OR_IPV4.matches(url)) {
             logger.warn { "URL ${url.toByteArray()} does not respect URL_OR_IPV4 regex" }
@@ -27,6 +34,7 @@ class OPAInterfaceParameters(var port: Int, var url: String) {
     fun update(updatedParameters: OPAInterfaceParameters) {
         port = updatedParameters.port
         url = updatedParameters.url
+        policyModel = updatedParameters.policyModel
     }
 
     /** Obscure (e.g., overwrite values of) sensitive fields */
@@ -42,6 +50,7 @@ class OPAInterfaceParameters(var port: Int, var url: String) {
 
         if (port != other.port) return false
         if (url != other.url) return false
+        if (policyModel != other.policyModel) return false
 
         return true
     }
@@ -49,6 +58,8 @@ class OPAInterfaceParameters(var port: Int, var url: String) {
     override fun hashCode(): Int {
         var result = port
         result = 31 * result + url.hashCode()
+        result = 31 * result + policyModel.hashCode()
         return result
     }
+
 }

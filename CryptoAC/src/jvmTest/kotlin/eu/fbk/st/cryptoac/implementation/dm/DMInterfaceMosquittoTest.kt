@@ -1163,7 +1163,7 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
 
     override fun disconnected(disconnectResponse: MqttDisconnectResponse?) {
         logger.info { "TEST: disconnected" }
-        client!!.connectSync(reconnecting = true)
+        client!!.connectSync(reconnecting = true, Parameters.dmInterfaceMosquittoParameters.tls)
     }
 
     override fun authPacketArrived(reasonCode: Int, properties: MqttProperties?) {

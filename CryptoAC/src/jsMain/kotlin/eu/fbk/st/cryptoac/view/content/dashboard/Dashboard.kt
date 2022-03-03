@@ -1,10 +1,7 @@
 package eu.fbk.st.cryptoac.view.content.dashboard
 
+import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.API.PROFILES
-import eu.fbk.st.cryptoac.CryptoACFormField
-import eu.fbk.st.cryptoac.InputType
-import eu.fbk.st.cryptoac.OutcomeCode
-import eu.fbk.st.cryptoac.SERVER
 import eu.fbk.st.cryptoac.SERVER.USERNAME
 import eu.fbk.st.cryptoac.core.*
 import eu.fbk.st.cryptoac.core.elements.User
@@ -263,7 +260,9 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                         mmInterfaceParameters = mmParameters as MMInterfaceRBACCLOUDParameters,
                         dmInterfaceParameters = dmParameters as DMInterfaceRBACCLOUDParameters,
                         opaInterfaceParameters = OPAInterfaceParameters(
-                            port = values[SERVER.OPA_PORT]!!.toInt(), url = values[SERVER.OPA_URL]!!
+                            port = values[SERVER.OPA_PORT]!!.toInt(),
+                            url = values[SERVER.OPA_URL]!!,
+                            policyModel = PolicyModel.valueOf(values[SERVER.OPA_POLICY_MODEL]!!)
                         )
                     )
                 }
@@ -287,7 +286,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                 props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
             }
             MainScope().launch {
-                /** Send the HTTPS  request */
+                /** Send the HTTPS request */
                 props.handleChangeBackdropIsOpen(true)
                 val response: HttpResponse = if (method == HttpMethod.Post) {
                     props.httpClient.post(endpoint) {
@@ -353,7 +352,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
 
     /** Get the profile of the [username] for the current coreType */
     private suspend fun getProfileFromProxy(username: String? = props.username) {
-        val actualEndpoint = "$baseURL${PROFILES.replace("{Core}", props.coreType.toString())}?$USERNAME=$username"
+        val actualEndpoint = "$baseURL${PROFILES.replace("{Core}", props.coreType.toString())}/$username"
         logger.info { "Getting the profile for user $username at endpoint $actualEndpoint" }
         val httpResponse: HttpResponse = props.httpClient.get(actualEndpoint)
 

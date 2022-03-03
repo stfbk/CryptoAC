@@ -71,11 +71,14 @@ const val enforcementColumn = "enforcement"
 
 
 /**
- * Implementation of the methods to interface with the MM
- * as a MySQL8+ database configured with the given [mmMySQLInterfaceParameters].
- * Note that the database is configured to avoid the disclosure of the AC policy to users with tokens and views.
- * Note that the name of the user connecting to the database is the same as the name in the AC policy.
- * Note that any value represented by a byte array is converted to BASE64 before being stored
+ * Implementation of the methods to interface with the MM as a MySQL8+
+ * database configured with the given [mmMySQLInterfaceParameters].
+ * Note that the database is configured to avoid the disclosure of
+ * the AC policy to users with tokens and views.
+ * Note that the name of the user connecting to the database is the
+ * same as the name in the AC policy.
+ * Note that any value represented by a byte array is converted to
+ * BASE64 before being stored
  */
 class MMInterfaceMySQL(
     private val mmMySQLInterfaceParameters: MMInterfaceMySQLParameters
@@ -99,7 +102,13 @@ class MMInterfaceMySQL(
     /**
      * Initialize the admin by adding in the metadata the
      * [admin] as both user and role and the [adminRoleTuple]
-     * and return the outcome code.
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_002_ROLE_ALREADY_EXISTS
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_034_ADMIN_ALREADY_INITIALIZED
+     * - CODE_060_ADMIN_NAME
      *
      * In this implementation, also initialize the database
      * with the commands contained in the [INIT_SQL_CODE]
@@ -183,8 +192,9 @@ class MMInterfaceMySQL(
             .apply { add(ElementStatus.OPERATIONAL) }
         createInsertStatement(usersTable, ArrayList<ArrayList<Any?>>().apply { add(adminUserValues) }).use {
             if (it.executeUpdate() != 1) {
-                logger.warn { "Admin user already present in the metadata" }
-                return OutcomeCode.CODE_001_USER_ALREADY_EXISTS
+                val message = "Admin was not present but update failed"
+                logger.error { message }
+                throw IllegalArgumentException(message)
             }
         }
 
@@ -209,7 +219,11 @@ class MMInterfaceMySQL(
     /**
      * Initialize the user by adding in the metadata the
      * public keys and token of the [user], updating also
-     * the status flag, and return the outcome code
+     * the status flag, and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_061_USER_ALREADY_INITIALIZED
      */
     override fun initUser(user: User): OutcomeCode {
         val username = user.name
@@ -225,6 +239,12 @@ class MMInterfaceMySQL(
         createUpdateStatement(usersView, userValues).use {
             if (it.executeUpdate() != 1) {
                 logger.warn { "User $username does not exist in the metadata" }
+
+                // TODO MANDATORY => modify the getStatus function to accept
+                //  also tokens, so we can check the status of
+                //  the user and return the codes CODE_061_USER_ALREADY_INITIALIZED
+                //  and CODE_013_USER_WAS_DELETED, so code is more complete
+
                 return OutcomeCode.CODE_004_USER_NOT_FOUND
             }
         }
@@ -234,7 +254,9 @@ class MMInterfaceMySQL(
 
     /**
      * Return whether the user with the given [username]
-     * is an admin user or not.
+     * is an admin user or not, along with the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
      *
      * In this implementation, we assert whether the [username]
      * is an admin by examining the database DELETE privileges
@@ -272,16 +294,21 @@ class MMInterfaceMySQL(
     /**
      * Add the [newUser] in the metadata. The user's asymmetric encryption
      * and signing public keys and token will be set by the user him/herself
-     * later on (initUser function). Finally, return the outcome code together
-     * with user's MM configuration parameters.
+     * later on (initUser function). Finally, return the user's MM configuration
+     * parameters together with the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_001_USER_ALREADY_EXISTS
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_062_CREATE_USER_MM
      *
      * In this implementation, also create an account in the database for the [newUser]
      */
     override fun addUser(newUser: User): WrapperMMParameters {
-        logger.info { "Adding the user ${newUser.name} in the metadata and in the database" }
+        val username = newUser.name
+        logger.info { "Adding the user $username in the metadata and in the database" }
 
-        if (getUsers(username = newUser.name, status = ElementStatus.DELETED).isNotEmpty()) {
-            logger.warn { "User ${newUser.name} was previously deleted" }
+        if (getUsers(username = username, status = ElementStatus.DELETED).isNotEmpty()) {
+            logger.warn { "User $username was previously deleted" }
             return WrapperMMParameters(OutcomeCode.CODE_013_USER_WAS_DELETED)
         }
 
@@ -293,93 +320,101 @@ class MMInterfaceMySQL(
         /** Add the user in the metadata. Keys and Token will be set by the user */
         logger.debug { "Adding the user in the metadata" }
         val adminUserValues = ArrayList<Any?>()
-            .apply { add(newUser.name) }.apply { add(newUser.name) }
+            .apply { add(username) }.apply { add(username) }
             .apply { add("mock") }.apply { add("mock") }
             .apply { add(ElementStatus.INCOMPLETE) }
         createInsertStatement(usersTable, ArrayList<ArrayList<Any?>>().apply { add(adminUserValues) }).use {
             if (it.executeUpdate() != 1) {
-                logger.warn { "User ${newUser.name} already present in the metadata" }
+                logger.warn { "User $username already present in the metadata" }
                 return WrapperMMParameters(OutcomeCode.CODE_001_USER_ALREADY_EXISTS)
             }
         }
 
-        /** Create the user at database level and then grant privileges on tables and views */
-        connection!!.prepareStatement(
-            "CREATE USER ? IDENTIFIED BY ?"
-        ).use {
-            logger.debug { "Creating the database user" }
-            it.setString(1, newUser.name)
-            it.setString(2, newPassword)
-            it.execute()
-        }
+        val code = try {
+            /** Create the user at database level and then grant privileges on tables and views */
+            connection!!.prepareStatement(
+                "CREATE USER ? IDENTIFIED BY ?"
+            ).use {
+                logger.debug { "Creating the database user" }
+                it.setString(1, username)
+                it.setString(2, newPassword)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT SELECT ($userTokenColumn, $asymEncPublicKeyColumn, $asymSigPublicKeyColumn, $statusColumn) ON $usersTable TO ?"
-        ).use {
-            logger.debug { "Granting permission on users table" }
-            it.setString(1, newUser.name)
-            it.execute()
-        }
+            connection!!.prepareStatement(
+                "GRANT SELECT ($userTokenColumn, $asymEncPublicKeyColumn, $asymSigPublicKeyColumn, $statusColumn) ON $usersTable TO ?"
+            ).use {
+                logger.debug { "Granting permission on users table" }
+                it.setString(1, username)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT SELECT ($roleTokenColumn, $asymEncPublicKeyColumn, $asymSigPublicKeyColumn, $statusColumn, $roleVersionNumberColumn) ON $rolesTable TO ?"
-        ).use {
-            logger.debug { "Granting permission on roles table" }
-            it.setString(1, newUser.name)
-            it.execute()
-        }
+            connection!!.prepareStatement(
+                "GRANT SELECT ($roleTokenColumn, $asymEncPublicKeyColumn, $asymSigPublicKeyColumn, $statusColumn, $roleVersionNumberColumn) ON $rolesTable TO ?"
+            ).use {
+                logger.debug { "Granting permission on roles table" }
+                it.setString(1, username)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT SELECT ($fileTokenColumn, $symEncKeyVersionNumberColumn, $statusColumn) ON $filesTable TO ?"
-        ).use {
-            logger.debug { "Granting permission on files table" }
-            it.setString(1, newUser.name)
-            it.execute()
-        }
+            connection!!.prepareStatement(
+                "GRANT SELECT ($fileTokenColumn, $symEncKeyVersionNumberColumn, $statusColumn) ON $filesTable TO ?"
+            ).use {
+                logger.debug { "Granting permission on files table" }
+                it.setString(1, username)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT SELECT ON $roleTuplesView TO ?"
-        ).use {
-            logger.debug { "Granting permission on role tuples view" }
-            it.setString(1, newUser.name)
-            it.execute()
-        }
+            connection!!.prepareStatement(
+                "GRANT SELECT ON $roleTuplesView TO ?"
+            ).use {
+                logger.debug { "Granting permission on role tuples view" }
+                it.setString(1, username)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT SELECT ON $permissionTuplesView TO ?"
-        ).use {
-            logger.debug { "Granting permission on permission tuples view" }
-            it.setString(1, newUser.name)
-            it.execute()
-        }
+            connection!!.prepareStatement(
+                "GRANT SELECT ON $permissionTuplesView TO ?"
+            ).use {
+                logger.debug { "Granting permission on permission tuples view" }
+                it.setString(1, username)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT SELECT ON $filesView TO ?"
-        ).use {
-            logger.debug { "Granting permission on files view" }
-            it.setString(1, newUser.name)
-            it.execute()
-        }
+            connection!!.prepareStatement(
+                "GRANT SELECT ON $filesView TO ?"
+            ).use {
+                logger.debug { "Granting permission on files view" }
+                it.setString(1, username)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT SELECT ON $fileTuplesView TO ?"
-        ).use {
-            logger.debug { "Granting permission on file tuples view" }
-            it.setString(1, newUser.name)
-            it.execute()
-        }
+            connection!!.prepareStatement(
+                "GRANT SELECT ON $fileTuplesView TO ?"
+            ).use {
+                logger.debug { "Granting permission on file tuples view" }
+                it.setString(1, username)
+                it.execute()
+            }
 
-        connection!!.prepareStatement(
-            "GRANT UPDATE ON $usersView TO ?"
-        ).use {
-            logger.debug { "Granting permission on users view" }
-            it.setString(1, newUser.name)
-            it.execute()
+            connection!!.prepareStatement(
+                "GRANT UPDATE ON $usersView TO ?"
+            ).use {
+                logger.debug { "Granting permission on users view" }
+                it.setString(1, username)
+                it.execute()
+            }
+
+            OutcomeCode.CODE_000_SUCCESS
+        } catch (e: SQLException) {
+            logger.warn { "Could not create user $username in MySQL" }
+            OutcomeCode.CODE_062_CREATE_USER_MM
         }
 
         return WrapperMMParameters(
+            code = code,
             parameters = MMInterfaceMySQLParameters(
-                username = newUser.name, password = newPassword,
+                username = username, password = newPassword,
                 port = mmMySQLInterfaceParameters.port, url = mmMySQLInterfaceParameters.url,
             )
         )
@@ -387,7 +422,10 @@ class MMInterfaceMySQL(
 
     /**
      * Add the [newRole] in the metadata
-     * and return the outcome code
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_002_ROLE_ALREADY_EXISTS
+     * - CODE_014_ROLE_WAS_DELETED
      */
     override fun addRole(newRole: Role): OutcomeCode {
         logger.info { "Adding the role ${newRole.name} in the metadata" }
@@ -418,7 +456,10 @@ class MMInterfaceMySQL(
 
     /**
      * Add the [newFile] in the metadata
-     * and return the outcome code
+     * and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_003_FILE_ALREADY_EXISTS
+     * - CODE_015_FILE_WAS_DELETED
      */
     override fun addFile(newFile: File): OutcomeCode {
         logger.info { "Adding the file ${newFile.name} in the metadata" }
@@ -450,7 +491,9 @@ class MMInterfaceMySQL(
 
     /**
      * Add the [newRoleTuples] in the metadata and
-     * return the outcome code
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
      */
     override fun addRoleTuples(newRoleTuples: HashSet<RoleTuple>): OutcomeCode {
         val size = newRoleTuples.size
@@ -487,7 +530,9 @@ class MMInterfaceMySQL(
 
     /**
      * Add the [newPermissionTuples] in the metadata and
-     * return the outcome code
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
      */
     override fun addPermissionTuples(newPermissionTuples: HashSet<PermissionTuple>): OutcomeCode {
         val size = newPermissionTuples.size
@@ -524,7 +569,9 @@ class MMInterfaceMySQL(
 
     /**
      * Add the [newFileTuples] in the metadata and
-     * return the outcome code
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_012_FILETUPLE_ALREADY_EXISTS
      */
     override fun addFileTuples(newFileTuples: HashSet<FileTuple>): OutcomeCode {
         val size = newFileTuples.size
@@ -1160,7 +1207,11 @@ class MMInterfaceMySQL(
     /**
      * Delete the [username] but keep at least the public key,
      * so to verify digital signatures signed by the user and
-     * return the outcome code.
+     * return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_004_USER_NOT_FOUND
+     * - CODE_013_USER_WAS_DELETED
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      *
      * In this implementation, move the [username] in the deleted
      * users' table abd delete the user at database level
@@ -1223,7 +1274,11 @@ class MMInterfaceMySQL(
     }
 
     /**
-     * Delete the [roleName] and return the outcome code.
+     * Delete the [roleName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_014_ROLE_WAS_DELETED
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      *
      * In this implementation, move the [roleName] in the
      * deleted roles table
@@ -1282,7 +1337,10 @@ class MMInterfaceMySQL(
     }
 
     /**
-     * Delete the [fileName] and return the outcome code.
+     * Delete the [fileName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_015_FILE_WAS_DELETED
      *
      * In this implementation, move the [fileName] in the
      * deleted files table
@@ -1337,7 +1395,10 @@ class MMInterfaceMySQL(
 
     /**
      * Delete the role tuple matching the given
-     * [roleName] and return the outcome code
+     * [roleName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_007_ROLETUPLE_NOT_FOUND
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      */
     override fun deleteRoleTuples(roleName: String): OutcomeCode {
         logger.info { "Deleting role tuples for role name $roleName" }
@@ -1371,7 +1432,10 @@ class MMInterfaceMySQL(
     /**
      * Delete the permission tuples matching the [roleName] and/or
      * the [fileName] (at least one required), further filtering by
-     * [roleVersionNumber], if given. Finally, return the outcome code
+     * [roleVersionNumber], if given. Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
      */
      override fun deletePermissionTuples(
         roleName: String?,
@@ -1427,7 +1491,9 @@ class MMInterfaceMySQL(
 
     /**
      * Delete the file tuple matching the given
-     * [fileName] and return the outcome code
+     * [fileName] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_009_FILETUPLE_NOT_FOUND
      */
     override fun deleteFileTuples(fileName: String): OutcomeCode {
         logger.info { "Deleting file tuples for file name $fileName" }
@@ -1454,7 +1520,10 @@ class MMInterfaceMySQL(
 
     /**
      * Increment the symmetric encryption version number
-     * of the [fileName] by 1 and return the outcome code
+     * of the [fileName] by 1 and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_006_FILE_NOT_FOUND
+     * - CODE_015_FILE_WAS_DELETED
      */
     override fun incrementSymEncVersionNumberByOne(fileName: String): OutcomeCode {
         logger.info { "Incrementing the symmetric encryption version number of file $fileName by 1" }
@@ -1470,14 +1539,22 @@ class MMInterfaceMySQL(
         val values = LinkedHashMap<String, Any?>()
             .apply { put("$symEncKeyVersionNumberColumn=$symEncKeyVersionNumberColumn+1", null) }
 
-        createUpdateStatement(
+        return createUpdateStatement(
             table = filesTable,
             values = values,
             whereParameters = whereParameters,
         ).use {
-            return if (it.executeUpdate() != 1) {
-                logger.warn { "File was not found" }
-                OutcomeCode.CODE_006_FILE_NOT_FOUND
+            if (it.executeUpdate() != 1) {
+                logger.warn { "File $fileName not found in the metadata" }
+                return when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                    ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
+                    null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                    else -> {
+                        val message = "File not found but file is in table"
+                        logger.error { message }
+                        throw IllegalArgumentException(message)
+                    }
+                }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
             }
@@ -1489,7 +1566,10 @@ class MMInterfaceMySQL(
     /**
      * Update the asymmetric encryption and signing public keys
      * of the given [roleName] with the new [newAsymEncPublicKey]
-     * and [newAsymSigPublicKey] and return the outcome code
+     * and [newAsymSigPublicKey] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_005_ROLE_NOT_FOUND
+     * - CODE_014_ROLE_WAS_DELETED
      */
     override fun updateRoleAsymKeys(
         roleName: String,
@@ -1510,14 +1590,22 @@ class MMInterfaceMySQL(
             .apply { put(asymSigPublicKeyColumn, newAsymSigPublicKey.encoded.encodeBase64()) }
             .apply { put("$roleVersionNumberColumn=$roleVersionNumberColumn+1", null) }
 
-        createUpdateStatement(
+        return createUpdateStatement(
             table = rolesTable,
             values = values,
             whereParameters = whereParameters,
         ).use {
-            return if (it.executeUpdate() != 1) {
-                logger.warn { "Role was not found" }
-                OutcomeCode.CODE_005_ROLE_NOT_FOUND
+            if (it.executeUpdate() != 1) {
+                logger.warn { "Role $roleName not found in the metadata" }
+                when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                    ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                    null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                    else -> {
+                        val message = "Role not found but role is in table"
+                        logger.error { message }
+                        throw IllegalArgumentException(message)
+                    }
+                }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
             }
@@ -1528,7 +1616,9 @@ class MMInterfaceMySQL(
 
     /**
      * Update the permission, signature and signer token of the
-     * given [updatedPermissionTuple] and return the outcome code
+     * given [updatedPermissionTuple] and return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
      */
     override fun updatePermissionTuple(updatedPermissionTuple: PermissionTuple): OutcomeCode {
         logger.info {
@@ -1568,7 +1658,12 @@ class MMInterfaceMySQL(
      * previous status in case of errors. As this method could be invoked
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
-     * starting a new transaction only when [locks] is 0.
+     * starting a new transaction only when [locks] is 0. Finally, return
+     * the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * - CODE_064_ACCESS_DENIED_TO_MM
      *
      * In this implementation, set the "autocommit" MySQL flag to OFF
      */
@@ -1601,7 +1696,7 @@ class MMInterfaceMySQL(
             catch(e: SQLException) {
                 if ((e.message ?: "").contains("Access denied for user")) {
                     logger.warn { "MM MySQL - access denied for user" }
-                    OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED
+                    OutcomeCode.CODE_064_ACCESS_DENIED_TO_MM
                 } else {
                     throw e
                 }
@@ -1618,7 +1713,10 @@ class MMInterfaceMySQL(
      * Signal an error during an atomic transaction so to restore the
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
-     * rollbacking to the previous status only when [locks] becomes 0
+     * rollbacking to the previous status only when [locks] becomes 0.
+     * Finally, return the outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS
      *
      * In this implementation, rollback the transaction
      */
@@ -1648,7 +1746,11 @@ class MMInterfaceMySQL(
      * Signal the end of an atomic transaction so commit the changes.
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
-     * the transaction only when [locks] becomes 0
+     * the transaction only when [locks] becomes 0. Finally, return the
+     * outcome code:
+     * - CODE_000_SUCCESS
+     * - CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS
+     * - CODE_058_UNLOCK_FAILED
      *
      * In this implementation, commit the transaction
      */
@@ -1657,7 +1759,12 @@ class MMInterfaceMySQL(
             logger.info { "Unlocking the status of the MM" }
             locks--
             if (!connection!!.isClosed) {
-                connection!!.commit()
+                try {
+                    connection!!.commit()
+                } catch (e: SQLException) {
+                    logger.warn { "Commit of MySQL database failed" }
+                    OutcomeCode.CODE_058_UNLOCK_FAILED
+                }
                 connection!!.close()
                 OutcomeCode.CODE_000_SUCCESS
             } else {

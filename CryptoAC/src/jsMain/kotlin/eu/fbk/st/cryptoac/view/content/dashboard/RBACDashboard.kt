@@ -18,7 +18,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import react.*
 
@@ -55,26 +54,26 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
 
     /** Get the list of users */
     suspend fun getUsers(): List<Array<String>>? {
-        val actualEndpoint = "$baseURL${API.PROXY}${API.USERS.replace("{Core}", props.coreType.toString())}"
+        val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.USERS.replace("{Core}", props.coreType.toString())}"
         return getElements(actualEndpoint, OutcomeCode.CODE_004_USER_NOT_FOUND, ElementType.USER)
     }
 
     /** Get the list of roles */
     suspend fun getRoles(): List<Array<String>>? {
-        val actualEndpoint = "$baseURL${API.PROXY}${API.ROLES.replace("{Core}", props.coreType.toString())}"
+        val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.ROLES.replace("{Core}", props.coreType.toString())}"
         return getElements(actualEndpoint, OutcomeCode.CODE_005_ROLE_NOT_FOUND, ElementType.ROLE)
     }
 
     /** Get the list of files */
     suspend fun getFiles(): List<Array<String>>? {
-        val actualEndpoint = "$baseURL${API.PROXY}${API.FILES.replace("{Core}", props.coreType.toString())}"
+        val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.FILES.replace("{Core}", props.coreType.toString())}"
         return getElements(actualEndpoint, OutcomeCode.CODE_006_FILE_NOT_FOUND, ElementType.FILE)
     }
 
     /** Get the list of assignments filtering, if given, by [username] and [roleName] */
     suspend fun getAssignments(username: String? = null, roleName: String? = null) : List<Array<String>>? {
         val actualEndpoint =
-            "$baseURL${API.PROXY}${API.ASSIGNMENTS.replace("{Core}", props.coreType.toString())}?" +
+            "$baseURL${API.CRYPTOAC}${API.ASSIGNMENTS.replace("{Core}", props.coreType.toString())}?" +
                     if (username != null) "${SERVER.USERNAME}=$username" else "" +
                             if (roleName != null) "${SERVER.ROLE_NAME}=$roleName" else ""
         return getElements(actualEndpoint, OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND, ElementType.ASSIGNMENT)
@@ -82,7 +81,7 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
 
     /** Get the list of permissions filtering, if given, by [roleName] and [fileName] */
     suspend fun getPermissions(roleName: String? = null, fileName: String? = null): List<Array<String>>? {
-        val actualEndpoint = "$baseURL${API.PROXY}${API.PERMISSIONS.replace("{Core}", props.coreType.toString())}?" +
+        val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.PERMISSIONS.replace("{Core}", props.coreType.toString())}?" +
                 if (roleName != null) "${SERVER.ROLE_NAME}=$roleName" else "" +
                         if (fileName != null) "${SERVER.FILE_NAME}=$fileName" else ""
         return getElements(actualEndpoint, OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND, ElementType.PERMISSION)

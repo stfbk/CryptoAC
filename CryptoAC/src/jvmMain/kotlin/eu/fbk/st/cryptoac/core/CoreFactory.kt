@@ -10,12 +10,17 @@ private val logger = KotlinLogging.logger {}
 class CoreFactory {
 
     companion object {
-        /** Return a Core object configured with the given [coreParameters] */
+        /**
+         * Return a Core object configured
+         * with the given [coreParameters]
+         */
         fun getCore(coreParameters: CoreParameters): Core {
-            logger.debug { "Creating core object of type ${coreParameters.coreType}, " +
-                    "crypto ${coreParameters.cryptoType} and user ${coreParameters.user.name}" }
-            val cryptoObject = CryptoFactory.getCrypto(coreParameters.cryptoType)
-            return when (coreParameters.coreType) {
+            val coreType = coreParameters.coreType
+            val cryptoType = coreParameters.cryptoType
+            logger.debug { "Creating core of type $coreType, crypto " +
+                    "$cryptoType for user ${coreParameters.user.name}" }
+            val cryptoObject = CryptoFactory.getCrypto(cryptoType)
+            return when (coreType) {
                 CoreType.RBAC_CLOUD -> {
                     if (coreParameters is CoreParametersCLOUD) {
                         CoreRBACCLOUD(
