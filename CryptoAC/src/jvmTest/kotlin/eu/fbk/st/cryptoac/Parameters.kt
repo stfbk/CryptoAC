@@ -97,7 +97,7 @@ object Parameters {
         username = ADMIN
     )
     val opaInterfaceParameters = OPAInterfaceParameters(
-        port = 8181, url = "10.1.0.8"
+        port = 8181, url = "10.1.0.8", policyModel = PolicyModel.RBAC
     )
     val adminCoreRBACCLOUDParameters = CoreParametersCLOUD(
         User(

@@ -15,52 +15,35 @@ interface DMInterface {
     var locks: Int
 
     /**
-     * Configure the DM with relevant [parameters]
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * If necessary, configure the DM with relevant
+     * [parameters] and return the outcome code
      */
     fun configure(parameters: CoreParameters): OutcomeCode
 
     /**
-     * Add the [content] of the [newFile]
-     * in the DM and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_003_FILE_ALREADY_EXISTS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Create a new resource [newFile], possibly
+     * initializing it with the given [content]
+     * in the DM and return the outcome code
      */
     fun addFile(newFile: File, content: InputStream): OutcomeCode
 
     /**
-     * Download the content of the file matching
-     * the given [fileName] from the DM and return
-     * it along with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Require read access to the resource [fileName],
+     * possibly returning an input stream from the DM
+     * along with the outcome code
      */
     fun readFile(fileName: String): WrappedInputStream
 
     /**
-     * Overwrite the [content] of the [updatedFile]
-     * in the DM and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_025_FILE_RENAMING
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Require write access to the resource [updatedFile],
+     * possibly using the [content] in the DM and return
+     * the outcome code
      */
     fun writeFile(updatedFile: File, content: InputStream): OutcomeCode
 
     /**
-     * Delete the [fileName] from the data
-     * storage and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Delete the resource [fileName] from the DM
+     * and return the outcome code
      */
     fun deleteFile(fileName: String): OutcomeCode
 
@@ -72,9 +55,7 @@ interface DMInterface {
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
      * starting a new transaction only when [locks] is 0. Finally, return
-     * the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * the outcome code
      */
     fun lock(): OutcomeCode
 
@@ -83,9 +64,7 @@ interface DMInterface {
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     fun rollback(): OutcomeCode
 
@@ -94,9 +73,7 @@ interface DMInterface {
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
      * the transaction only when [locks] becomes 0. Finally, return the
-     * outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * outcome code
      */
     fun unlock(): OutcomeCode
 }

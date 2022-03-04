@@ -114,15 +114,7 @@ fun Route.profileRouting() {
 
         /**
          * The admin can get the profile of all users,
-         * while a user can only get her own profile.
-         * Possible outcome codes are:
-         * - CODE_000_SUCCESS
-         * - CODE_019_MISSING_PARAMETERS
-         * - CODE_020_INVALID_PARAMETER
-         * - CODE_035_FORBIDDEN
-         * - CODE_036_UNAUTHORIZED
-         * - CODE_038_PROFILE_NOT_FOUND
-         * - CODE_047_UNEXPECTED
+         * while a user can only get her own profile
          */
         get("{$USERNAME}") {
 
@@ -186,15 +178,7 @@ fun Route.profileRouting() {
          * The admin can delete the profile of all users,
          * while a user can only delete her own profile,
          * if present. This API does not delete the user
-         * from the access control policy.
-         * Possible outcome codes are:
-         * - CODE_000_SUCCESS
-         * - CODE_019_MISSING_PARAMETERS
-         * - CODE_020_INVALID_PARAMETER
-         * - CODE_035_FORBIDDEN
-         * - CODE_036_UNAUTHORIZED
-         * - CODE_038_PROFILE_NOT_FOUND
-         * - CODE_047_UNEXPECTED
+         * from the access control policy
          */
         delete("{$USERNAME}") {
 
@@ -259,30 +243,7 @@ fun Route.profileRouting() {
          * the consistency of the given data and possibly
          * generating cryptographic keys. If the user has
          * yet to be initialized, call the initialization
-         * function.
-         * Possible outcome codes are:
-         * - CODE_000_SUCCESS
-         * - CODE_002_ROLE_ALREADY_EXISTS
-         * - CODE_004_USER_NOT_FOUND
-         * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-         * - CODE_013_USER_WAS_DELETED
-         * - CODE_014_ROLE_WAS_DELETED
-         * - CODE_018_INTERFACE_CONFIGURATION_PARAMETERS
-         * - CODE_019_MISSING_PARAMETERS
-         * - CODE_020_INVALID_PARAMETER
-         * - CODE_028_OPA_POLICY_CREATION
-         * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-         * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-         * - CODE_034_ADMIN_ALREADY_INITIALIZED
-         * - CODE_035_FORBIDDEN
-         * - CODE_036_UNAUTHORIZED
-         * - CODE_038_PROFILE_NOT_FOUND
-         * - CODE_042_RM_CONNECTION_TIMEOUT
-         * - CODE_043_DM_CONNECTION_TIMEOUT
-         * - CODE_044_MM_CONNECTION_TIMEOUT
-         * - CODE_047_UNEXPECTED
-         * - CODE_060_ADMIN_NAME
-         * - CODE_061_USER_ALREADY_INITIALIZED
+         * function
          */
         post {
 
@@ -427,16 +388,7 @@ fun Route.profileRouting() {
 
         /**
          * The admin can update the profile of all users,
-         * while a user can only update her own profile.
-         * Possible outcome codes are:
-         * - CODE_000_SUCCESS
-         * - CODE_018_INTERFACE_CONFIGURATION_PARAMETERS
-         * - CODE_019_MISSING_PARAMETERS
-         * - CODE_020_INVALID_PARAMETER
-         * - CODE_035_FORBIDDEN
-         * - CODE_036_UNAUTHORIZED
-         * - CODE_038_PROFILE_NOT_FOUND
-         * - CODE_047_UNEXPECTED
+         * while a user can only update her own profile
          */
         patch {
 
@@ -535,35 +487,28 @@ fun Route.profileRouting() {
 /** Routes related to admin's access control policy management */
 fun Route.adminRouting() {
 
-    /**
-     * Ensure that the user invoking the API
-     * is authenticated, provided a valid
-     * core parameter, has a profile and
-     * is the admin
-     */
-    intercept(ApplicationCallPipeline.Features) {
-        if (checkPreconditions(call)) {
-            proceed()
-        } else {
-            finish()
-        }
-    }
-
     /** Wrap all routes related to CryptoAC */
     route(CRYPTOAC) {
+
+        /**
+         * Ensure that the user invoking the API
+         * is authenticated, provided a valid
+         * core parameter, has a profile and
+         * is the admin
+         */
+        intercept(ApplicationCallPipeline.Features) {
+            if (checkPreconditions(call)) {
+                proceed()
+            } else {
+                finish()
+            }
+        }
 
         route(USERS) {
 
             /**
-             * Get the list of currently existing users.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Get the list of currently
+             * existing users
              */
             get {
                 // TODO implement button in web interface
@@ -593,19 +538,7 @@ fun Route.adminRouting() {
 
             /**
              * Create a new user in the access control policy
-             * and return the configuration parameters.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_001_USER_ALREADY_EXISTS
-             * - CODE_013_USER_WAS_DELETED
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
-             * - CODE_062_CREATE_USER_MM
+             * and return the configuration parameters
              */
             post {
 
@@ -644,28 +577,8 @@ fun Route.adminRouting() {
             }
 
             /**
-             * Delete a user from the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_005_ROLE_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_007_ROLETUPLE_NOT_FOUND
-             * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-             * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-             * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-             * - CODE_013_USER_WAS_DELETED
-             * - CODE_014_ROLE_WAS_DELETED
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_040_UR_ASSIGNMENTS_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Delete a user from the
+             * access control policy
              */
             delete("{$USERNAME}") {
 
@@ -705,15 +618,8 @@ fun Route.adminRouting() {
         route(ROLES) {
 
             /**
-             * Get the list of currently existing roles.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Get the list of currently
+             * existing roles
              */
             get {
                 // TODO implement button in web interface
@@ -743,19 +649,8 @@ fun Route.adminRouting() {
             }
 
             /**
-             * Create a new role in the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_002_ROLE_ALREADY_EXISTS
-             * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-             * - CODE_014_ROLE_WAS_DELETED
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Create a new role in the
+             * access control policy
              */
             post {
                 val userData = call.attributes[loggedUserDataKey]
@@ -791,28 +686,8 @@ fun Route.adminRouting() {
              }
 
             /**
-             * Delete a role from the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_005_ROLE_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_007_ROLETUPLE_NOT_FOUND
-             * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-             * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-             * - CODE_014_ROLE_WAS_DELETED
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_016_INVALID_PERMISSION
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
-             * - CODE_040_UR_ASSIGNMENTS_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Delete a role from the
+             * access control policy
              */
             delete("{$ROLE_NAME}") {
                 val userData = call.attributes[loggedUserDataKey]
@@ -852,15 +727,8 @@ fun Route.adminRouting() {
         route(FILES) {
 
             /**
-             * Get the list of currently existing files.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Get the list of currently
+             * existing files
              */
             get {
                 // TODO implement button in web interface
@@ -887,23 +755,8 @@ fun Route.adminRouting() {
             }
 
             /**
-             * Delete a file from the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_005_ROLE_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-             * - CODE_009_FILETUPLE_NOT_FOUND
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Delete a file from the
+             * access control policy
              */
             delete("{$FILE_NAME}") {
                 val userData = call.attributes[loggedUserDataKey]
@@ -943,22 +796,8 @@ fun Route.adminRouting() {
         route(ASSIGNMENTS) {
 
             /**
-             * Create a new user-role assignment in the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_005_ROLE_NOT_FOUND
-             * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-             * - CODE_013_USER_WAS_DELETED
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Create a new user-role assignment
+             * in the access control policy
              */
             post {
                 val userData = call.attributes[loggedUserDataKey]
@@ -1001,27 +840,8 @@ fun Route.adminRouting() {
             }
 
             /**
-             * Delete a user-role assignment from the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_005_ROLE_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_007_ROLETUPLE_NOT_FOUND
-             * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-             * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-             * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-             * - CODE_014_ROLE_WAS_DELETED
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_040_UR_ASSIGNMENTS_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Delete a user-role assignment
+             * from the access control policy
              */
             delete("{$USERNAME}/{$ROLE_NAME}") {
                 val userData = call.attributes[loggedUserDataKey]
@@ -1067,22 +887,7 @@ fun Route.adminRouting() {
 
             /**
              * Assign a new permission to a role over
-             * a file in the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_005_ROLE_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-             * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-             * - CODE_016_INVALID_PERMISSION
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * a file in the access control policy
              */
             post {
                 val userData = call.attributes[loggedUserDataKey]
@@ -1142,24 +947,7 @@ fun Route.adminRouting() {
 
             /**
              * Delete a permission from a role over a
-             * file from the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_005_ROLE_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-             * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_016_INVALID_PERMISSION
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * file from the access control policy
              */
             delete("{$ROLE_NAME}/{$FILE_NAME}/{$PERMISSION}") {
                 val userData = call.attributes[loggedUserDataKey]
@@ -1224,37 +1012,27 @@ fun Route.adminRouting() {
 /** Routes related to users' access control policy operations */
 fun Route.userRouting() {
 
-    /**
-     * Ensure that the user invoking the API
-     * is authenticated, provided a valid
-     * core parameter and has a profile
-     */
-    intercept(ApplicationCallPipeline.Features) {
-        if (checkPreconditions(call, checkAdmin = false)) {
-            proceed()
-        } else {
-            finish()
-        }
-    }
-
     /** Wrap all routes related to CryptoAC */
     route(CRYPTOAC) {
+
+        /**
+         * Ensure that the user invoking the API
+         * is authenticated, provided a valid
+         * core parameter and has a profile
+         */
+        intercept(ApplicationCallPipeline.Features) {
+            if (checkPreconditions(call, checkAdmin = false)) {
+                proceed()
+            } else {
+                finish()
+            }
+        }
 
         route(FILES) {
 
             /**
-             * Get a file from the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_038_PROFILE_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Get a file from the access
+             * control policy
              */
             get("{$FILE_NAME}") {
 
@@ -1300,30 +1078,8 @@ fun Route.userRouting() {
             }
 
             /**
-             * Create a new file in the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_003_FILE_ALREADY_EXISTS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_016_INVALID_PERMISSION
-             * - CODE_017_INVALID_VERSION_NUMBER
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_021_RM_CONFIGURATION
-             * - CODE_024_FILE_DELETE
-             * - CODE_025_FILE_RENAMING
-             * - CODE_026_TUPLE_FORMAT
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_038_PROFILE_NOT_FOUND
-             * - CODE_042_RM_CONNECTION_TIMEOUT
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
-             * - CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM
+             * Create a new file in the
+             * access control policy
              */
             post {
 
@@ -1422,29 +1178,8 @@ fun Route.userRouting() {
             }
 
             /**
-             * Update a file in the access control policy.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_003_FILE_ALREADY_EXISTS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_009_FILETUPLE_NOT_FOUND
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_017_INVALID_VERSION_NUMBER
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_021_RM_CONFIGURATION
-             * - CODE_024_FILE_DELETE
-             * - CODE_025_FILE_RENAMING
-             * - CODE_027_AC_ENFORCEMENT_INCONSISTENT
-             * - CODE_030_OPA_DOCUMENT_DOWNLOAD
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_038_PROFILE_NOT_FOUND
-             * - CODE_042_RM_CONNECTION_TIMEOUT
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
-             * - CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM
+             * Update a file in the
+             * access control policy
              */
             patch {
 
@@ -1572,16 +1307,8 @@ fun Route.userRouting() {
         route(ASSIGNMENTS) {
 
             /**
-             * Get the assignments of the currently logged-in user.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_038_PROFILE_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Get the assignments of the
+             * currently logged-in user
              * */
             get {
                 // TODO implement button in web interface
@@ -1624,16 +1351,8 @@ fun Route.userRouting() {
         route(PERMISSIONS) {
 
             /**
-             * Get the permissions of the currently logged-in user.
-             * Possible outcome codes are:
-             * - CODE_000_SUCCESS
-             * - CODE_019_MISSING_PARAMETERS
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-             * - CODE_036_UNAUTHORIZED
-             * - CODE_038_PROFILE_NOT_FOUND
-             * - CODE_043_DM_CONNECTION_TIMEOUT
-             * - CODE_044_MM_CONNECTION_TIMEOUT
+             * Get the permissions of the
+             * currently logged-in user
              */
             get {
                 // TODO implement button in web interface
@@ -1678,12 +1397,7 @@ fun Route.loginRouting() {
     /** Wrap all routes related to log in */
     route(LOGIN) {
 
-        /**
-         * Log in the user.
-         * Possible outcome codes are:
-         * - CODE_000_SUCCESS
-         * - CODE_019_MISSING_PARAMETERS
-         */
+        /** Log in the user */
         post {
             if (doesSessionExists(call.sessions)) {
                 logger.warn {

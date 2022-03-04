@@ -18,7 +18,7 @@ paths:
   /:
     post:
       summary: "Configure the RM."
-      description: "Configure the RM. Possible outcome codes are: CODE_000_SUCCESS."
+      description: "Configure the RM."
       operationId: configureDM
       security:
         - cookieAuth: []
@@ -44,7 +44,7 @@ paths:
   /files/{CORE}:
     post:
       summary: "Ask the RM to approve the upload of a new file in the DM."
-      description: "Ask the RM to approve the upload of a new file in the DM. Possible outcome codes: CODE_000_SUCCESS, CODE_003_FILE_ALREADY_EXISTS, CODE_004_USER_NOT_FOUND, CODE_006_FILE_NOT_FOUND, CODE_015_FILE_WAS_DELETED, CODE_016_INVALID_PERMISSION, CODE_017_INVALID_VERSION_NUMBER, CODE_020_INVALID_PARAMETER, CODE_021_RM_CONFIGURATION, CODE_025_FILE_RENAMING, CODE_026_TUPLE_FORMAT, CODE_043_DM_CONNECTION_TIMEOUT."
+      description: "Ask the RM to approve the upload of a new file in the DM."
       operationId: checkFileAdd
       security:
         - cookieAuth: []
@@ -116,7 +116,7 @@ paths:
                   value: "CODE_021_RM_CONFIGURATION"
     patch:
       summary: "Ask the RM to approve the overwrite of a file in the DM."
-      description: "Ask the RM to approve the overwrite of a file in the DM. Possible outcome codes: CODE_000_SUCCESS, CODE_004_USER_NOT_FOUND, CODE_006_FILE_NOT_FOUND, CODE_009_FILETUPLE_NOT_FOUND, CODE_015_FILE_WAS_DELETED, CODE_017_INVALID_VERSION_NUMBER, CODE_020_INVALID_PARAMETER, CODE_021_RM_CONFIGURATION, CODE_025_FILE_RENAMING, CODE_027_AC_ENFORCEMENT_INCONSISTENT, CODE_043_DM_CONNECTION_TIMEOUT."
+      description: "Ask the RM to approve the overwrite of a file in the DM."
       operationId: checkFileWrite
       security:
         - cookieAuth: []

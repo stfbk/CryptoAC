@@ -21,42 +21,42 @@ object API {
     /** (any mode) the current version of the APIs */
     private const val CURRENT_VERSION = VERSION1
 
-    /** (proxy mode) base URL for proxy APIs */
+    /** (CryptoAC) base URL for CryptoAC APIs */
     const val CRYPTOAC = "${CURRENT_VERSION}CryptoAC/"
 
-    /** (rm mode) base URL for rm APIs */
+    /** (CryptoAC RM mode) base URL for rm APIs */
     const val RM = "${CURRENT_VERSION}rm/"
 
-    /** (dm mode) base URL for dm APIs */
+    /** (CryptoAC DM mode) base URL for dm APIs */
     const val DM = "${CURRENT_VERSION}dm/"
 
     /** (OPA) base URL for OPA APIs */
     const val OPA = "/v1/"
 
     
-    /** (proxy mode) base URL for user related APIs */
+    /** (CryptoAC mode) base URL for user related APIs */
     const val USERS = "users/{$CORE}/"
 
-    /** (proxy mode) base URL for role related APIs */
+    /** (CryptoAC mode) base URL for role related APIs */
     const val ROLES = "roles/{$CORE}/"
 
-    /** (proxy mode) base URL for file related APIs */
+    /** (CryptoAC mode) base URL for file related APIs */
     const val FILES = "files/{$CORE}/"
 
-    /** (proxy mode) base URL for role tuple related APIs */
+    /** (CryptoAC mode) base URL for role tuple related APIs */
     const val ASSIGNMENTS = "assignments/{$CORE}/"
 
-    /** (proxy mode) base URL for file tuple related APIs */
+    /** (CryptoAC mode) base URL for file tuple related APIs */
     const val PERMISSIONS = "permissions/{$CORE}/"
 
-    /** (proxy mode) base URL for users' profile */
+    /** (CryptoAC mode) base URL for users' profile */
     const val PROFILES = "${CURRENT_VERSION}profile/{$CORE}/"
 
 
-    /** (proxy mode) get the login page */
+    /** (CryptoAC mode) get the login page */
     const val LOGIN = "/login/"
 
-    /** (proxy mode) log out the authenticated user */
+    /** (CryptoAC mode) log out the authenticated user */
     const val LOGOUT = "/logout/"
 
 

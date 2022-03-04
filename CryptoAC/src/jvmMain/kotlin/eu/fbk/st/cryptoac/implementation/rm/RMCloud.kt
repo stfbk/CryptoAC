@@ -58,20 +58,8 @@ fun Route.filesRouting() {
         route(FILES) {
 
             /**
-             * Check an add file operation.
-             * Possible outcome codes:
-             * - CODE_000_SUCCESS
-             * - CODE_003_FILE_ALREADY_EXISTS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_016_INVALID_PERMISSION
-             * - CODE_017_INVALID_VERSION_NUMBER
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_021_RM_CONFIGURATION
-             * - CODE_025_FILE_RENAMING
-             * - CODE_026_TUPLE_FORMAT
-             * - CODE_043_DM_CONNECTION_TIMEOUT
+             * Check an add
+             * file operation
              */
             post {
                 // TODO authenticate user (login as in the proxy?)
@@ -299,19 +287,8 @@ fun Route.filesRouting() {
 
             // TODO perhaps the file name should be a path parameter?
             /**
-             * Check a write file operation.
-             * Possible outcome codes:
-             * - CODE_000_SUCCESS
-             * - CODE_004_USER_NOT_FOUND
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_009_FILETUPLE_NOT_FOUND
-             * - CODE_015_FILE_WAS_DELETED
-             * - CODE_017_INVALID_VERSION_NUMBER
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_021_RM_CONFIGURATION
-             * - CODE_025_FILE_RENAMING
-             * - CODE_027_AC_ENFORCEMENT_INCONSISTENT
-             * - CODE_043_DM_CONNECTION_TIMEOUT
+             * Check a write
+             * file operation
              */
             patch {
                 // TODO authenticate user (login as in the proxy?)
@@ -517,10 +494,6 @@ fun Route.configureRouting() {
     /** Configure the RM */
     route(RM) {
 
-        /**
-         * Possible outcome codes:
-         * - CODE_000_SUCCESS
-         */
         post {
 
             // TODO authenticate user (login as in the proxy?)
@@ -553,11 +526,7 @@ fun Application.registerRMRoutes() {
 
 /**
  * Lock the specified interfaces
- * and return the outcome code:
- * - CODE_000_SUCCESS
- * - CODE_030_OPA_DOCUMENT_DOWNLOAD
- * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
- * - CODE_044_MM_CONNECTION_TIMEOUT
+ * and return the outcome code
  */
 private fun startOfMethod(mmLock: Boolean = true, opaLock: Boolean = true, dmLock: Boolean = true): OutcomeCode {
     logger.info {

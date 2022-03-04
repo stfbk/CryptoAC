@@ -49,11 +49,7 @@ fun Route.filesRouting() {
         route(FILES) {
 
             /**
-             * Upload a file in the DM.
-             * Possible outcome codes:
-             * - CODE_000_SUCCESS
-             * - CODE_003_FILE_ALREADY_EXISTS
-             * - CODE_020_INVALID_PARAMETER
+             * Upload a file in the DM
              */
             post {
                 // TODO authenticate user (login as in the proxy?)
@@ -119,11 +115,7 @@ fun Route.filesRouting() {
             }
 
             /**
-             * Download a file from the DM.
-             * Possible outcome codes:
-             * - CODE_000_SUCCESS
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_020_INVALID_PARAMETER
+             * Download a file from the DM
              */
             get("{${SERVER.FILE_NAME}}") {
                 // TODO authenticate user (login as in the proxy?)
@@ -171,11 +163,6 @@ fun Route.filesRouting() {
             /**
              * Move a file from the upload folder.
              * to the download folder in the DM
-             * Possible outcome codes:
-             * - CODE_000_SUCCESS
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_025_FILE_RENAMING
              */
             put("{${SERVER.FILE_NAME}}") {
                 // TODO check that the RM is the one actually submitting the request
@@ -235,12 +222,8 @@ fun Route.filesRouting() {
             }
 
             /**
-             * Delete a file from the DM.
-             * Possible outcome codes:
-             * - CODE_000_SUCCESS
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_024_FILE_DELETE
+             * Delete a file
+             * from the DM
              */
             delete("{${SERVER.FILE_NAME}}") {
                 // TODO authenticate the user (login as in the proxy?), which has to be the admin
@@ -286,16 +269,11 @@ fun Route.filesRouting() {
             }
         }
 
-        // TODO refactor this
         route("temporaryFiles/{${SERVER.CORE}}/") {
 
             /**
-             * Delete a temporary file from the DM.
-             * Possible outcome codes:
-             * - CODE_000_SUCCESS
-             * - CODE_006_FILE_NOT_FOUND
-             * - CODE_020_INVALID_PARAMETER
-             * - CODE_024_FILE_DELETE
+             * Delete a temporary file from the temporary
+             * storage. Check that the file exists
              */
             delete("{${SERVER.FILE_NAME}}") {
                 // TODO authenticate the user (login as in the proxy?), which has to be the admin
@@ -349,10 +327,6 @@ fun Route.configureRouting() {
     /** Configure the DM */
     route(DM) {
 
-        /**
-         * Possible outcome codes:
-         * - CODE_000_SUCCESS
-         */
         post {
 
             // TODO authenticate user (login as in the proxy?)

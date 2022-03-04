@@ -18,7 +18,7 @@ paths:
   /:
     post:
       summary: "Configure the DM."
-      description: "Configure the DM. Possible outcome codes are: CODE_000_SUCCESS."
+      description: "Configure the DM."
       operationId: configureDM
       security:
         - cookieAuth: []
@@ -46,7 +46,7 @@ paths:
   /files/{CORE}:
     post:
       summary: "Upload a file in the DM for the given core."
-      description: "Upload a file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_003_FILE_ALREADY_EXISTS, CODE_020_INVALID_PARAMETER."
+      description: "Upload a file in the DM for the given core."
       operationId: addFile
       security:
         - cookieAuth: []
@@ -98,7 +98,7 @@ paths:
   /files/{CORE}/{File_Name}:   
     get:
       summary: "Download the specified file in the DM for the given core."
-      description: "Download the specified file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER."
+      description: "Download the specified file in the DM for the given core."
       operationId: getFile
       security:
         - cookieAuth: []
@@ -148,7 +148,7 @@ paths:
                   value: "CODE_020_INVALID_PARAMETER"
     put:
       summary: "Move the specified file in the DM from the upload to the download folder for the given core."
-      description: "Move the specified file in the DM from the upload to the download folder for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER, CODE_025_FILE_RENAMING."
+      description: "Move the specified file in the DM from the upload to the download folder for the given core."
       operationId: moveFile
       security:
         - cookieAuth: []
@@ -201,7 +201,7 @@ paths:
                   value: "CODE_025_FILE_RENAMING"
     delete:
       summary: "Delete the specified file in the DM for the given core."
-      description: "Delete the specified file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER, CODE_024_FILE_DELETE."
+      description: "Delete the specified file in the DM for the given core."
       operationId: deleteFile
       security:
         - cookieAuth: []
@@ -258,7 +258,7 @@ paths:
   /temporaryFiles/{CORE}/{File_Name}:
     delete:
       summary: "Delete the specified temporary file in the DM for the given core."
-      description: "Delete the specified temporary file in the DM for the given core. Possible outcome codes are: CODE_000_SUCCESS, CODE_006_FILE_NOT_FOUND, CODE_020_INVALID_PARAMETER, CODE_024_FILE_DELETE."
+      description: "Delete the specified temporary file in the DM for the given core."
       operationId: deleteTemporaryFile
       security:
         - cookieAuth: []

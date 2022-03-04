@@ -76,6 +76,7 @@ class TestUtilities {
 
         fun resetDMMQTT(dm: DMInterfaceRBACMQTT) {
             logger.warn { "Resetting MQTT DM" }
+            dm as DMInterfaceMosquitto
 
             val mm = MMInterfaceRedis(mmInterfaceRedisParameters)
             assert(mm.lock() == OutcomeCode.CODE_000_SUCCESS)

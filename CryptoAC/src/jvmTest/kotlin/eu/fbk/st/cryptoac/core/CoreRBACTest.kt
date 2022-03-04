@@ -289,7 +289,6 @@ internal abstract class CoreRBACTest : CoreTest() {
             assert(coreRBAC.deleteFile(exam) == OutcomeCode.CODE_000_SUCCESS)
 
             val code = coreRBAC.deleteFile(exam)
-            println(code)
             assert(code == OutcomeCode.CODE_015_FILE_WAS_DELETED)
         }
     }

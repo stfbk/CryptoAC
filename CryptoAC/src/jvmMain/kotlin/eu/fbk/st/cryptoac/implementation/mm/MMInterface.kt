@@ -29,64 +29,53 @@ abstract class MMInterface {
     /**
      * Initialize the admin by adding in the metadata the
      * [admin] as both user and role and the [adminRoleTuple]
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_002_ROLE_ALREADY_EXISTS
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_034_ADMIN_ALREADY_INITIALIZED
-     * - CODE_060_ADMIN_NAME
+     * and return the outcome code. Check that the name of
+     * the admin is the expected one (in both the user object
+     * and the role tuple) and that the admin was not already
+     * initialized
      */
     abstract fun initAdmin(admin: User, adminRoleTuple: RoleTuple): OutcomeCode
 
     /**
      * Initialize the user by adding in the metadata the
      * public keys and token of the [user], updating also
-     * the status flag, and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_061_USER_ALREADY_INITIALIZED
+     * the status flag, and return the outcome code. Check
+     * that the user is not already present, was not already
+     * initialized and was not already deleted
      */
     abstract fun initUser(user: User): OutcomeCode
 
     /**
      * Return whether the user with the given [username]
-     * is an admin user or not, along with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
+     * is an admin user or not, along with the outcome code.
+     * Check that the user exists in the metadata
      */
     abstract fun isUserAdmin(username: String): WrappedBoolean
 
 
 
     /**
-     * Add the [newUser] in the metadata. The user's asymmetric encryption
-     * and signing public keys and token will be set by the user him/herself
-     * later on (initUser function). Finally, return the user's MM configuration
-     * parameters together with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_001_USER_ALREADY_EXISTS
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_062_CREATE_USER_MM
+     * Add the [newUser] in the metadata. The user's
+     * asymmetric encryption and signing public keys
+     * and token will be set by the user him/herself
+     * later on (initUser function). Finally, return
+     * the user's configuration parameters together
+     * with the outcome code. Check that the user was
+     * not previously deleted or already exists
      */
     abstract fun addUser(newUser: User): WrapperMMParameters
 
     /**
-     * Add the [newRole] in the metadata
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_002_ROLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
+     * Add the [newRole] in the metadata and
+     * return the outcome code. Check that the
+     * role does not already exist or was deleted
      */
     abstract fun addRole(newRole: Role): OutcomeCode
 
     /**
-     * Add the [newFile] in the metadata
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_003_FILE_ALREADY_EXISTS
-     * - CODE_015_FILE_WAS_DELETED
+     * Add the [newFile] in the metadata and
+     * return the outcome code. Check that the
+     * file does not already exist or was deleted
      */
     abstract fun addFile(newFile: File): OutcomeCode
 
@@ -94,34 +83,39 @@ abstract class MMInterface {
 
     /**
      * Add the [newRoleTuples] in the metadata and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * return the outcome code. Check that involved
+     * users exist, are not incomplete or were not
+     * deleted, and that involved roles exist and
+     * were not deleted. Also check whether a role
+     * tuple already exists
      */
     abstract fun addRoleTuples(newRoleTuples: HashSet<RoleTuple>): OutcomeCode
 
     /**
-     * Add the [newPermissionTuples] in the metadata and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
+     * Add the [newPermissionTuples] in the metadata
+     * and return the outcome code. Check that involved
+     * roles exist and were not deleted and that involved
+     * files exist and were not deleted. Also check whether
+     * a permission tuple already exists
      */
     abstract fun addPermissionTuples(newPermissionTuples: HashSet<PermissionTuple>): OutcomeCode
 
     /**
      * Add the [newFileTuples] in the metadata and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_012_FILETUPLE_ALREADY_EXISTS
+     * return the outcome code. Check that involved
+     * files exist and were not deleted. Also check
+     * whether a file tuple already exists
      */
     abstract fun addFileTuples(newFileTuples: HashSet<FileTuple>): OutcomeCode
 
 
 
     /**
-     * Retrieve data of the users matching the specified [username]
-     * and [status], if given, starting from the [offset] limiting
-     * the number of users to return to the given [limit]
+     * Retrieve data of the users matching the specified
+     * [username] and [status], if given, starting from
+     * the [offset] limiting the number of users to return
+     * to the given [limit]. If no users are found, return
+     * an empty set
      */
     abstract fun getUsers(
         username: String? = null,
@@ -130,9 +124,11 @@ abstract class MMInterface {
     ): HashSet<User>
 
     /**
-     * Retrieve data of the roles matching the specified [roleName]
-     * and [status], if given, starting from the [offset] limiting
-     * the number of roles to return to the given [limit]
+     * Retrieve data of the roles matching the specified
+     * [roleName] and [status], if given, starting from
+     * the [offset] limiting the number of roles to return
+     * to the given [limit]. If no roles are found, return
+     * an empty set
      */
     abstract fun getRoles(
         roleName: String? = null,
@@ -141,11 +137,12 @@ abstract class MMInterface {
     ): HashSet<Role>
 
     /**
-     * Retrieve data of the files matching the specified [fileName]
-     * and [status], if given, starting from the [offset] limiting
-     * the number of files to return to the given [limit] and with
-     * the (possibly) relevant information of whether the user
-     * invoking this function [isAdmin]
+     * Retrieve data of the files matching the specified
+     * [fileName] and [status], if given, starting from
+     * the [offset] limiting the number of files to return
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function
+     * [isAdmin]. If no files are found, return an empty set
      */
     abstract fun getFiles(
         fileName: String? = null,
@@ -156,10 +153,13 @@ abstract class MMInterface {
 
 
     /**
-     * Retrieve the role tuples matching the [username] and/or the [roleName],
-     * starting from the [offset] limiting the number of tuples to return to
-     * the given [limit] and with the (possibly) relevant information of
-     * whether the user invoking this function [isAdmin]
+     * Retrieve the role tuples matching the [username]
+     * and/or the [roleName], starting from the [offset]
+     * limiting the number of tuples to return to the
+     * given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this
+     * function [isAdmin]. If no role tuples are found,
+     * return an empty set
      */
     abstract fun getRoleTuples(
         username: String? = null, roleName: String? = null,
@@ -174,7 +174,8 @@ abstract class MMInterface {
      * not matching the [roleNameToExclude], if given, starting from
      * the [offset] limiting the number of tuples to return to the given
      * [limit] and with the (possibly) relevant information of whether
-     * the user invoking this function [isAdmin]
+     * the user invoking this function [isAdmin]. If no permission tuples
+     * are found, return an empty set
      */
     abstract fun getPermissionTuples(
         roleName: String? = null, fileName: String? = null,
@@ -190,7 +191,8 @@ abstract class MMInterface {
      * Retrieve the file tuples matching the [fileName] starting
      * from the [offset] limiting the number of tuples to return
      * to the given [limit] and with the (possibly) relevant
-     * information of whether the user invoking this function [isAdmin]
+     * information of whether the user invoking this function
+     * [isAdmin]. If no file tuples are found, return an empty set
      */
     abstract fun getFileTuples(
         fileName: String,
@@ -200,93 +202,114 @@ abstract class MMInterface {
 
 
     /**
-     * Retrieve the public asymmetric key of the given [asymKeyType] belonging
-     * to the element of the specified [elementType] by matching the [name] or
-     * the [token] (at least one required). Note that only operational elements
-     * are considered, and files do not have public keys
+     * Retrieve the public asymmetric key of the given
+     * [asymKeyType] belonging to the element of the
+     * specified [elementType] by matching the [name] or
+     * the [token] (at least one required). Note that
+     * only operational or deleted elements are considered,
+     * and files do not have public keys. If the key was
+     * not found, return null
      */
     abstract fun getPublicKey(
-        name: String? = null, token: String? = null, elementType: ElementTypeWithKey, asymKeyType: AsymKeysType,
+        name: String? = null,
+        token: String? = null,
+        elementType: ElementTypeWithKey,
+        asymKeyType: AsymKeysType,
     ): ByteArray?
 
     /**
-     * Retrieve the version number belonging to the element of the specified
-     * [elementType] by matching the [name] or [token] (at least one required).
-     * Note that only operational elements are considered, and users do not
-     * have version numbers. Note also that only encryption files version
-     * numbers are considered
+     * Retrieve the version number belonging to the element
+     * of the specified [elementType] by matching the [name]
+     * or [token] (at least one required). Note that only
+     * operational elements are considered, and users do not
+     * have version numbers. Note also that only the latest
+     * version number of files (i.e., the one used for encryption
+     * are considered). If the version number was not found,
+     * return null
      */
     abstract fun getVersionNumber(
         name: String? = null, token: String? = null, elementType: ElementTypeWithVersionNumber
     ): Int?
 
     /**
-     * Retrieve the token of the element of the given [type] matching
-     * the [name], if given. Only operational elements are considered
+     * Retrieve the token of the element of
+     * the given [type] matching the [name].
+     * Note that only operational elements are
+     * considered. If the token was not found,
+     * return null
      */
     abstract fun getToken(name: String, type: ElementTypeWithStatus): String?
 
     /**
      * Retrieve the status of the element of the
-     * given [type] matching the given [name]
+     * given [type] matching the given [name].
+     * If the status was not found, return null
      */
     abstract fun getStatus(name: String, type: ElementTypeWithStatus): ElementStatus?
 
 
     /**
-     * Delete the [username] but keep at least the public key,
-     * so to verify digital signatures signed by the user and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the [username] by moving the data into a
+     * proper data structure holding deleted elements.
+     * Indeed, even if deleted, we may need the data of
+     * a user (e.g., the public key to verify digital
+     * signatures). Finally, return the outcome code.
+     * Check that the user exists and was not already
+     * deleted. Check that [username] is not the admin
      */
     abstract fun deleteUser(username: String): OutcomeCode
 
     /**
-     * Delete the [roleName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the [roleName] by moving the data into a
+     * proper data structure holding deleted elements.
+     * Indeed, even if deleted, we may need the data of
+     * a role (e.g., the public key to verify digital
+     * signatures). Finally, return the outcome code.
+     * Check that the role exists and was not already
+     * deleted. Check that [roleName] is not the admin
      */
     abstract fun deleteRole(roleName: String): OutcomeCode
 
     /**
-     * Delete the [fileName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_015_FILE_WAS_DELETED
+     * Delete the [fileName] by moving the data into a
+     * proper data structure holding deleted elements.
+     * Indeed, even if deleted, we may need the data of
+     * a file. Finally, return the outcome code.
+     * Check that the file exists and was not already
+     * deleted
      */
     abstract fun deleteFile(fileName: String): OutcomeCode
 
 
 
     /**
-     * Delete the role tuple matching the given
-     * [roleName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_007_ROLETUPLE_NOT_FOUND
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the role tuples matching the given
+     * [roleName] and return the outcome code.
+     * Check that [roleName] is not the admin.
+     * Also check that at least one role tuple
+     * is deleted
      */
     abstract fun deleteRoleTuples(roleName: String): OutcomeCode
 
     /**
-     * Delete the permission tuples matching the [roleName] and/or
-     * the [fileName] (at least one required), further filtering by
-     * [roleVersionNumber], if given. Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the permission tuples matching the [roleName]
+     * and/or the [fileName] (at least one required), further
+     * filtering by [roleVersionNumber], if given. Finally,
+     * return the outcome code. Check that [roleName] is not
+     * the admin. Also check that at least one permission tuple
+     * is deleted
      */
-    abstract fun deletePermissionTuples(roleName: String? = null, fileName: String? = null, roleVersionNumber: Int? = null): OutcomeCode
+    abstract fun deletePermissionTuples(
+        roleName: String? = null,
+        fileName: String? = null,
+        roleVersionNumber: Int? = null
+    ): OutcomeCode
 
     /**
-     * Delete the file tuple matching the given
-     * [fileName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_009_FILETUPLE_NOT_FOUND
+     * Delete the file tuples matching the given
+     * [fileName] and return the outcome code.
+     * Check that at least one file tuple is
+     * deleted
      */
     abstract fun deleteFileTuples(fileName: String): OutcomeCode
 
@@ -294,10 +317,8 @@ abstract class MMInterface {
 
     /**
      * Increment the symmetric encryption version number
-     * of the [fileName] by 1 and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_015_FILE_WAS_DELETED
+     * of the [fileName] by 1 and return the outcome code.
+     * Check that the file exists and was not deleted
      */
     abstract fun incrementSymEncVersionNumberByOne(fileName: String): OutcomeCode
 
@@ -306,20 +327,21 @@ abstract class MMInterface {
     /**
      * Update the asymmetric encryption and signing public keys
      * of the given [roleName] with the new [newAsymEncPublicKey]
-     * and [newAsymSigPublicKey] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_014_ROLE_WAS_DELETED
+     * and [newAsymSigPublicKey], and return the outcome code.
+     * Check that the role exists and was not deleted
      */
-    abstract fun updateRoleAsymKeys(roleName: String, newAsymEncPublicKey: PublicKey, newAsymSigPublicKey: PublicKey): OutcomeCode
+    abstract fun updateRoleAsymKeys(
+        roleName: String,
+        newAsymEncPublicKey: PublicKey,
+        newAsymSigPublicKey: PublicKey
+    ): OutcomeCode
 
 
 
     /**
      * Update the permission, signature and signer token of the
-     * given [updatedPermissionTuple] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * given [updatedPermissionTuple] and return the outcome code.
+     * Check that the permission tuple exists
      */
     abstract fun updatePermissionTuple(updatedPermissionTuple: PermissionTuple): OutcomeCode
 
@@ -331,11 +353,7 @@ abstract class MMInterface {
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
      * starting a new transaction only when [locks] is 0. Finally, return
-     * the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_044_MM_CONNECTION_TIMEOUT
-     * - CODE_064_ACCESS_DENIED_TO_MM
+     * the outcome code
      */
     abstract fun lock(): OutcomeCode
 
@@ -344,9 +362,7 @@ abstract class MMInterface {
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS
+     * Finally, return the outcome code
      */
     abstract fun rollback(): OutcomeCode
 
@@ -355,10 +371,7 @@ abstract class MMInterface {
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
      * the transaction only when [locks] becomes 0. Finally, return the
-     * outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_058_UNLOCK_FAILED
+     * outcome code
      */
     abstract fun unlock(): OutcomeCode
 }

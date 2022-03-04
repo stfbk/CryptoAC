@@ -34,9 +34,8 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
     override var locks = 0
 
     /**
-     * Configure the DM with relevant
-     * [parameters] and return the outcome code:
-     * - CODE_000_SUCCESS
+     * If necessary, configure the DM with relevant
+     * [parameters] and return the outcome code
      *
      * In this implementation, no configuration is needed
      */
@@ -46,10 +45,9 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
     }
 
     /**
-     * Add the [content] of the [newFile]
-     * in the DM and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Create a new resource [newFile], possibly
+     * initializing it with the given [content]
+     * in the DM and return the outcome code
      *
      * In this implementation, create a topic with
      * the name of the [newFile] and send the [content]
@@ -67,11 +65,9 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
     }
 
     /**
-     * Download the content of the file matching
-     * the given [fileName] from the DM and return
-     * it along with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Require read access to the resource [fileName],
+     * possibly returning an input stream from the DM
+     * along with the outcome code
      *
      * In this implementation, subscribe to the
      * topic with name [fileName]
@@ -85,10 +81,9 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
     }
 
     /**
-     * Overwrite the [content] of the [updatedFile]
-     * in the DM and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Require write access to the resource [updatedFile],
+     * possibly using the [content] in the DM and return
+     * the outcome code
      *
      * In this implementation, send the [content] as a
      * message in the topic with the name of the [updatedFile]
@@ -104,10 +99,8 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
     }
 
     /**
-     * Delete the [fileName] from the data
-     * storage and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Delete the resource [fileName] from the DM
+     * and return the outcome code
      *
      * In this implementation, remove the
      * retained message from the topic
@@ -130,9 +123,7 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
      * starting a new transaction only when [locks] is 0. Finally, return
-     * the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * the outcome code
      *
      * In this implementation, check whether the MQTT client is already
      * connected. If not, check whether the MQTT client is already connecting
@@ -161,9 +152,7 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      *
      * In this implementation, TODO
      */
@@ -185,9 +174,7 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
      * the transaction only when [locks] becomes 0. Finally, return the
-     * outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * outcome code
      *
      * In this implementation, TODO
      */
@@ -330,10 +317,7 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
 
     /**
      * Send the list of [commands] to the DYNSEC plugin
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * and return the outcome code
      */
     fun sendDynsecCommand(commands: HashSet<String>): OutcomeCode {
         return if (commands.isNotEmpty()) {

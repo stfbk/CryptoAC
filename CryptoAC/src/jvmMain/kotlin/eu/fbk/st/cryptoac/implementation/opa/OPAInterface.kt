@@ -75,9 +75,8 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
     private var client: HttpClient? = null
 
     /**
-     * Configure the OPA and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_028_OPA_POLICY_CREATION
+     * Configure the OPA and
+     * return the outcome code
      */
     fun configure(): OutcomeCode {
         val regoFilePath = when (opaInterfaceParameters.policyModel) {
@@ -134,9 +133,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Update the RBAC data in the OPA with
-     * the [assignment] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * the [assignment] and return the outcome code
      */
     fun addURAssignment(assignment: UR): OutcomeCode {
 
@@ -161,9 +158,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Update the RBAC data in the OPA with
-     * the [assignment] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * the [assignment] and return the outcome code
      */
     fun addPAAssignment(assignment: PA): OutcomeCode {
 
@@ -192,12 +187,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * assignments matching the given [username] and [roleName]
      * and return the outcome code. If a parameter was not given,
      * ignore it. At least one parameter has to be provided.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_040_UR_ASSIGNMENTS_NOT_FOUND
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * Finally, return the outcome code
      */
     fun deleteURAssignments(username: String? = null, roleName: String? = null): OutcomeCode {
 
@@ -296,12 +286,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * assignments matching the given [roleName] and [fileName]
      * and return the outcome code. If a parameter was not given,
      * ignore it. At least one parameter has to be provided.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * Finally, return the outcome code
      */
     fun deletePAAssignments(roleName: String? = null, fileName: String? = null): OutcomeCode {
 
@@ -395,10 +380,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Update the RBAC data in the OPA with the
-     * [updatedAssignment] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_041_PA_ASSIGNMENTS_NOT_FOUND
-     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * [updatedAssignment] and return the outcome code
      */
     fun updatePAAssignment(updatedAssignment: PA): OutcomeCode {
 
@@ -458,9 +440,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
 
     /**
      * Get the OPA RBAC document from the OPA
-     * and return it along with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * and return it along with the outcome code
      */
     fun getOPADocument(): StorageOPADocument {
 
@@ -492,9 +472,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * starting a new transaction only when [locks] is 0.
      *
      * In this implementation, create an HTTP client and get the current
-     * OPA document, if present. Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_030_OPA_DOCUMENT_DOWNLOAD
+     * OPA document, if present. Finally, return the outcome code
      */
     fun lock(): OutcomeCode {
         return if (locks == 0) {
@@ -527,9 +505,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * rollbacking to the previous status only when [locks] becomes 0.
      *
      * In this implementation, restore the previous OPA document and
-     * close the client. Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_028_OPA_POLICY_CREATION
+     * close the client. Finally, return the outcome code
      */
     fun rollback(): OutcomeCode {
         return when {
@@ -574,8 +550,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      * the transaction only when [locks] becomes 0.
      *
      * In this implementation, just close the client. Finally,
-     * return the outcome code:
-     * - CODE_000_SUCCESS
+     * return the outcome code
      */
     fun unlock(): OutcomeCode {
         return when {
@@ -602,9 +577,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
     /**
      * Send a request to update the RBAC document in the OPA
      * according to the [jsonPatch] document (as specified in RFC6902)
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_029_OPA_DOCUMENT_UPDATE
+     * and return the outcome code
      */
     private fun updateOPADocument(
         jsonPatch: String,

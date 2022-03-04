@@ -22,9 +22,9 @@ private val logger = KotlinLogging.logger {}
 
 /**
  * Implementation of the methods to interface with the MM as a Redis
- * database configured with the given [mmRedisInterfaceParameters]
+ * database configured with the given [mmRedisInterfaceParameters].
  *
- * Unfortunately, Redis for now does not support multiple keys pointing
+ * Unfortunately, Redis, for now, does not support multiple keys pointing
  * to the same value (see https://github.com/redis/redis/issues/2668).
  * Therefore, to protect the names of users, roles and files, we need
  * to duplicate some data.
@@ -74,9 +74,16 @@ class MMInterfaceRedis(
     private var listOfKeysToDelete: MutableList<String> = mutableListOf()
 
     /** The threadsafe pool of network connections toward Redis */
-    private val pool = JedisPool(JedisPoolConfig(), mmRedisInterfaceParameters.url, mmRedisInterfaceParameters.port)
+    private val pool = JedisPool(
+        JedisPoolConfig(),
+        mmRedisInterfaceParameters.url,
+        mmRedisInterfaceParameters.port
+    )
 
-    /** The username with which connect to Redis */
+    /**
+     * The username with which connect to Redis.
+     * "default" is the Redis default username
+     */
     private val usernameRedis = if (mmRedisInterfaceParameters.username == ADMIN) {
         "default"
     } else {
@@ -188,13 +195,10 @@ class MMInterfaceRedis(
     /**
      * Initialize the admin by adding in the metadata the
      * [admin] as both user and role and the [adminRoleTuple]
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_002_ROLE_ALREADY_EXISTS
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_034_ADMIN_ALREADY_INITIALIZED
-     * - CODE_060_ADMIN_NAME
+     * and return the outcome code. Check that the name of
+     * the admin is the expected one (in both the user object
+     * and the role tuple) and that the admin was not already
+     * initialized
      *
      * In this implementation, add the (key of the) user
      * in the list of operational users. Finally, add the
@@ -206,7 +210,11 @@ class MMInterfaceRedis(
         logger.info { "Initializing the database and adding the admin in the MM" }
 
         /** Guard clauses */
-        if (admin.name != ADMIN) {
+        if (
+            admin.name != ADMIN ||
+            adminRoleTuple.username != ADMIN ||
+            adminRoleTuple.roleName != ADMIN
+        ) {
             logger.warn { "Admin user has name ${admin.name}, but admin name should be $ADMIN" }
             return OutcomeCode.CODE_060_ADMIN_NAME
         }
@@ -264,11 +272,9 @@ class MMInterfaceRedis(
     /**
      * Initialize the user by adding in the metadata the
      * public keys and token of the [user], updating also
-     * the status flag, and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_061_USER_ALREADY_INITIALIZED
+     * the status flag, and return the outcome code. Check
+     * that the user is not already present, was not already
+     * initialized and was not already deleted
      *
      * In this implementation, move the (key of the) user
      * from the list of incomplete users to the list of
@@ -324,9 +330,8 @@ class MMInterfaceRedis(
 
     /**
      * Return whether the user with the given [username]
-     * is an admin user or not, along with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
+     * is an admin user or not, along with the outcome code.
+     * Check that the user exists in the metadata
      *
      * In this implementation, we assert whether the [username]
      * is [ADMIN] // TODO we can do better than this
@@ -337,14 +342,13 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Add the [newUser] in the metadata. The user's asymmetric encryption
-     * and signing public keys and token will be set by the user him/herself
-     * later on (initUser function). Finally, return the user's MM configuration
-     * parameters together with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_001_USER_ALREADY_EXISTS
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_062_CREATE_USER_MM
+     * Add the [newUser] in the metadata. The user's
+     * asymmetric encryption and signing public keys
+     * and token will be set by the user him/herself
+     * later on (initUser function). Finally, return
+     * the user's configuration parameters together
+     * with the outcome code. Check that the user was
+     * not previously deleted or already exists
      */
     override fun addUser(newUser: User): WrapperMMParameters {
         val username = newUser.name
@@ -402,11 +406,9 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Add the [newRole] in the metadata
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_002_ROLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
+     * Add the [newRole] in the metadata and
+     * return the outcome code. Check that the
+     * role does not already exist or was deleted
      *
      * In this implementation, add the role as
      * an object, plus add the key of the role
@@ -459,11 +461,9 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Add the [newFile] in the metadata
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_003_FILE_ALREADY_EXISTS
-     * - CODE_015_FILE_WAS_DELETED
+     * Add the [newFile] in the metadata and
+     * return the outcome code. Check that the
+     * file does not already exist or was deleted
      *
      * In this implementation, add the file as
      * an object, plus add the key of the file
@@ -514,9 +514,11 @@ class MMInterfaceRedis(
 
     /**
      * Add the [newRoleTuples] in the metadata and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
+     * return the outcome code. Check that involved
+     * users exist, are not incomplete or were not
+     * deleted, and that involved roles exist and
+     * were not deleted. Also check whether a role
+     * tuple already exists
      *
      * In this implementation, add the (key of the) tuple
      * in two lists, holding the list of tuples for a
@@ -539,7 +541,13 @@ class MMInterfaceRedis(
         var code = OutcomeCode.CODE_000_SUCCESS
         run error@{
             newRoleTuples.forEach { roleTuple ->
-                // TODO we should check that the user/role/file exists, and return proper codes
+                // TODO we should check that the user/role/file exists, and return proper
+                //  codes. You still miss these codes to return
+                //  * - CODE_004_USER_NOT_FOUND
+                //  * - CODE_005_ROLE_NOT_FOUND
+                //  * - CODE_013_USER_WAS_DELETED
+                //  * - CODE_014_ROLE_WAS_DELETED
+                //  * - CODE_065_USER_IS_INCOMPLETE
 
                 val username = roleTuple.username
                 val roleName = roleTuple.roleName
@@ -583,10 +591,11 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Add the [newPermissionTuples] in the metadata and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
+     * Add the [newPermissionTuples] in the metadata
+     * and return the outcome code. Check that involved
+     * roles exist and were not deleted and that involved
+     * files exist and were not deleted. Also check whether
+     * a permission tuple already exists
      *
      * In this implementation, add the (key of the) tuple
      * in three lists, holding the list of tuples for a
@@ -611,8 +620,12 @@ class MMInterfaceRedis(
         var code = OutcomeCode.CODE_000_SUCCESS
         run error@{
             newPermissionTuples.forEach { permissionTuple ->
-                // TODO we should check that the user/role/file exists, and return proper codes
-
+                // TODO we should check that the role/file exists, and return proper codes
+                //  you still miss the ones below
+                //     * - CODE_005_ROLE_NOT_FOUND
+                //     * - CODE_006_FILE_NOT_FOUND
+                //     * - CODE_014_ROLE_WAS_DELETED
+                //     * - CODE_015_FILE_WAS_DELETED
                 val roleName = permissionTuple.roleName
                 val fileName = permissionTuple.fileName
                 val keyOfTuplesListByRole = "$permissionTuplesListKeyPrefix$byRoleNameKeyPrefix$roleName"
@@ -660,9 +673,9 @@ class MMInterfaceRedis(
 
     /**
      * Add the [newFileTuples] in the metadata and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_012_FILETUPLE_ALREADY_EXISTS
+     * return the outcome code. Check that involved
+     * files exist and were not deleted. Also check
+     * whether a file tuple already exists
      *
      * In this implementation, add the (key of the) tuple
      * in one list, holding the list of tuples for a
@@ -684,6 +697,9 @@ class MMInterfaceRedis(
         run error@{
             newFileTuples.forEach { fileTuple ->
                 // TODO we should check that the user/role/file exists, and return proper codes
+                //  you miss these
+                //  - CODE_006_FILE_NOT_FOUND
+                //  - CODE_015_FILE_WAS_DELETED
 
                 val fileName = fileTuple.fileName
                 val fileTupleKey = "$fileTuplesKeyPrefix$byFileNameKeyPrefix$fileName"
@@ -720,9 +736,11 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Retrieve data of the users matching the specified [username]
-     * and [status], if given, starting from the [offset] limiting
-     * the number of users to return to the given [limit]
+     * Retrieve data of the users matching the specified
+     * [username] and [status], if given, starting from
+     * the [offset] limiting the number of users to return
+     * to the given [limit]. If no users are found, return
+     * an empty set
      */
     override fun getUsers(
         username: String?,
@@ -783,9 +801,11 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Retrieve data of the roles matching the specified [roleName]
-     * and [status], if given, starting from the [offset] limiting
-     * the number of roles to return to the given [limit]
+     * Retrieve data of the roles matching the specified
+     * [roleName] and [status], if given, starting from
+     * the [offset] limiting the number of roles to return
+     * to the given [limit]. If no roles are found, return
+     * an empty set
      */
     override fun getRoles(
         roleName: String?,
@@ -842,11 +862,12 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Retrieve data of the files matching the specified [fileName]
-     * and [status], if given, starting from the [offset] limiting
-     * the number of files to return to the given [limit] and with
-     * the (possibly) relevant information of whether the user
-     * invoking this function [isAdmin]
+     * Retrieve data of the files matching the specified
+     * [fileName] and [status], if given, starting from
+     * the [offset] limiting the number of files to return
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function
+     * [isAdmin]. If no files are found, return an empty set
      */
     override fun getFiles(
         fileName: String?,
@@ -905,17 +926,19 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Retrieve the role tuples matching the [username] and/or the [roleName],
-     * starting from the [offset] limiting the number of tuples to return to
-     * the given [limit] and with the (possibly) relevant information of
-     * whether the user invoking this function [isAdmin]
+     * Retrieve the role tuples matching the [username]
+     * and/or the [roleName], starting from the [offset]
+     * limiting the number of tuples to return to the
+     * given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this
+     * function [isAdmin]. If no role tuples are found,
+     * return an empty set
      */
     override fun getRoleTuples(
         username: String?,
         roleName: String?,
         isAdmin: Boolean,
-        offset: Int,
-        limit: Int
+        offset: Int, limit: Int
     ): HashSet<RoleTuple> {
         logger.info { "Getting data of role tuples (offset $offset, limit $limit)" }
 
@@ -993,7 +1016,8 @@ class MMInterfaceRedis(
      * not matching the [roleNameToExclude], if given, starting from
      * the [offset] limiting the number of tuples to return to the given
      * [limit] and with the (possibly) relevant information of whether
-     * the user invoking this function [isAdmin]
+     * the user invoking this function [isAdmin]. If no permission tuples
+     * are found, return an empty set
      */
     override fun getPermissionTuples(
         roleName: String?,
@@ -1005,8 +1029,7 @@ class MMInterfaceRedis(
         roleVersionNumber: Int?,
         symKeyVersionNumber: Int?,
         isAdmin: Boolean,
-        offset: Int,
-        limit: Int
+        offset: Int, limit: Int
     ): HashSet<PermissionTuple> {
         logger.info { "Getting data of permission tuples (offset $offset, limit $limit)" }
 
@@ -1086,7 +1109,8 @@ class MMInterfaceRedis(
      * Retrieve the file tuples matching the [fileName] starting
      * from the [offset] limiting the number of tuples to return
      * to the given [limit] and with the (possibly) relevant
-     * information of whether the user invoking this function [isAdmin]
+     * information of whether the user invoking this function
+     * [isAdmin]. If no file tuples are found, return an empty set
      */
     override fun getFileTuples(
         fileName: String,
@@ -1139,10 +1163,13 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Retrieve the public asymmetric key of the given [asymKeyType] belonging
-     * to the element of the specified [elementType] by matching the [name] or
-     * the [token] (at least one required). Note that only operational elements
-     * are considered, and files do not have public keys
+     * Retrieve the public asymmetric key of the given
+     * [asymKeyType] belonging to the element of the
+     * specified [elementType] by matching the [name] or
+     * the [token] (at least one required). Note that
+     * only operational or deleted elements are considered,
+     * and files do not have public keys. If the key was
+     * not found, return null
      */
     override fun getPublicKey(
         name: String?,
@@ -1159,7 +1186,7 @@ class MMInterfaceRedis(
             logger.error { message }
             throw IllegalStateException(message)
         }
-
+// TODO consider also deleted elements
         val fieldOfKeyToGet = when (asymKeyType) {
             AsymKeysType.ENC -> asymEncPublicKeyField
             AsymKeysType.SIG -> asymSigPublicKeyField
@@ -1187,11 +1214,14 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Retrieve the version number belonging to the element of the specified
-     * [elementType] by matching the [name] or [token] (at least one required).
-     * Note that only operational elements are considered, and users do not
-     * have version numbers. Note also that only encryption files version
-     * numbers are considered
+     * Retrieve the version number belonging to the element
+     * of the specified [elementType] by matching the [name]
+     * or [token] (at least one required). Note that only
+     * operational elements are considered, and users do not
+     * have version numbers. Note also that only the latest
+     * version number of files (i.e., the one used for encryption
+     * are considered). If the version number was not found,
+     * return null
      */
     override fun getVersionNumber(
         name: String?,
@@ -1235,8 +1265,11 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Retrieve the token of the element of the given [type] matching
-     * the [name], if given. Only operational elements are considered
+     * Retrieve the token of the element of
+     * the given [type] matching the [name].
+     * Note that only operational elements are
+     * considered. If the token was not found,
+     * return null
      */
     override fun getToken(name: String, type: ElementTypeWithStatus): String? {
         logger.debug { "Get the token of element $type with name $name" }
@@ -1270,7 +1303,8 @@ class MMInterfaceRedis(
 
     /**
      * Retrieve the status of the element of the
-     * given [type] matching the given [name]
+     * given [type] matching the given [name].
+     * If the status was not found, return null
      */
     override fun getStatus(name: String, type: ElementTypeWithStatus): ElementStatus? {
         logger.debug { "Getting the status of element $type with name $name" }
@@ -1294,17 +1328,17 @@ class MMInterfaceRedis(
 
 
     /**
-     * Delete the [username] but keep at least the public key,
-     * so to verify digital signatures signed by the user and
-     * return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the [username] by moving the data into a
+     * proper data structure holding deleted elements.
+     * Indeed, even if deleted, we may need the data of
+     * a user (e.g., the public key to verify digital
+     * signatures). Finally, return the outcome code.
+     * Check that the user exists and was not already
+     * deleted. Check that [username] is not the admin
      *
-     * In this implementation, change the status of the [username]
-     * to deleted, move the key to the list of deleted users and
-     * delete the user at Redis level
+     * In this implementation, change the status of the
+     * [username] to deleted, move the key to the list
+     * of deleted users and delete the user at Redis level
      */
     override fun deleteUser(username: String): OutcomeCode {
         logger.info { "Deleting user $username" }
@@ -1350,11 +1384,13 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Delete the [roleName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the [roleName] by moving the data into a
+     * proper data structure holding deleted elements.
+     * Indeed, even if deleted, we may need the data of
+     * a role (e.g., the public key to verify digital
+     * signatures). Finally, return the outcome code.
+     * Check that the role exists and was not already
+     * deleted. Check that [roleName] is not the admin
      *
      * In this implementation, change the status of the [roleName]
      * to deleted and move the key to the list of deleted roles
@@ -1394,10 +1430,12 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Delete the [fileName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_015_FILE_WAS_DELETED
+     * Delete the [fileName] by moving the data into a
+     * proper data structure holding deleted elements.
+     * Indeed, even if deleted, we may need the data of
+     * a file. Finally, return the outcome code.
+     * Check that the file exists and was not already
+     * deleted
      *
      * In this implementation, change the status of the [fileName]
      * to deleted and move the key to the list of deleted files
@@ -1433,11 +1471,11 @@ class MMInterfaceRedis(
 
 
     /**
-     * Delete the role tuple matching the given
-     * [roleName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_007_ROLETUPLE_NOT_FOUND
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the role tuples matching the given
+     * [roleName] and return the outcome code.
+     * Check that [roleName] is not the admin.
+     * Also check that at least one role tuple
+     * is deleted
      *
      * In this implementation, delete the tuples
      * with the [roleName] and remove the related
@@ -1478,19 +1516,19 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Delete the permission tuples matching the [roleName] and/or
-     * the [fileName] (at least one required), further filtering by
-     * [roleVersionNumber], if given. Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
+     * Delete the permission tuples matching the [roleName]
+     * and/or the [fileName] (at least one required), further
+     * filtering by [roleVersionNumber], if given. Finally,
+     * return the outcome code. Check that [roleName] is not
+     * the admin. Also check that at least one permission tuple
+     * is deleted
      *
-     * In this implementation, delete the tuples related to the [roleName],
-     * if given, the tuples related to the [fileName], if given, or the tuples
-     * related to both [roleName] and [fileName].
-     * Also, remove the related keys from the list of tuples related to the
-     * involved roles, involved users and combination of involved users and
-     * roles
+     * In this implementation, delete the tuples related to the
+     * [roleName], if given, the tuples related to the [fileName],
+     * if given, or the tuples related to both [roleName] and
+     * [fileName]. Also, remove the related keys from the list of
+     * tuples related to the involved roles, involved users and
+     * combination of involved users and roles
      */
     override fun deletePermissionTuples(
         roleName: String?,
@@ -1566,10 +1604,10 @@ class MMInterfaceRedis(
     }
 
     /**
-     * Delete the file tuple matching the given
-     * [fileName] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_009_FILETUPLE_NOT_FOUND
+     * Delete the file tuples matching the given
+     * [fileName] and return the outcome code.
+     * Check that at least one file tuple is
+     * deleted
      *
      * In this implementation, delete the tuples
      * with the [fileName] and remove the related
@@ -1602,10 +1640,8 @@ class MMInterfaceRedis(
 
     /**
      * Increment the symmetric encryption version number
-     * of the [fileName] by 1 and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_015_FILE_WAS_DELETED
+     * of the [fileName] by 1 and return the outcome code.
+     * Check that the file exists and was not deleted
      */
     override fun incrementSymEncVersionNumberByOne(fileName: String): OutcomeCode {
         logger.info { "Incrementing the symmetric encryption version number of file $fileName by 1" }
@@ -1639,10 +1675,8 @@ class MMInterfaceRedis(
     /**
      * Update the asymmetric encryption and signing public keys
      * of the given [roleName] with the new [newAsymEncPublicKey]
-     * and [newAsymSigPublicKey] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_014_ROLE_WAS_DELETED
+     * and [newAsymSigPublicKey], and return the outcome code.
+     * Check that the role exists and was not deleted
      */
     override fun updateRoleAsymKeys(
         roleName: String,
@@ -1692,9 +1726,8 @@ class MMInterfaceRedis(
 
     /**
      * Update the permission, signature and signer token of the
-     * given [updatedPermissionTuple] and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
+     * given [updatedPermissionTuple] and return the outcome code.
+     * Check that the permission tuple exists
      */
     override fun updatePermissionTuple(updatedPermissionTuple: PermissionTuple): OutcomeCode {
         val roleName = updatedPermissionTuple.roleName
@@ -1719,11 +1752,7 @@ class MMInterfaceRedis(
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
      * starting a new transaction only when [locks] is 0. Finally, return
-     * the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_044_MM_CONNECTION_TIMEOUT
-     * - CODE_064_ACCESS_DENIED_TO_MM
+     * the outcome code
      *
      * In this implementation, create a Redis transaction and another
      * connection for querying the database TODO find a better method
@@ -1773,9 +1802,7 @@ class MMInterfaceRedis(
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS
+     * Finally, return the outcome code
      *
      * In this implementation, discard the transaction
      */
@@ -1813,10 +1840,7 @@ class MMInterfaceRedis(
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
      * the transaction only when [locks] becomes 0. Finally, return the
-     * outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_058_UNLOCK_FAILED
+     * outcome code
      *
      * In this implementation, exec the transaction and increment (i.e., change)
      * the value corresponding to the [lockUnlockRollbackKey]

@@ -144,8 +144,8 @@ fun main(args: Array<String>) {
 }
 
 /** This module is called with the resources/application.conf file */
-fun Application.module(testing: Boolean = true) {
-    logger.info { "Starting application module (testing $testing)" }
+fun Application.module() {
+    logger.info { "Starting application module" }
     val port = environment.config.property("ktor.deployment.port").getString()
     val sslPort = environment.config.property("ktor.deployment.sslPort").getString()
     logger.info { "port is $port, sslPort is $sslPort" }
@@ -181,32 +181,20 @@ fun Application.module(testing: Boolean = true) {
     install(Compression) {
         gzip()
     }
-    if (testing) {
-        install(WebSockets) {
-            // TODO config
+    when (om) {
+        OperationMode.PROXY -> {
+            install(WebSockets) {
+                // TODO config
+            }
+            initializeProxy()
+            registerCryptoACRoutes()
         }
-        initializeProxy()
-        initializeDM()
-        registerCryptoACRoutes()
-        registerRMRoutes()
-        registerDMRoutes()
-    }
-    else {
-        when (om) {
-            OperationMode.PROXY -> {
-                install(WebSockets) {
-                    // TODO config
-                }
-                initializeProxy()
-                registerCryptoACRoutes()
-            }
-            OperationMode.RM -> {
-                registerRMRoutes()
-            }
-            OperationMode.DM -> {
-                initializeDM()
-                registerDMRoutes()
-            }
+        OperationMode.RM -> {
+            registerRMRoutes()
+        }
+        OperationMode.DM -> {
+            initializeDM()
+            registerDMRoutes()
         }
     }
 }

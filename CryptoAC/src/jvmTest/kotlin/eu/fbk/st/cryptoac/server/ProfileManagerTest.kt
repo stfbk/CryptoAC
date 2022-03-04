@@ -1,7 +1,6 @@
 package eu.fbk.st.cryptoac.server
 
 import eu.fbk.st.cryptoac.Parameters.aliceUser
-import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.Parameters.aliceCoreParameters
 import eu.fbk.st.cryptoac.Parameters.bobCoreParameters
 import eu.fbk.st.cryptoac.TestUtilities
@@ -90,7 +89,7 @@ internal class ProfileManagerTest {
         run {
             ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
             assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) != null)
-            assert(ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType) == OutcomeCode.CODE_000_SUCCESS)
+            assert(ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType))
             assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) == null)
         }
     }
@@ -99,7 +98,7 @@ internal class ProfileManagerTest {
     fun `delete non-existing profile parameters fails`() {
         /** delete non-existing profile parameters */
         run {
-            assert(ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType) == OutcomeCode.CODE_038_PROFILE_NOT_FOUND)
+            assert(!ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType))
         }
     }
 }

@@ -7,9 +7,8 @@ interface DMInterfaceRBACCLOUD : DMInterface {
 
     /**
      * Delete the [fileName] from the temporary
-     * storage and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * storage and return the outcome code.
+     * Check that the file exists
      */
     fun deleteTemporaryFile(fileName: String): OutcomeCode
 }

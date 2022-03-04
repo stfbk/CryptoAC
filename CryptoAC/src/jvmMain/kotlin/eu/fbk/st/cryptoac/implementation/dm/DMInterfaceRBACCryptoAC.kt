@@ -21,7 +21,6 @@ import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import java.io.InputStream
 import java.lang.IllegalArgumentException
@@ -51,10 +50,8 @@ class DMInterfaceRBACCryptoAC(
     override var locks = 0
 
     /**
-     * Configure the DM with relevant [parameters]
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * If necessary, configure the DM with relevant
+     * [parameters] and return the outcome code
      */
     override fun configure(parameters: CoreParameters): OutcomeCode {
 
@@ -95,12 +92,9 @@ class DMInterfaceRBACCryptoAC(
     }
 
     /**
-     * Add the [content] of the [newFile]
-     * in the DM and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_003_FILE_ALREADY_EXISTS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Create a new resource [newFile], possibly
+     * initializing it with the given [content]
+     * in the DM and return the outcome code
      */
     override fun addFile(newFile: File, content: InputStream): OutcomeCode {
 
@@ -140,13 +134,9 @@ class DMInterfaceRBACCryptoAC(
     }
 
     /**
-     * Download the content of the file matching
-     * the given [fileName] from the DM and return
-     * it along with the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Require read access to the resource [fileName],
+     * possibly returning an input stream from the DM
+     * along with the outcome code
      */
     override fun readFile(fileName: String): WrappedInputStream {
 
@@ -183,13 +173,9 @@ class DMInterfaceRBACCryptoAC(
     }
 
     /**
-     * Overwrite the [content] of the [updatedFile]
-     * in the DM and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_025_FILE_RENAMING
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Require write access to the resource [updatedFile],
+     * possibly using the [content] in the DM and return
+     * the outcome code
      *
      * In this implementation, ask the DM to move the
      * new file from the upload folder to the download
@@ -223,12 +209,8 @@ class DMInterfaceRBACCryptoAC(
     }
 
     /**
-     * Delete the [fileName] from the data
-     * storage and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Delete the resource [fileName] from the DM
+     * and return the outcome code
      */
     override fun deleteFile(fileName: String): OutcomeCode {
 
@@ -258,15 +240,10 @@ class DMInterfaceRBACCryptoAC(
     }
 
 
-    // TODO refactor this
     /**
      * Delete the [fileName] from the temporary
-     * storage and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_024_FILE_DELETE
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * storage and return the outcome code.
+     * Check that the file exists
      */
     override fun deleteTemporaryFile(fileName: String): OutcomeCode {
 
@@ -303,8 +280,7 @@ class DMInterfaceRBACCryptoAC(
      * multiple times before committing or rollbacking the transactions,
      * increment the number of [locks] by 1 at each invocation, effectively
      * starting a new transaction only when [locks] is 0. Finally, return
-     * the outcome code:
-     * - CODE_000_SUCCESS
+     * the outcome code
      *
      * In this implementation, the lock-unlock-rollback mechanism is not needed,
      * as the RM is the entity which validates users' operations. However, to keep
@@ -335,8 +311,7 @@ class DMInterfaceRBACCryptoAC(
      * previous status. As this method could be invoked multiple times,
      * decrement the number of [locks] by 1 at each invocation, effectively
      * rollbacking to the previous status only when [locks] becomes 0.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
+     * Finally, return the outcome code
      *
      * In this implementation, close the Http client
      */
@@ -357,8 +332,7 @@ class DMInterfaceRBACCryptoAC(
      * As this method could be invoked multiple times, decrement the
      * number of [locks] by 1 at each invocation, effectively committing
      * the transaction only when [locks] becomes 0. Finally, return the
-     * outcome code:
-     * - CODE_000_SUCCESS
+     * outcome code
      *
      * In this implementation, close the Http client
      */

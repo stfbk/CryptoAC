@@ -75,16 +75,7 @@ class CoreRBACMQTT(
     /**
      * This function is invoked by the admin, and it should
      * initialize the admin's status, configure eventual
-     * parameters and eventually return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_002_ROLE_ALREADY_EXISTS
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_034_ADMIN_ALREADY_INITIALIZED
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
-     * - CODE_060_ADMIN_NAME
+     * parameters and eventually return the outcome code
      *
      * In this implementation, add the admin [user]'s keys in
      * the metadata
@@ -130,14 +121,7 @@ class CoreRBACMQTT(
     /**
      * This function is invoked by the user, and it should
      * initialize the user's status, configure eventual
-     * parameters and eventually return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
-     * - CODE_061_USER_ALREADY_INITIALIZED
+     * parameters and eventually return the outcome code
      *
      * In this implementation, add the [user]'s public key and
      * token in the metadata
@@ -159,16 +143,7 @@ class CoreRBACMQTT(
      * Add a user with the given [username] to the policy
      * and return eventual configuration parameters along
      * with the outcome code (if an error occurred, the
-     * configuration parameters will be null):
-     * - CODE_000_SUCCESS
-     * - CODE_001_USER_ALREADY_EXISTS
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
-     * - CODE_062_CREATE_USER_MM
+     * configuration parameters will be null)
      */
     override fun addUser(username: String): CodeCoreParameters {
         logger.info { "Adding user $username" }
@@ -233,24 +208,7 @@ class CoreRBACMQTT(
     /**
      * Delete the user with the matching [username] from
      * the policy and revoke the user from all assigned roles.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_007_ROLETUPLE_NOT_FOUND
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun deleteUser(username: String): OutcomeCode {
         logger.info { "Deleting user $username" }
@@ -304,16 +262,7 @@ class CoreRBACMQTT(
     /**
      * Add a new role with the given [roleName] to the policy
      * and assign the admin to the new role.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_002_ROLE_ALREADY_EXISTS
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun addRole(roleName: String): OutcomeCode {
         logger.info { "Adding role $roleName" }
@@ -384,22 +333,7 @@ class CoreRBACMQTT(
      * Delete the role with the matching [roleName] from
      * the policy and revoke all users and permissions
      * from the role.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_007_ROLETUPLE_NOT_FOUND
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_016_INVALID_PERMISSION
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun deleteRole(roleName: String): OutcomeCode {
         logger.info { "Deleting role $roleName" }
@@ -464,15 +398,7 @@ class CoreRBACMQTT(
      * new [fileContent] for the file [fileName].
      * Also, assign all permissions to the admin over
      * the file.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_003_FILE_ALREADY_EXISTS
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      *
      * In this implementation, [fileContent] is ignored.
      * Instead, the content of the first (retained) message
@@ -545,16 +471,7 @@ class CoreRBACMQTT(
     /**
      * Delete the file with the matching [fileName] from
      * the policy, and delete all the related permissions.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun deleteFile(fileName: String): OutcomeCode {
         logger.info { "Deleting topic $fileName" }
@@ -596,19 +513,7 @@ class CoreRBACMQTT(
     /**
      * Assign the user [username] to the role [roleName]
      * in the policy.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-     * - CODE_013_USER_WAS_DELETED
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun assignUserToRole(username: String, roleName: String): OutcomeCode {
         logger.info { "Assigning user $username to role $roleName" }
@@ -712,22 +617,7 @@ class CoreRBACMQTT(
     /**
      * Revoke the user [username] from the role [roleName]
      * from the policy.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_007_ROLETUPLE_NOT_FOUND
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_010_ROLETUPLE_ALREADY_EXISTS
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-     * - CODE_014_ROLE_WAS_DELETED
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun revokeUserFromRole(username: String, roleName: String): OutcomeCode {
         logger.info { "Revoking user $username from role $roleName" }
@@ -954,18 +844,7 @@ class CoreRBACMQTT(
     /**
      * Assigns the [permission] to the role [roleName] over
      * the file [fileName] in the policy.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_005_ROLE_NOT_FOUND
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-     * - CODE_016_INVALID_PERMISSION
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun assignPermissionToRole(
         roleName: String,
@@ -1129,19 +1008,7 @@ class CoreRBACMQTT(
     /**
      * Revoke the [permission] from the role [roleName] over
      * the file [fileName] in the policy.
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_008_PERMISSIONTUPLE_NOT_FOUND
-     * - CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_016_INVALID_PERMISSION
-     * - CODE_019_MISSING_PARAMETERS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_022_ADMIN_CANNOT_BE_MODIFIED
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      */
     override fun revokePermissionFromRole(
         roleName: String,
@@ -1292,12 +1159,7 @@ class CoreRBACMQTT(
      * if necessary, the content of the file [fileName]
      * and return it along with the outcome code (if an
      * error occurred, the content of the file will
-     * be null):
-     * - CODE_000_SUCCESS
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * be null)
      *
      * In this implementation, just subscribe to the topic
      * with the given [fileName]
@@ -1325,13 +1187,7 @@ class CoreRBACMQTT(
     /**
      * Encrypt and sign, if necessary, and upload the
      * new [fileContent] for the file [fileName].
-     * Finally, return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * Finally, return the outcome code
      *
      * In this implementation, check whether the client
      * is subscribed to the topic with name [fileName].
@@ -1429,11 +1285,7 @@ class CoreRBACMQTT(
     /**
      * Return the set of users, along with the
      * outcome code (if an error occurred, the
-     * set of users will be null):
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * set of users will be null)
      */
     override fun getUsers(): CodeUsers {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting users" }
@@ -1451,11 +1303,7 @@ class CoreRBACMQTT(
     /**
      * Return the set of roles, along with the
      * outcome code (if an error occurred, the
-     * set of users will be null):
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * set of users will be null)
      */
     override fun getRoles(): CodeRoles {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting roles" }
@@ -1473,11 +1321,7 @@ class CoreRBACMQTT(
     /**
      * Return the set of files, along with the
      * outcome code (if an error occurred, the
-     * set of users will be null):
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * set of users will be null)
      */
     override fun getFiles(): CodeFiles {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting topics" }
@@ -1496,11 +1340,7 @@ class CoreRBACMQTT(
      * Return the user-role assignments filtering
      * by the [username] and [roleName], if given,
      * along with the outcome code (if an error
-     * occurred, the set of users will be null):
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * occurred, the set of users will be null)
      */
     override fun getAssignments(username: String?, roleName: String?): CodeRoleTuples {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting role tuples" }
@@ -1523,11 +1363,7 @@ class CoreRBACMQTT(
      * Return the role-file permissions filtering
      * by the [username], [roleName] and [fileName],
      * if given, along with the outcome code (if an error
-     * occurred, the set of users will be null):
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * occurred, the set of users will be null)
      */
     override fun getPermissions(username: String?, roleName: String?, fileName: String?): CodePermissionTuples {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting permission tuples" }
@@ -1558,11 +1394,7 @@ class CoreRBACMQTT(
 
     /**
      * Lock the specified interfaces
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
+     * and return the outcome code
      */
     private fun startOfMethod(mmLock: Boolean = true, dmLock: Boolean = true): OutcomeCode {
         logger.info {
@@ -1589,8 +1421,7 @@ class CoreRBACMQTT(
      * specified interfaces (i.e., commit the
      * changes). Otherwise, rollback to the
      * previous status. In both cases, return
-     * the outcome code:
-     * - CODE_000_SUCCESS
+     * the outcome code
      */
     private fun endOfMethod(code: OutcomeCode, mmLocked: Boolean = true, dmLocked: Boolean = true): OutcomeCode {
         if (code == OutcomeCode.CODE_000_SUCCESS) {
@@ -1689,13 +1520,6 @@ class CoreRBACMQTT(
      * acknowledgment for the [message] being processed, and a deadlock will occur.
      *
      * In this implementation, TODO
-     *
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
-     * - CODE_043_DM_CONNECTION_TIMEOUT
-     * - CODE_044_MM_CONNECTION_TIMEOUT
-     * - CODE_047_UNEXPECTED
      */
     override fun messageArrived(topic: String, message: MqttMessage) {
         /**
@@ -2004,9 +1828,7 @@ class CoreRBACMQTT(
     /**
      * Get from the MM and decrypt the symmetric key of
      * the [topic] with the [versionNumber], if given.
-     * Finally, return the key along with an outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_006_FILE_NOT_FOUND
+     * Finally, return the key along with an outcome code
      */
     private fun getLatestSymmetricKey(
         topic: String,

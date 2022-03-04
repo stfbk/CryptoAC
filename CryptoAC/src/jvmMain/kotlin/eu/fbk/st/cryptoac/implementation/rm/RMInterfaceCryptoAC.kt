@@ -38,10 +38,8 @@ class RMInterfaceCryptoAC(
     private val rmBaseAPI = "${interfaceParameters.url}:${interfaceParameters.port}"
 
     /**
-     * Configure the RM with relevant [parameters]
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_042_RM_CONNECTION_TIMEOUT
+     * If necessary, configure the RM with relevant
+     * [parameters] and return the outcome code
      */
     override fun configure(parameters: CoreParameters): OutcomeCode {
 
@@ -89,23 +87,10 @@ class RMInterfaceCryptoAC(
     }
 
     /**
-     * Invoke the RM to validate
-     * the add file operation involving the given
+     * Invoke the RM to validate the creation of
+     * a new resource involving the given
      * [newFileTuple] and [adminPermissionTuple]
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_003_FILE_ALREADY_EXISTS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_016_INVALID_PERMISSION
-     * - CODE_017_INVALID_VERSION_NUMBER
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_021_RM_CONFIGURATION
-     * - CODE_025_FILE_RENAMING
-     * - CODE_026_TUPLE_FORMAT
-     * - CODE_042_RM_CONNECTION_TIMEOUT
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * and return the outcome code
      */
     override fun checkAddFile(newFileTuple: FileTuple, adminPermissionTuple: PermissionTuple): OutcomeCode {
 
@@ -145,22 +130,10 @@ class RMInterfaceCryptoAC(
     }
 
     /**
-     * Invoke the RM to validate
-     * the write file operation involving the given
-     * [newFileTuple] with the [symEncKeyVersionNumber]
-     * and return the outcome code:
-     * - CODE_000_SUCCESS
-     * - CODE_004_USER_NOT_FOUND
-     * - CODE_006_FILE_NOT_FOUND
-     * - CODE_009_FILETUPLE_NOT_FOUND
-     * - CODE_015_FILE_WAS_DELETED
-     * - CODE_017_INVALID_VERSION_NUMBER
-     * - CODE_020_INVALID_PARAMETER
-     * - CODE_021_RM_CONFIGURATION
-     * - CODE_025_FILE_RENAMING
-     * - CODE_027_AC_ENFORCEMENT_INCONSISTENT
-     * - CODE_042_RM_CONNECTION_TIMEOUT
-     * - CODE_043_DM_CONNECTION_TIMEOUT
+     * Invoke the RM to validate the update of
+     * a resource involving the given [newFileTuple]
+     * and [symEncKeyVersionNumber], and return the
+     * outcome code
      */
     override fun checkWriteFile(symEncKeyVersionNumber: Int, newFileTuple: FileTuple): OutcomeCode {
 

@@ -3,7 +3,11 @@ package eu.fbk.st.cryptoac.implementation.mm
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.Parameters
 import eu.fbk.st.cryptoac.TestUtilities.Companion.resetMMMySQL
+import eu.fbk.st.cryptoac.core.elements.ElementTypeWithKey
 import eu.fbk.st.cryptoac.core.elements.User
+import eu.fbk.st.cryptoac.core.tuples.RoleTuple
+import eu.fbk.st.cryptoac.crypto.AsymKeysType
+import eu.fbk.st.cryptoac.crypto.EncryptedAsymKeys
 import eu.fbk.st.cryptoac.runCommand
 import org.junit.jupiter.api.*
 import java.io.File
@@ -28,7 +32,7 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
         val processBuild = "./buildAll.sh".runCommand(File("../Documentation/Installation/"))
         processBuild.waitFor(10, TimeUnit.SECONDS)
         processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_mysql\"".runCommand(File("../Documentation/Installation/"))
-        processDocker!!.waitFor(15, TimeUnit.SECONDS)
+        processDocker!!.waitFor(10, TimeUnit.SECONDS)
     }
 
     @BeforeEach
@@ -61,7 +65,19 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
         return userMM
     }
 
+    @Test
+    fun `aaaaa`() {
+        val a = RoleTuple(
+            "admin", "rolenonono", 1,
+            EncryptedAsymKeys(ByteArray(5), ByteArray(5), AsymKeysType.ENC),
+            EncryptedAsymKeys(ByteArray(5), ByteArray(5), AsymKeysType.SIG),
+        )
+        a.signer = "signernonono"
+        a.signature = ByteArray(5)
+        a.signerType = ElementTypeWithKey.ROLE
+        println(mm.addRoleTuples(hashSetOf(a)))
 
+    }
     @Test
     fun `insert values in statement with right, less of no values works`() {
 

@@ -147,6 +147,29 @@ CREATE VIEW `user_specific_users` (`asymEncPublicKey`, `asymSigPublicKey`,  `use
         `users`.`asymEncPublicKey` = 'mock' AND
         `users`.`asymSigPublicKey` = 'mock';
 
+
+
+/* this view allows users to check their status */
+CREATE VIEW `user_specific_users_status` (`status`) AS
+    (
+        SELECT
+            `users`.`status` AS `status`
+        FROM
+            `users`
+        WHERE
+            `users`.`username` = (CONVERT( SUBSTRING_INDEX(USER(), '@', 1) USING UTF8MB4))
+    )
+    UNION
+    (
+        SELECT
+            `deletedUsers`.`status` AS `status`
+        FROM
+            `deletedUsers`
+        WHERE
+            `deletedUsers`.`username` = (CONVERT( SUBSTRING_INDEX(USER(), '@', 1) USING UTF8MB4))
+    );
+
+
 /* users can access only their role tuples */
 CREATE VIEW `user_specific_roleTuples`
 (`username`, `roleName`, `roleVersionNumber`, `encryptedAsymEncPublicKey`,
