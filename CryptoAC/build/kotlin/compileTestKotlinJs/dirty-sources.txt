@@ -1,0 +1,8 @@
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/tuples/PermissionTupleTest.kt
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/CryptoACObjectTest.kt
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/tuples/RoleTupleTest.kt
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/tuples/FileTupleTest.kt
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/SafeRegexTest.kt
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsTest/kotlin/eu/fbk/st/cryptoac/view/AppTest.kt
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/elements/ElementTest.kt
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/elements/ActiveElementTest.kt

@@ -86,25 +86,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user or the requested profile was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -123,7 +123,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     delete:
       tags: ["Profile"]
       summary: "Delete the profile of the specified user for the given core, if present in this CryptoAC instance."
@@ -159,25 +159,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user or the profile to delete was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -196,7 +196,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
   
   /profile/{CORE}:
     post:
@@ -271,25 +271,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -311,7 +311,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     patch:
       tags: ["Profile"]
       summary: "Update the profile of a user for the given core, if present in this CryptoAC instance."
@@ -384,25 +384,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user or the profile to update was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -424,7 +424,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
 
 
 
@@ -466,25 +466,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -503,7 +503,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     post:
       tags: ["CAC", "Admin"]
       summary: "Add a user to the access control policy for the given core."
@@ -577,25 +577,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -614,7 +614,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
 
   /CryptoAC/users/{CORE}/{Username}:   
     delete:
@@ -652,25 +652,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -689,7 +689,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
 
 
 
@@ -729,25 +729,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -766,7 +766,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     post:
       tags: ["CAC", "Admin"]
       summary: "Add a role to the access control policy for the given core."
@@ -806,25 +806,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -843,7 +843,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
   
   /CryptoAC/roles/{CORE}/{Role_Name}:   
     delete:
@@ -881,25 +881,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -918,7 +918,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
 
 
 
@@ -959,25 +959,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -996,7 +996,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     post:
       tags: ["CAC"]
       summary: "Add a resource to the access control policy for the given core."
@@ -1050,25 +1050,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1087,7 +1087,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     patch:
       tags: ["CAC"]
       summary: "Update a resource in the access control policy for the given core."
@@ -1138,25 +1138,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1175,7 +1175,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
 
   /CryptoAC/files/{CORE}/{File_Name}:   
     get:
@@ -1223,25 +1223,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1260,7 +1260,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     delete:
       tags: ["CAC", "Admin"]
       summary: "Delete the file from the access control policy for the given core."
@@ -1296,25 +1296,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1333,7 +1333,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
 
 
 
@@ -1391,25 +1391,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1428,7 +1428,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     post:
       tags: ["CAC", "Admin"]
       summary: "Add a user-role assignment to the access control policy for the given core."
@@ -1471,25 +1471,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1508,7 +1508,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
                   
   /CryptoAC/assignments/{CORE}/{Username}/{Role_Name}:
     delete:
@@ -1552,25 +1552,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1589,7 +1589,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
 
 
 
@@ -1662,25 +1662,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1699,7 +1699,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
     post:
       tags: ["CAC", "Admin"]
       summary: "Add a role-permission assignment to the access control policy for the given core."
@@ -1746,25 +1746,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1783,7 +1783,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
                   
   /CryptoAC/permissions/{CORE}/{Role_Name}/{File_Name}/{Permission}:
     delete:
@@ -1834,25 +1834,25 @@ paths:
           content:
             text/plain:
               examples:
-                CODE_036_UNAUTHORIZED:
+                CODE_038_UNAUTHORIZED:
                   summary: "The user is not logged in."
-                  value: "CODE_036_UNAUTHORIZED"
+                  value: "CODE_038_UNAUTHORIZED"
         '403':
           description: "Forbidden."
           content:
             text/plain:
               examples:
-                CODE_035_FORBIDDEN:
+                CODE_037_FORBIDDEN:
                   summary: "A not-admin user cannot invoke this API."
-                  value: "CODE_035_FORBIDDEN"
+                  value: "CODE_037_FORBIDDEN"
         '404':
           description: "Not found."
           content:
             text/plain:
               examples:
-                CODE_038_PROFILE_NOT_FOUND:
+                CODE_039_PROFILE_NOT_FOUND:
                   summary: "The profile of the logged user was not found in this instance of CryptoAC."
-                  value: "CODE_038_PROFILE_NOT_FOUND"
+                  value: "CODE_039_PROFILE_NOT_FOUND"
         '422':
           description: "Unprocessable Entity."
           content:
@@ -1871,7 +1871,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"
+                  value: "CODE_049_UNEXPECTED"
                 
 
 

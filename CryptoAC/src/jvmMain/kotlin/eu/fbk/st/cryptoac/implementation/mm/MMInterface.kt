@@ -45,13 +45,6 @@ abstract class MMInterface {
      */
     abstract fun initUser(user: User): OutcomeCode
 
-    /**
-     * Return whether the user with the given [username]
-     * is an admin user or not, along with the outcome code.
-     * Check that the user exists in the metadata
-     */
-    abstract fun isUserAdmin(username: String): WrappedBoolean
-
 
 
     /**
@@ -287,7 +280,8 @@ abstract class MMInterface {
      * [roleName] and return the outcome code.
      * Check that [roleName] is not the admin.
      * Also check that at least one role tuple
-     * is deleted
+     * is deleted, and if not check whether the
+     * [roleName] exists and was not deleted
      */
     abstract fun deleteRoleTuples(roleName: String): OutcomeCode
 
@@ -297,7 +291,8 @@ abstract class MMInterface {
      * filtering by [roleVersionNumber], if given. Finally,
      * return the outcome code. Check that [roleName] is not
      * the admin. Also check that at least one permission tuple
-     * is deleted
+     * is deleted, and if not check whether the [roleName] and
+     * the [fileName] exist and were not deleted
      */
     abstract fun deletePermissionTuples(
         roleName: String? = null,
@@ -309,7 +304,8 @@ abstract class MMInterface {
      * Delete the file tuples matching the given
      * [fileName] and return the outcome code.
      * Check that at least one file tuple is
-     * deleted
+     * deleted, and if not check whether the
+     * [fileName] exists and was not deleted
      */
     abstract fun deleteFileTuples(fileName: String): OutcomeCode
 

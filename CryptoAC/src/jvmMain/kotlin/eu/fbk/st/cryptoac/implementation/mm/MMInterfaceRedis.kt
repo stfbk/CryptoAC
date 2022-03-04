@@ -12,6 +12,7 @@ import eu.fbk.st.cryptoac.decodeBase64
 import eu.fbk.st.cryptoac.encodeBase64
 import mu.KotlinLogging
 import redis.clients.jedis.*
+import redis.clients.jedis.exceptions.JedisAccessControlException
 import redis.clients.jedis.exceptions.JedisConnectionException
 import java.security.PublicKey
 import java.util.*
@@ -72,6 +73,14 @@ class MMInterfaceRedis(
      * "this key already exists")
      */
     private var listOfKeysToDelete: MutableList<String> = mutableListOf()
+
+    /**
+     * This is a list of keys that are going to be inserted in the current
+     * transaction (i.e., between a lock and an unlock/rollback operation.
+     * We need to keep this information when first inserting key and then
+     * checking their existence in the same transaction
+     */
+    private var listOfKeysToAdd: MutableList<String> = mutableListOf()
 
     /** The threadsafe pool of network connections toward Redis */
     private val pool = JedisPool(
@@ -216,11 +225,11 @@ class MMInterfaceRedis(
             adminRoleTuple.roleName != ADMIN
         ) {
             logger.warn { "Admin user has name ${admin.name}, but admin name should be $ADMIN" }
-            return OutcomeCode.CODE_060_ADMIN_NAME
+            return OutcomeCode.CODE_036_ADMIN_NAME
         }
         if (getUsers(username = ADMIN).isNotEmpty()) {
             logger.warn { "Admin $ADMIN already initialized" }
-            return OutcomeCode.CODE_034_ADMIN_ALREADY_INITIALIZED
+            return OutcomeCode.CODE_035_ADMIN_ALREADY_INITIALIZED
         }
 
         val userKeyByName = "$userObjectPrefix$byUsernameKeyPrefix$ADMIN"
@@ -248,6 +257,7 @@ class MMInterfaceRedis(
             userIsAdminField to admin.isAdmin.toString(),
             statusField to ElementStatus.OPERATIONAL.toString(),
         ))
+        listOfKeysToAdd.addAll(listOf(userKeyByToken, userKeyByName))
 
 
         /** Add the admin as Role in the metadata */
@@ -290,8 +300,8 @@ class MMInterfaceRedis(
 
         val userKeyByName = "$userObjectPrefix$byUsernameKeyPrefix$username"
         val userKeyByToken = "$userObjectPrefix$byUserTokenPrefix$userToken"
-
-        return when (jedisQuery!!.hget(userKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        
+        return when (getStatus(username, ElementTypeWithStatus.USER)) {
             null -> {
                 logger.warn { "User ${user.name} does not exist in the metadata" }
                 OutcomeCode.CODE_004_USER_NOT_FOUND
@@ -302,7 +312,7 @@ class MMInterfaceRedis(
             }
             ElementStatus.OPERATIONAL -> {
                 logger.warn { "User $username already initialized" }
-                OutcomeCode.CODE_061_USER_ALREADY_INITIALIZED
+                OutcomeCode.CODE_052_USER_ALREADY_INITIALIZED
             }
             ElementStatus.INCOMPLETE -> {
                 val asymEncPublicKeyEncoded = user.asymEncKeys!!.public
@@ -323,23 +333,14 @@ class MMInterfaceRedis(
                     asymSigPublicKeyField to asymSigPublicKeyEncoded,
                     statusField to ElementStatus.OPERATIONAL.toString(),
                 ))
+                listOfKeysToAdd.add(userKeyByToken)
+
                 OutcomeCode.CODE_000_SUCCESS
             }
         }
     }
 
-    /**
-     * Return whether the user with the given [username]
-     * is an admin user or not, along with the outcome code.
-     * Check that the user exists in the metadata
-     *
-     * In this implementation, we assert whether the [username]
-     * is [ADMIN] // TODO we can do better than this
-     */
-    override fun isUserAdmin(username: String): WrappedBoolean {
-        // TODO check if admin exists, otherwise return CODE_004_USER_NOT_FOUND
-        return WrappedBoolean(boolean = (username == ADMIN))
-    }
+
 
     /**
      * Add the [newUser] in the metadata. The user's
@@ -356,7 +357,7 @@ class MMInterfaceRedis(
 
         val userKeyByName = "$userObjectPrefix$byUsernameKeyPrefix$username"
 
-        return when (jedisQuery!!.hget(userKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        return when (getStatus(username, ElementTypeWithStatus.USER)) {
             null -> {
                 transactionToExec = true
                 transaction!!.sadd(usersIncompleteKey, userKeyByName)
@@ -366,6 +367,7 @@ class MMInterfaceRedis(
                     userIsAdminField to newUser.isAdmin.toString(),
                     statusField to ElementStatus.INCOMPLETE.toString(),
                 ))
+                listOfKeysToAdd.add(userKeyByName)
 
                 /** TODO check password generation */
                 val passwordBytes = ByteArray(20)
@@ -377,10 +379,13 @@ class MMInterfaceRedis(
                         "on", "allkeys", "allcommands", ">$newPassword"
                     ) != "OK") {
                     logger.warn { "Could not create user $username in Redis" }
-                    OutcomeCode.CODE_062_CREATE_USER_MM
+                    OutcomeCode.CODE_054_CREATE_USER_MM
                 } else {
 
-                    // TODO configure ACL for user
+                    // TODO configure ACL for users. This should prevent users
+                    //  from sending delete/update commands and limit the
+                    //  selection of keys (i.e., when users do "getUsers/Roles/Files",
+                    //  and same with tuples, they get all data, not only theirs)
                     //jedisQuery!!.aclSetUser(username, "~app1:*")
 
                     OutcomeCode.CODE_000_SUCCESS
@@ -423,8 +428,8 @@ class MMInterfaceRedis(
 
         val roleKeyByName = "$roleObjectPrefix$byRoleNameKeyPrefix$roleName"
         val roleKeyByToken = "$roleObjectPrefix$byRoleTokenPrefix$roleToken"
-
-        return when (jedisQuery!!.hget(roleKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        
+        return when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
             null -> {
                 val asymEncPublicKeyEncoded = newRole.asymEncKeys!!.public
                 val asymSigPublicKeyEncoded = newRole.asymSigKeys!!.public
@@ -446,6 +451,8 @@ class MMInterfaceRedis(
                     roleVersionNumberField to newRole.versionNumber.toString(),
                     statusField to newRole.status.toString(),
                 ))
+                listOfKeysToAdd.addAll(listOf(roleKeyByToken, roleKeyByName))
+
                 OutcomeCode.CODE_000_SUCCESS
             }
 
@@ -479,8 +486,8 @@ class MMInterfaceRedis(
 
         val fileKeyByName = "$fileObjectPrefix$byFileNameKeyPrefix$fileName"
         val fileKeyByToken = "$fileObjectPrefix$byFileTokenPrefix$fileToken"
-
-        return when (jedisQuery!!.hget(fileKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        
+        return when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
             null -> {
                 logger.debug { "Adding the file $fileName with key $fileKeyByName" }
                 transactionToExec = true
@@ -499,6 +506,7 @@ class MMInterfaceRedis(
                     statusField to newFile.status.toString(),
                     enforcementField to newFile.enforcement.toString(),
                 ))
+                listOfKeysToAdd.addAll(listOf(fileKeyByToken, fileKeyByName))
                 OutcomeCode.CODE_000_SUCCESS
             }
             ElementStatus.DELETED -> {
@@ -541,16 +549,68 @@ class MMInterfaceRedis(
         var code = OutcomeCode.CODE_000_SUCCESS
         run error@{
             newRoleTuples.forEach { roleTuple ->
-                // TODO we should check that the user/role/file exists, and return proper
-                //  codes. You still miss these codes to return
-                //  * - CODE_004_USER_NOT_FOUND
-                //  * - CODE_005_ROLE_NOT_FOUND
-                //  * - CODE_013_USER_WAS_DELETED
-                //  * - CODE_014_ROLE_WAS_DELETED
-                //  * - CODE_065_USER_IS_INCOMPLETE
 
                 val username = roleTuple.username
                 val roleName = roleTuple.roleName
+
+                /**
+                 * Check that involved users exist, are
+                 * not incomplete or were not deleted,
+                 * and that involved roles exist and
+                 * were not deleted
+                 */
+                val userKeyByName = "$userObjectPrefix$byUsernameKeyPrefix$username"
+                code = if (listOfKeysToAdd.contains(userKeyByName)) {
+                    OutcomeCode.CODE_000_SUCCESS
+                } else {
+                    when (
+                        getStatus(username, ElementTypeWithStatus.USER)
+                    ) {
+                        null -> {
+                            logger.warn { "User $username was not found" }
+                            OutcomeCode.CODE_004_USER_NOT_FOUND
+                        }
+                        ElementStatus.DELETED -> {
+                            logger.warn { "User $username was previously deleted" }
+                            OutcomeCode.CODE_013_USER_WAS_DELETED
+                        }
+                        ElementStatus.INCOMPLETE -> {
+                            logger.warn { "User $username is incomplete" }
+                            OutcomeCode.CODE_053_USER_IS_INCOMPLETE
+                        }
+                        else ->
+                            OutcomeCode.CODE_000_SUCCESS
+                    }
+                }
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
+
+                val roleKeyByName = "$roleObjectPrefix$byRoleNameKeyPrefix$roleName"
+                code = if (listOfKeysToAdd.contains(roleKeyByName)) {
+                    OutcomeCode.CODE_000_SUCCESS
+                } else {
+                    when (
+                        getStatus(roleName, ElementTypeWithStatus.ROLE)
+                    ) {
+                        null -> {
+                            logger.warn { "Role $roleName was not found" }
+                            OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                        }
+                        ElementStatus.DELETED -> {
+                            logger.warn { "Role $roleName was previously deleted" }
+                            OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                        }
+                        else ->
+                            OutcomeCode.CODE_000_SUCCESS
+                    }
+                }
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
+
+
+
                 val keyOfTuplesListByUser = "$roleTuplesListKeyPrefix$byUsernameKeyPrefix$username"
                 val keyOfTuplesListByRole = "$roleTuplesListKeyPrefix$byRoleNameKeyPrefix$roleName"
                 val keyOfTuplesListByUserAndRole =
@@ -583,6 +643,7 @@ class MMInterfaceRedis(
                             signatureField to roleTuple.signature!!.encodeBase64(),
                         )
                     )
+                    listOfKeysToAdd.add(roleTupleKey)
                 }
             }
         }
@@ -620,14 +681,62 @@ class MMInterfaceRedis(
         var code = OutcomeCode.CODE_000_SUCCESS
         run error@{
             newPermissionTuples.forEach { permissionTuple ->
-                // TODO we should check that the role/file exists, and return proper codes
-                //  you still miss the ones below
-                //     * - CODE_005_ROLE_NOT_FOUND
-                //     * - CODE_006_FILE_NOT_FOUND
-                //     * - CODE_014_ROLE_WAS_DELETED
-                //     * - CODE_015_FILE_WAS_DELETED
                 val roleName = permissionTuple.roleName
                 val fileName = permissionTuple.fileName
+
+
+
+                /**
+                 * Check that involved roles exist and
+                 * were not deleted and that involved
+                 * files exist and were not deleted
+                 */
+                val roleKeyByName = "$roleObjectPrefix$byRoleNameKeyPrefix$roleName"
+                code = if (listOfKeysToAdd.contains(roleKeyByName)) {
+                    OutcomeCode.CODE_000_SUCCESS
+                } else {
+                    when (
+                        getStatus(roleName, ElementTypeWithStatus.ROLE)
+                    ) {
+                        null -> {
+                            logger.warn { "Role $roleName was not found" }
+                            OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                        }
+                        ElementStatus.DELETED -> {
+                            logger.warn { "Role $roleName was previously deleted" }
+                            OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                        }
+                        else ->
+                            OutcomeCode.CODE_000_SUCCESS
+                    }
+                }
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
+
+                val fileKeyByName = "$fileObjectPrefix$byFileNameKeyPrefix$fileName"
+                code = if (listOfKeysToAdd.contains(fileKeyByName)) {
+                    OutcomeCode.CODE_000_SUCCESS
+                } else {
+                    when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                        null -> {
+                            logger.warn { "File $fileName was not found" }
+                            OutcomeCode.CODE_006_FILE_NOT_FOUND
+                        }
+                        ElementStatus.DELETED -> {
+                            logger.warn { "File $fileName was previously deleted" }
+                            OutcomeCode.CODE_015_FILE_WAS_DELETED
+                        }
+                        else ->
+                            OutcomeCode.CODE_000_SUCCESS
+                    }
+                }
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
+
+
+
                 val keyOfTuplesListByRole = "$permissionTuplesListKeyPrefix$byRoleNameKeyPrefix$roleName"
                 val keyOfTuplesListByFile = "$permissionTuplesListKeyPrefix$byFileNameKeyPrefix$fileName"
                 val keyOfTuplesListByRoleAndFile =
@@ -664,6 +773,7 @@ class MMInterfaceRedis(
                             signatureField to permissionTuple.signature!!.encodeBase64(),
                         )
                     )
+                    listOfKeysToAdd.add(permissionTupleKey)
                 }
             }
         }
@@ -696,12 +806,33 @@ class MMInterfaceRedis(
         var code = OutcomeCode.CODE_000_SUCCESS
         run error@{
             newFileTuples.forEach { fileTuple ->
-                // TODO we should check that the user/role/file exists, and return proper codes
-                //  you miss these
-                //  - CODE_006_FILE_NOT_FOUND
-                //  - CODE_015_FILE_WAS_DELETED
-
                 val fileName = fileTuple.fileName
+
+
+
+                val fileKeyByName = "$fileObjectPrefix$byFileNameKeyPrefix$fileName"
+                code = if (listOfKeysToAdd.contains(fileKeyByName)) {
+                    OutcomeCode.CODE_000_SUCCESS
+                } else {
+                    when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                        null -> {
+                            logger.warn { "File $fileName was not found" }
+                            OutcomeCode.CODE_006_FILE_NOT_FOUND
+                        }
+                        ElementStatus.DELETED -> {
+                            logger.warn { "File $fileName was previously deleted" }
+                            OutcomeCode.CODE_015_FILE_WAS_DELETED
+                        }
+                        else ->
+                            OutcomeCode.CODE_000_SUCCESS
+                    }
+                }
+                if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    return@error
+                }
+
+
+
                 val fileTupleKey = "$fileTuplesKeyPrefix$byFileNameKeyPrefix$fileName"
                 val keyOfTuplesListByFile = "$fileTuplesListKeyPrefix$byFileNameKeyPrefix$fileName"
 
@@ -728,6 +859,7 @@ class MMInterfaceRedis(
                             signatureField to fileTuple.signature!!.encodeBase64(),
                         )
                     )
+                    listOfKeysToAdd.add(fileTupleKey)
                 }
             }
         }
@@ -1186,7 +1318,7 @@ class MMInterfaceRedis(
             logger.error { message }
             throw IllegalStateException(message)
         }
-// TODO consider also deleted elements
+
         val fieldOfKeyToGet = when (asymKeyType) {
             AsymKeysType.ENC -> asymEncPublicKeyField
             AsymKeysType.SIG -> asymSigPublicKeyField
@@ -1206,10 +1338,11 @@ class MMInterfaceRedis(
         }
 
         val elementData = jedisQuery!!.hgetAll(keyOfElement)
-        return if (elementData[statusField]?.let { ElementStatus.valueOf(it) } == ElementStatus.OPERATIONAL) {
-            elementData[fieldOfKeyToGet]?.decodeBase64()
-        } else {
-            null
+        return when (elementData[statusField]?.let { ElementStatus.valueOf(it) }) {
+            ElementStatus.OPERATIONAL -> elementData[fieldOfKeyToGet]?.decodeBase64()
+            ElementStatus.DELETED -> elementData[fieldOfKeyToGet]?.decodeBase64()
+            ElementStatus.INCOMPLETE -> null
+            null -> null
         }
     }
 
@@ -1351,7 +1484,7 @@ class MMInterfaceRedis(
 
         val userKeyByName = "$userObjectPrefix$byUsernameKeyPrefix$username"
 
-        return when (val status = jedisQuery!!.hget(userKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        return when (val status = getStatus(username, ElementTypeWithStatus.USER)) {
             null -> {
                 OutcomeCode.CODE_004_USER_NOT_FOUND
             }
@@ -1375,10 +1508,12 @@ class MMInterfaceRedis(
                     transaction!!.hset(userKeyByToken, statusField, ElementStatus.DELETED.toString())
                 }
 
-                // TODO delete the user from the DB
                 logger.debug { "Deleting the user from the Redis database" }
-
-                OutcomeCode.CODE_000_SUCCESS
+                return if (jedisQuery!!.aclDelUser(username) == 1L) {
+                    OutcomeCode.CODE_000_SUCCESS
+                } else {
+                    OutcomeCode.CODE_056_DELETE_USER_MM
+                }
             }
         }
     }
@@ -1406,7 +1541,7 @@ class MMInterfaceRedis(
 
         val roleKeyByName = "$roleObjectPrefix$byRoleNameKeyPrefix$roleName"
 
-        return when (jedisQuery!!.hget(roleKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        return when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
             null -> {
                 OutcomeCode.CODE_005_ROLE_NOT_FOUND
             }
@@ -1445,7 +1580,7 @@ class MMInterfaceRedis(
 
         val fileKeyByName = "$fileObjectPrefix$byFileNameKeyPrefix$fileName"
 
-        return when (jedisQuery!!.hget(fileKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        return when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
             null -> {
                 OutcomeCode.CODE_006_FILE_NOT_FOUND
             }
@@ -1475,7 +1610,8 @@ class MMInterfaceRedis(
      * [roleName] and return the outcome code.
      * Check that [roleName] is not the admin.
      * Also check that at least one role tuple
-     * is deleted
+     * is deleted, and if not check whether the
+     * [roleName] exists and was not deleted
      *
      * In this implementation, delete the tuples
      * with the [roleName] and remove the related
@@ -1499,7 +1635,16 @@ class MMInterfaceRedis(
         logger.debug { "Found $size role tuples to delete" }
 
         return if (size == 0) {
-             OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
+            when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                ElementStatus.INCOMPLETE -> {
+                    val message = "Role $roleName has incomplete status"
+                    logger.error { message }
+                    throw IllegalStateException(message)
+                }
+                ElementStatus.OPERATIONAL -> OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
+                ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+            }
         } else {
             transactionToExec = true
             keyOfRoleTuplesToDelete.forEach { roleTupleKey ->
@@ -1521,7 +1666,8 @@ class MMInterfaceRedis(
      * filtering by [roleVersionNumber], if given. Finally,
      * return the outcome code. Check that [roleName] is not
      * the admin. Also check that at least one permission tuple
-     * is deleted
+     * is deleted, and if not check whether the [roleName] and
+     * the [fileName] exist and were not deleted
      *
      * In this implementation, delete the tuples related to the
      * [roleName], if given, the tuples related to the [fileName],
@@ -1570,7 +1716,39 @@ class MMInterfaceRedis(
         logger.debug { "Found $size permission tuples to delete" }
 
         return if (size == 0) {
-            OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+            val roleExists = if (roleName != null) {
+                when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                    ElementStatus.INCOMPLETE -> {
+                        val message = "Role $roleName has incomplete status"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
+                    ElementStatus.OPERATIONAL -> OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                    ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                    null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                }
+            } else {
+                OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+            }
+            
+            if (roleExists == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND) {
+                if (fileName != null) {
+                    when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                        ElementStatus.INCOMPLETE -> {
+                            val message = "File $fileName has incomplete status"
+                            logger.error { message }
+                            throw IllegalStateException(message)
+                        }
+                        ElementStatus.OPERATIONAL -> OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
+                        null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                    }
+                } else {
+                    OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                }
+            } else {
+                OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+            }
         } else {
             transactionToExec = true
             keyOfPermissionTuplesToDelete.forEach { permissionTupleKey ->
@@ -1607,7 +1785,8 @@ class MMInterfaceRedis(
      * Delete the file tuples matching the given
      * [fileName] and return the outcome code.
      * Check that at least one file tuple is
-     * deleted
+     * deleted, and if not check whether the
+     * [fileName] exists and was not deleted
      *
      * In this implementation, delete the tuples
      * with the [fileName] and remove the related
@@ -1625,7 +1804,16 @@ class MMInterfaceRedis(
         logger.debug { "Found $size file tuples to delete" }
 
         return if (size == 0) {
-            OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND
+            when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                ElementStatus.INCOMPLETE -> {
+                    val message = "File $fileName has incomplete status"
+                    logger.error { message }
+                    throw IllegalStateException(message)
+                }
+                ElementStatus.OPERATIONAL -> OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND
+                ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
+                null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+            }
         } else {
             transactionToExec = true
             keyOfFileTuplesToDelete.forEach { fileTupleKey ->
@@ -1655,7 +1843,7 @@ class MMInterfaceRedis(
 
         val fileKeyByName = "$fileObjectPrefix$byFileNameKeyPrefix$fileName"
 
-        return when (jedisQuery!!.hget(fileKeyByName, statusField)?.let { ElementStatus.valueOf(it) }) {
+        return when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
             null -> {
                 logger.warn { "File was not found" }
                 OutcomeCode.CODE_006_FILE_NOT_FOUND
@@ -1735,15 +1923,20 @@ class MMInterfaceRedis(
         val symKeyVersionNumber = updatedPermissionTuple.symKeyVersionNumber
         val permissionTupleKey = "$permissionTuplesKeyPrefix$byRoleAndFileNameKeyPrefix$roleName$dl$fileName$dl$symKeyVersionNumber"
         logger.info { "Updating the permission tuple of role $roleName to file $fileName" }
-        // TODO check if permission tuple is present, otherwise return CODE_008_PERMISSIONTUPLE_NOT_FOUND
-        transactionToExec = true
-        transaction!!.hset(permissionTupleKey, hashMapOf(
-            permissionField to updatedPermissionTuple.permission.toString(),
-            signerTokenField to updatedPermissionTuple.signer,
-            signatureField to updatedPermissionTuple.signature!!.encodeBase64(),
-        ))
 
-        return OutcomeCode.CODE_000_SUCCESS
+        return if (jedisQuery!!.exists(permissionTupleKey)) {
+            transactionToExec = true
+            transaction!!.hset(
+                permissionTupleKey, hashMapOf(
+                    permissionField to updatedPermissionTuple.permission.toString(),
+                    signerTokenField to updatedPermissionTuple.signer,
+                    signatureField to updatedPermissionTuple.signature!!.encodeBase64(),
+                )
+            )
+            OutcomeCode.CODE_000_SUCCESS
+        } else {
+            OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+        }
     }
 
     /**
@@ -1755,7 +1948,7 @@ class MMInterfaceRedis(
      * the outcome code
      *
      * In this implementation, create a Redis transaction and another
-     * connection for querying the database TODO find a better method
+     * connection for querying the database
      */
     override fun lock(): OutcomeCode {
         return if (locks == 0) {
@@ -1763,15 +1956,25 @@ class MMInterfaceRedis(
             try {
                 if (transaction == null && jedisQuery == null && jedisTransaction == null) {
                     jedisTransaction = pool.resource
-                    jedisTransaction!!.auth(usernameRedis, mmRedisInterfaceParameters.password)
-                    // TODO check authn, if error return code CODE_064_ACCESS_DENIED_TO_MM
-                    jedisTransaction!!.watch(lockUnlockRollbackKey)
-                    transaction = jedisTransaction!!.multi()
-                    jedisQuery = pool.resource
-                    jedisQuery!!.auth(usernameRedis, mmRedisInterfaceParameters.password)
-                    transactionToExec = false
-                    locks++
-                    OutcomeCode.CODE_000_SUCCESS
+                    try {
+                        jedisTransaction!!.auth(usernameRedis, mmRedisInterfaceParameters.password)
+                        jedisTransaction!!.watch(lockUnlockRollbackKey)
+                        transaction = jedisTransaction!!.multi()
+                        jedisQuery = pool.resource
+                        jedisQuery!!.auth(usernameRedis, mmRedisInterfaceParameters.password)
+                        transactionToExec = false
+                        locks++
+                        OutcomeCode.CODE_000_SUCCESS
+                    } catch (e: JedisAccessControlException) {
+                        if (e.message?.contains(
+                                "WRONGPASS invalid username-password pair or user is disabled"
+                            ) == true) {
+                            logger.warn { "MM Redis - access denied for user $usernameRedis" }
+                            OutcomeCode.CODE_055_ACCESS_DENIED_TO_MM
+                        } else {
+                            throw e
+                        }
+                    }
                 } else {
                     /** A lock has been set but not released */
                     logger.warn { "A lock has been set but not released" }
@@ -1784,7 +1987,7 @@ class MMInterfaceRedis(
                 closeAndNullRedis()
                 if ((e.message ?: "").contains("Failed to create socket")) {
                     logger.warn { "MM Redis - connection timeout" }
-                    OutcomeCode.CODE_044_MM_CONNECTION_TIMEOUT
+                    OutcomeCode.CODE_045_MM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -1809,7 +2012,9 @@ class MMInterfaceRedis(
     override fun rollback(): OutcomeCode {
         return if (locks == 1) {
             logger.info { "Rollback the status of the MM" }
-            logger.debug { "Clearing list of keys to deleted (size was ${listOfKeysToDelete.size})" }
+            logger.debug { "Clearing list of keys to add (size was ${listOfKeysToAdd.size})" }
+            listOfKeysToAdd.clear()
+            logger.debug { "Clearing list of keys to delete (size was ${listOfKeysToDelete.size})" }
             listOfKeysToDelete.clear()
             locks--
             if (transaction != null && jedisQuery != null && jedisTransaction != null) {
@@ -1848,7 +2053,9 @@ class MMInterfaceRedis(
     override fun unlock(): OutcomeCode {
         return if (locks == 1) {
             logger.info { "Unlocking the status of the MM" }
-            logger.debug { "Clearing list of keys to deleted (size was ${listOfKeysToDelete.size})" }
+            logger.debug { "Clearing list of keys to add (size was ${listOfKeysToAdd.size})" }
+            listOfKeysToAdd.clear()
+            logger.debug { "Clearing list of keys to delete (size was ${listOfKeysToDelete.size})" }
             listOfKeysToDelete.clear()
             locks--
             if (transaction != null && jedisQuery != null && jedisTransaction != null) {
@@ -1862,7 +2069,7 @@ class MMInterfaceRedis(
                     }
                     if (responses == null) {
                         logger.warn { "Could not execute the transaction" }
-                        OutcomeCode.CODE_058_UNLOCK_FAILED
+                        OutcomeCode.CODE_034_UNLOCK_FAILED
                     } else {
                         OutcomeCode.CODE_000_SUCCESS
                     }

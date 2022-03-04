@@ -218,7 +218,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                 getProfileFromProxy()
             } else {
                 logger.warn { "Trying to see the dashboard but user is not logged in" }
-                props.handleDisplayAlert(OutcomeCode.CODE_055_LOGIN_REQUIRED, CryptoACAlertSeverity.INFO)
+                props.handleDisplayAlert(OutcomeCode.CODE_051_LOGIN_REQUIRED, CryptoACAlertSeverity.INFO)
             }
         }
     }
@@ -283,7 +283,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
 
             if (method != HttpMethod.Post && method != HttpMethod.Patch) {
                 logger.warn { "HTTP Method of edit profile form is neither Post nor Patch (it is $method)" }
-                props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
             }
             MainScope().launch {
                 /** Send the HTTPS request */
@@ -324,7 +324,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
         } catch (e: Error) {
             logger.error { "Error during edit profile (${e.message}), see console log for details" }
             console.log(e)
-            props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+            props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
         }
     }
 
@@ -346,7 +346,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
             }
         } else {
             logger.warn {"The user did not provide a .json file for the profile" }
-            props.handleDisplayAlert(OutcomeCode.CODE_039_MALFORMED_PROFILE_FILE, CryptoACAlertSeverity.WARNING)
+            props.handleDisplayAlert(OutcomeCode.CODE_040_MALFORMED_PROFILE_FILE, CryptoACAlertSeverity.WARNING)
         }
     }
 
@@ -425,7 +425,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                 if (rmParameters.rmType != props.rmType) {
                     if (forceTypesUpdate) {
                         props.handleChangeRMType(rmParameters.rmType)
-                        props.handleDisplayAlert(OutcomeCode.CODE_063_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
+                        props.handleDisplayAlert(OutcomeCode.CODE_057_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
 
                     } else {
                         throw UnsupportedOperationException(
@@ -445,7 +445,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                 if (mmParameters.mmType != props.mmType) {
                     if (forceTypesUpdate) {
                         props.handleChangeMMType(mmParameters.mmType)
-                        props.handleDisplayAlert(OutcomeCode.CODE_063_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
+                        props.handleDisplayAlert(OutcomeCode.CODE_057_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
                     } else {
                         throw UnsupportedOperationException(
                             "MM type of file (${mmParameters.mmType}) is different from currently selected core type (${props.mmType}"
@@ -464,7 +464,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                 if (dmParameters.dmType != props.dmType) {
                     if (forceTypesUpdate) {
                         props.handleChangeDMType(dmParameters.dmType)
-                        props.handleDisplayAlert(OutcomeCode.CODE_063_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
+                        props.handleDisplayAlert(OutcomeCode.CODE_057_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
                     } else {
                         throw UnsupportedOperationException(
                             "DM type of file (${dmParameters.dmType}) is different from currently selected core type (${props.dmType}"
@@ -498,11 +498,11 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
 
                 logger.warn { "Malformed .json profile file" }
                 logger.warn { e }
-                props.handleDisplayAlert(OutcomeCode.CODE_039_MALFORMED_PROFILE_FILE, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_040_MALFORMED_PROFILE_FILE, CryptoACAlertSeverity.ERROR)
             } else {
                 logger.error { "Error during upload file (${e.message}), see console log for details" }
                 console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
         }
 

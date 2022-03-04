@@ -321,10 +321,7 @@ class CoreRBACCLOUD(
 
         /** Delete all RoleTuples matching the [roleName] from the MM */
         val deleteRoleTuples = mm.deleteRoleTuples(roleName)
-        if (
-            deleteRoleTuples != OutcomeCode.CODE_000_SUCCESS &&
-            deleteRoleTuples != OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
-        ) {
+        if (deleteRoleTuples != OutcomeCode.CODE_000_SUCCESS) {
             return endOfMethod(deleteRoleTuples, dmLocked = false)
         }
 
@@ -435,7 +432,7 @@ class CoreRBACCLOUD(
                         "Added file in the DM, the RM could not check it and we were not able to" +
                         "delete the (temporary) file from the DM; contact the system administrator"
                     }
-                    endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
+                    endOfMethod(OutcomeCode.CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
                 } else
                     endOfMethod(code)
             } else {
@@ -467,10 +464,7 @@ class CoreRBACCLOUD(
 
         /** Delete the permission tuples matching the [fileName] from the MM */
         code = mm.deletePermissionTuples(fileName = fileName)
-        if (
-            code != OutcomeCode.CODE_000_SUCCESS &&
-            code != OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
-        ) {
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
             return endOfMethod(code)
         }
 
@@ -481,10 +475,7 @@ class CoreRBACCLOUD(
 
         /** Delete the file tuple matching the [fileName] from the MM */
         code = mm.deleteFileTuples(fileName)
-        if (
-            code != OutcomeCode.CODE_000_SUCCESS &&
-            code != OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND
-        ) {
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
             return endOfMethod(code)
         }
 
@@ -556,7 +547,9 @@ class CoreRBACCLOUD(
 
         /** Create the new RoleTuple binding the [username] and the [roleName] */
         val userAsymEncPublicKeyBytes = mm.getPublicKey(
-            name = username, elementType = ElementTypeWithKey.USER, asymKeyType = AsymKeysType.ENC
+            name = username,
+            elementType = ElementTypeWithKey.USER,
+            asymKeyType = AsymKeysType.ENC
         )
 
         /** If we did not find the user's key, it means that the user does not exist (or was deleted) */
@@ -566,7 +559,7 @@ class CoreRBACCLOUD(
             return if (status != null) {
                 logger.warn { "User's status is $status" }
                 when (status) {
-                    ElementStatus.INCOMPLETE -> endOfMethod(OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED, dmLocked = false)
+                    ElementStatus.INCOMPLETE -> endOfMethod(OutcomeCode.CODE_053_USER_IS_INCOMPLETE, dmLocked = false)
                     ElementStatus.OPERATIONAL -> {
                         val message = "User's $username key not found but user is operational"
                         logger.error { message }
@@ -1390,7 +1383,7 @@ class CoreRBACCLOUD(
                             "Added file in the DM, the RM could not check it and we were not able to" +
                             "delete the (temporary) file from the DM; contact the system administrator"
                         }
-                        endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
+                        endOfMethod(OutcomeCode.CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
                     } else {
                         endOfMethod(code, opaLocked = false)
                     }
@@ -1432,7 +1425,7 @@ class CoreRBACCLOUD(
                             "Added file in the DM, the RM could not check it and we were not able to" +
                                     "delete the (temporary) file from the DM; contact the system administrator"
                         }
-                        endOfMethod(OutcomeCode.CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
+                        endOfMethod(OutcomeCode.CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
                     } else {
                         endOfMethod(code, opaLocked = false)
                     }

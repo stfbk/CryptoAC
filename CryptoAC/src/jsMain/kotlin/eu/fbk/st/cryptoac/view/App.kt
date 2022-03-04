@@ -26,7 +26,6 @@ import eu.fbk.st.cryptoac.view.sidebar.configuration
 import eu.fbk.st.cryptoac.view.sidebar.evaluation
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.features.*
 import io.ktor.client.features.cookies.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -532,7 +531,7 @@ class App : RComponent<Props, AppState>() {
             } catch (e: Error) {
                 logger.error { "Error during login (${e.message}), see console log for details" }
                 console.log(e)
-                displayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                displayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             } finally {
                 changeBackdropIsOpen(false)
             }

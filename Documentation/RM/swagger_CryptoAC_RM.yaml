@@ -105,7 +105,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"           
+                  value: "CODE_049_UNEXPECTED"           
         '503':
           description: "Service Unavailable."
           content:
@@ -177,7 +177,7 @@ paths:
               examples:
                 outcomeCode:
                   summary: "An outcome code describing the error."
-                  value: "CODE_047_UNEXPECTED"           
+                  value: "CODE_049_UNEXPECTED"           
         '503':
           description: "Service Unavailable."
           content:

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayInputStream
+import java.io.IOError
+import java.io.IOException
 import java.security.InvalidKeyException
 import java.security.SignatureException
 import java.security.spec.InvalidKeySpecException
@@ -456,8 +458,8 @@ internal abstract class CryptoTest {
         try {
             val decBytes = cryptoObject.decryptStream(otherKey, ByteArrayInputStream(encBytes)).readAllBytes()
             assert(!bytesToEncrypt.contentEquals(decBytes))
-        } catch (e: java.lang.IllegalArgumentException) {
-            assert(e.message!!.contains("Last encoded character (before the paddings if any) is a valid base 64 alphabet but not a possible value"))
+        } catch (e: IOException) {
+            assert(e.message!!.contains("javax.crypto.AEADBadTagException: Tag mismatch!"))
         }
     }
  }

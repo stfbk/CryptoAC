@@ -82,7 +82,7 @@ class DMInterfaceRBACCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_043_DM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -124,7 +124,7 @@ class DMInterfaceRBACCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_043_DM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -163,7 +163,7 @@ class DMInterfaceRBACCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_043_DM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -199,7 +199,7 @@ class DMInterfaceRBACCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_043_DM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -230,7 +230,7 @@ class DMInterfaceRBACCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_043_DM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -263,7 +263,7 @@ class DMInterfaceRBACCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_043_DM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }

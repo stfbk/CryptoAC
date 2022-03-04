@@ -70,12 +70,12 @@ internal class ProxyRoutesTest {
 
         /** create profile of user as another user */
         runBlocking {
-            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_035_FORBIDDEN,
+            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden, loggedUser = "alice")
         }
         /** create profile of user while not logged-in */
         runBlocking {
-            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_036_UNAUTHORIZED,
+            ProxyUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -131,14 +131,14 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.getProfileInRBAC_MOCK("alice",
                 loggedUser = "bob",
-                expectedCode = OutcomeCode.CODE_004_USER_NOT_FOUND,
-                expectedStatus = HttpStatusCode.NotFound)
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
+                expectedStatus = HttpStatusCode.Forbidden)
         }
 
         /** get profile of user while not logged-in */
         run {
             ProxyUtilities.getProfileInRBAC_MOCK("alice",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -150,52 +150,43 @@ internal class ProxyRoutesTest {
     }
 
     @Test
-    fun `delete profile of user as admin works`() {
-        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
-        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-
-        /** delete profile of user as admin */
-        run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
-        }
-    }
-
-    @Test
-    fun `delete profile of admin as admin, user as user, user as another user or while not logged-in fails`() {
+    fun `delete profile of user as admin or user as user works`() {
         val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
         val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
         ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
         ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
 
-        /** delete of admin as admin */
+        /** delete profile of user as admin */
         run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK(
-                ADMIN,
-                expectedStatus = HttpStatusCode.UnprocessableEntity,
-                expectedCode = OutcomeCode.CODE_022_ADMIN_CANNOT_BE_MODIFIED)
+            ProxyUtilities.deleteProfileInRBAC_MOCK("alice")
         }
 
         /** delete profile of user as user */
         run {
-            ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
-                loggedUser = "alice",
-                expectedCode = OutcomeCode.CODE_023_USER_CANNOT_BE_MODIFIED,
-                expectedStatus = HttpStatusCode.UnprocessableEntity)
+            ProxyUtilities.deleteProfileInRBAC_MOCK("bob", loggedUser = "bob")
         }
+    }
+
+    @Test
+    fun `delete profile of user as another user or while not logged-in fails`() {
+        val aliceParameters = ProxyUtilities.addUserInRBAC_MOCK("alice")
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
 
         /** delete profile of user as another user */
         run {
             ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
                 loggedUser = "bob",
-                expectedCode = OutcomeCode.CODE_004_USER_NOT_FOUND,
-                expectedStatus = HttpStatusCode.NotFound,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
+                expectedStatus = HttpStatusCode.Forbidden,
             )
         }
 
         /** delete profile of user while not logged */
         run {
             ProxyUtilities.deleteProfileInRBAC_MOCK("alice",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -241,14 +232,14 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters,
                 loggedUser = "bob",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden)
         }
 
         /** update profile of user while not logged-in */
         run {
             ProxyUtilities.updateProfileInRBAC_MOCK(aliceParameters,
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -277,11 +268,14 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `add user not logged-in, not logged as admin, with no username or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** add user not logged-in */
         run {
             ProxyUtilities.addUserInRBAC_MOCK(
                 username = "alice",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -291,7 +285,7 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.addUserInRBAC_MOCK(
                 username = "alice",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
@@ -318,13 +312,15 @@ internal class ProxyRoutesTest {
             ProxyUtilities.addUserInRBAC_MOCK(
                 username = "alice",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
 
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -339,11 +335,14 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `delete user not logged-in, not logged as admin or wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** delete user not logged-in */
         run {
             ProxyUtilities.deleteUserInRBAC_MOCK(
                 username = "alice",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -353,7 +352,7 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.deleteUserInRBAC_MOCK(
                 username = "alice",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
@@ -371,12 +370,15 @@ internal class ProxyRoutesTest {
             ProxyUtilities.addUserInRBAC_MOCK(
                 username = "alice",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -391,11 +393,14 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `add role not logged-in, not logged as admin, with no role name or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** add role not logged-in */
         run {
             ProxyUtilities.addRoleInRBAC_MOCK(
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -405,7 +410,7 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.addRoleInRBAC_MOCK(
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
@@ -432,12 +437,15 @@ internal class ProxyRoutesTest {
             ProxyUtilities.addUserInRBAC_MOCK(
                 username = "alice",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -452,11 +460,14 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `delete role not logged-in, not logged as admin or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** delete role not logged-in */
         run {
             ProxyUtilities.deleteRoleInRBAC_MOCK(
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -466,7 +477,7 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.deleteRoleInRBAC_MOCK(
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
@@ -484,12 +495,15 @@ internal class ProxyRoutesTest {
             ProxyUtilities.deleteRoleInRBAC_MOCK(
                 roleName = "employee",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -504,11 +518,14 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `delete file not logged-in, not logged as admin or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** delete file not logged-in */
         run {
             ProxyUtilities.deleteFileInRBAC_MOCK(
                 fileName = "test",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -518,7 +535,7 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.deleteFileInRBAC_MOCK(
                 fileName = "test",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
@@ -536,12 +553,15 @@ internal class ProxyRoutesTest {
             ProxyUtilities.deleteFileInRBAC_MOCK(
                 fileName = "test",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -557,12 +577,15 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `assign user to role not logged-in, not logged as admin, with no username or role name or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** assign user to role not logged-in */
         run {
             ProxyUtilities.assignUserToRoleInRBAC_MOCK(
                 username = "alice",
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -573,7 +596,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.assignUserToRoleInRBAC_MOCK(
                 username = "alice",
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
@@ -613,12 +636,15 @@ internal class ProxyRoutesTest {
                 username = "alice",
                 roleName = "employee",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -634,12 +660,15 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `revoke user from role not logged-in, not logged as admin or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** revoke user to role not logged-in */
         run {
             ProxyUtilities.revokeUserFromRoleInRBAC_MOCK(
                 username = "alice",
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -650,7 +679,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.revokeUserFromRoleInRBAC_MOCK(
                 username = "alice",
                 roleName = "employee",
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
@@ -670,12 +699,15 @@ internal class ProxyRoutesTest {
                 username = "alice",
                 roleName = "employee",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -710,6 +742,8 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `assign read or write or both permissions to role over file not logged-in, not logged as admin, with no role name or file name or null or wrong permission or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
 
         /** assign permission to role over file not logged-in */
         run {
@@ -717,7 +751,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -726,7 +760,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -735,7 +769,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -747,7 +781,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
@@ -756,7 +790,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
@@ -765,7 +799,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
@@ -878,7 +912,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -887,7 +921,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -896,12 +930,15 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -936,6 +973,8 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `revoke read or write or both permissions from role over file not logged-in, not logged as admin, with wrong permission or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
 
         /** revoke permission to role over file not logged-in */
         run {
@@ -943,7 +982,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -952,7 +991,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -961,7 +1000,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
@@ -973,7 +1012,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
@@ -982,7 +1021,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
@@ -991,7 +1030,7 @@ internal class ProxyRoutesTest {
                 roleName = "employee",
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
@@ -1042,7 +1081,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 permission = PermissionType.READ.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -1051,7 +1090,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 permission = PermissionType.WRITE.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -1060,12 +1099,15 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -1078,10 +1120,13 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `get users not logged-in, not logged as admin or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** get users not logged-in */
         run {
             assert(ProxyUtilities.getUsers(
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             ) == null)
@@ -1090,7 +1135,7 @@ internal class ProxyRoutesTest {
         /** get users not logged as admin */
         run {
             assert(ProxyUtilities.getUsers(
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
                 ) == null)
@@ -1106,12 +1151,15 @@ internal class ProxyRoutesTest {
 
             assert(ProxyUtilities.getUsers(
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -1124,10 +1172,13 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `get roles not logged-in, not logged as admin or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** get roles not logged-in */
         run {
             assert(ProxyUtilities.getRoles(
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             ) == null)
@@ -1136,7 +1187,7 @@ internal class ProxyRoutesTest {
         /** get roles not logged as admin */
         run {
             assert(ProxyUtilities.getRoles(
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             ) == null)
@@ -1152,12 +1203,15 @@ internal class ProxyRoutesTest {
 
             assert(ProxyUtilities.getRoles(
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
     @Test
@@ -1170,10 +1224,13 @@ internal class ProxyRoutesTest {
 
     @Test
     fun `get files not logged-in, not logged as admin or with wrong core parameter fails`() {
+        val bobParameters = ProxyUtilities.addUserInRBAC_MOCK("bob")
+        ProxyUtilities.initUserInRBAC_MOCK(bobParameters!!)
+
         /** get files not logged-in */
         run {
             assert(ProxyUtilities.getFiles(
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             ) == null)
@@ -1182,7 +1239,7 @@ internal class ProxyRoutesTest {
         /** get files not logged as admin */
         run {
             assert(ProxyUtilities.getFiles(
-                expectedCode = OutcomeCode.CODE_035_FORBIDDEN,
+                expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             ) == null)
@@ -1198,12 +1255,15 @@ internal class ProxyRoutesTest {
 
             assert(ProxyUtilities.getFiles(
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
 
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
         }
+
+        /** cleanup */
+        ProxyUtilities.deleteProfileInRBAC_MOCK("bob")
     }
 
 
@@ -1251,7 +1311,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.addFileFormUrlEncodedInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -1259,7 +1319,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.addFileFormUrlEncodedInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -1325,7 +1385,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -1333,7 +1393,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
@@ -1346,7 +1406,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 fileContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -1355,7 +1415,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 fileContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -1443,7 +1503,7 @@ internal class ProxyRoutesTest {
                 fileContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -1452,7 +1512,7 @@ internal class ProxyRoutesTest {
                 fileContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -1479,7 +1539,7 @@ internal class ProxyRoutesTest {
         run {
             ProxyUtilities.readFileInRBAC_MOCK(
                 fileName = "test",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -1497,7 +1557,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.readFileInRBAC_MOCK(
                 fileName = "test",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -1534,7 +1594,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.writeFileFormUrlEncodedInRBAC_MOCK(
                 fileName = "test",
                 fileContent = "content",
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -1574,7 +1634,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 fileContent = "content",
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
             // TODO test this by passing a non-RBAC core (e.g., ABAC core)
@@ -1586,7 +1646,7 @@ internal class ProxyRoutesTest {
             ProxyUtilities.writeFileBinaryInRBAC_MOCK(
                 fileName = "test",
                 fileContent = "content".inputStream(),
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
@@ -1626,7 +1686,7 @@ internal class ProxyRoutesTest {
                 fileName = "test",
                 fileContent = "content".inputStream(),
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
@@ -1647,7 +1707,7 @@ internal class ProxyRoutesTest {
         /** get assignments not logged-in */
         run {
             assert(ProxyUtilities.getAssignments(
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             ) == null)
@@ -1663,7 +1723,7 @@ internal class ProxyRoutesTest {
 
             assert(ProxyUtilities.getAssignments(
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
 
@@ -1684,7 +1744,7 @@ internal class ProxyRoutesTest {
         /** get permissions not logged-in */
         run {
             assert(ProxyUtilities.getPermissions(
-                expectedCode = OutcomeCode.CODE_036_UNAUTHORIZED,
+                expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             ) == null)
@@ -1700,7 +1760,7 @@ internal class ProxyRoutesTest {
 
             assert(ProxyUtilities.getPermissions(
                 core = CoreType.RBAC_CLOUD.toString(),
-                expectedCode = OutcomeCode.CODE_038_PROFILE_NOT_FOUND,
+                expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
 

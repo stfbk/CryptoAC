@@ -103,11 +103,11 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
         } catch (e: Error) {
             if (e.message == "Fail to fetch") {
                 logger.error { "Proxy is unreachable" }
-                props.handleDisplayAlert(OutcomeCode.CODE_045_PROXY_CONNECTION_TIMEOUT, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_046_CRYPTOAC_CONNECTION_TIMEOUT, CryptoACAlertSeverity.ERROR)
             } else {
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
             null
         } finally {

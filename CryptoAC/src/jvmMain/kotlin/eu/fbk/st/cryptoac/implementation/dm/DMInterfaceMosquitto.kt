@@ -5,6 +5,7 @@ import eu.fbk.st.cryptoac.core.CoreParameters
 import eu.fbk.st.cryptoac.core.CryptoACMqttClient
 import eu.fbk.st.cryptoac.core.elements.File
 import mu.KotlinLogging
+import org.eclipse.paho.mqttv5.common.MqttException
 import org.eclipse.paho.mqttv5.common.MqttMessage
 import java.io.InputStream
 import java.lang.StringBuilder
@@ -60,7 +61,6 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         message.qos = 1
         message.isRetained = true
         client.publish(newFile.name, message)
-        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
         return OutcomeCode.CODE_000_SUCCESS
     }
 
@@ -75,7 +75,6 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
     override fun readFile(fileName: String): WrappedInputStream {
         logger.info("Subscribing to the topic $fileName")
         client.subscribe(fileName, 1)
-        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
         // TODO allow to select the QoS
         return WrappedInputStream(OutcomeCode.CODE_000_SUCCESS)
     }
@@ -92,7 +91,6 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         logger.info("Sending a message in the topic with name ${updatedFile.name} in the MQTT Mosquitto broker")
         val message = MqttMessage(content.readAllBytes())
         message.qos = 1
-        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
         // TODO allow to select the QoS
         client.publish(updatedFile.name, message)
         return OutcomeCode.CODE_000_SUCCESS
@@ -113,7 +111,6 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         message.isRetained = true
         client.publish(fileName, message)
         // TODO allow to select the QoS
-        // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
         return OutcomeCode.CODE_000_SUCCESS
     }
 
@@ -133,18 +130,32 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
      * once connect completes
      */
     override fun lock(): OutcomeCode {
-        if (locks == 0) {
+        return if (locks == 0) {
             logger.info { "Locking the status of the DM" }
-            client.connectSync(
-                false, interfaceParameters.tls,
-                interfaceParameters.username, interfaceParameters.password
-            )// TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
+            try {
+                client.connectSync(
+                    false, interfaceParameters.tls,
+                    interfaceParameters.username, interfaceParameters.password
+                )
+                locks++
+                OutcomeCode.CODE_000_SUCCESS
+            } catch (e: MqttException) {
+                if (e.message?.contains("Not authorized") == true) {
+                    logger.warn { "DM Mosquitto - access denied for user" }
+                    OutcomeCode.CODE_059_ACCESS_DENIED_TO_DM
+                } else if (e.message?.contains("Unable to connect to server") == true) {
+                    logger.warn { "DM Mosquitto - connection timeout" }
+                    OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
+                } else {
+                    throw e
+                }
+            }
         }
         else {
             logger.debug { "Increment lock number to $locks" }
+            locks++
+            OutcomeCode.CODE_000_SUCCESS
         }
-        locks++
-        return OutcomeCode.CODE_000_SUCCESS
     }
 
     /**
@@ -161,7 +172,6 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
             logger.info { "Rollback the status of the DM" }
             locks--
             // TODO
-            // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
         } else if (locks > 0) {
             logger.debug { "Decrement lock number to ${locks - 1}" }
             locks--
@@ -183,7 +193,6 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
             logger.info { "Unlock the status of the DM" }
             locks--
             // TODO
-            // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
         } else if (locks > 0) {
             logger.debug { "Decrement lock number to ${locks - 1}" }
             locks--
@@ -336,7 +345,6 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
             } else {
                 val messageMQTT = MqttMessage(message.toByteArray())
                 messageMQTT.qos = 2
-                // TODO check connection issue and return proper code CODE_043_DM_CONNECTION_TIMEOUT
                 client.publish(dynsecTopic, messageMQTT)
                 OutcomeCode.CODE_000_SUCCESS
             }

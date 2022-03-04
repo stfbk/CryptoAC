@@ -460,7 +460,7 @@ class ProxyUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginProxy(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/?$USERNAME=$username")
+                    val response = it.get<HttpResponse>("$HTTPS$proxyBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/$username")
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
                         coreParameters = myJson.decodeFromString<CoreParameters>(response.readText()).apply {

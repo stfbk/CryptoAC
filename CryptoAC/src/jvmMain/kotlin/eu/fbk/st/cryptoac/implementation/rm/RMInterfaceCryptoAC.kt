@@ -77,7 +77,7 @@ class RMInterfaceCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_042_RM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_043_RM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -120,7 +120,7 @@ class RMInterfaceCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_042_RM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_043_RM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -162,7 +162,7 @@ class RMInterfaceCryptoAC(
             } catch (e: ConnectException) {
                 if (e.message == "Connection refused") {
                     logger.warn { "The connection was refused" }
-                    code = OutcomeCode.CODE_042_RM_CONNECTION_TIMEOUT
+                    code = OutcomeCode.CODE_043_RM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }

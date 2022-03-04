@@ -810,34 +810,32 @@
     OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_instance = new OutcomeCode('CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS', 31);
     OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_instance = new OutcomeCode('CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS', 32);
     OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_instance = new OutcomeCode('CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS', 33);
-    OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_instance = new OutcomeCode('CODE_034_ADMIN_ALREADY_INITIALIZED', 34);
-    OutcomeCode$CODE_035_FORBIDDEN_instance = new OutcomeCode('CODE_035_FORBIDDEN', 35);
-    OutcomeCode$CODE_036_UNAUTHORIZED_instance = new OutcomeCode('CODE_036_UNAUTHORIZED', 36);
-    OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_instance = new OutcomeCode('CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED', 37);
-    OutcomeCode$CODE_038_PROFILE_NOT_FOUND_instance = new OutcomeCode('CODE_038_PROFILE_NOT_FOUND', 38);
-    OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_instance = new OutcomeCode('CODE_039_MALFORMED_PROFILE_FILE', 39);
-    OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_instance = new OutcomeCode('CODE_040_UR_ASSIGNMENTS_NOT_FOUND', 40);
-    OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_instance = new OutcomeCode('CODE_041_PA_ASSIGNMENTS_NOT_FOUND', 41);
-    OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_042_RM_CONNECTION_TIMEOUT', 42);
-    OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_043_DM_CONNECTION_TIMEOUT', 43);
-    OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_044_MM_CONNECTION_TIMEOUT', 44);
-    OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_045_PROXY_CONNECTION_TIMEOUT', 45);
-    OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_instance = new OutcomeCode('CODE_046_HTTP_METHOD_NOT_SUPPORTED', 46);
-    OutcomeCode$CODE_047_UNEXPECTED_instance = new OutcomeCode('CODE_047_UNEXPECTED', 47);
-    OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_instance = new OutcomeCode('CODE_051_NO_NEW_MESSAGES_TO_READ', 48);
-    OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_instance = new OutcomeCode('CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION', 49);
-    OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance = new OutcomeCode('CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM', 50);
-    OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_054_DM_CONNECTION_TIMEOUT', 51);
-    OutcomeCode$CODE_055_LOGIN_REQUIRED_instance = new OutcomeCode('CODE_055_LOGIN_REQUIRED', 52);
-    OutcomeCode$CODE_056_ALREADY_LOGGED_IN_instance = new OutcomeCode('CODE_056_ALREADY_LOGGED_IN', 53);
-    OutcomeCode$CODE_057_LOCK_FAILED_instance = new OutcomeCode('CODE_057_LOCK_FAILED', 54);
-    OutcomeCode$CODE_058_UNLOCK_FAILED_instance = new OutcomeCode('CODE_058_UNLOCK_FAILED', 55);
-    OutcomeCode$CODE_059_ROLLBACK_FAILED_instance = new OutcomeCode('CODE_059_ROLLBACK_FAILED', 56);
-    OutcomeCode$CODE_060_ADMIN_NAME_instance = new OutcomeCode('CODE_060_ADMIN_NAME', 57);
-    OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_instance = new OutcomeCode('CODE_061_USER_ALREADY_INITIALIZED', 58);
-    OutcomeCode$CODE_062_CREATE_USER_MM_instance = new OutcomeCode('CODE_062_CREATE_USER_MM', 59);
-    OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_instance = new OutcomeCode('CODE_063_INTERFACE_TYPE_UPDATED', 60);
-    OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_instance = new OutcomeCode('CODE_064_ACCESS_DENIED_TO_MM', 61);
+    OutcomeCode$CODE_034_UNLOCK_FAILED_instance = new OutcomeCode('CODE_034_UNLOCK_FAILED', 34);
+    OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_instance = new OutcomeCode('CODE_035_ADMIN_ALREADY_INITIALIZED', 35);
+    OutcomeCode$CODE_036_ADMIN_NAME_instance = new OutcomeCode('CODE_036_ADMIN_NAME', 36);
+    OutcomeCode$CODE_037_FORBIDDEN_instance = new OutcomeCode('CODE_037_FORBIDDEN', 37);
+    OutcomeCode$CODE_038_UNAUTHORIZED_instance = new OutcomeCode('CODE_038_UNAUTHORIZED', 38);
+    OutcomeCode$CODE_039_PROFILE_NOT_FOUND_instance = new OutcomeCode('CODE_039_PROFILE_NOT_FOUND', 39);
+    OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_instance = new OutcomeCode('CODE_040_MALFORMED_PROFILE_FILE', 40);
+    OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_instance = new OutcomeCode('CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA', 41);
+    OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_instance = new OutcomeCode('CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA', 42);
+    OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_043_RM_CONNECTION_TIMEOUT', 43);
+    OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_044_DM_CONNECTION_TIMEOUT', 44);
+    OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_045_MM_CONNECTION_TIMEOUT', 45);
+    OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_046_CRYPTOAC_CONNECTION_TIMEOUT', 46);
+    OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_instance = new OutcomeCode('CODE_047_OPA_CONNECTION_TIMEOUT', 47);
+    OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_instance = new OutcomeCode('CODE_048_HTTP_METHOD_NOT_SUPPORTED', 48);
+    OutcomeCode$CODE_049_UNEXPECTED_instance = new OutcomeCode('CODE_049_UNEXPECTED', 49);
+    OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_instance = new OutcomeCode('CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION', 50);
+    OutcomeCode$CODE_051_LOGIN_REQUIRED_instance = new OutcomeCode('CODE_051_LOGIN_REQUIRED', 51);
+    OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_instance = new OutcomeCode('CODE_052_USER_ALREADY_INITIALIZED', 52);
+    OutcomeCode$CODE_053_USER_IS_INCOMPLETE_instance = new OutcomeCode('CODE_053_USER_IS_INCOMPLETE', 53);
+    OutcomeCode$CODE_054_CREATE_USER_MM_instance = new OutcomeCode('CODE_054_CREATE_USER_MM', 54);
+    OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_instance = new OutcomeCode('CODE_055_ACCESS_DENIED_TO_MM', 55);
+    OutcomeCode$CODE_056_DELETE_USER_MM_instance = new OutcomeCode('CODE_056_DELETE_USER_MM', 56);
+    OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_instance = new OutcomeCode('CODE_057_INTERFACE_TYPE_UPDATED', 57);
+    OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance = new OutcomeCode('CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM', 58);
+    OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_instance = new OutcomeCode('CODE_059_ACCESS_DENIED_TO_DM', 59);
     OutcomeCode$Companion_getInstance();
   }
   var OutcomeCode$CODE_000_SUCCESS_instance;
@@ -1010,145 +1008,135 @@
     OutcomeCode_initFields();
     return OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_instance;
   }
-  var OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_instance;
-  function OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_getInstance() {
+  var OutcomeCode$CODE_034_UNLOCK_FAILED_instance;
+  function OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_instance;
+    return OutcomeCode$CODE_034_UNLOCK_FAILED_instance;
   }
-  var OutcomeCode$CODE_035_FORBIDDEN_instance;
-  function OutcomeCode$CODE_035_FORBIDDEN_getInstance() {
+  var OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_instance;
+  function OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_035_FORBIDDEN_instance;
+    return OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_instance;
   }
-  var OutcomeCode$CODE_036_UNAUTHORIZED_instance;
-  function OutcomeCode$CODE_036_UNAUTHORIZED_getInstance() {
+  var OutcomeCode$CODE_036_ADMIN_NAME_instance;
+  function OutcomeCode$CODE_036_ADMIN_NAME_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_036_UNAUTHORIZED_instance;
+    return OutcomeCode$CODE_036_ADMIN_NAME_instance;
   }
-  var OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_instance;
-  function OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_getInstance() {
+  var OutcomeCode$CODE_037_FORBIDDEN_instance;
+  function OutcomeCode$CODE_037_FORBIDDEN_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_instance;
+    return OutcomeCode$CODE_037_FORBIDDEN_instance;
   }
-  var OutcomeCode$CODE_038_PROFILE_NOT_FOUND_instance;
-  function OutcomeCode$CODE_038_PROFILE_NOT_FOUND_getInstance() {
+  var OutcomeCode$CODE_038_UNAUTHORIZED_instance;
+  function OutcomeCode$CODE_038_UNAUTHORIZED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_038_PROFILE_NOT_FOUND_instance;
+    return OutcomeCode$CODE_038_UNAUTHORIZED_instance;
   }
-  var OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_instance;
-  function OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance() {
+  var OutcomeCode$CODE_039_PROFILE_NOT_FOUND_instance;
+  function OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_instance;
+    return OutcomeCode$CODE_039_PROFILE_NOT_FOUND_instance;
   }
-  var OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_instance;
-  function OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_getInstance() {
+  var OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_instance;
+  function OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_instance;
+    return OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_instance;
   }
-  var OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_instance;
-  function OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_getInstance() {
+  var OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_instance;
+  function OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_instance;
+    return OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_instance;
   }
-  var OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_instance;
-  function OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_getInstance() {
+  var OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_instance;
+  function OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_instance;
+    return OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_instance;
   }
-  var OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_instance;
-  function OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_getInstance() {
+  var OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_instance;
+  function OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_instance;
+    return OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_instance;
   }
-  var OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_instance;
-  function OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_getInstance() {
+  var OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_instance;
+  function OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_instance;
+    return OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_instance;
   }
-  var OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_instance;
-  function OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_getInstance() {
+  var OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_instance;
+  function OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_instance;
+    return OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_instance;
   }
-  var OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_instance;
-  function OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance() {
+  var OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_instance;
+  function OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_instance;
+    return OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_instance;
   }
-  var OutcomeCode$CODE_047_UNEXPECTED_instance;
-  function OutcomeCode$CODE_047_UNEXPECTED_getInstance() {
+  var OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_instance;
+  function OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_047_UNEXPECTED_instance;
+    return OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_instance;
   }
-  var OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_instance;
-  function OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_getInstance() {
+  var OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_instance;
+  function OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_instance;
+    return OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_instance;
   }
-  var OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_instance;
-  function OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance() {
+  var OutcomeCode$CODE_049_UNEXPECTED_instance;
+  function OutcomeCode$CODE_049_UNEXPECTED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_instance;
+    return OutcomeCode$CODE_049_UNEXPECTED_instance;
   }
-  var OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance;
-  function OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance() {
+  var OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_instance;
+  function OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance;
+    return OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_instance;
   }
-  var OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_instance;
-  function OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_getInstance() {
+  var OutcomeCode$CODE_051_LOGIN_REQUIRED_instance;
+  function OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_instance;
+    return OutcomeCode$CODE_051_LOGIN_REQUIRED_instance;
   }
-  var OutcomeCode$CODE_055_LOGIN_REQUIRED_instance;
-  function OutcomeCode$CODE_055_LOGIN_REQUIRED_getInstance() {
+  var OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_instance;
+  function OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_055_LOGIN_REQUIRED_instance;
+    return OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_instance;
   }
-  var OutcomeCode$CODE_056_ALREADY_LOGGED_IN_instance;
-  function OutcomeCode$CODE_056_ALREADY_LOGGED_IN_getInstance() {
+  var OutcomeCode$CODE_053_USER_IS_INCOMPLETE_instance;
+  function OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_056_ALREADY_LOGGED_IN_instance;
+    return OutcomeCode$CODE_053_USER_IS_INCOMPLETE_instance;
   }
-  var OutcomeCode$CODE_057_LOCK_FAILED_instance;
-  function OutcomeCode$CODE_057_LOCK_FAILED_getInstance() {
+  var OutcomeCode$CODE_054_CREATE_USER_MM_instance;
+  function OutcomeCode$CODE_054_CREATE_USER_MM_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_057_LOCK_FAILED_instance;
+    return OutcomeCode$CODE_054_CREATE_USER_MM_instance;
   }
-  var OutcomeCode$CODE_058_UNLOCK_FAILED_instance;
-  function OutcomeCode$CODE_058_UNLOCK_FAILED_getInstance() {
+  var OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_instance;
+  function OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_058_UNLOCK_FAILED_instance;
+    return OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_instance;
   }
-  var OutcomeCode$CODE_059_ROLLBACK_FAILED_instance;
-  function OutcomeCode$CODE_059_ROLLBACK_FAILED_getInstance() {
+  var OutcomeCode$CODE_056_DELETE_USER_MM_instance;
+  function OutcomeCode$CODE_056_DELETE_USER_MM_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_059_ROLLBACK_FAILED_instance;
+    return OutcomeCode$CODE_056_DELETE_USER_MM_instance;
   }
-  var OutcomeCode$CODE_060_ADMIN_NAME_instance;
-  function OutcomeCode$CODE_060_ADMIN_NAME_getInstance() {
+  var OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_instance;
+  function OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_060_ADMIN_NAME_instance;
+    return OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_instance;
   }
-  var OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_instance;
-  function OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_getInstance() {
+  var OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance;
+  function OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_instance;
+    return OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance;
   }
-  var OutcomeCode$CODE_062_CREATE_USER_MM_instance;
-  function OutcomeCode$CODE_062_CREATE_USER_MM_getInstance() {
+  var OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_instance;
+  function OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance() {
     OutcomeCode_initFields();
-    return OutcomeCode$CODE_062_CREATE_USER_MM_instance;
-  }
-  var OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_instance;
-  function OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance() {
-    OutcomeCode_initFields();
-    return OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_instance;
-  }
-  var OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_instance;
-  function OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance() {
-    OutcomeCode_initFields();
-    return OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_instance;
+    return OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_instance;
   }
   OutcomeCode.prototype.getNumber = function () {
     return split(this.toString(), ['_']).get_za3lpa$(1);
@@ -1185,7 +1173,7 @@
     }return OutcomeCode$Companion_instance;
   }
   function OutcomeCode$$serializer() {
-    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 62);
+    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 60);
     this.descriptor.addElement_ivxn3r$('CODE_000_SUCCESS');
     this.descriptor.addElement_ivxn3r$('CODE_001_USER_ALREADY_EXISTS');
     this.descriptor.addElement_ivxn3r$('CODE_002_ROLE_ALREADY_EXISTS');
@@ -1220,34 +1208,32 @@
     this.descriptor.addElement_ivxn3r$('CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS');
     this.descriptor.addElement_ivxn3r$('CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS');
     this.descriptor.addElement_ivxn3r$('CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS');
-    this.descriptor.addElement_ivxn3r$('CODE_034_ADMIN_ALREADY_INITIALIZED');
-    this.descriptor.addElement_ivxn3r$('CODE_035_FORBIDDEN');
-    this.descriptor.addElement_ivxn3r$('CODE_036_UNAUTHORIZED');
-    this.descriptor.addElement_ivxn3r$('CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED');
-    this.descriptor.addElement_ivxn3r$('CODE_038_PROFILE_NOT_FOUND');
-    this.descriptor.addElement_ivxn3r$('CODE_039_MALFORMED_PROFILE_FILE');
-    this.descriptor.addElement_ivxn3r$('CODE_040_UR_ASSIGNMENTS_NOT_FOUND');
-    this.descriptor.addElement_ivxn3r$('CODE_041_PA_ASSIGNMENTS_NOT_FOUND');
-    this.descriptor.addElement_ivxn3r$('CODE_042_RM_CONNECTION_TIMEOUT');
-    this.descriptor.addElement_ivxn3r$('CODE_043_DM_CONNECTION_TIMEOUT');
-    this.descriptor.addElement_ivxn3r$('CODE_044_MM_CONNECTION_TIMEOUT');
-    this.descriptor.addElement_ivxn3r$('CODE_045_PROXY_CONNECTION_TIMEOUT');
-    this.descriptor.addElement_ivxn3r$('CODE_046_HTTP_METHOD_NOT_SUPPORTED');
-    this.descriptor.addElement_ivxn3r$('CODE_047_UNEXPECTED');
-    this.descriptor.addElement_ivxn3r$('CODE_051_NO_NEW_MESSAGES_TO_READ');
-    this.descriptor.addElement_ivxn3r$('CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION');
-    this.descriptor.addElement_ivxn3r$('CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM');
-    this.descriptor.addElement_ivxn3r$('CODE_054_DM_CONNECTION_TIMEOUT');
-    this.descriptor.addElement_ivxn3r$('CODE_055_LOGIN_REQUIRED');
-    this.descriptor.addElement_ivxn3r$('CODE_056_ALREADY_LOGGED_IN');
-    this.descriptor.addElement_ivxn3r$('CODE_057_LOCK_FAILED');
-    this.descriptor.addElement_ivxn3r$('CODE_058_UNLOCK_FAILED');
-    this.descriptor.addElement_ivxn3r$('CODE_059_ROLLBACK_FAILED');
-    this.descriptor.addElement_ivxn3r$('CODE_060_ADMIN_NAME');
-    this.descriptor.addElement_ivxn3r$('CODE_061_USER_ALREADY_INITIALIZED');
-    this.descriptor.addElement_ivxn3r$('CODE_062_CREATE_USER_MM');
-    this.descriptor.addElement_ivxn3r$('CODE_063_INTERFACE_TYPE_UPDATED');
-    this.descriptor.addElement_ivxn3r$('CODE_064_ACCESS_DENIED_TO_MM');
+    this.descriptor.addElement_ivxn3r$('CODE_034_UNLOCK_FAILED');
+    this.descriptor.addElement_ivxn3r$('CODE_035_ADMIN_ALREADY_INITIALIZED');
+    this.descriptor.addElement_ivxn3r$('CODE_036_ADMIN_NAME');
+    this.descriptor.addElement_ivxn3r$('CODE_037_FORBIDDEN');
+    this.descriptor.addElement_ivxn3r$('CODE_038_UNAUTHORIZED');
+    this.descriptor.addElement_ivxn3r$('CODE_039_PROFILE_NOT_FOUND');
+    this.descriptor.addElement_ivxn3r$('CODE_040_MALFORMED_PROFILE_FILE');
+    this.descriptor.addElement_ivxn3r$('CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA');
+    this.descriptor.addElement_ivxn3r$('CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA');
+    this.descriptor.addElement_ivxn3r$('CODE_043_RM_CONNECTION_TIMEOUT');
+    this.descriptor.addElement_ivxn3r$('CODE_044_DM_CONNECTION_TIMEOUT');
+    this.descriptor.addElement_ivxn3r$('CODE_045_MM_CONNECTION_TIMEOUT');
+    this.descriptor.addElement_ivxn3r$('CODE_046_CRYPTOAC_CONNECTION_TIMEOUT');
+    this.descriptor.addElement_ivxn3r$('CODE_047_OPA_CONNECTION_TIMEOUT');
+    this.descriptor.addElement_ivxn3r$('CODE_048_HTTP_METHOD_NOT_SUPPORTED');
+    this.descriptor.addElement_ivxn3r$('CODE_049_UNEXPECTED');
+    this.descriptor.addElement_ivxn3r$('CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION');
+    this.descriptor.addElement_ivxn3r$('CODE_051_LOGIN_REQUIRED');
+    this.descriptor.addElement_ivxn3r$('CODE_052_USER_ALREADY_INITIALIZED');
+    this.descriptor.addElement_ivxn3r$('CODE_053_USER_IS_INCOMPLETE');
+    this.descriptor.addElement_ivxn3r$('CODE_054_CREATE_USER_MM');
+    this.descriptor.addElement_ivxn3r$('CODE_055_ACCESS_DENIED_TO_MM');
+    this.descriptor.addElement_ivxn3r$('CODE_056_DELETE_USER_MM');
+    this.descriptor.addElement_ivxn3r$('CODE_057_INTERFACE_TYPE_UPDATED');
+    this.descriptor.addElement_ivxn3r$('CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM');
+    this.descriptor.addElement_ivxn3r$('CODE_059_ACCESS_DENIED_TO_DM');
     OutcomeCode$$serializer_instance = this;
   }
   Object.defineProperty(OutcomeCode$$serializer.prototype, 'descriptor', {
@@ -1282,7 +1268,7 @@
     interfaces: [Enum]
   };
   function OutcomeCode$values() {
-    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_035_FORBIDDEN_getInstance(), OutcomeCode$CODE_036_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_getInstance(), OutcomeCode$CODE_038_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_getInstance(), OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_getInstance(), OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_047_UNEXPECTED_getInstance(), OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_getInstance(), OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_055_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_056_ALREADY_LOGGED_IN_getInstance(), OutcomeCode$CODE_057_LOCK_FAILED_getInstance(), OutcomeCode$CODE_058_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_059_ROLLBACK_FAILED_getInstance(), OutcomeCode$CODE_060_ADMIN_NAME_getInstance(), OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_062_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance(), OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance()];
+    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_036_ADMIN_NAME_getInstance(), OutcomeCode$CODE_037_FORBIDDEN_getInstance(), OutcomeCode$CODE_038_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_049_UNEXPECTED_getInstance(), OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance(), OutcomeCode$CODE_054_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance(), OutcomeCode$CODE_056_DELETE_USER_MM_getInstance(), OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance()];
   }
   OutcomeCode.values = OutcomeCode$values;
   function OutcomeCode$valueOf(name) {
@@ -1355,62 +1341,58 @@
         return OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance();
       case 'CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS':
         return OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance();
-      case 'CODE_034_ADMIN_ALREADY_INITIALIZED':
-        return OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_getInstance();
-      case 'CODE_035_FORBIDDEN':
-        return OutcomeCode$CODE_035_FORBIDDEN_getInstance();
-      case 'CODE_036_UNAUTHORIZED':
-        return OutcomeCode$CODE_036_UNAUTHORIZED_getInstance();
-      case 'CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED':
-        return OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_getInstance();
-      case 'CODE_038_PROFILE_NOT_FOUND':
-        return OutcomeCode$CODE_038_PROFILE_NOT_FOUND_getInstance();
-      case 'CODE_039_MALFORMED_PROFILE_FILE':
-        return OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance();
-      case 'CODE_040_UR_ASSIGNMENTS_NOT_FOUND':
-        return OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_getInstance();
-      case 'CODE_041_PA_ASSIGNMENTS_NOT_FOUND':
-        return OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_getInstance();
-      case 'CODE_042_RM_CONNECTION_TIMEOUT':
-        return OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_getInstance();
-      case 'CODE_043_DM_CONNECTION_TIMEOUT':
-        return OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_getInstance();
-      case 'CODE_044_MM_CONNECTION_TIMEOUT':
-        return OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_getInstance();
-      case 'CODE_045_PROXY_CONNECTION_TIMEOUT':
-        return OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_getInstance();
-      case 'CODE_046_HTTP_METHOD_NOT_SUPPORTED':
-        return OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance();
-      case 'CODE_047_UNEXPECTED':
-        return OutcomeCode$CODE_047_UNEXPECTED_getInstance();
-      case 'CODE_051_NO_NEW_MESSAGES_TO_READ':
-        return OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_getInstance();
-      case 'CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION':
-        return OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance();
-      case 'CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM':
-        return OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance();
-      case 'CODE_054_DM_CONNECTION_TIMEOUT':
-        return OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_getInstance();
-      case 'CODE_055_LOGIN_REQUIRED':
-        return OutcomeCode$CODE_055_LOGIN_REQUIRED_getInstance();
-      case 'CODE_056_ALREADY_LOGGED_IN':
-        return OutcomeCode$CODE_056_ALREADY_LOGGED_IN_getInstance();
-      case 'CODE_057_LOCK_FAILED':
-        return OutcomeCode$CODE_057_LOCK_FAILED_getInstance();
-      case 'CODE_058_UNLOCK_FAILED':
-        return OutcomeCode$CODE_058_UNLOCK_FAILED_getInstance();
-      case 'CODE_059_ROLLBACK_FAILED':
-        return OutcomeCode$CODE_059_ROLLBACK_FAILED_getInstance();
-      case 'CODE_060_ADMIN_NAME':
-        return OutcomeCode$CODE_060_ADMIN_NAME_getInstance();
-      case 'CODE_061_USER_ALREADY_INITIALIZED':
-        return OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_getInstance();
-      case 'CODE_062_CREATE_USER_MM':
-        return OutcomeCode$CODE_062_CREATE_USER_MM_getInstance();
-      case 'CODE_063_INTERFACE_TYPE_UPDATED':
-        return OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance();
-      case 'CODE_064_ACCESS_DENIED_TO_MM':
-        return OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance();
+      case 'CODE_034_UNLOCK_FAILED':
+        return OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance();
+      case 'CODE_035_ADMIN_ALREADY_INITIALIZED':
+        return OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance();
+      case 'CODE_036_ADMIN_NAME':
+        return OutcomeCode$CODE_036_ADMIN_NAME_getInstance();
+      case 'CODE_037_FORBIDDEN':
+        return OutcomeCode$CODE_037_FORBIDDEN_getInstance();
+      case 'CODE_038_UNAUTHORIZED':
+        return OutcomeCode$CODE_038_UNAUTHORIZED_getInstance();
+      case 'CODE_039_PROFILE_NOT_FOUND':
+        return OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance();
+      case 'CODE_040_MALFORMED_PROFILE_FILE':
+        return OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance();
+      case 'CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA':
+        return OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance();
+      case 'CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA':
+        return OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance();
+      case 'CODE_043_RM_CONNECTION_TIMEOUT':
+        return OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance();
+      case 'CODE_044_DM_CONNECTION_TIMEOUT':
+        return OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance();
+      case 'CODE_045_MM_CONNECTION_TIMEOUT':
+        return OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance();
+      case 'CODE_046_CRYPTOAC_CONNECTION_TIMEOUT':
+        return OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance();
+      case 'CODE_047_OPA_CONNECTION_TIMEOUT':
+        return OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance();
+      case 'CODE_048_HTTP_METHOD_NOT_SUPPORTED':
+        return OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance();
+      case 'CODE_049_UNEXPECTED':
+        return OutcomeCode$CODE_049_UNEXPECTED_getInstance();
+      case 'CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION':
+        return OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance();
+      case 'CODE_051_LOGIN_REQUIRED':
+        return OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance();
+      case 'CODE_052_USER_ALREADY_INITIALIZED':
+        return OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance();
+      case 'CODE_053_USER_IS_INCOMPLETE':
+        return OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance();
+      case 'CODE_054_CREATE_USER_MM':
+        return OutcomeCode$CODE_054_CREATE_USER_MM_getInstance();
+      case 'CODE_055_ACCESS_DENIED_TO_MM':
+        return OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance();
+      case 'CODE_056_DELETE_USER_MM':
+        return OutcomeCode$CODE_056_DELETE_USER_MM_getInstance();
+      case 'CODE_057_INTERFACE_TYPE_UPDATED':
+        return OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance();
+      case 'CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM':
+        return OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance();
+      case 'CODE_059_ACCESS_DENIED_TO_DM':
+        return OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance();
       default:throwISE('No enum constant eu.fbk.st.cryptoac.OutcomeCode.' + name);
     }
   }
@@ -7601,7 +7583,7 @@
               this.exceptionState_0 = 18;
               this.finallyPath_0 = [14];
               this.state_0 = 16;
-              this.$returnValue = (this.local$this$App.displayAlert_0(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit);
+              this.$returnValue = (this.local$this$App.displayAlert_0(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit);
               continue;
             } else {
               throw e;
@@ -8277,7 +8259,7 @@
               this.local$this$Login.props.handleChangeUsername(null);
               logger_9.error_nq59yw$(Login$submitLogin$lambda$lambda_2(e));
               console.log(e);
-              return this.local$this$Login.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+              return this.local$this$Login.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
               throw e;
             }
@@ -10865,7 +10847,7 @@
               continue;
             } else {
               logger_12.warn_nq59yw$(Dashboard$init$lambda$lambda);
-              return this.local$this$Dashboard.props.handleDisplayAlert(OutcomeCode$CODE_055_LOGIN_REQUIRED_getInstance(), CryptoACAlertSeverity$INFO_getInstance()), Unit;
+              return this.local$this$Dashboard.props.handleDisplayAlert(OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance(), CryptoACAlertSeverity$INFO_getInstance()), Unit;
             }
 
           case 1:
@@ -11285,7 +11267,7 @@
       var parameters = tmp$_6;
       if (!(method != null ? method.equals(HttpMethod_0.Companion.Post) : null) && !(method != null ? method.equals(HttpMethod_0.Companion.Patch) : null)) {
         logger_12.warn_nq59yw$(Dashboard$submitEditProfileForm$lambda_1(method));
-        this.props.handleDisplayAlert(OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+        this.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
       }launch(MainScope(), void 0, void 0, Dashboard$submitEditProfileForm$lambda_2(this, method, endpoint, parameters));
     } catch (e) {
       if (Kotlin.isType(e, NullPointerException)) {
@@ -11295,7 +11277,7 @@
       } else if (Kotlin.isType(e, Error_0)) {
         logger_12.error_nq59yw$(Dashboard$submitEditProfileForm$lambda_4(e));
         console.log(e);
-        this.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+        this.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
       } else
         throw e;
     }
@@ -11319,7 +11301,7 @@
       reader.onload = Dashboard$parseProfileFile$lambda(reader, this);
     } else {
       logger_12.warn_nq59yw$(Dashboard$parseProfileFile$lambda_0);
-      this.props.handleDisplayAlert(OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
+      this.props.handleDisplayAlert(OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
     }
   };
   function Dashboard$getProfileFromProxy$lambda(closure$username, closure$actualEndpoint) {
@@ -11565,7 +11547,7 @@
         if (rmParameters.rmType !== this.props.rmType) {
           if (forceTypesUpdate) {
             this.props.handleChangeRMType(rmParameters.rmType);
-            this.props.handleDisplayAlert(OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+            this.props.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
           } else {
             throw UnsupportedOperationException_init('RM type of file (' + rmParameters.rmType + ') is different from currently selected core type (' + this.props.rmType);
           }
@@ -11580,7 +11562,7 @@
         if (mmParameters.mmType !== this.props.mmType) {
           if (forceTypesUpdate) {
             this.props.handleChangeMMType(mmParameters.mmType);
-            this.props.handleDisplayAlert(OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+            this.props.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
           } else {
             throw UnsupportedOperationException_init('MM type of file (' + mmParameters.mmType + ') is different from currently selected core type (' + this.props.mmType);
           }
@@ -11595,7 +11577,7 @@
         if (dmParameters.dmType !== this.props.dmType) {
           if (forceTypesUpdate) {
             this.props.handleChangeDMType(dmParameters.dmType);
-            this.props.handleDisplayAlert(OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+            this.props.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
           } else {
             throw UnsupportedOperationException_init('DM type of file (' + dmParameters.dmType + ') is different from currently selected core type (' + this.props.dmType);
           }
@@ -11612,11 +11594,11 @@
         if (Kotlin.isType(e, NullPointerException) || Kotlin.isType(e, UnsupportedOperationException) || e.name == 'JsonDecodingException') {
           logger_12.warn_nq59yw$(Dashboard$parseProfileAndUpdateFields$lambda_1);
           logger_12.warn_nq59yw$(Dashboard$parseProfileAndUpdateFields$lambda_2(e));
-          this.props.handleDisplayAlert(OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+          this.props.handleDisplayAlert(OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
         } else {
           logger_12.error_nq59yw$(Dashboard$parseProfileAndUpdateFields$lambda_3(e));
           console.log(e);
-          this.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+          this.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
         }
       } else
         throw e;
@@ -12411,7 +12393,7 @@
   }
   function CloudDashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_6(this$CloudDashboard) {
     return function (it) {
-      this$CloudDashboard.props.handleDisplayAlert(OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+      this$CloudDashboard.props.handleDisplayAlert(OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
       return Unit;
     };
   }
@@ -12517,7 +12499,7 @@
   }
   function CloudDashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_8(this$CloudDashboard) {
     return function (it) {
-      this$CloudDashboard.props.handleDisplayAlert(OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+      this$CloudDashboard.props.handleDisplayAlert(OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
       return Unit;
     };
   }
@@ -12987,11 +12969,11 @@
             if (Kotlin.isType(e, Error_0)) {
               if (equals(e.message, 'Fail to fetch')) {
                 logger_14.error_nq59yw$(RBACDashboard$getElements$lambda_1);
-                this.$this.props.handleDisplayAlert(OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+                this.$this.props.handleDisplayAlert(OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               } else {
                 logger_14.error_nq59yw$(RBACDashboard$getElements$lambda_2(e));
                 console.log(e);
-                this.$this.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+                this.$this.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               }
               this.local$tmp$ = null;
             } else
@@ -13882,7 +13864,7 @@
   }
   function MQTTDashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_6(this$MQTTDashboard) {
     return function (it) {
-      this$MQTTDashboard.props.handleDisplayAlert(OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+      this$MQTTDashboard.props.handleDisplayAlert(OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
       return Unit;
     };
   }
@@ -13988,7 +13970,7 @@
   }
   function MQTTDashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_8(this$MQTTDashboard) {
     return function (it) {
-      this$MQTTDashboard.props.handleDisplayAlert(OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+      this$MQTTDashboard.props.handleDisplayAlert(OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
       return Unit;
     };
   }
@@ -18108,7 +18090,7 @@
             } else {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
               logger_18.error_nq59yw$(Actions$submitCryptoACFormUrlEncoded$lambda$lambda_2(this.local$closure$method));
-              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
+              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
           case 1:
@@ -18221,7 +18203,7 @@
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
               logger_18.error_nq59yw$(Actions$submitCryptoACFormUrlEncoded$lambda$lambda_3(e));
               console.log(e);
-              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
               throw e;
             }
@@ -18487,14 +18469,14 @@
               } else {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
                 logger_18.error_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda_0(this.local$closure$method));
-                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
+                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
               }
             } catch (e) {
               if (Kotlin.isType(e, Error_0)) {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
                 logger_18.error_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda_1(e));
                 console.log(e);
-                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               } else
                 throw e;
             }
@@ -18616,14 +18598,14 @@
               } else {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
                 logger_18.error_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda_1(this.local$closure$method));
-                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
+                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
               }
             } catch (e) {
               if (Kotlin.isType(e, Error_0)) {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
                 logger_18.error_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda_2(e));
                 console.log(e);
-                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+                return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               } else
                 throw e;
             }
@@ -18809,7 +18791,7 @@
             } else {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
               logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_0(this.local$closure$method));
-              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
+              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
           case 1:
@@ -18925,7 +18907,7 @@
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
               logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_1(e));
               console.log(e);
-              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_047_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+              return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
               throw e;
             }
@@ -20008,89 +19990,83 @@
   Object.defineProperty(OutcomeCode, 'CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS', {
     get: OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_034_ADMIN_ALREADY_INITIALIZED', {
-    get: OutcomeCode$CODE_034_ADMIN_ALREADY_INITIALIZED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_034_UNLOCK_FAILED', {
+    get: OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_035_FORBIDDEN', {
-    get: OutcomeCode$CODE_035_FORBIDDEN_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_035_ADMIN_ALREADY_INITIALIZED', {
+    get: OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_036_UNAUTHORIZED', {
-    get: OutcomeCode$CODE_036_UNAUTHORIZED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_036_ADMIN_NAME', {
+    get: OutcomeCode$CODE_036_ADMIN_NAME_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED', {
-    get: OutcomeCode$CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_037_FORBIDDEN', {
+    get: OutcomeCode$CODE_037_FORBIDDEN_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_038_PROFILE_NOT_FOUND', {
-    get: OutcomeCode$CODE_038_PROFILE_NOT_FOUND_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_038_UNAUTHORIZED', {
+    get: OutcomeCode$CODE_038_UNAUTHORIZED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_039_MALFORMED_PROFILE_FILE', {
-    get: OutcomeCode$CODE_039_MALFORMED_PROFILE_FILE_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_039_PROFILE_NOT_FOUND', {
+    get: OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_040_UR_ASSIGNMENTS_NOT_FOUND', {
-    get: OutcomeCode$CODE_040_UR_ASSIGNMENTS_NOT_FOUND_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_040_MALFORMED_PROFILE_FILE', {
+    get: OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_041_PA_ASSIGNMENTS_NOT_FOUND', {
-    get: OutcomeCode$CODE_041_PA_ASSIGNMENTS_NOT_FOUND_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA', {
+    get: OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_042_RM_CONNECTION_TIMEOUT', {
-    get: OutcomeCode$CODE_042_RM_CONNECTION_TIMEOUT_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA', {
+    get: OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_043_DM_CONNECTION_TIMEOUT', {
-    get: OutcomeCode$CODE_043_DM_CONNECTION_TIMEOUT_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_043_RM_CONNECTION_TIMEOUT', {
+    get: OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_044_MM_CONNECTION_TIMEOUT', {
-    get: OutcomeCode$CODE_044_MM_CONNECTION_TIMEOUT_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_044_DM_CONNECTION_TIMEOUT', {
+    get: OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_045_PROXY_CONNECTION_TIMEOUT', {
-    get: OutcomeCode$CODE_045_PROXY_CONNECTION_TIMEOUT_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_045_MM_CONNECTION_TIMEOUT', {
+    get: OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_046_HTTP_METHOD_NOT_SUPPORTED', {
-    get: OutcomeCode$CODE_046_HTTP_METHOD_NOT_SUPPORTED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_046_CRYPTOAC_CONNECTION_TIMEOUT', {
+    get: OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_047_UNEXPECTED', {
-    get: OutcomeCode$CODE_047_UNEXPECTED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_047_OPA_CONNECTION_TIMEOUT', {
+    get: OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_051_NO_NEW_MESSAGES_TO_READ', {
-    get: OutcomeCode$CODE_051_NO_NEW_MESSAGES_TO_READ_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_048_HTTP_METHOD_NOT_SUPPORTED', {
+    get: OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION', {
-    get: OutcomeCode$CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_049_UNEXPECTED', {
+    get: OutcomeCode$CODE_049_UNEXPECTED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM', {
-    get: OutcomeCode$CODE_053_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION', {
+    get: OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_054_DM_CONNECTION_TIMEOUT', {
-    get: OutcomeCode$CODE_054_DM_CONNECTION_TIMEOUT_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_051_LOGIN_REQUIRED', {
+    get: OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_055_LOGIN_REQUIRED', {
-    get: OutcomeCode$CODE_055_LOGIN_REQUIRED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_052_USER_ALREADY_INITIALIZED', {
+    get: OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_056_ALREADY_LOGGED_IN', {
-    get: OutcomeCode$CODE_056_ALREADY_LOGGED_IN_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_053_USER_IS_INCOMPLETE', {
+    get: OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_057_LOCK_FAILED', {
-    get: OutcomeCode$CODE_057_LOCK_FAILED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_054_CREATE_USER_MM', {
+    get: OutcomeCode$CODE_054_CREATE_USER_MM_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_058_UNLOCK_FAILED', {
-    get: OutcomeCode$CODE_058_UNLOCK_FAILED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_055_ACCESS_DENIED_TO_MM', {
+    get: OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_059_ROLLBACK_FAILED', {
-    get: OutcomeCode$CODE_059_ROLLBACK_FAILED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_056_DELETE_USER_MM', {
+    get: OutcomeCode$CODE_056_DELETE_USER_MM_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_060_ADMIN_NAME', {
-    get: OutcomeCode$CODE_060_ADMIN_NAME_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_057_INTERFACE_TYPE_UPDATED', {
+    get: OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_061_USER_ALREADY_INITIALIZED', {
-    get: OutcomeCode$CODE_061_USER_ALREADY_INITIALIZED_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM', {
+    get: OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance
   });
-  Object.defineProperty(OutcomeCode, 'CODE_062_CREATE_USER_MM', {
-    get: OutcomeCode$CODE_062_CREATE_USER_MM_getInstance
-  });
-  Object.defineProperty(OutcomeCode, 'CODE_063_INTERFACE_TYPE_UPDATED', {
-    get: OutcomeCode$CODE_063_INTERFACE_TYPE_UPDATED_getInstance
-  });
-  Object.defineProperty(OutcomeCode, 'CODE_064_ACCESS_DENIED_TO_MM', {
-    get: OutcomeCode$CODE_064_ACCESS_DENIED_TO_MM_getInstance
+  Object.defineProperty(OutcomeCode, 'CODE_059_ACCESS_DENIED_TO_DM', {
+    get: OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance
   });
   Object.defineProperty(OutcomeCode, 'Companion', {
     get: OutcomeCode$Companion_getInstance

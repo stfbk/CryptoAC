@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.fbk.st.cryptoac.core.CoreRBACCLOUDTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-03-04T14:20:05" hostname="sberlato" time="3.251">
+  <properties/>
+  <testcase name="assign blank, non-existing, incomplete or deleted user to blank, non-existing or deleted role fails()[jvm]" classname="eu.fbk.st.cryptoac.core.CoreRBACCLOUDTest" time="3.251"/>
+  <system-out><![CDATA[[Test worker @coroutine#1] INFO  - Initializing the Sodium library 
+[Test worker @coroutine#2] WARN  - Receive request to initialize the Sodium library, but it was already initialized 
+[Test worker] INFO  - Initializing admin's keys for user admin 
+[Test worker] INFO  - Locking the following interfaces: MM OPA DM  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#5] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Locking the status of the DM 
+[Test worker] INFO  - Logging initialized @25874ms to org.eclipse.jetty.util.log.Slf4jLog 
+[Test worker @coroutine#16] INFO  - Configuring the RM sending a POST request to https://10.1.0.6:8443/v1/rm/ 
+[ktor-jetty-dispatcher-worker-1 @call-context#18] WARN  - Trusting all certificates configured for Client@780997ad[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#18] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@780997ad[provider=null,keyStore=null,trustStore=null] 
+[Test worker @coroutine#22] INFO  - Configuring the DM sending a POST request to https://10.1.0.7:8443/v1/dm/ 
+[ktor-jetty-dispatcher-worker-1 @call-context#23] WARN  - Trusting all certificates configured for Client@15e33bb0[provider=null,keyStore=null,trustStore=null] 
+[ktor-jetty-dispatcher-worker-1 @call-context#23] WARN  - No Client EndPointIdentificationAlgorithm configured for Client@15e33bb0[provider=null,keyStore=null,trustStore=null] 
+[Test worker @coroutine#27] INFO  - Creating the OPA RBAC policy sending a PUT request to http://10.1.0.8:8181/v1/policies/rbac 
+[Test worker @coroutine#36] INFO  - Creating the OPA RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Initializing the database and adding the admin in the MM 
+[Test worker] INFO  - Getting data of users (offset 0, limit 100) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Adding the role admin in the metadata 
+[Test worker] INFO  - Getting data of roles (offset 0, limit 100) 
+[Test worker] INFO  - Filtering by matching role name admin 
+[Test worker] INFO  - Adding 1 role tuples in the metadata (one per row below): 
+[Test worker] INFO  - 1: user admin to role admin 
+[Test worker @coroutine#44] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Updating the OPA document with the new UR assignment (user admin, role admin) 
+[Test worker @coroutine#53] INFO  - Updating the OPA data sending a PATCH request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Unlocking the status of the OPA document 
+[Test worker] INFO  - Adding user userIncomplete 
+[Test worker] INFO  - Locking the following interfaces: MM  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Adding the user userIncomplete in the metadata and in the database 
+[Test worker] INFO  - Getting data of users (offset 0, limit 100) 
+[Test worker] INFO  - Filtering by matching username userIncomplete 
+[Test worker] INFO  - Filtering by matching status DELETED 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Adding user userOperational 
+[Test worker] INFO  - Locking the following interfaces: MM  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Adding the user userOperational in the metadata and in the database 
+[Test worker] INFO  - Getting data of users (offset 0, limit 100) 
+[Test worker] INFO  - Filtering by matching username userOperational 
+[Test worker] INFO  - Filtering by matching status DELETED 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker @coroutine#61] WARN  - Receive request to initialize the Sodium library, but it was already initialized 
+[Test worker] INFO  - Initializing token and public key of user userOperational 
+[Test worker] INFO  - Locking the following interfaces: MM  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Initializing user userOperational in the metadata 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Adding user userDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Adding the user userDeleted in the metadata and in the database 
+[Test worker] INFO  - Getting data of users (offset 0, limit 100) 
+[Test worker] INFO  - Filtering by matching username userDeleted 
+[Test worker] INFO  - Filtering by matching status DELETED 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Deleting user userDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM DM  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the DM 
+[Test worker] INFO  - Deleting user userDeleted 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit -1) 
+[Test worker] INFO  - Filtering by matching username userDeleted 
+[Test worker] INFO  - Revoking the user userDeleted from all roles 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Adding role roleOperational 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#65] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Adding the role roleOperational in the metadata 
+[Test worker] INFO  - Getting data of roles (offset 0, limit 100) 
+[Test worker] INFO  - Filtering by matching role name roleOperational 
+[Test worker @coroutine#75] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Updating the OPA document with the new UR assignment (user admin, role roleOperational) 
+[Test worker @coroutine#84] INFO  - Updating the OPA data sending a PATCH request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Adding 1 role tuples in the metadata (one per row below): 
+[Test worker] INFO  - 1: user admin to role roleOperational 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Unlocking the status of the OPA document 
+[Test worker] INFO  - Adding role roleDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#94] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Adding the role roleDeleted in the metadata 
+[Test worker] INFO  - Getting data of roles (offset 0, limit 100) 
+[Test worker] INFO  - Filtering by matching role name roleDeleted 
+[Test worker @coroutine#104] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Updating the OPA document with the new UR assignment (user admin, role roleDeleted) 
+[Test worker @coroutine#113] INFO  - Updating the OPA data sending a PATCH request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Adding 1 role tuples in the metadata (one per row below): 
+[Test worker] INFO  - 1: user admin to role roleDeleted 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Unlocking the status of the OPA document 
+[Test worker] INFO  - Deleting role roleDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#123] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Deleting role tuples for role name roleDeleted 
+[Test worker] INFO  - Filtering by matching role name roleDeleted 
+[Test worker] INFO  - Deleting UR assignments for role roleDeleted  
+[Test worker @coroutine#133] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Deleting UR assignments from the OPA 
+[Test worker @coroutine#142] INFO  - Updating the OPA data sending a PATCH request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Deleting role roleDeleted 
+[Test worker] INFO  - Getting data of permission tuples (offset 0, limit -1) 
+[Test worker] INFO  - Filtering by matching role name roleDeleted 
+[Test worker] INFO  - Operation successful, unlocking the following interfaces: MM  
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Unlocking the status of the OPA document 
+[Test worker] INFO  - Assigning user userNonExisting to role roleNonExisting 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#152] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleNonExisting 
+[Test worker] ERROR - Admin role tuple for role roleNonExisting not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#162] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userNonExisting to role roleOperational 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#172] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleOperational 
+[Test worker] INFO  - Getting public key of type ENC of a element of type USER 
+[Test worker] INFO  - Filtering by matching name userNonExisting 
+[Test worker] WARN  - User's key not found. Checking the user's status 
+[Test worker] INFO  - Operation unsuccessful (code CODE_004_USER_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#182] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userNonExisting to role roleDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#192] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleDeleted 
+[Test worker] ERROR - Admin role tuple for role roleDeleted not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#202] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userIncomplete to role roleNonExisting 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#212] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleNonExisting 
+[Test worker] ERROR - Admin role tuple for role roleNonExisting not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#222] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userIncomplete to role roleOperational 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#232] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleOperational 
+[Test worker] INFO  - Getting public key of type ENC of a element of type USER 
+[Test worker] INFO  - Filtering by matching name userIncomplete 
+[Test worker] WARN  - User's key not found. Checking the user's status 
+[Test worker] WARN  - User's status is INCOMPLETE 
+[Test worker] INFO  - Operation unsuccessful (code CODE_065_USER_IS_INCOMPLETE), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#242] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+brivid
+CODE_065_USER_IS_INCOMPLETE
+brivid
+[Test worker] INFO  - Assigning user userIncomplete to role roleOperational 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#252] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleOperational 
+[Test worker] INFO  - Getting public key of type ENC of a element of type USER 
+[Test worker] INFO  - Filtering by matching name userIncomplete 
+[Test worker] WARN  - User's key not found. Checking the user's status 
+[Test worker] WARN  - User's status is INCOMPLETE 
+[Test worker] INFO  - Operation unsuccessful (code CODE_065_USER_IS_INCOMPLETE), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#262] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userIncomplete to role roleDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#272] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleDeleted 
+[Test worker] ERROR - Admin role tuple for role roleDeleted not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#282] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userOperational to role roleNonExisting 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#292] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleNonExisting 
+[Test worker] ERROR - Admin role tuple for role roleNonExisting not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#302] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userOperational to role roleDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#312] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleDeleted 
+[Test worker] ERROR - Admin role tuple for role roleDeleted not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#322] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userDeleted to role roleNonExisting 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#332] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleNonExisting 
+[Test worker] ERROR - Admin role tuple for role roleNonExisting not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#342] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userDeleted to role roleOperational 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#352] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleOperational 
+[Test worker] INFO  - Getting public key of type ENC of a element of type USER 
+[Test worker] INFO  - Filtering by matching name userDeleted 
+[Test worker @coroutine#362] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Updating the OPA document with the new UR assignment (user userDeleted, role roleOperational) 
+[Test worker @coroutine#371] INFO  - Updating the OPA data sending a PATCH request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Adding 1 role tuples in the metadata (one per row below): 
+[Test worker] INFO  - 1: user userDeleted to role roleOperational 
+[Test worker] WARN  - One ore more RoleTuples were not added (expected 1, actual 0) 
+[Test worker] INFO  - Operation unsuccessful (code CODE_013_USER_WAS_DELETED), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#379] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user userDeleted to role roleDeleted 
+[Test worker] INFO  - Locking the following interfaces: MM OPA  
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Locking the status of the OPA document 
+[Test worker @coroutine#389] INFO  - Getting the OPA data sending a GET request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Getting data of role tuples (offset 0, limit 1) 
+[Test worker] INFO  - Filtering by matching username admin 
+[Test worker] INFO  - Filtering by matching role name roleDeleted 
+[Test worker] ERROR - Admin role tuple for role roleDeleted not found. Probably the role does not exist 
+[Test worker] INFO  - Operation unsuccessful (code CODE_005_ROLE_NOT_FOUND), rollbacking the following interfaces: MM  
+[Test worker] INFO  - Rollback the status of the MM 
+[Test worker] INFO  - Rollback the status of the OPA document 
+[Test worker @coroutine#399] INFO  - Restore the RBAC data sending a PUT request to http://10.1.0.8:8181/v1/data/rbac 
+[Test worker] INFO  - Assigning user    to role roleOperational 
+[Test worker] WARN  - Username or role name is blank 
+[Test worker] INFO  - Assigning user userOperational to role    
+[Test worker] WARN  - Username or role name is blank 
+[Test worker] WARN  - Resetting Cloud DM 
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] INFO  - Locking the status of the DM 
+[Test worker] WARN  - Resetting MySQL 
+[Test worker] INFO  - Locking the status of the MM 
+[Test worker] INFO  - Unlocking the status of the MM 
+[Test worker] WARN  - Resetting OPA 
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

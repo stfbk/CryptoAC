@@ -367,7 +367,7 @@ internal abstract class CoreRBACTest : CoreTest() {
         run {
             assert(
                 coreRBAC.assignUserToRole(userIncomplete, roleOperational) ==
-                        OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED
+                        OutcomeCode.CODE_053_USER_IS_INCOMPLETE
             )
         }
 
@@ -1014,7 +1014,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleOperational, fileNonExisting, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_006_FILE_NOT_FOUND
             )
         }
 
@@ -1026,7 +1026,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleOperational, fileDeleted, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_015_FILE_WAS_DELETED
             )
         }
 
@@ -1530,7 +1530,7 @@ internal abstract class CoreRBACTest : CoreTest() {
 
     @Test
     override fun `init admin twice fails`() {
-        assert(coreRBAC.initAdmin() == OutcomeCode.CODE_034_ADMIN_ALREADY_INITIALIZED)
+        assert(coreRBAC.initAdmin() == OutcomeCode.CODE_035_ADMIN_ALREADY_INITIALIZED)
     }
 
     @Test
@@ -1543,7 +1543,7 @@ internal abstract class CoreRBACTest : CoreTest() {
     override fun `init user twice fails`() {
         val bobCore = TestUtilities.addUser(coreRBAC, "bob")
         assert(bobCore.initUser() == OutcomeCode.CODE_000_SUCCESS)
-        assert(bobCore.initUser() == OutcomeCode.CODE_061_USER_ALREADY_INITIALIZED)
+        assert(bobCore.initUser() == OutcomeCode.CODE_052_USER_ALREADY_INITIALIZED)
     }
 
     fun addAndInitUser(coreRBAC: CoreRBAC, username: String): CoreRBAC {

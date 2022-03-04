@@ -145,7 +145,7 @@ class Login: RComponent<LoginProps, State>() {
                 props.handleChangeUsername(null)
                 logger.error { "Error during login (${e.message}), see console log for details" }
                 console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
         }
     }

@@ -5,7 +5,6 @@ import eu.fbk.st.cryptoac.Parameters
 import eu.fbk.st.cryptoac.TestUtilities.Companion.resetOPACloud
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
 import eu.fbk.st.cryptoac.runCommand
-import mu.KotlinLogging
 import org.junit.jupiter.api.*
 
 import org.junit.jupiter.api.Assertions.*
@@ -169,7 +168,7 @@ internal class OPAInterfaceTest {
 
         /** delete non-existing UR assignments by username and role name */
         run {
-            assert(opa.deleteURAssignments(username = "non-existing", roleName = "non-existing") == OutcomeCode.CODE_040_UR_ASSIGNMENTS_NOT_FOUND)
+            assert(opa.deleteURAssignments(username = "non-existing", roleName = "non-existing") == OutcomeCode.CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA)
         }
     }
 
@@ -245,7 +244,7 @@ internal class OPAInterfaceTest {
 
         /** delete non-existing PA assignments by role name and file name */
         run {
-            assert(opa.deletePAAssignments(roleName = "non-existing", fileName = "non-existing") == OutcomeCode.CODE_041_PA_ASSIGNMENTS_NOT_FOUND)
+            assert(opa.deletePAAssignments(roleName = "non-existing", fileName = "non-existing") == OutcomeCode.CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA)
         }
     }
 
@@ -280,7 +279,7 @@ internal class OPAInterfaceTest {
     fun `update non-existing PA assignment fails`() {
         /** update non-existing PA assignment */
         run {
-            assert(opa.updatePAAssignment(PA("non-existing", "non-existing", PermissionType.READ)) == OutcomeCode.CODE_041_PA_ASSIGNMENTS_NOT_FOUND)
+            assert(opa.updatePAAssignment(PA("non-existing", "non-existing", PermissionType.READ)) == OutcomeCode.CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA)
         }
     }
 

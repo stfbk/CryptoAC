@@ -357,10 +357,7 @@ class CoreRBACMQTT(
 
         /** Delete all RoleTuples matching the [roleName] */
         val deleteRoleTuples = mm.deleteRoleTuples(roleName)
-        if (
-            deleteRoleTuples != OutcomeCode.CODE_000_SUCCESS &&
-            deleteRoleTuples != OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
-        ) {
+        if (deleteRoleTuples != OutcomeCode.CODE_000_SUCCESS) {
             return endOfMethod(deleteRoleTuples)
         }
 
@@ -491,7 +488,7 @@ class CoreRBACMQTT(
 
         /** Delete the permission tuples matching the [fileName] from the MM */
         code = mm.deletePermissionTuples(fileName = fileName)
-        if (code != OutcomeCode.CODE_000_SUCCESS && code != OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND) {
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
             return endOfMethod(code)
         }
 
@@ -578,7 +575,7 @@ class CoreRBACMQTT(
             return if (status != null) {
                 logger.warn { "User's status is $status" }
                 when (status) {
-                    ElementStatus.INCOMPLETE -> endOfMethod(OutcomeCode.CODE_037_USER_DOES_NOT_EXIST_OR_WAS_NOT_INITIALIZED_OR_WAS_DELETED)
+                    ElementStatus.INCOMPLETE -> endOfMethod(OutcomeCode.CODE_053_USER_IS_INCOMPLETE)
                     ElementStatus.OPERATIONAL -> {
                         val message = "User's $username key not found but user is operational"
                         logger.error { message }
@@ -1731,7 +1728,7 @@ class CoreRBACMQTT(
             } catch (e: Exception) {
                 logger.error { "Exception in messageArrived MQTT callback function: ${e.localizedMessage}" }
                 logger.error { e } // TODO delete
-                val exceptionMessage = MQTTMessage(OutcomeCode.CODE_047_UNEXPECTED.toString(), topic, true)
+                val exceptionMessage = MQTTMessage(OutcomeCode.CODE_049_UNEXPECTED.toString(), topic, true)
                 cacheOrSendMessage(topic, exceptionMessage)
             }// TODO do try catch also in the other functions of the callbacks
         }

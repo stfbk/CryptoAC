@@ -26,8 +26,14 @@ class DMFactory {
                 }
                 DMType.MOSQUITTO -> {
                     if (dmParameters is DMInterfaceMosquittoParameters) {
-                        val brokerBaseAPI = "${if (dmParameters.tls) "ssl" else "tcp"}://${dmParameters.url}:${dmParameters.port}"
-                        val client = CryptoACMqttClient(brokerBaseAPI, generateRandomString(), MemoryPersistence()) // TODO check configuration is ok
+                        val brokerBaseAPI =
+                            (if (dmParameters.tls) "ssl" else "tcp") +
+                            "://${dmParameters.url}:${dmParameters.port}"
+                        val client = CryptoACMqttClient(
+                            brokerBaseAPI,
+                            generateRandomString(),
+                            MemoryPersistence()
+                        ) // TODO check configuration of client is ok
                         DMInterfaceMosquitto(dmParameters, client)
                     } else {
                         val message = "Received wrong parameters for DM type ${DMType.MOSQUITTO}"

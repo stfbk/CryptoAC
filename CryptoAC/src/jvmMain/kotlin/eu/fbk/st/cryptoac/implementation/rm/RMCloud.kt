@@ -98,7 +98,7 @@ fun Route.filesRouting() {
                 logger.info {
                     "User is asking to add a file with " +
                     "name $fileTupleName for core $core"
-                } // TODO add username
+                } // TODO add username (first you need to authenticate)
 
                 val file = File(
                     name = fileTupleName,
@@ -323,7 +323,7 @@ fun Route.filesRouting() {
                 logger.info {
                     "User is asking to write file with " +
                     "name $fileTupleName for cory $core"
-                } // TODO add username
+                } // TODO add username (first you need to authenticate)
 
                 val file = File(
                     name = fileTupleName,

@@ -66,19 +66,6 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
     }
 
     @Test
-    fun `aaaaa`() {
-        val a = RoleTuple(
-            "admin", "rolenonono", 1,
-            EncryptedAsymKeys(ByteArray(5), ByteArray(5), AsymKeysType.ENC),
-            EncryptedAsymKeys(ByteArray(5), ByteArray(5), AsymKeysType.SIG),
-        )
-        a.signer = "signernonono"
-        a.signature = ByteArray(5)
-        a.signerType = ElementTypeWithKey.ROLE
-        println(mm.addRoleTuples(hashSetOf(a)))
-
-    }
-    @Test
     fun `insert values in statement with right, less of no values works`() {
 
         /** insert values in statement with right number of values */

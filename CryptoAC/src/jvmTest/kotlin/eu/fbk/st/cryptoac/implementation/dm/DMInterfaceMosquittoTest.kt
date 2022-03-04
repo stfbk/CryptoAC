@@ -1136,7 +1136,6 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
     }
 
 
-
     // TODO refactor, there is code duplication
     /** Generate a random string as Client ID for the MQTT client */
     private fun generateRandomClientId(): String {

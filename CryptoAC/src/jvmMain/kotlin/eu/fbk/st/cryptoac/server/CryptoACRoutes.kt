@@ -77,14 +77,6 @@ fun Route.velocityRouting() {
     }
 }
 
-// TODO put this elsewhere
-data class UserData(
-    var loggedUser: String? = null,
-    var coreType: CoreType? = null,
-    var parameters: CoreParameters? = null,
-)
-val loggedUserDataKey = AttributeKey<UserData>("loggedUserDataKey")
-
 /**
  * Routes related to users' profiles; create (post),
  * read (get), update (patch), delete (delete)
@@ -143,7 +135,7 @@ fun Route.profileRouting() {
                 return@get notFound(
                     call,
                     "Profile of logged user $loggedUser not found",
-                    OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                    OutcomeCode.CODE_039_PROFILE_NOT_FOUND
                 )
             }
 
@@ -157,7 +149,7 @@ fun Route.profileRouting() {
                     return@get notFound(
                         call,
                         message,
-                        OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                        OutcomeCode.CODE_039_PROFILE_NOT_FOUND
                     )
                 }
                 else {
@@ -169,7 +161,7 @@ fun Route.profileRouting() {
                 return@get forbidden(
                     call,
                     "Cannot get profile of user $requestedUsername",
-                    OutcomeCode.CODE_035_FORBIDDEN
+                    OutcomeCode.CODE_037_FORBIDDEN
                 )
             }
         }
@@ -206,7 +198,7 @@ fun Route.profileRouting() {
                 return@delete notFound(
                     call,
                     "Profile of logged user $loggedUser not found",
-                    OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                    OutcomeCode.CODE_039_PROFILE_NOT_FOUND
                 )
             }
 
@@ -219,13 +211,14 @@ fun Route.profileRouting() {
                 (loggedUser == requestedUsername) ||
                 (loggedUser == ADMIN && loggedUserParams.user.isAdmin)
             ) {
+                // TODO note that this allows an administrator to delete her profile
                 if (ProfileManager.deleteProfile(requestedUsername, coreType)) {
                     ok(call)
                 } else {
                     notFound(
                         call,
                         "Profile of user $requestedUsername not found",
-                        OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                        OutcomeCode.CODE_039_PROFILE_NOT_FOUND
                     )
                 }
             } else {
@@ -233,7 +226,7 @@ fun Route.profileRouting() {
                 return@delete forbidden(
                     call,
                     "Cannot delete profile of user $requestedUsername",
-                    OutcomeCode.CODE_035_FORBIDDEN
+                    OutcomeCode.CODE_037_FORBIDDEN
                 )
             }
         }
@@ -254,14 +247,6 @@ fun Route.profileRouting() {
             logger.info { "User $loggedUser is creating a profile for core $coreType" }
 
             val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)
-            if (loggedUserParams == null) {
-                logger.info { "User $loggedUser is logged in but no profile was found" }
-                return@post notFound(
-                    call,
-                    "Profile of logged user $loggedUser not found",
-                    OutcomeCode.CODE_038_PROFILE_NOT_FOUND
-                )
-            }
 
 
             /** Get the core parameters from the request */
@@ -288,7 +273,7 @@ fun Route.profileRouting() {
 
             if (
                 loggedUser == requestedUsername ||
-                (loggedUser == ADMIN && loggedUserParams.user.isAdmin)
+                (loggedUser == ADMIN && loggedUserParams?.user?.isAdmin == true)
             ) {
 
                 logger.info {
@@ -381,7 +366,7 @@ fun Route.profileRouting() {
                 return@post forbidden(
                     call,
                     "Cannot create profile of user $requestedUsername",
-                    OutcomeCode.CODE_035_FORBIDDEN,
+                    OutcomeCode.CODE_037_FORBIDDEN,
                 )
             }
         }
@@ -404,7 +389,7 @@ fun Route.profileRouting() {
                 return@patch notFound(
                     call,
                     "Profile of logged user $loggedUser not found",
-                    OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                    OutcomeCode.CODE_039_PROFILE_NOT_FOUND
                 )
             }
 
@@ -460,7 +445,7 @@ fun Route.profileRouting() {
                     return@patch notFound(
                         call,
                         message,
-                        OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                        OutcomeCode.CODE_039_PROFILE_NOT_FOUND
                     )
                 }
 
@@ -477,7 +462,7 @@ fun Route.profileRouting() {
                 return@patch forbidden(
                     call,
                     "Cannot update profile of user $requestedUsername",
-                    OutcomeCode.CODE_035_FORBIDDEN,
+                    OutcomeCode.CODE_037_FORBIDDEN,
                 )
             }
         }
@@ -1475,7 +1460,7 @@ suspend fun checkPreconditions(
         unauthorized(
             call,
             "User is not authenticated",
-            OutcomeCode.CODE_036_UNAUTHORIZED
+            OutcomeCode.CODE_038_UNAUTHORIZED
         )
         preconditionsAreMet = false
     }
@@ -1512,7 +1497,7 @@ suspend fun checkPreconditions(
             notFound(
                 call,
                 "Profile of logged user $loggedUser not found",
-                OutcomeCode.CODE_038_PROFILE_NOT_FOUND
+                OutcomeCode.CODE_039_PROFILE_NOT_FOUND
             )
             preconditionsAreMet = false
         }
@@ -1526,7 +1511,7 @@ suspend fun checkPreconditions(
             forbidden(
                 call,
                 "Not-admin User $loggedUser invoking restricted API $apiURI",
-                OutcomeCode.CODE_035_FORBIDDEN
+                OutcomeCode.CODE_037_FORBIDDEN
             )
             preconditionsAreMet = false
         }
@@ -1538,4 +1523,26 @@ suspend fun checkPreconditions(
 }
 
 /** Represent a web socket [session] with the user [username] */
-data class Connection(val session: DefaultWebSocketSession, val username: String)
+data class Connection(
+    val session: DefaultWebSocketSession,
+    val username: String
+    )
+
+/**
+ * Represent data of a user passed from
+ * interceptor of routes to routes. We
+ * save the name of the [loggedUser],
+ * the [coreType] and the [parameters]
+ * of the profile of the user
+ */
+data class UserData(
+    var loggedUser: String? = null,
+    var coreType: CoreType? = null,
+    var parameters: CoreParameters? = null,
+)
+
+/**
+ * Key to save data of a user passed from
+ * interceptor of routes to routes
+ */
+val loggedUserDataKey = AttributeKey<UserData>("loggedUserDataKey")

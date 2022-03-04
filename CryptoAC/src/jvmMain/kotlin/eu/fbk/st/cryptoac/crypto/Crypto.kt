@@ -136,8 +136,8 @@ interface Crypto {
      * the [encryptingKey] and return it as a stream.
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
-     * consuming it
-     * // TODO ensure that authenticated encryption like sodium is used
+     * consuming it. Ensure that authenticated encryption
+     * only is used
      */
     fun encryptStream(encryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream
 
@@ -146,8 +146,8 @@ interface Crypto {
      * the [decryptingKey] and return it as a stream.
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
-     * consuming it
-     * // TODO ensure that authenticated encryption like sodium is used
+     * consuming it. Ensure that authenticated encryption
+     * only is used
      */
     fun decryptStream(decryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream
 

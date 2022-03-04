@@ -122,12 +122,12 @@ class MMInterfaceMySQL(
             adminRoleTuple.roleName != ADMIN
         ) {
             logger.warn { "Admin user has name ${admin.name}, but admin name should be $ADMIN" }
-            return OutcomeCode.CODE_060_ADMIN_NAME
+            return OutcomeCode.CODE_036_ADMIN_NAME
         }
         try {
             if (getUsers(username = ADMIN).isNotEmpty()) {
                 logger.warn { "Admin $ADMIN already initialized" }
-                return OutcomeCode.CODE_034_ADMIN_ALREADY_INITIALIZED
+                return OutcomeCode.CODE_035_ADMIN_ALREADY_INITIALIZED
             }
         }
         catch (e: SQLSyntaxErrorException) {
@@ -239,7 +239,7 @@ class MMInterfaceMySQL(
             .apply { put(statusColumn, ElementStatus.OPERATIONAL) }
         return createUpdateStatement(usersView, userValues).use {
             if (it.executeUpdate() != 1) {
-                logger.warn { "User $username does not exist in the metadata" }
+                logger.warn { "Error while initializing user $username" }
 
                 /** Check the reason of the error */
                 val status = createSelectStatement(table = usersStatusView).use { selectStatement ->
@@ -263,7 +263,7 @@ class MMInterfaceMySQL(
                     }
                     ElementStatus.OPERATIONAL -> {
                         logger.warn { "User $username already initialized" }
-                        OutcomeCode.CODE_061_USER_ALREADY_INITIALIZED
+                        OutcomeCode.CODE_052_USER_ALREADY_INITIALIZED
                     }
                     ElementStatus.INCOMPLETE -> {
                         val message = "Error in initializing user $username but status is incomplete"
@@ -275,42 +275,6 @@ class MMInterfaceMySQL(
                 OutcomeCode.CODE_000_SUCCESS
             }
         }
-    }
-
-    /**
-     * Return whether the user with the given [username]
-     * is an admin user or not, along with the outcome code.
-     * Check that the user exists in the metadata
-     *
-     * In this implementation, we assert whether the [username]
-     * is an admin by examining the database DELETE privileges
-     */
-    override fun isUserAdmin(username: String): WrappedBoolean {
-        logger.debug { "Checking whether user $username is admin" }
-
-        var isAdmin = false
-        try {
-            connection!!.prepareStatement("SHOW GRANTS FOR ?").use { statement ->
-                statement.setString(1, username)
-                statement.executeQuery().use {
-                    loop@ while (it.next()) {
-                        val privileges = sanitizeStringFromHTLM(it.getString(1))
-                        if (privileges.lowercase().contains("delete")) {
-                            isAdmin = true
-                            break@loop
-                        }
-                    }
-                }
-            }
-        } catch (e: SQLException) {
-            if ((e.message ?: "").contains("There is no such grant defined for user")) {
-                logger.warn { "User $username does not exist" }
-                return WrappedBoolean(OutcomeCode.CODE_004_USER_NOT_FOUND)
-            }
-        }
-
-        logger.debug { "User $username is admin = $isAdmin" }
-        return WrappedBoolean(boolean = isAdmin)
     }
 
 
@@ -330,7 +294,10 @@ class MMInterfaceMySQL(
         val username = newUser.name
         logger.info { "Adding the user $username in the metadata and in the database" }
 
-        if (getUsers(username = username, status = ElementStatus.DELETED).isNotEmpty()) {
+        if (getUsers(
+                username = username,
+                status = ElementStatus.DELETED
+            ).isNotEmpty()) {
             logger.warn { "User $username was previously deleted" }
             return WrapperMMParameters(OutcomeCode.CODE_013_USER_WAS_DELETED)
         }
@@ -365,7 +332,11 @@ class MMInterfaceMySQL(
             }
 
             connection!!.prepareStatement(
-                "GRANT SELECT ($userTokenColumn, $asymEncPublicKeyColumn, $asymSigPublicKeyColumn, $statusColumn) ON $usersTable TO ?"
+                "GRANT SELECT (" +
+                        "$userTokenColumn, " +
+                        "$asymEncPublicKeyColumn, " +
+                        "$asymSigPublicKeyColumn, " +
+                        "$statusColumn) ON $usersTable TO ?"
             ).use {
                 logger.debug { "Granting permission on users table" }
                 it.setString(1, username)
@@ -373,7 +344,24 @@ class MMInterfaceMySQL(
             }
 
             connection!!.prepareStatement(
-                "GRANT SELECT ($roleTokenColumn, $asymEncPublicKeyColumn, $asymSigPublicKeyColumn, $statusColumn, $roleVersionNumberColumn) ON $rolesTable TO ?"
+                "GRANT SELECT (" +
+                        "$userTokenColumn, " +
+                        "$asymEncPublicKeyColumn, " +
+                        "$asymSigPublicKeyColumn, " +
+                        "$statusColumn) ON $deletedUsersTable TO ?"
+            ).use {
+                logger.debug { "Granting permission on deleted users table" }
+                it.setString(1, username)
+                it.execute()
+            }
+
+            connection!!.prepareStatement(
+                "GRANT SELECT (" +
+                        "$roleTokenColumn, " +
+                        "$asymEncPublicKeyColumn, " +
+                        "$asymSigPublicKeyColumn, " +
+                        "$statusColumn, " +
+                        "$roleVersionNumberColumn) ON $rolesTable TO ?"
             ).use {
                 logger.debug { "Granting permission on roles table" }
                 it.setString(1, username)
@@ -381,7 +369,23 @@ class MMInterfaceMySQL(
             }
 
             connection!!.prepareStatement(
-                "GRANT SELECT ($fileTokenColumn, $symEncKeyVersionNumberColumn, $statusColumn) ON $filesTable TO ?"
+                "GRANT SELECT (" +
+                        "$roleTokenColumn, " +
+                        "$asymEncPublicKeyColumn, " +
+                        "$asymSigPublicKeyColumn, " +
+                        "$statusColumn, " +
+                        "$roleVersionNumberColumn) ON $deletedRolesTable TO ?"
+            ).use {
+                logger.debug { "Granting permission on deleted roles table" }
+                it.setString(1, username)
+                it.execute()
+            }
+
+            connection!!.prepareStatement(
+                "GRANT SELECT (" +
+                        "$fileTokenColumn, " +
+                        "$symEncKeyVersionNumberColumn, " +
+                        "$statusColumn) ON $filesTable TO ?"
             ).use {
                 logger.debug { "Granting permission on files table" }
                 it.setString(1, username)
@@ -439,7 +443,7 @@ class MMInterfaceMySQL(
             OutcomeCode.CODE_000_SUCCESS
         } catch (e: SQLException) {
             logger.warn { "Could not create user $username in MySQL" }
-            OutcomeCode.CODE_062_CREATE_USER_MM
+            OutcomeCode.CODE_054_CREATE_USER_MM
         }
 
         return WrapperMMParameters(
@@ -532,7 +536,7 @@ class MMInterfaceMySQL(
         }
         logger.info { "Adding $size role tuples in the metadata (one per row below):" }
         newRoleTuples.forEachIndexed { index, roleTuple ->
-            logger.info { "$index: user ${roleTuple.username} to role ${roleTuple.roleName}" }
+            logger.info { "${index+1}: user ${roleTuple.username} to role ${roleTuple.roleName}" }
         }
 
         /** Create the list of values to insert in the metadata */
@@ -554,12 +558,11 @@ class MMInterfaceMySQL(
                      */
                     newRoleTuples.forEach { roleTuple ->
                         val codeUser = when (getStatus(roleTuple.username, ElementTypeWithStatus.USER)) {
-                            ElementStatus.INCOMPLETE -> OutcomeCode.CODE_065_USER_IS_INCOMPLETE
+                            ElementStatus.INCOMPLETE -> OutcomeCode.CODE_053_USER_IS_INCOMPLETE
                             ElementStatus.OPERATIONAL -> OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
                             ElementStatus.DELETED -> OutcomeCode.CODE_013_USER_WAS_DELETED
                             null -> OutcomeCode.CODE_004_USER_NOT_FOUND
                         }
-
                         if (codeUser != OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS) {
                             return@loop codeUser
                         }
@@ -574,7 +577,6 @@ class MMInterfaceMySQL(
                             ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
                             null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
                         }
-
                         if (codeRole != OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS) {
                             return@loop codeRole
                         }
@@ -1151,8 +1153,6 @@ class MMInterfaceMySQL(
     ): ByteArray? {
         logger.info { "Getting public key of type $asymKeyType of a element of type $elementType" }
 
-// TODO consider also deleted elements
-
         val whereParameters = LinkedHashMap<String, Any?>()
         if (!name.isNullOrBlank()) {
             logger.info { "Filtering by matching name $name" }
@@ -1167,25 +1167,48 @@ class MMInterfaceMySQL(
             logger.error { message }
             throw IllegalArgumentException(message)
         }
-        whereParameters[statusColumn] = ElementStatus.OPERATIONAL
+
+        val whereNotParameters = LinkedHashMap<String, Any?>()
+        whereNotParameters[statusColumn] = ElementStatus.INCOMPLETE
 
         val selectedColumns = ArrayList<String>()
-            .apply { add(if (asymKeyType == AsymKeysType.ENC) asymEncPublicKeyColumn else asymSigPublicKeyColumn) }
+            .apply { add(
+                if (asymKeyType == AsymKeysType.ENC)
+                    asymEncPublicKeyColumn
+                else
+                    asymSigPublicKeyColumn
+            ) }
 
         var asymPublicKeyBytes: ByteArray? = null
 
+        /**
+         * Search the key in both the users/roles
+         * table and the deleted users/roles table
+         */
         createSelectStatement(
             table = if (elementType == ElementTypeWithKey.USER) usersTable else rolesTable,
             whereParameters = whereParameters, selectedColumns = selectedColumns,
+            whereNotParameters = whereNotParameters,
             limit = 1, offset = 0,
-        ).use {
-            val rs = it.executeQuery()
-            if (rs.next()) {
-                asymPublicKeyBytes = sanitizeStringFromHTLM(rs.getString(
-                        if (asymKeyType == AsymKeysType.ENC) asymEncPublicKeyColumn else asymSigPublicKeyColumn)
-                    ).decodeBase64()
+        ).use { firstStatement ->
+            createSelectStatement(
+                table = if (elementType == ElementTypeWithKey.USER) deletedUsersTable else deletedRolesTable,
+                whereParameters = whereParameters, selectedColumns = selectedColumns,
+                limit = 1, offset = 0,
+            ).use { secondStatement ->
+                val finalStatement = "(${firstStatement.asString()}) UNION (${secondStatement.asString()})"
+                connection!!.prepareStatement(finalStatement).use {
+                    val rs = it.executeQuery()
+                    if (rs.next()) {
+                        asymPublicKeyBytes = sanitizeStringFromHTLM(rs.getString(
+                            if (asymKeyType == AsymKeysType.ENC) asymEncPublicKeyColumn else asymSigPublicKeyColumn)
+                        ).decodeBase64()
+                    }
+                }
             }
         }
+
+
         logger.debug { "Public key was ${ if (asymPublicKeyBytes == null) "not " else ""}found"  }
         return asymPublicKeyBytes
     }
@@ -1411,8 +1434,17 @@ class MMInterfaceMySQL(
         connection!!.prepareStatement("DROP USER ?").use {
             logger.debug { "Deleting the user from the database" }
             it.setString(1, username)
-            it.execute()
-            return OutcomeCode.CODE_000_SUCCESS
+            return try {
+                it.execute()
+                OutcomeCode.CODE_000_SUCCESS
+            } catch (e: SQLException) {
+                if (e.message?.contains("Operation DROP USER failed") == true) {
+                    logger.warn { "Error while deleting user $username from the database " }
+                    OutcomeCode.CODE_056_DELETE_USER_MM
+                } else {
+                    throw e
+                }
+            }
         }
     }
 
@@ -1545,7 +1577,8 @@ class MMInterfaceMySQL(
      * [roleName] and return the outcome code.
      * Check that [roleName] is not the admin.
      * Also check that at least one role tuple
-     * is deleted
+     * is deleted, and if not check whether the
+     * [roleName] exists and was not deleted
      */
     override fun deleteRoleTuples(roleName: String): OutcomeCode {
         logger.info { "Deleting role tuples for role name $roleName" }
@@ -1569,7 +1602,21 @@ class MMInterfaceMySQL(
             logger.debug { "$affectedRows role tuples were deleted" }
             return if (affectedRows <= 0) {
                 logger.warn { "No role tuple was deleted" }
-                OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
+                /**
+                 * Check whether the operation failed because there
+                 * are no tuples or because the role is missing or
+                 * was deleted
+                 */
+                when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                    ElementStatus.INCOMPLETE -> {
+                        val message = "Role $roleName has incomplete status"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
+                    ElementStatus.OPERATIONAL -> OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
+                    ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                    null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
             }
@@ -1582,7 +1629,8 @@ class MMInterfaceMySQL(
      * filtering by [roleVersionNumber], if given. Finally,
      * return the outcome code. Check that [roleName] is not
      * the admin. Also check that at least one permission tuple
-     * is deleted
+     * is deleted, and if not check whether the [roleName] and
+     * the [fileName] exist and were not deleted
      */
      override fun deletePermissionTuples(
         roleName: String?,
@@ -1629,7 +1677,44 @@ class MMInterfaceMySQL(
             logger.debug { "$affectedRows permission tuples were deleted" }
             return if (affectedRows <= 0) {
                 logger.warn { "No permission tuple was deleted" }
-                OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                /**
+                 * Check whether the operation failed because there
+                 * are no tuples or because the role or the file is
+                 * missing or was deleted
+                 */
+                val roleExists = if (roleName != null) {
+                    when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                        ElementStatus.INCOMPLETE -> {
+                            val message = "Role $roleName has incomplete status"
+                            logger.error { message }
+                            throw IllegalStateException(message)
+                        }
+                        ElementStatus.OPERATIONAL -> OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
+                        null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                    }
+                } else {
+                    OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                }
+
+                if (roleExists == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND) {
+                    if (fileName != null) {
+                        when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                            ElementStatus.INCOMPLETE -> {
+                                val message = "File $fileName has incomplete status"
+                                logger.error { message }
+                                throw IllegalStateException(message)
+                            }
+                            ElementStatus.OPERATIONAL -> OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                            ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
+                            null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                        }
+                    } else {
+                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                    }
+                } else {
+                    OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
             }
@@ -1640,7 +1725,8 @@ class MMInterfaceMySQL(
      * Delete the file tuples matching the given
      * [fileName] and return the outcome code.
      * Check that at least one file tuple is
-     * deleted
+     * deleted, and if not check whether the
+     * [fileName] exists and was not deleted
      */
     override fun deleteFileTuples(fileName: String): OutcomeCode {
         logger.info { "Deleting file tuples for file name $fileName" }
@@ -1657,7 +1743,21 @@ class MMInterfaceMySQL(
             logger.debug { "$affectedRows file tuples were deleted" }
             return if (affectedRows <= 0) {
                 logger.warn { "No file tuple was deleted" }
-                OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND
+                /**
+                 * Check whether the operation failed because there
+                 * are no tuples or because the file is missing or
+                 * was deleted
+                 */
+                when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                    ElementStatus.INCOMPLETE -> {
+                        val message = "File $fileName has incomplete status"
+                        logger.error { message }
+                        throw IllegalStateException(message)
+                    }
+                    ElementStatus.OPERATIONAL -> OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND
+                    ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
+                    null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
             }
@@ -1826,7 +1926,7 @@ class MMInterfaceMySQL(
             } catch(e: CommunicationsException) {
                 if ((e.message ?: "").contains("Communications link failure")) {
                     logger.warn { "MM MySQL - connection timeout" }
-                    OutcomeCode.CODE_044_MM_CONNECTION_TIMEOUT
+                    OutcomeCode.CODE_045_MM_CONNECTION_TIMEOUT
                 } else {
                     throw e
                 }
@@ -1834,7 +1934,7 @@ class MMInterfaceMySQL(
             catch(e: SQLException) {
                 if ((e.message ?: "").contains("Access denied for user")) {
                     logger.warn { "MM MySQL - access denied for user" }
-                    OutcomeCode.CODE_064_ACCESS_DENIED_TO_MM
+                    OutcomeCode.CODE_055_ACCESS_DENIED_TO_MM
                 } else {
                     throw e
                 }
@@ -1896,7 +1996,7 @@ class MMInterfaceMySQL(
                     connection!!.commit()
                 } catch (e: SQLException) {
                     logger.warn { "Commit of MySQL database failed" }
-                    OutcomeCode.CODE_058_UNLOCK_FAILED
+                    OutcomeCode.CODE_034_UNLOCK_FAILED
                 }
                 connection!!.close()
                 OutcomeCode.CODE_000_SUCCESS

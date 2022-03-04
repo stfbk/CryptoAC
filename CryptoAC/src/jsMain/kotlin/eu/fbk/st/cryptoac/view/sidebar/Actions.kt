@@ -148,13 +148,13 @@ class Actions: RComponent<ActionsProps, State>() {
                 else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
-                    props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
+                    props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Exception) {
                 props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
         }
     }
@@ -214,13 +214,13 @@ class Actions: RComponent<ActionsProps, State>() {
                 else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
-                    props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
+                    props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Error) {
                 props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
         }
     }
@@ -264,13 +264,13 @@ class Actions: RComponent<ActionsProps, State>() {
                 else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
-                    props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
+                    props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Error) {
                 props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
         }
     }
@@ -310,13 +310,13 @@ class Actions: RComponent<ActionsProps, State>() {
                 else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
-                    props.handleDisplayAlert(OutcomeCode.CODE_046_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
+                    props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Exception) {
                 props.handleChangeBackdropIsOpen(false)
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }
                 console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_047_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
         }
     }

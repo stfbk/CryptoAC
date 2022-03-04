@@ -238,7 +238,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                                 }
                             }
                             onElementClick = {
-                                props.handleDisplayAlert(OutcomeCode.CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
+                                props.handleDisplayAlert(OutcomeCode.CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
                             }
                         }
                     })
@@ -266,7 +266,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                                 }
                             }
                             onElementClick = {
-                                props.handleDisplayAlert(OutcomeCode.CODE_052_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
+                                props.handleDisplayAlert(OutcomeCode.CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
                             }
                         }
                     })

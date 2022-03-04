@@ -4,13 +4,14 @@ package eu.fbk.st.cryptoac.crypto
  * A CryptoParameters supplies the necessary parameters to instantiate a Crypto object.
  * A CryptoParameters is defined by the [asymEncKeysLength], the [asymEncKeysGenAlgorithm],
  * the [asymEncAlgorithm], the [asymSigKeysLength], the [asymSigKeysGenAlgorithm],
- * the [asymSigAlgorithm], the [symKeyLength], the [symAlgorithm], the [hashAlgorithm]
- * and the [hashLength]. All lengths are in bits.
+ * the [asymSigAlgorithm], the [symKeyLength], the [symAlgorithm], the [hashAlgorithm],
+ * the [symAuthenticatedEncryptionAlgorithm] and the [hashLength]. All lengths are in bits.
  */
 data class CryptoParameters(
     val asymEncKeysLength: Int, val asymEncKeysGenAlgorithm: String, val asymEncAlgorithm: String,
     val asymSigKeysLength: Int, val asymSigKeysGenAlgorithm: String, val asymSigAlgorithm: String,
     val symKeyLength: Int, val symAlgorithm: String,
+    val symAuthenticatedEncryptionAlgorithm: String,
     val hashAlgorithm: String, val hashLength: Int,
 ) {
     override fun equals(other: Any?): Boolean {
@@ -27,6 +28,7 @@ data class CryptoParameters(
         if (asymSigAlgorithm != other.asymSigAlgorithm) return false
         if (symKeyLength != other.symKeyLength) return false
         if (symAlgorithm != other.symAlgorithm) return false
+        if (symAuthenticatedEncryptionAlgorithm != other.symAuthenticatedEncryptionAlgorithm) return false
         if (hashAlgorithm != other.hashAlgorithm) return false
         if (hashLength != other.hashLength) return false
 
@@ -42,6 +44,7 @@ data class CryptoParameters(
         result = 31 * result + asymSigAlgorithm.hashCode()
         result = 31 * result + symKeyLength
         result = 31 * result + symAlgorithm.hashCode()
+        result = 31 * result + symAuthenticatedEncryptionAlgorithm.hashCode()
         result = 31 * result + hashAlgorithm.hashCode()
         result = 31 * result + hashLength
         return result

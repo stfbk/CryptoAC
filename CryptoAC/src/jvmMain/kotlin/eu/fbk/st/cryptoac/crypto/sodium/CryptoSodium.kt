@@ -266,7 +266,8 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
      * the [encryptingKey] and return it as a stream.
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
-     * consuming it
+     * consuming it. Ensure that authenticated encryption
+     * only is used
      *
      * In this implementation, add first the header, then
      * the content of the [stream] where we first apply
@@ -293,7 +294,8 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
      * the [decryptingKey] and return it as a stream.
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
-     * consuming it
+     * consuming it. Ensure that authenticated encryption
+     * only is used
      *
      * In this implementation, get first the header, then
      * wrap the content of the [stream] first with a Sodium

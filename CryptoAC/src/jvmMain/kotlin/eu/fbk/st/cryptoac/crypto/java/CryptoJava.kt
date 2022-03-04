@@ -8,7 +8,9 @@ import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.*
+import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
+
 
 private val logger = KotlinLogging.logger {}
 
@@ -28,6 +30,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     private val hashLength = parameters?.hashAlgorithm ?: 512
     private val symKeyLength = parameters?.symKeyLength ?: 256
     private val symKeyAlgorithm = parameters?.symAlgorithm ?: "AES"
+    private val symAuthenticatedEncryptionAlgorithm = parameters?.symAuthenticatedEncryptionAlgorithm ?: "AES/GCM/NoPadding"
 
 
     /** The length of the block for asymmetric encryption */
@@ -49,7 +52,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     private val asymCipher: Cipher = Cipher.getInstance(asymEncAlgorithm)
 
     /** The object used for symmetric encryption and decryption */
-    private val symCipher: Cipher = Cipher.getInstance(symKeyAlgorithm)
+    private val symCipher: Cipher = Cipher.getInstance(symAuthenticatedEncryptionAlgorithm)
 
     /** The object used for creating and verifying signatures */
     private val signatureObject: Signature = Signature.getInstance(asymSigAlgorithm)
@@ -248,14 +251,19 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
      * the [encryptingKey] and return it as a stream.
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
-     * consuming it
+     * consuming it. Ensure that authenticated encryption
+     * only is used
      *
      * In this implementation, apply a Base64 stream
      * and then a cipher stream with the [encryptingKey]
      */
     override fun encryptStream(encryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream {
         logger.debug { "Encrypting stream" }
-        symCipher.init(Cipher.ENCRYPT_MODE, encryptingKey.secretKey)
+        symCipher.init(
+            Cipher.ENCRYPT_MODE,
+            encryptingKey.secretKey as SecretKey,
+            GCMParameterSpec(128, ByteArray(12))
+        )
         return CipherInputStream(Base64InputStream(stream, true), symCipher)
     }
 
@@ -264,14 +272,19 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
      * the [decryptingKey] and return it as a stream.
      * Empty streams are allowed due to the difficulty
      * of checking whether a stream is empty without
-     * consuming it
+     * consuming it. Ensure that authenticated encryption
+     * only is used
      *
      * In this implementation, apply a cipher stream
      * and then a Base64 stream with the [decryptingKey]
      */
     override fun decryptStream(decryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream {
         logger.debug { "Decrypting stream" }
-        symCipher.init(Cipher.DECRYPT_MODE, decryptingKey.secretKey as SecretKey)
+        symCipher.init(
+            Cipher.DECRYPT_MODE,
+            decryptingKey.secretKey as SecretKey,
+            GCMParameterSpec(128, ByteArray(12))
+        )
         return Base64InputStream(CipherInputStream(stream, symCipher), false)
     }
 

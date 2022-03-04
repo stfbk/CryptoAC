@@ -20,6 +20,7 @@ import mu.KotlinLogging
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.net.NoRouteToHostException
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -30,12 +31,11 @@ private val logger = KotlinLogging.logger {}
  */
 const val INIT_REGO_RBAC = "/cryptoac/rbac.rego"
 
-// TODO prepare this file, like the RBAC file
 /**
  * The file containing REGO commands
  * to initialize OPA for an ABAC policy
  */
-const val INIT_REGO_ABAC = "/cryptoac/abac.rego"
+const val INIT_REGO_ABAC = "/cryptoac/abac.rego" // TODO prepare this file, like the RBAC file
 
 /** The key in the OPA RBAC document for the user-role (UR) relationship */
 const val UR_KEY = "ur"
@@ -94,7 +94,6 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             rbacPolicyOPA = reader.readText()
         }
 
-        // TODO better handle exceptions and refused connections
         var code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS
         runBlocking {
             val opaURL = "${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_POLICY}"
@@ -265,7 +264,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         return if (jsonPatch.length == 1) {
             logger.warn { "No UR assignments has been found" }
             if (roleName != null && username != null) {
-                OutcomeCode.CODE_040_UR_ASSIGNMENTS_NOT_FOUND
+                OutcomeCode.CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA
             } else if (roleName != null) {
                 OutcomeCode.CODE_005_ROLE_NOT_FOUND
             } else {
@@ -363,7 +362,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         return if (jsonPatch.length == 1) {
             logger.warn { "No PA assignments has been found" }
             if (fileName != null && roleName != null) {
-                OutcomeCode.CODE_041_PA_ASSIGNMENTS_NOT_FOUND
+                OutcomeCode.CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA
             } else if (fileName != null) {
                 OutcomeCode.CODE_006_FILE_NOT_FOUND
             } else {
@@ -427,7 +426,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         /** If no assignment has been found, return the error code */
         return if (jsonPatch.length == 1) {
             logger.warn { "No PA assignments has been found" }
-            OutcomeCode.CODE_041_PA_ASSIGNMENTS_NOT_FOUND
+            OutcomeCode.CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA
         }
         else {
             jsonPatch.setLength(jsonPatch.length - 2)
@@ -444,7 +443,6 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
      */
     fun getOPADocument(): StorageOPADocument {
 
-        // TODO better handle exceptions and refused connections
         var storageOPADocument: StorageOPADocument
         runBlocking {
             val opaURL = "${API.HTTP}$opaBaseAPI${API.OPA_RBAC_DATA}"
@@ -478,17 +476,25 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         return if (locks == 0) {
             logger.info { "Locking the status of the OPA document" }
             client = HttpClient(CIO) {
-                expectSuccess = false
-                // TODO configure this, as for now the client accepts all certificates
+                expectSuccess = false // TODO configure this, as for now the client accepts all certificates
             }
-            val storageOPADocument = getOPADocument()
-            if (storageOPADocument.code != OutcomeCode.CODE_000_SUCCESS) {
-                storageOPADocument.code
-            }
-            else {
-                initialOPADocument = storageOPADocument.opaDocument!!.result
-                locks++
-                OutcomeCode.CODE_000_SUCCESS
+            try {
+                val storageOPADocument = getOPADocument()
+                if (storageOPADocument.code != OutcomeCode.CODE_000_SUCCESS) {
+                    storageOPADocument.code
+                }
+                else {
+                    initialOPADocument = storageOPADocument.opaDocument!!.result
+                    locks++
+                    OutcomeCode.CODE_000_SUCCESS
+                }
+            } catch (e: NoRouteToHostException) {
+                if ((e.message ?: "").contains("No route to host")) {
+                    logger.warn { "OPA - connection timeout" }
+                    OutcomeCode.CODE_047_OPA_CONNECTION_TIMEOUT
+                } else {
+                    throw e
+                }
             }
         }
         else {
@@ -583,7 +589,6 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         jsonPatch: String,
     ): OutcomeCode {
 
-        // TODO better handle exceptions and refused connections
         var code = OutcomeCode.CODE_000_SUCCESS
         runBlocking {
             val opaURL = "${API.HTTP}$opaBaseAPI${API.OPA_RBAC_DATA}"
@@ -595,7 +600,7 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
             logger.debug { "Received response from the OPA" }
             /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */
             if (opaResponse.status != HttpStatusCode.NoContent) {
-                val errorMessage = opaResponse.readText() // TODO se vuoi puoi serializzare questo, creando una classe apposita
+                val errorMessage = opaResponse.readText()
                 logger.warn { "Received error code from the OPA (status: ${opaResponse.status}, error: $errorMessage)" }
                 code = OutcomeCode.CODE_029_OPA_DOCUMENT_UPDATE
             }

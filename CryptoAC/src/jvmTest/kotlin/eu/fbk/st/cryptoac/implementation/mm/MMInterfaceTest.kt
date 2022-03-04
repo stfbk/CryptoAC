@@ -58,41 +58,8 @@ internal abstract class MMInterfaceTest {
         myRun {
             val bobMM = addAndInitUser(Parameters.bobUser)
             assert(bobMM.lock() == OutcomeCode.CODE_000_SUCCESS)
-            assert(bobMM.initUser(Parameters.bobUser) == OutcomeCode.CODE_004_USER_NOT_FOUND)
+            assert(bobMM.initUser(Parameters.bobUser) == OutcomeCode.CODE_052_USER_ALREADY_INITIALIZED)
             assert(bobMM.unlock() == OutcomeCode.CODE_000_SUCCESS)
-        }
-    }
-
-
-
-    @Test
-    open fun `is admin of admin user is true, while is admin of other users, non-existing or deleted is false or fails`() {
-        /** is admin of admin user */
-        myRun {
-            val isAdminResult = mm!!.isUserAdmin(ADMIN)
-            assert(isAdminResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(isAdminResult.boolean!!)
-        }
-
-        /** is admin of other user */
-        myRun {
-            assert(mm!!.addUser(Parameters.aliceUser).code == OutcomeCode.CODE_000_SUCCESS)
-            val isAdminResult = mm!!.isUserAdmin(Parameters.aliceUser.name)
-            assert(isAdminResult.code == OutcomeCode.CODE_000_SUCCESS)
-            assert(!isAdminResult.boolean!!)
-        }
-
-        /** is admin of non-existing user */
-        myRun {
-            val isAdminResult = mm!!.isUserAdmin("bob")
-            assert(isAdminResult.code == OutcomeCode.CODE_004_USER_NOT_FOUND)
-        }
-
-        /** is admin of deleted user */
-        myRun {
-            assert(mm!!.deleteUser(Parameters.aliceUser.name) == OutcomeCode.CODE_000_SUCCESS)
-            val isAdminResult = mm!!.isUserAdmin(Parameters.aliceUser.name)
-            assert(isAdminResult.code == OutcomeCode.CODE_004_USER_NOT_FOUND)
         }
     }
 
