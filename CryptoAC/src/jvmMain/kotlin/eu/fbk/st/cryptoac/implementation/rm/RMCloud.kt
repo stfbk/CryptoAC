@@ -50,7 +50,7 @@ private var crypto: Crypto? = null
 /** Routes related to files; add (post), write (patch) */
 fun Route.filesRouting() {
 
-    // TODO Authenticate modules (proxy, rm, dm) to each other
+    // TODO Authenticate modules (proxy, rm, dm) to each other (and the user)
 
     /** Wrap all routes related to the RM */
     route(RM) {
@@ -62,8 +62,6 @@ fun Route.filesRouting() {
              * file operation
              */
             post {
-                // TODO authenticate user (login as in the proxy?)
-
                 /** If the RM was not configured yet */
                 if (mm == null || opa == null || dm == null || crypto == null) {
                     return@post ResponseRoutes.serviceUnavailable(
@@ -291,7 +289,6 @@ fun Route.filesRouting() {
              * file operation
              */
             patch {
-                // TODO authenticate user (login as in the proxy?)
 
                 /** If the RM was not configured yet */
                 if (mm == null || opa == null || dm == null || crypto == null) {
@@ -312,6 +309,7 @@ fun Route.filesRouting() {
 
                 logger.debug { "Retrieving the write file request" }
                 val writeFileRequest = call.receive<WriteFileRequest>()
+                val roleName = writeFileRequest.roleName
                 val fileTuple = writeFileRequest.fileTuple
                 val fileTupleName = fileTuple.fileName
                 val fileTupleToken = fileTuple.fileToken
@@ -417,7 +415,7 @@ fun Route.filesRouting() {
                 logger.debug { "Checking that the role has WRITE permission over the file" }
                 val permissionTuple = mm!!.getPermissionTuples(
                     fileName = fileTupleName,
-                    roleToken = roleToken,
+                    roleName = roleName,
                     symKeyVersionNumber = symDecKeyVersionNumber,
                     permission = PermissionType.READWRITE
                 ).firstOrNull() ?:
@@ -427,6 +425,14 @@ fun Route.filesRouting() {
                         "File $fileTupleName was not found",
                         endOfMethod(OutcomeCode.CODE_006_FILE_NOT_FOUND)
                     )
+
+                if (permissionTuple.roleToken != roleToken) {
+                    return@patch ResponseRoutes.internalError(
+                        call,
+                        "Given role token does not match across tuples",
+                        endOfMethod(OutcomeCode.CODE_026_TUPLE_FORMAT)
+                    )
+                }
 
 
                 logger.debug { "Retrieving the permission tuple signer's public key to check the digital signature" }
@@ -496,7 +502,6 @@ fun Route.configureRouting() {
 
         post {
 
-            // TODO authenticate user (login as in the proxy?)
             // TODO logging
 
             /** Get the storage parameters from the request */

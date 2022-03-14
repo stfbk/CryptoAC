@@ -75,6 +75,9 @@ object SERVER {
     /** The password of the mm */
     const val MM_PASSWORD = "MM_Password"
 
+    /** The user token for the mm */
+    const val MM_TOKEN = "MM_Token"
+
     /** The port of the mm */
     const val MM_PORT = "MM_Port"
 

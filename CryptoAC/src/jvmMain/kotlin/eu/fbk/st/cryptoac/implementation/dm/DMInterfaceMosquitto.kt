@@ -60,8 +60,7 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         val message = MqttMessage(content.readAllBytes())
         message.qos = 1
         message.isRetained = true
-        client.publish(newFile.name, message)
-        return OutcomeCode.CODE_000_SUCCESS
+        return client.myPublish(newFile.name, message)
     }
 
     /**
@@ -74,9 +73,8 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
      */
     override fun readFile(fileName: String): WrappedInputStream {
         logger.info("Subscribing to the topic $fileName")
-        client.subscribe(fileName, 1)
         // TODO allow to select the QoS
-        return WrappedInputStream(OutcomeCode.CODE_000_SUCCESS)
+        return WrappedInputStream(client.mySubscribe(fileName, 1))
     }
 
     /**
@@ -92,8 +90,7 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         val message = MqttMessage(content.readAllBytes())
         message.qos = 1
         // TODO allow to select the QoS
-        client.publish(updatedFile.name, message)
-        return OutcomeCode.CODE_000_SUCCESS
+        return client.myPublish(updatedFile.name, message)
     }
 
     /**
@@ -107,11 +104,10 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
     override fun deleteFile(fileName: String): OutcomeCode {
         logger.info("Deleting topic $fileName from the MQTT Mosquitto broker")
         val message = MqttMessage(byteArrayOf())
-        message.qos = 2
-        message.isRetained = true
-        client.publish(fileName, message)
         // TODO allow to select the QoS
-        return OutcomeCode.CODE_000_SUCCESS
+        message.qos = 1
+        message.isRetained = true
+        return client.myPublish(fileName, message)
     }
 
     /**
@@ -133,10 +129,7 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
         return if (locks == 0) {
             logger.info { "Locking the status of the DM" }
             try {
-                client.connectSync(
-                    false, interfaceParameters.tls,
-                    interfaceParameters.username, interfaceParameters.password
-                )
+                client.connectSync()
                 locks++
                 OutcomeCode.CODE_000_SUCCESS
             } catch (e: MqttException) {
@@ -152,8 +145,8 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
             }
         }
         else {
-            logger.debug { "Increment lock number to $locks" }
             locks++
+            logger.debug { "Increment lock number to $locks" }
             OutcomeCode.CODE_000_SUCCESS
         }
     }
@@ -173,8 +166,8 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
             locks--
             // TODO
         } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks - 1}" }
             locks--
+            logger.debug { "Decrement lock number to $locks" }
         }
         return OutcomeCode.CODE_000_SUCCESS
     }
@@ -194,10 +187,30 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
             locks--
             // TODO
         } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks - 1}" }
             locks--
+            logger.debug { "Decrement lock number to $locks" }
         }
         return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     *
+     * In this implementation, unsubscribe to all topics
+     * and disconnect from the MQTT broker
+     */
+    override fun deinit() {
+        try {
+            client.unsubscribe("#")
+            client.disconnect()
+        } catch (e: MqttException) {
+            logger.warn { "Exception while de-initializing MQTT client (${e.message})" }
+            logger.warn { e }
+            client.disconnectForcibly()
+        }
     }
 
     /**
@@ -326,7 +339,13 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
 
     /**
      * Send the list of [commands] to the DYNSEC plugin
-     * and return the outcome code
+     * and return the outcome code. Remember that DYNSEC
+     * disconnects all MQTT clients involved in an update
+     * of the AC policy. For instance, if you assign a
+     * client to a role, that client will be disconnected
+     * with an administrative action (RC 152).
+     * Related issues:
+     * - [CLOSED] https://github.com/eclipse/mosquitto/issues/2474
      */
     fun sendDynsecCommand(commands: HashSet<String>): OutcomeCode {
         return if (commands.isNotEmpty()) {
@@ -344,13 +363,25 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
                 OutcomeCode.CODE_019_MISSING_PARAMETERS
             } else {
                 val messageMQTT = MqttMessage(message.toByteArray())
-                messageMQTT.qos = 2
-                client.publish(dynsecTopic, messageMQTT)
-                OutcomeCode.CODE_000_SUCCESS
+                messageMQTT.qos = 1
+
+                try {
+                    client.myPublish(dynsecTopic, messageMQTT)
+                } catch (e: MqttException) {
+                    if (e.message?.contains("Disconnect RC: 152") == true) {
+                        logger.info { "The broker disconnected the client after DYNSEC update" }
+                        OutcomeCode.CODE_000_SUCCESS
+                    } else {
+                        throw e
+                    }
+                }
             }
 
         } else {
-            logger.info("Asked to send dynsec commands to the MQTT Mosquitto broker but no commands were given")
+            logger.warn(
+                "Asked to send dynsec commands to the MQTT " +
+                "Mosquitto broker but no commands were given"
+            )
             OutcomeCode.CODE_000_SUCCESS
         }
     }

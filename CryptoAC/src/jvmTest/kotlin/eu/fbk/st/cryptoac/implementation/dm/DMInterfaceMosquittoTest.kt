@@ -1,9 +1,12 @@
 package eu.fbk.st.cryptoac.implementation.dm
 
 import eu.fbk.st.cryptoac.*
+import eu.fbk.st.cryptoac.Constants.ADMIN
+import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.core.CryptoACMqttClient
 import eu.fbk.st.cryptoac.core.elements.File
 import eu.fbk.st.cryptoac.core.tuples.EnforcementType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.eclipse.paho.mqttv5.client.*
@@ -12,7 +15,6 @@ import org.eclipse.paho.mqttv5.common.MqttException
 import org.eclipse.paho.mqttv5.common.MqttMessage
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties
 import org.junit.jupiter.api.*
-import java.util.concurrent.TimeUnit
 
 import kotlin.random.Random
 
@@ -23,14 +25,8 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
 
     private val dynsecTopicResponse = "\$CONTROL/dynamic-security/v1/response"
 
-
-
     override var dm: DMInterface? = null
     private var client: CryptoACMqttClient? = null
-
-    // TODO do not use "processBuild.waitFor", instead read
-    //  the output until you find a specific string that
-    //  indicates that the process terminated
 
     private var processDocker: Process? = null
 
@@ -39,14 +35,19 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
 
     @BeforeAll
     override fun setUpAll() {
-        val processBuild = "./buildAll.sh".runCommand(java.io.File("../Documentation/Installation/"))
-        processBuild.waitFor(10, TimeUnit.SECONDS)
-        processDocker = "./startCryptoAC_MQTT.sh \"cryptoac_mosquitto\"".runCommand(java.io.File("../Documentation/Installation/"))
-        processDocker!!.waitFor(3, TimeUnit.SECONDS)
+        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_MQTT.sh \"cryptoac_mosquitto\"".runCommand(dir, hashSetOf("mosquitto version 2.0.14 running"))
 
         val brokerBaseAPI = "tcp://${Parameters.dmInterfaceMosquittoParameters.url}:${Parameters.dmInterfaceMosquittoParameters.port}"
         val persistence = MemoryPersistence()
-        client = CryptoACMqttClient(brokerBaseAPI, generateRandomClientId(), persistence)
+        client = CryptoACMqttClient(
+            brokerBaseAPI,
+            generateRandomClientId(),
+            persistence,
+            Parameters.dmInterfaceMosquittoParameters.tls,
+            Parameters.dmInterfaceMosquittoParameters.username,
+            Parameters.dmInterfaceMosquittoParameters.password,
+        )
         client!!.setCallback(this)
         dm = DMInterfaceMosquitto(Parameters.dmInterfaceMosquittoParameters, client!!)
     }
@@ -55,8 +56,7 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
     override fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        val cleanProcess = "./clean.sh".runCommand(java.io.File("../Documentation/Installation/"))
-        cleanProcess.waitFor(5, TimeUnit.SECONDS)
+        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
     @Test
@@ -244,8 +244,8 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
     @Test
     override fun `delete non-existing or deleted file fail`() {
         /**
-         * The lifecycle of topics is determined by retained
-         * messages and subscribed users
+         * The lifecycle of topics is determined by
+         * retained messages and subscribed users
          */
     }
 
@@ -1136,6 +1136,74 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
     }
 
 
+
+
+
+
+    // TODO delete
+    @Test
+    fun `b b`() {
+        val connOpts = MqttConnectionOptions()
+        connOpts.isCleanStart = false
+        connOpts.keepAliveInterval = 120
+        connOpts.isAutomaticReconnect = true
+        connOpts.userName = "admin"
+        connOpts.password = "password".toByteArray()
+        val client = MqttClient(
+            "tcp://10.1.0.8:1883",
+            "randomString",
+            MemoryPersistence()
+        )
+        client.connect(connOpts)
+
+        runBlocking { delay(1000) }
+
+        val createRole = """
+                            { "commands": [
+                                {
+                                    "command": "createRole",
+                                    "rolename": "roleName1"
+                                }
+                            ]}
+                         """
+        val messageMQTT1 = MqttMessage(createRole.toByteArray())
+        messageMQTT1.qos = 1
+        client.publish(
+            "\$CONTROL/dynamic-security/v1",
+            messageMQTT1
+        )
+
+        runBlocking { delay(1000) }
+
+        val assignClientToRole = """
+                            { "commands": [
+                                {
+                                    "command": "addClientRole",
+                                    "username": "admin",
+                                    "rolename": "roleName1"
+                                }
+                            ]}
+                         """
+        val messageMQTT2 = MqttMessage(assignClientToRole.toByteArray())
+        messageMQTT2.qos = 1
+        try {
+            client.publish(
+                "\$CONTROL/dynamic-security/v1",
+                messageMQTT2
+            )
+        } catch (e: MqttException) {
+            if (e.message?.contains("Disconnect RC: 152") == true) {
+                client.reconnect()
+                runBlocking { delay(5000) }
+            } else {
+                throw e
+            }
+        }
+    }
+
+
+
+
     // TODO refactor, there is code duplication
     /** Generate a random string as Client ID for the MQTT client */
     private fun generateRandomClientId(): String {
@@ -1161,8 +1229,10 @@ internal class DMInterfaceMosquittoTest : DMInterfaceTest(), MqttCallback {
     }
 
     override fun disconnected(disconnectResponse: MqttDisconnectResponse?) {
-        logger.info { "TEST: disconnected" }
-        client!!.connectSync(reconnecting = true, Parameters.dmInterfaceMosquittoParameters.tls)
+        logger.info {
+            "MQTT client was disconnected: " +
+            disconnectResponse.toString()
+        }
     }
 
     override fun authPacketArrived(reasonCode: Int, properties: MqttProperties?) {

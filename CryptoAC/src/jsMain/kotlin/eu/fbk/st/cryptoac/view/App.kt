@@ -61,7 +61,7 @@ external interface AppState : State {
     /** The name of the user, if logged-in, null otherwise */
     var username: String?
 
-    /** The HTTPS/WSS client to interact with the proxy */
+    /** The HTTPS/WSS client to interact with CryptoAC */
     var httpClient: HttpClient
 
     /** The core type, i.e., the chosen (implementation of the) CAC scheme */

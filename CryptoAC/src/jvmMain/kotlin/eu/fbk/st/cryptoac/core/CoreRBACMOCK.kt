@@ -77,4 +77,5 @@ class CoreRBACMOCK(
     override fun initUser(): OutcomeCode {
         return OutcomeCode.CODE_000_SUCCESS
     }
+    override fun deinit() {}
 }

@@ -1,16 +1,18 @@
 package eu.fbk.st.cryptoac.implementation.rm
 
 import eu.fbk.st.cryptoac.*
+import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.Parameters.adminCoreRBACCLOUDParameters
+import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.core.elements.File
 import eu.fbk.st.cryptoac.core.tuples.EnforcementType
 import eu.fbk.st.cryptoac.implementation.dm.DMInterface
 import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceRBACCryptoAC
 import eu.fbk.st.cryptoac.implementation.mm.MMInterfaceMySQL
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterface
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
 
-import java.util.concurrent.TimeUnit
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
@@ -24,19 +26,16 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
     private val opa: OPAInterface =
         OPAInterface(Parameters.opaInterfaceParameters)
 
-
-    // TODO do not use "processBuild.waitFor", instead read
-    //  the output until you find a specific string that
-    //  indicates that the process terminated
-
     private var processDocker: Process? = null
 
     @BeforeAll
     override fun setUpAll() {
-        val processBuild = "./buildAll.sh".runCommand(java.io.File("../Documentation/Installation/"))
-        processBuild.waitFor(10, TimeUnit.SECONDS)
-        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_rm cryptoac_dm cryptoac_mysql cryptoac_opa\"".runCommand(java.io.File("../Documentation/Installation/"))
-        processDocker!!.waitFor(15, TimeUnit.SECONDS)
+        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_rm cryptoac_dm cryptoac_mysql cryptoac_opa\"".runCommand(dir, hashSetOf(
+            "port: 3306  MySQL Community Server - GPL",
+            "Started ServerConnector",
+            "release_notes"
+        ))
     }
 
     @BeforeEach
@@ -62,8 +61,7 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
     override fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        val cleanProcess = "./clean.sh".runCommand(java.io.File("../Documentation/Installation/"))
-        cleanProcess.waitFor(5, TimeUnit.SECONDS)
+        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
 
@@ -74,7 +72,7 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
         /** check add file once */
         run {
             assert(dm.addFile(newFile, "exam content".inputStream()) == OutcomeCode.CODE_000_SUCCESS)
-            val addFileRequest = createAddFileRequest(newFile.name, Constants.ADMIN)
+            val addFileRequest = createAddFileRequest(newFile.name, ADMIN)
             assert(
                 rm.checkAddFile(
                     addFileRequest.fileTuple, addFileRequest.permissionTuple
@@ -89,7 +87,7 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
     @Test
     override fun `check add file twice, non-existing or deleted file fail`() {
         val newFile = File(name = "exam", enforcement = EnforcementType.COMBINED)
-        val addFileRequest = createAddFileRequest(newFile.name, Constants.ADMIN)
+        val addFileRequest = createAddFileRequest(newFile.name, ADMIN)
 
         /** check add file twice */
         run {
@@ -108,7 +106,7 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
 
         /** check non-existing file */
         run {
-            val nonExistingFileRequest = createAddFileRequest("non-existing", Constants.ADMIN)
+            val nonExistingFileRequest = createAddFileRequest("non-existing", ADMIN)
             assert(
                 rm.checkAddFile(nonExistingFileRequest.fileTuple,
                     nonExistingFileRequest.permissionTuple) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
@@ -126,7 +124,7 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
     @Test
     override fun `check write file once works`() {
         val newFile = File(name = "exam", enforcement = EnforcementType.COMBINED)
-        val addFileRequest = createAddFileRequest(newFile.name, Constants.ADMIN)
+        val addFileRequest = createAddFileRequest(newFile.name, ADMIN)
         assert(dm.addFile(newFile, "exam content".inputStream()) == OutcomeCode.CODE_000_SUCCESS)
         assert(
             rm.checkAddFile(
@@ -143,7 +141,9 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
             )
             assert(
                 rm.checkWriteFile(
-                    writeFileRequest.symKeyVersionNumber, writeFileRequest.fileTuple
+                    ADMIN,
+                    writeFileRequest.symKeyVersionNumber,
+                    writeFileRequest.fileTuple
                 ) == OutcomeCode.CODE_000_SUCCESS
             )
         }
@@ -155,7 +155,7 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
     @Test
     override fun `check write file twice, non-existing or deleted file fail`() {
         val newFile = File(name = "exam", enforcement = EnforcementType.COMBINED)
-        val addFileRequest = createAddFileRequest(newFile.name, Constants.ADMIN)
+        val addFileRequest = createAddFileRequest(newFile.name, ADMIN)
         assert(dm.addFile(newFile, "exam content".inputStream()) == OutcomeCode.CODE_000_SUCCESS)
         assert(
             rm.checkAddFile(
@@ -168,7 +168,9 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
         val writeFileRequest = createWriteFileRequest(newFile.name, addFileRequest.fileTuple.fileToken, 1)
         assert(
             rm.checkWriteFile(
-                writeFileRequest.symKeyVersionNumber, writeFileRequest.fileTuple
+                ADMIN,
+                writeFileRequest.symKeyVersionNumber,
+                writeFileRequest.fileTuple
             ) == OutcomeCode.CODE_000_SUCCESS
         )
 
@@ -176,7 +178,9 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
         run {
             assert(
                 rm.checkWriteFile(
-                    writeFileRequest.symKeyVersionNumber, writeFileRequest.fileTuple
+                    ADMIN,
+                    writeFileRequest.symKeyVersionNumber,
+                    writeFileRequest.fileTuple
                 ) == OutcomeCode.CODE_006_FILE_NOT_FOUND
             )
         }
@@ -186,7 +190,9 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
             val nonExistingWriteFileRequest = createWriteFileRequest("non-existing", "non-existing", 1)
             assert(
                 rm.checkWriteFile(
-                    nonExistingWriteFileRequest.symKeyVersionNumber, nonExistingWriteFileRequest.fileTuple
+                    ADMIN,
+                    nonExistingWriteFileRequest.symKeyVersionNumber,
+                    nonExistingWriteFileRequest.fileTuple
                 ) == OutcomeCode.CODE_006_FILE_NOT_FOUND
             )
         }
@@ -195,8 +201,11 @@ internal class RMInterfaceCryptoACTest : RMInterfaceTest() {
         run {
             assert(dm.deleteFile(newFile.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(
-                rm.checkWriteFile(writeFileRequest.symKeyVersionNumber,
-                    writeFileRequest.fileTuple) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
+                rm.checkWriteFile(
+                    ADMIN,
+                    writeFileRequest.symKeyVersionNumber,
+                    writeFileRequest.fileTuple
+                ) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
         }
     }
 }

@@ -141,6 +141,20 @@ class CoreRBACCLOUD(
     }
 
     /**
+     * This function is invoked whenever the core object
+     * is dismissed, and it should contain the code to
+     * de-initialize the core (e.g., possibly disconnect from
+     * remote services like MQTT brokers, databases, etc.)
+     */
+    override fun deinit() {
+        rm.deinit()
+        mm.deinit()
+        dm.deinit()
+        opa.deinit()
+        // TODO wipe crypto material from user object
+    }
+
+    /**
      * Add a user with the given [username] to the policy
      * and return eventual configuration parameters along
      * with the outcome code (if an error occurred, the
@@ -555,7 +569,7 @@ class CoreRBACCLOUD(
         /** If we did not find the user's key, it means that the user does not exist (or was deleted) */
         if (userAsymEncPublicKeyBytes == null) {
             logger.warn { "User's key not found. Checking the user's status" }
-            val status = mm.getStatus(username, ElementTypeWithStatus.USER)
+            val status = mm.getStatus(name = username, type = ElementTypeWithStatus.USER)
             return if (status != null) {
                 logger.warn { "User's status is $status" }
                 when (status) {
@@ -814,7 +828,7 @@ class CoreRBACCLOUD(
                 }
             }
 
-            code = mm.deletePermissionTuples(roleName = roleName, roleVersionNumber = oldRoleVersionNumber)
+            code = mm.deletePermissionTuples(roleName = roleName)
             if (code != OutcomeCode.CODE_000_SUCCESS) {
                 return endOfMethod(code, dmLocked = false)
             }
@@ -1334,103 +1348,113 @@ class CoreRBACCLOUD(
         // if CAC is to be enforced, we have to obtain the symmetric key to encrypt the file.
         // Therefore, we get the decrypting key version number from the file tuple, and
         // then fetch the corresponding permission tuple
-        return if (fileFileTuple.enforcement == EnforcementType.COMBINED) {
+        return when (fileFileTuple.enforcement) {
+            EnforcementType.COMBINED -> {
 
-            // now we decrypt the keys of the role. Then, we use the keys of the role
-            // to decrypt the symmetric key. Finally, we decrypt the file
-            val roleAsymEncKeys = crypto.decryptAsymEncKeys(
-                encryptingKey = asymEncKeyPair.public,
-                decryptingKey = asymEncKeyPair.private,
-                encryptedAsymEncKeys = fileRoleTuple.encryptedAsymEncKeys!!
-            )
+                // now we decrypt the keys of the role. Then, we use the keys of the role
+                // to decrypt the symmetric key. Finally, we decrypt the file
+                val roleAsymEncKeys = crypto.decryptAsymEncKeys(
+                    encryptingKey = asymEncKeyPair.public,
+                    decryptingKey = asymEncKeyPair.private,
+                    encryptedAsymEncKeys = fileRoleTuple.encryptedAsymEncKeys!!
+                )
 
-            val symKey = crypto.decryptSymKey(
-                encryptingKey = roleAsymEncKeys.public,
-                decryptingKey = roleAsymEncKeys.private,
-                encryptedSymKey = filePermissionTuple.encryptedSymKey!!
-            )
+                val symKey = crypto.decryptSymKey(
+                    encryptingKey = roleAsymEncKeys.public,
+                    decryptingKey = roleAsymEncKeys.private,
+                    encryptedSymKey = filePermissionTuple.encryptedSymKey!!
+                )
 
-            // encrypt the file
-            fileStream = crypto.encryptStream(symKey, fileContent)
+                // encrypt the file
+                fileStream = crypto.encryptStream(symKey, fileContent)
 
-            val newFile = File(
-                name = fileName,
-                symEncKeyVersionNumber = latestFileVersionNumber!!,
-                enforcement = fileFileTuple.enforcement
-            )
-            newFile.token = fileFileTuple.fileToken
+                val newFile = File(
+                    name = fileName,
+                    symEncKeyVersionNumber = latestFileVersionNumber!!,
+                    enforcement = fileFileTuple.enforcement
+                )
+                newFile.token = fileFileTuple.fileToken
 
-            val newFileTuple = FileTuple(
-                fileName = fileName, fileToken = fileFileTuple.fileToken,
-                roleToken = filePermissionTuple.roleToken,
-                symDecKeyVersionNumber = latestFileVersionNumber,
-                enforcement = fileFileTuple.enforcement
-            )
-            val signature = crypto.createSignature(newFileTuple.getBytesForSignature(), asymSigKeyPair.private)
-            newFileTuple.updateSignature(
-                newSignature = signature, newSigner = user.token, newSignerType = ElementTypeWithKey.USER
-            )
+                val newFileTuple = FileTuple(
+                    fileName = fileName, fileToken = fileFileTuple.fileToken,
+                    roleToken = filePermissionTuple.roleToken,
+                    symDecKeyVersionNumber = latestFileVersionNumber,
+                    enforcement = fileFileTuple.enforcement
+                )
+                val signature = crypto.createSignature(newFileTuple.getBytesForSignature(), asymSigKeyPair.private)
+                newFileTuple.updateSignature(
+                    newSignature = signature, newSigner = user.token, newSignerType = ElementTypeWithKey.USER
+                )
 
-            code = dm.addFile(newFile, fileStream)
-            return if (code != OutcomeCode.CODE_000_SUCCESS) {
-                endOfMethod(code, opaLocked = false)
-            } else {
-                code = rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple)
-                if (code != OutcomeCode.CODE_000_SUCCESS) {
-                    val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
-                    if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
-                        logger.error {
-                            "Added file in the DM, the RM could not check it and we were not able to" +
-                            "delete the (temporary) file from the DM; contact the system administrator"
+                code = dm.addFile(newFile, fileStream)
+                return if (code != OutcomeCode.CODE_000_SUCCESS) {
+                    endOfMethod(code, opaLocked = false)
+                } else {
+                    code = rm.checkWriteFile(
+                        roleName = fileRoleTuple.roleName,
+                        symEncKeyVersionNumber = newFile.symEncKeyVersionNumber,
+                        newFileTuple = newFileTuple,
+                    )
+                    if (code != OutcomeCode.CODE_000_SUCCESS) {
+                        val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
+                        if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
+                            logger.error {
+                                "Added file in the DM, the RM could not check it and we were not able to" +
+                                        "delete the (temporary) file from the DM; contact the system administrator"
+                            }
+                            endOfMethod(OutcomeCode.CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
+                        } else {
+                            endOfMethod(code, opaLocked = false)
                         }
-                        endOfMethod(OutcomeCode.CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
                     } else {
                         endOfMethod(code, opaLocked = false)
                     }
-                } else {
-                    endOfMethod(code, opaLocked = false)
                 }
             }
-        }
-        else {
-            fileStream = fileContent
+            EnforcementType.TRADITIONAL -> {
+                fileStream = fileContent
 
-            val newFile = File(
-                name = fileName,
-                symEncKeyVersionNumber = latestFileVersionNumber!!,
-                enforcement = fileFileTuple.enforcement
-            )
-            newFile.token = fileFileTuple.fileToken
+                val newFile = File(
+                    name = fileName,
+                    symEncKeyVersionNumber = latestFileVersionNumber!!,
+                    enforcement = fileFileTuple.enforcement
+                )
+                newFile.token = fileFileTuple.fileToken
 
-            val newFileTuple = FileTuple(
-                fileName = fileName, fileToken = fileFileTuple.fileToken,
-                roleToken = filePermissionTuple.roleToken,
-                symDecKeyVersionNumber = latestFileVersionNumber,
-                enforcement = fileFileTuple.enforcement
-            )
-            val signature = crypto.createSignature(newFileTuple.getBytesForSignature(), asymSigKeyPair.private)
-            newFileTuple.updateSignature(
-                newSignature = signature, newSigner = user.token, newSignerType = ElementTypeWithKey.USER
-            )
+                val newFileTuple = FileTuple(
+                    fileName = fileName, fileToken = fileFileTuple.fileToken,
+                    roleToken = filePermissionTuple.roleToken,
+                    symDecKeyVersionNumber = latestFileVersionNumber,
+                    enforcement = fileFileTuple.enforcement
+                )
+                val signature = crypto.createSignature(newFileTuple.getBytesForSignature(), asymSigKeyPair.private)
+                newFileTuple.updateSignature(
+                    newSignature = signature, newSigner = user.token, newSignerType = ElementTypeWithKey.USER
+                )
 
-            code = dm.addFile(newFile, fileStream)
-            if (code != OutcomeCode.CODE_000_SUCCESS) {
-                endOfMethod(code, opaLocked = false)
-            } else {
-                code = rm.checkWriteFile(newFile.symEncKeyVersionNumber, newFileTuple)
+                code = dm.addFile(newFile, fileStream)
                 if (code != OutcomeCode.CODE_000_SUCCESS) {
-                    val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
-                    if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
-                        logger.error {
-                            "Added file in the DM, the RM could not check it and we were not able to" +
-                                    "delete the (temporary) file from the DM; contact the system administrator"
+                    endOfMethod(code, opaLocked = false)
+                } else {
+                    code = rm.checkWriteFile(
+                        roleName = fileRoleTuple.roleName,
+                        symEncKeyVersionNumber = newFile.symEncKeyVersionNumber,
+                        newFileTuple = newFileTuple,
+                    )
+                    if (code != OutcomeCode.CODE_000_SUCCESS) {
+                        val deleteTempFileCode = dm.deleteTemporaryFile(newFile.name)
+                        if (deleteTempFileCode != OutcomeCode.CODE_000_SUCCESS) {
+                            logger.error {
+                                "Added file in the DM, the RM could not check it and we were not able to" +
+                                        "delete the (temporary) file from the DM; contact the system administrator"
+                            }
+                            endOfMethod(OutcomeCode.CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
+                        } else {
+                            endOfMethod(code, opaLocked = false)
                         }
-                        endOfMethod(OutcomeCode.CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM, opaLocked = false)
                     } else {
                         endOfMethod(code, opaLocked = false)
                     }
-                } else {
-                    endOfMethod(code, opaLocked = false)
                 }
             }
         }
@@ -1498,7 +1522,10 @@ class CoreRBACCLOUD(
      * along with the outcome code (if an error
      * occurred, the set of users will be null)
      */
-    override fun getAssignments(username: String?, roleName: String?): CodeRoleTuples {
+    override fun getAssignments(
+        username: String?,
+        roleName: String?
+    ): CodeRoleTuples {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting role tuples" }
 
         /** Lock the status of the interfaces */
@@ -1507,7 +1534,15 @@ class CoreRBACCLOUD(
             CodeRoleTuples(code)
         } else {
             val roleTuples = mm.getRoleTuples(
-                username = username, roleName = roleName,
+                username = if (
+                    !user.isAdmin ||
+                    (username.isNullOrBlank() && roleName.isNullOrBlank())
+                ) {
+                    user.name
+                } else {
+                    username
+                },
+                roleName = roleName,
                 isAdmin = user.isAdmin,
                 offset = 0, limit = NO_LIMIT,
             )
@@ -1521,7 +1556,11 @@ class CoreRBACCLOUD(
      * if given, along with the outcome code (if an error
      * occurred, the set of users will be null)
      */
-    override fun getPermissions(username: String?, roleName: String?, fileName: String?): CodePermissionTuples {
+    override fun getPermissions(
+        username: String?,
+        roleName: String?,
+        fileName: String?
+    ): CodePermissionTuples {
         logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting permission tuples" }
 
         /** Lock the status of the interfaces */
@@ -1531,7 +1570,15 @@ class CoreRBACCLOUD(
         } else {
             val permissionTuples = HashSet<PermissionTuple>()
             mm.getRoleTuples(
-                username = username, roleName = roleName,
+                username = if (
+                    !user.isAdmin ||
+                    (username.isNullOrBlank() && roleName.isNullOrBlank())
+                ) {
+                    user.name
+                } else {
+                    username
+                },
+                roleName = roleName,
                 isAdmin = user.isAdmin,
                 offset = 0, limit = NO_LIMIT).forEach {
                 permissionTuples.addAll(

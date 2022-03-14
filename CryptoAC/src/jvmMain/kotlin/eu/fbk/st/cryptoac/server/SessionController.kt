@@ -28,13 +28,19 @@ class SessionController {
         /** Add the [wss] to the user [session] for the current [core] */
         fun addSocketToSection(session: CurrentSession, wss: DefaultWebSocketSession, core: CoreType) {
             when (core) {
-                CoreType.RBAC_CLOUD -> { /* TODO ERRORE */ }
+                CoreType.RBAC_CLOUD -> {
+                    val message = "Web socket is not expected for ${CoreType.RBAC_CLOUD}"
+                    logger.error { message }
+                    throw IllegalStateException(message)
+                }
                 CoreType.RBAC_MQTT -> {
                     val userSession = session.get<UserSession>()
                     if (userSession != null && cores[userSession.username]!![core] != null) {
                         (cores[userSession.username]!![core]!! as CoreRBACMQTT).wss = wss
                     } else {
-                        // TODO ERRORE
+                        val message = "User is logged-in but no session was found"
+                        logger.error { message }
+                        throw IllegalStateException(message)
                     }
                 }
                 CoreType.RBAC_MOCK -> if (development) {
@@ -48,12 +54,17 @@ class SessionController {
         }
 
         /** Check whether the login [session] exists */
-        fun doesSessionExists(session: CurrentSession): Boolean = (session.get<UserSession>() != null)
+        fun doesSessionExists(session: CurrentSession): Boolean =
+            (session.get<UserSession>() != null)
 
         /** Get the username in the login [session], if it exists */
-        fun getSessionUsername(session: CurrentSession): String? = session.get<UserSession>()?.username
+        fun getSessionUsername(session: CurrentSession): String? =
+            session.get<UserSession>()?.username
 
-        /** Add the new [core] to the [session], eventually replacing the old one */
+        /**
+         * Add the new [core] to the [session],
+         * eventually replacing the old one
+         */
         fun setSessionCore(session: CurrentSession, core: Core) {
             val userSession = session.get<UserSession>()
             if (userSession == null) {
@@ -62,14 +73,18 @@ class SessionController {
                 throw IllegalStateException(message)
             } else {
                 val coreType = core.coreParameters.coreType
-                logger.info { "Adding a new core of type $coreType to session of user ${userSession.username}" }
+                logger.info {
+                    "Adding a new core of type $coreType " +
+                    "to session of user ${userSession.username}"
+                }
+                cores[userSession.username]!![coreType]?.deinit()
                 cores[userSession.username]!![coreType] = core
                 session.set(userSession)
             }
         }
 
         /**
-         * Get from the [session] the core of the [username] 
+         * Get from the [session] the core of the [username]
          * for the given [coreType], or create it with the given
          * [parameters], and check that is can be used for
          * the given [policyModel]
@@ -103,6 +118,18 @@ class SessionController {
                 PolicyModel.ABAC -> TODO()
             }
             return core
+        }
+
+        /** De-init all cores from the [session] */
+        fun deinitAllCores(session: CurrentSession) {
+            val userSession = session.get<UserSession>()
+            val username = userSession?.username
+            if (username != null) {
+                cores[username]?.forEach {
+                    it.value.deinit()
+                }
+                cores.remove(username)
+            }
         }
     }
 }

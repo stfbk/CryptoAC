@@ -5,3 +5,5 @@ newgrp docker << END
 
     docker rmi -f cryptoac_mosquitto cryptoac_mysql cryptoac_redis cryptoac_opa cryptoac_cryptoac
 END
+
+echo "clean_all_end_of_script"

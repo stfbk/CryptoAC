@@ -11,13 +11,14 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 /**
- * Parameters ([username], [password], [port] and [url])
- * for configuring the MM as a Redis database.
+ * Parameters ([username], [token], [password], [port]
+ * and [url]) for configuring the MM as a Redis database.
  */
 @Serializable
 class MMInterfaceRedisParameters(
     override var username: String, override var password: String,
-    override var port: Int, override var url: String
+    override var port: Int, override var url: String,
+    var token: String,
 ) : MMInterfaceRBACMQTTParameters {
 
     /** The type of this interface */
@@ -31,7 +32,8 @@ class MMInterfaceRedisParameters(
         fun fromMap(parameters: HashMap<String, String>): MMInterfaceRedisParameters {
             return MMInterfaceRedisParameters(
                 username = parameters[SERVER.USERNAME]!!, port = parameters[SERVER.MM_PORT]!!.toInt(),
-                url = parameters[SERVER.MM_URL]!!, password = parameters[SERVER.MM_PASSWORD]!!
+                url = parameters[SERVER.MM_URL]!!, password = parameters[SERVER.MM_PASSWORD]!!,
+                token = parameters[SERVER.MM_TOKEN]!!
             )
         }
 
@@ -49,6 +51,13 @@ class MMInterfaceRedisParameters(
                     defaultValue = parameters?.url
                 ),
                 CryptoACFormField(
+                    SERVER.MM_TOKEN,
+                    SERVER.MM_TOKEN.replace("_", " "),
+                    InputType.text,
+                    className = "darkTextField",
+                    defaultValue = parameters?.token
+                ),
+                CryptoACFormField(
                     SERVER.MM_PASSWORD,
                     SERVER.MM_PASSWORD.replace("_", " "),
                     InputType.password,
@@ -62,6 +71,7 @@ class MMInterfaceRedisParameters(
                     className = "darkTextField",
                     defaultValue = parameters?.port.toString()
                 ),
+
             )
         )
     }
@@ -79,6 +89,9 @@ class MMInterfaceRedisParameters(
             false
         } else if (port <= 0 || port >= 65535) {
             logger.warn { "Port number $port is inconsistent" }
+            false
+        } else if (!SafeRegex.BASE64.matches(token)) {
+            logger.warn { "Token ${token.toByteArray()} does not respect BASE64 regex" }
             false
         } else {
             true
@@ -114,6 +127,8 @@ class MMInterfaceRedisParameters(
         if (password != other.password) return false
         if (port != other.port) return false
         if (url != other.url) return false
+        if (token != other.token) return false
+        if (mmType != other.mmType) return false
 
         return true
     }
@@ -123,6 +138,9 @@ class MMInterfaceRedisParameters(
         result = 31 * result + password.hashCode()
         result = 31 * result + port
         result = 31 * result + url.hashCode()
+        result = 31 * result + token.hashCode()
+        result = 31 * result + mmType.hashCode()
         return result
     }
+
 }

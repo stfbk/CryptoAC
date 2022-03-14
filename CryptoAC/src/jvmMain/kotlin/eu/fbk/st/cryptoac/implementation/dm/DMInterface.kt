@@ -76,6 +76,14 @@ interface DMInterface {
      * outcome code
      */
     fun unlock(): OutcomeCode
+
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     */
+    fun deinit()
 }
 
 /** Wrapper for the outcome [code] and a [stream] */

@@ -7,7 +7,6 @@ import eu.fbk.st.cryptoac.view.components.materialui.grid
 import eu.fbk.st.cryptoac.view.components.materialui.iconButton
 import eu.fbk.st.cryptoac.view.components.materialui.tooltip
 import eu.fbk.st.cryptoac.view.enumContains
-import kotlinx.coroutines.internal.ThreadSafeHeap
 import kotlinx.css.*
 import mu.KotlinLogging
 import react.*
@@ -1004,9 +1003,9 @@ enum class Domains { Client, ESP, OnPremise, CSP }
 
 enum class DomainsWithChannels { Client, ESP, OnPremise, CSP, Client_ESP, Client_OnPremise, Client_CSP, ESP_OnPremise, ESP_CSP, OnPremise_CSP }
 
-enum class Entities { Proxy, RM, MM, DM }
+enum class Entities { CryptoAC, RM, MM, DM }
 
-enum class EntitiesWithChannels { Proxy, RM, MM, DM, Proxy_RM, Proxy_DM, Proxy_MM, RM_MM, RM_DM, MM_DM }
+enum class EntitiesWithChannels { CryptoAC, RM, MM, DM, CryptoAC_RM, CryptoAC_DM, CryptoAC_MM, RM_MM, RM_DM, MM_DM }
 
 enum class Attackers { MitM, Insider, MatD }
 
@@ -1036,7 +1035,7 @@ enum class PerformanceRequirements {
 }
 
 fun getImageFromEntity(entity: Entities) = when (entity) {
-    Entities.Proxy -> "proxy.png"
+    Entities.CryptoAC -> "proxy.png"
     Entities.RM -> "rm.png"
     Entities.MM -> "mm.png"
     Entities.DM -> "dm.png"
@@ -1045,296 +1044,296 @@ fun getImageFromEntity(entity: Entities) = when (entity) {
 /** The impact of assignments on each performance requirement of the current scenario */
 var performanceRequirementsImpact: HashMap<PerformanceRequirements, HashMap<Assignment, Int>> = hashMapOf(
     PerformanceRequirements.Redundancy to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.Scalability to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.Reliability to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.Maintenance to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.DoS_Resilience to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.On_premise_Savings to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.CSP_Vendor_Lock_in to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.CSP_Savings to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
 
     PerformanceRequirements.Latency to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.Throughput to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.Computational_Power to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.Storage_capacity to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.ESP_Vendor_Lock_in to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
     ),
     PerformanceRequirements.ESP_Savings to hashMapOf(
-        Assignment(Domains.Client, Entities.Proxy) to 0,
+        Assignment(Domains.Client, Entities.CryptoAC) to 0,
         Assignment(Domains.Client, Entities.RM) to 0,
         Assignment(Domains.Client, Entities.MM) to 0,
         Assignment(Domains.Client, Entities.DM) to 0,
 
-        Assignment(Domains.OnPremise, Entities.Proxy) to 0,
+        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
         Assignment(Domains.OnPremise, Entities.RM) to -1,
         Assignment(Domains.OnPremise, Entities.MM) to -1,
         Assignment(Domains.OnPremise, Entities.DM) to -1,
 
-        Assignment(Domains.ESP, Entities.Proxy) to 0,
+        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
         Assignment(Domains.ESP, Entities.RM) to 0,
         Assignment(Domains.ESP, Entities.MM) to 0,
         Assignment(Domains.ESP, Entities.DM) to 0,
 
-        Assignment(Domains.CSP, Entities.Proxy) to 0,
+        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
         Assignment(Domains.CSP, Entities.RM) to +1,
         Assignment(Domains.CSP, Entities.MM) to +1,
         Assignment(Domains.CSP, Entities.DM) to +1,
@@ -1344,37 +1343,37 @@ var performanceRequirementsImpact: HashMap<PerformanceRequirements, HashMap<Assi
 /** The impact of targets on each security requirement of the current scenario */
 var securityRequirementsImpact: HashMap<SecurityRequirements, HashMap<EntitiesWithChannels, Impact>> = hashMapOf(
 SecurityRequirements.Confidentiality to hashMapOf(
-EntitiesWithChannels.Proxy to Impact.High,
+EntitiesWithChannels.CryptoAC to Impact.High,
 EntitiesWithChannels.RM to Impact.None,
 EntitiesWithChannels.MM to Impact.None,
 EntitiesWithChannels.DM to Impact.None,
-EntitiesWithChannels.Proxy_RM to Impact.None,
-EntitiesWithChannels.Proxy_DM to Impact.None,
-EntitiesWithChannels.Proxy_MM to Impact.None,
+EntitiesWithChannels.CryptoAC_RM to Impact.None,
+EntitiesWithChannels.CryptoAC_DM to Impact.None,
+EntitiesWithChannels.CryptoAC_MM to Impact.None,
 EntitiesWithChannels.RM_MM to Impact.None,
 EntitiesWithChannels.RM_DM to Impact.None,
 EntitiesWithChannels.MM_DM to Impact.None,
 ),
 SecurityRequirements.Integrity to hashMapOf(
-EntitiesWithChannels.Proxy to Impact.High,
+EntitiesWithChannels.CryptoAC to Impact.High,
 EntitiesWithChannels.RM to Impact.None,
 EntitiesWithChannels.MM to Impact.None,
 EntitiesWithChannels.DM to Impact.None,
-EntitiesWithChannels.Proxy_RM to Impact.None,
-EntitiesWithChannels.Proxy_DM to Impact.None,
-EntitiesWithChannels.Proxy_MM to Impact.None,
+EntitiesWithChannels.CryptoAC_RM to Impact.None,
+EntitiesWithChannels.CryptoAC_DM to Impact.None,
+EntitiesWithChannels.CryptoAC_MM to Impact.None,
 EntitiesWithChannels.RM_MM to Impact.None,
 EntitiesWithChannels.RM_DM to Impact.None,
 EntitiesWithChannels.MM_DM to Impact.None,
 ),
 SecurityRequirements.Availability to hashMapOf(
-EntitiesWithChannels.Proxy to Impact.High,
+EntitiesWithChannels.CryptoAC to Impact.High,
 EntitiesWithChannels.RM to Impact.None,
 EntitiesWithChannels.MM to Impact.None,
 EntitiesWithChannels.DM to Impact.None,
-EntitiesWithChannels.Proxy_RM to Impact.None,
-EntitiesWithChannels.Proxy_DM to Impact.None,
-EntitiesWithChannels.Proxy_MM to Impact.None,
+EntitiesWithChannels.CryptoAC_RM to Impact.None,
+EntitiesWithChannels.CryptoAC_DM to Impact.None,
+EntitiesWithChannels.CryptoAC_MM to Impact.None,
 EntitiesWithChannels.RM_MM to Impact.None,
 EntitiesWithChannels.RM_DM to Impact.None,
 EntitiesWithChannels.MM_DM to Impact.None,

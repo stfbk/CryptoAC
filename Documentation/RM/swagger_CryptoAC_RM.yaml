@@ -287,10 +287,14 @@ components:
               
     checkWriteFile:
       required:
+        - roleName
         - fileTuple
         - symKeyVersionNumber
       type: "object"
       properties:
+        roleName:
+          type: string
+          example: "employee"
         fileTuple:
           type: "object"
           properties:

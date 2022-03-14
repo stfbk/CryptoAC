@@ -3,6 +3,7 @@ package eu.fbk.st.cryptoac.implementation.dm
 import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.Parameters.adminCoreRBACCLOUDParameters
 import eu.fbk.st.cryptoac.Parameters.adminCoreRBACMQTTParameters
+import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.core.CoreParametersCLOUD
 import eu.fbk.st.cryptoac.core.elements.User
 import eu.fbk.st.cryptoac.core.tuples.EnforcementType
@@ -17,26 +18,22 @@ internal class DMInterfaceCryptoACTest : DMInterfaceTest() {
     override val dm: DMInterface =
         DMInterfaceRBACCryptoAC(Parameters.dmInterfaceCryptoACParameters)
 
-    // TODO do not use "processBuild.waitFor", instead read
-    //  the output until you find a specific string that
-    //  indicates that the process terminated
-
     private var processDocker: Process? = null
 
     @BeforeAll
     override fun setUpAll() {
-        val processBuild = "./buildAll.sh".runCommand(File("../Documentation/Installation/"))
-        processBuild.waitFor(10, TimeUnit.SECONDS)
-        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_dm cryptoac_opa\"".runCommand(File("../Documentation/Installation/"))
-        processDocker!!.waitFor(10, TimeUnit.SECONDS)
+        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_dm cryptoac_opa\"".runCommand(dir, hashSetOf(
+            "Started ServerConnector",
+            "release_notes"
+        ))
     }
 
     @AfterAll
     override fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        val cleanProcess = "./clean.sh".runCommand(File("../Documentation/Installation/"))
-        cleanProcess.waitFor(5, TimeUnit.SECONDS)
+        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
     @Test

@@ -2,15 +2,14 @@ package eu.fbk.st.cryptoac.core
 
 import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.TestUtilities.Companion.assertUnLockAndLock
+import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.core.tuples.EnforcementType
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.junit.jupiter.api.*
-import java.io.File
 import java.lang.AssertionError
-import java.util.concurrent.TimeUnit
 import kotlin.test.assertFalse
 
 private val logger = KotlinLogging.logger {}
@@ -22,20 +21,14 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
         CoreFactory.getCore(Parameters.adminCoreRBACMQTTParameters) as CoreRBACMQTT
     private var processDocker: Process? = null
 
-    // TODO do not use "processBuild.waitFor", instead read
-    //  the output until you find a specific string that
-    //  indicates that the process terminated
-
     @BeforeAll
     override fun setUpAll() {
-        val processBuild = "./buildAll.sh".runCommand(
-            File("../Documentation/Installation/"),
-        )
-        processBuild.waitFor(10, TimeUnit.SECONDS)
-        processDocker = "./startCryptoAC_MQTT.sh".runCommand(
-            File("../Documentation/Installation/"),
-        )
-        processDocker!!.waitFor(5, TimeUnit.SECONDS)
+        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_MQTT.sh".runCommand(dir, hashSetOf(
+            "Started ServerConnector",
+            "Server initialized",
+            "mosquitto version 2.0.14 running",
+        ))
     }
 
     @BeforeEach
@@ -46,7 +39,6 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
     @AfterEach
     override fun tearDown() {
         core.subscribedTopicsKeysAndMessages.clear()
-        core.dm.client.alreadyConnectedOnce = false
         TestUtilities.resetDMMQTT(core.dm)
         TestUtilities.resetMMRedis()
     }
@@ -55,8 +47,7 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
     override fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        val cleanProcess = "./clean.sh".runCommand(File("../Documentation/Installation/"))
-        cleanProcess.waitFor(5, TimeUnit.SECONDS)
+        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
     /**
@@ -106,7 +97,6 @@ internal class CoreRBACMQTTTest : CoreRBACTest() {
             assert(core.subscribedTopicsKeysAndMessages[exam]!!.messages.filter { it.message == secondMessage }.size == 1)
             assert(waitForCondition { (aliceCore.subscribedTopicsKeysAndMessages[exam]?.messages?.size ?: -1) == 1 })
             assert(aliceCore.subscribedTopicsKeysAndMessages[exam]!!.messages.first().message == secondMessage)
-
 
             assert(core.revokePermissionFromRole(employee, exam, PermissionType.READWRITE) == OutcomeCode.CODE_000_SUCCESS)
             assert(core.writeFile(exam, thirdMessage.inputStream()) == OutcomeCode.CODE_000_SUCCESS)

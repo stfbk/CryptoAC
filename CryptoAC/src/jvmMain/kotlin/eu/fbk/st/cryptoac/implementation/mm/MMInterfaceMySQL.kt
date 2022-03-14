@@ -224,7 +224,8 @@ class MMInterfaceMySQL(
      * public keys and token of the [user], updating also
      * the status flag, and return the outcome code. Check
      * that the user is not already present, was not already
-     * initialized and was not already deleted
+     * initialized and was not already deleted. This method
+     * should support invocations by non-admin users
      */
     override fun initUser(user: User): OutcomeCode {
         val username = user.name
@@ -534,16 +535,16 @@ class MMInterfaceMySQL(
             logger.warn { "No role tuples given" }
             return OutcomeCode.CODE_000_SUCCESS
         }
-        logger.info { "Adding $size role tuples in the metadata (one per row below):" }
-        newRoleTuples.forEachIndexed { index, roleTuple ->
-            logger.info { "${index+1}: user ${roleTuple.username} to role ${roleTuple.roleName}" }
-        }
 
         /** Create the list of values to insert in the metadata */
-        logger.debug { "Adding the role tuples" }
+        logger.info { "Adding $size role tuples in the metadata (one per row below):" }
         val roleTuples = ArrayList<ArrayList<Any?>>(size)
-        newRoleTuples.forEach {
-            roleTuples.add(createArray(it))
+        newRoleTuples.forEachIndexed { index, roleTuple ->
+            logger.info {
+                "${index+1}: user ${roleTuple.username} " +
+                "to role ${roleTuple.roleName}"
+            }
+            roleTuples.add(createArray(roleTuple))
         }
 
         /** Add the role tuples in the metadata */
@@ -557,7 +558,10 @@ class MMInterfaceMySQL(
                      * tuple already exists or the user or role are missing
                      */
                     newRoleTuples.forEach { roleTuple ->
-                        val codeUser = when (getStatus(roleTuple.username, ElementTypeWithStatus.USER)) {
+                        val username = roleTuple.username
+                        val roleName = roleTuple.roleName
+
+                        val codeUser = when (getStatus(name = username, type = ElementTypeWithStatus.USER)) {
                             ElementStatus.INCOMPLETE -> OutcomeCode.CODE_053_USER_IS_INCOMPLETE
                             ElementStatus.OPERATIONAL -> OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
                             ElementStatus.DELETED -> OutcomeCode.CODE_013_USER_WAS_DELETED
@@ -567,15 +571,10 @@ class MMInterfaceMySQL(
                             return@loop codeUser
                         }
 
-                        val codeRole = when (getStatus(roleTuple.roleName, ElementTypeWithStatus.ROLE)) {
-                            ElementStatus.INCOMPLETE -> {
-                                val message = "Role ${roleTuple.roleName} has incomplete status"
-                                logger.error { message }
-                                throw IllegalStateException(message)
-                            }
+                        val codeRole = when (getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)) {
                             ElementStatus.OPERATIONAL -> OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS
                             ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
-                            null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                            ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
                         }
                         if (codeRole != OutcomeCode.CODE_010_ROLETUPLE_ALREADY_EXISTS) {
                             return@loop codeRole
@@ -603,38 +602,40 @@ class MMInterfaceMySQL(
             logger.warn { "No permission tuples given" }
             return OutcomeCode.CODE_000_SUCCESS
         }
-        logger.info { "Adding $size permission tuples in the metadata (one per row below):" }
-        newPermissionTuples.forEachIndexed { index, permissionTuple ->
-            logger.info { "$index: role ${permissionTuple.roleName} to file ${permissionTuple.fileName}" }
-        }
 
         /** Create the list of values to insert in the metadata */
-        logger.debug { "Adding the permission tuples" }
+        logger.info { "Adding $size permission tuples in the metadata (one per row below):" }
         val permissionTuples = ArrayList<ArrayList<Any?>>(size)
-        newPermissionTuples.forEach {
-            permissionTuples.add(createArray(it))
+        newPermissionTuples.forEachIndexed { index, permissionTuple ->
+            logger.info {
+                "${index+1}: role ${permissionTuple.roleName} to file " +
+                "${permissionTuple.fileName} with permission ${permissionTuple.permission} " +
+                "and number ${permissionTuple.symKeyVersionNumber}"
+            }
+            permissionTuples.add(createArray(permissionTuple))
         }
 
-        /** Add the role tuples in the metadata */
+        /** Add the permission tuples in the metadata */
         return createInsertStatement(permissionTuplesTable, permissionTuples).use {
             val rowCount = it.executeUpdate()
             if (rowCount != size) {
-                logger.warn { "One ore more permission tuples were not added (expected $size, actual $rowCount)" }
+                logger.warn {
+                    "One ore more permission tuples were " +
+                    "not added (expected $size, actual $rowCount)"
+                }
                 run loop@{
                     /**
                      * Check whether the operation failed because the
                      * tuple already exists or the role or file are missing
                      */
                     newPermissionTuples.forEach { permissionTuple ->
-                        val codeRole = when (getStatus(permissionTuple.roleName, ElementTypeWithStatus.ROLE)) {
-                            ElementStatus.INCOMPLETE -> {
-                                val message = "Role ${permissionTuple.roleName} has incomplete status"
-                                logger.error { message }
-                                throw IllegalStateException(message)
-                            }
+                        val fileName = permissionTuple.fileName
+                        val roleName = permissionTuple.roleName
+
+                        val codeRole = when (getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)) {
                             ElementStatus.OPERATIONAL -> OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
                             ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
-                            null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                            ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
                         }
 
                         if (codeRole != OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS) {
@@ -642,15 +643,10 @@ class MMInterfaceMySQL(
                         }
 
 
-                        val codeFile = when (getStatus(permissionTuple.fileName, ElementTypeWithStatus.FILE)) {
-                            ElementStatus.INCOMPLETE -> {
-                                val message = "File ${permissionTuple.fileName} has incomplete status"
-                                logger.error { message }
-                                throw IllegalStateException(message)
-                            }
+                        val codeFile = when (getStatus(name = fileName, type = ElementTypeWithStatus.FILE)) {
                             ElementStatus.OPERATIONAL -> OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS
                             ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
-                            null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                            ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
                         }
 
                         if (codeFile != OutcomeCode.CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS) {
@@ -678,17 +674,14 @@ class MMInterfaceMySQL(
             logger.warn { "No file tuple given" }
             return OutcomeCode.CODE_000_SUCCESS
         }
-        logger.info { "Adding $size file tuples in the metadata (one per row below):" }
-        newFileTuples.forEachIndexed { index, fileTuple ->
-            logger.info { "$index: file ${fileTuple.fileName}" }
-        }
 
         /** Create the list of values to insert in the metadata */
-        logger.debug { "Adding the file tuples" }
+        logger.info { "Adding $size file tuples in the metadata (one per row below):" }
         val fileTuples = ArrayList<ArrayList<Any?>>(size)
-        newFileTuples.forEach {
-            fileTuples.add(createArray(it))
-        }
+            newFileTuples.forEachIndexed { index, fileTuple ->
+                logger.info { "${index+1}: file ${fileTuple.fileName}" }
+                fileTuples.add(createArray(fileTuple))
+            }
 
         /** Add the role tuples in the metadata */
         return createInsertStatement(fileTuplesTable, fileTuples).use {
@@ -701,16 +694,12 @@ class MMInterfaceMySQL(
                      * tuple already exists or the file is missing
                      */
                     newFileTuples.forEach { fileTuple ->
+                        val fileName = fileTuple.fileName
 
-                        val codeFile = when (getStatus(fileTuple.fileName, ElementTypeWithStatus.FILE)) {
-                            ElementStatus.INCOMPLETE -> {
-                                val message = "File ${fileTuple.fileName} has incomplete status"
-                                logger.error { message }
-                                throw IllegalStateException(message)
-                            }
+                        val codeFile = when (getStatus(name = fileName, type = ElementTypeWithStatus.FILE)) {
                             ElementStatus.OPERATIONAL -> OutcomeCode.CODE_012_FILETUPLE_ALREADY_EXISTS
                             ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
-                            null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                            ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
                         }
 
                         if (codeFile != OutcomeCode.CODE_012_FILETUPLE_ALREADY_EXISTS) {
@@ -732,15 +721,20 @@ class MMInterfaceMySQL(
      * Retrieve data of the users matching the specified
      * [username] and [status], if given, starting from
      * the [offset] limiting the number of users to return
-     * to the given [limit]. If no users are found, return
-     * an empty set
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function
+     * [isAdmin]. If no users are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     override fun getUsers(
         username: String?,
         status: ElementStatus?,
+        isAdmin: Boolean,
         offset: Int, limit: Int,
     ): HashSet<User> {
         logger.info { "Getting data of users (offset $offset, limit $limit)" }
+
+        // TODO support invocations by non-admin users
 
         val whereParameters = LinkedHashMap<String, Any?>()
         if (!username.isNullOrBlank()) {
@@ -798,15 +792,20 @@ class MMInterfaceMySQL(
      * Retrieve data of the roles matching the specified
      * [roleName] and [status], if given, starting from
      * the [offset] limiting the number of roles to return
-     * to the given [limit]. If no roles are found, return
-     * an empty set
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function
+     * [isAdmin]. If no roles are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     override fun getRoles(
         roleName: String?,
         status: ElementStatus?,
+        isAdmin: Boolean,
         offset: Int, limit: Int,
     ): HashSet<Role> {
         logger.info { "Getting data of roles (offset $offset, limit $limit)" }
+
+        // TODO support invocations by non-admin users
 
         val whereParameters = LinkedHashMap<String, Any?>()
         if (!roleName.isNullOrBlank()) {
@@ -866,7 +865,8 @@ class MMInterfaceMySQL(
      * the [offset] limiting the number of files to return
      * to the given [limit] and with the (possibly) relevant
      * information of whether the user invoking this function
-     * [isAdmin]. If no files are found, return an empty set
+     * [isAdmin]. If no files are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     override fun getFiles(
         fileName: String?,
@@ -875,6 +875,8 @@ class MMInterfaceMySQL(
         offset: Int, limit: Int
     ): HashSet<File> {
         logger.info { "Getting data of files (offset $offset, limit $limit)" }
+
+        // TODO support invocations by non-admin users
 
         val whereParameters = LinkedHashMap<String, Any?>()
         if (!fileName.isNullOrBlank()) {
@@ -938,15 +940,18 @@ class MMInterfaceMySQL(
 
     /**
      * Retrieve the role tuples matching the [username]
-     * and/or the [roleName], starting from the [offset]
-     * limiting the number of tuples to return to the
-     * given [limit] and with the (possibly) relevant
-     * information of whether the user invoking this
-     * function [isAdmin]. If no role tuples are found,
-     * return an empty set
+     * and/or the [roleName] (at least one required),
+     * starting from the [offset] limiting the number
+     * of tuples to return to the given [limit] and
+     * with the (possibly) relevant information of
+     * whether the user invoking this function
+     * [isAdmin]. If no role tuples are found,
+     * return an empty set. This method should
+     * support invocations by non-admin users
      */
     override fun getRoleTuples(
-        username: String?, roleName: String?,
+        username: String?,
+        roleName: String?,
         isAdmin: Boolean,
         offset: Int, limit: Int
     ): HashSet<RoleTuple> {
@@ -960,6 +965,11 @@ class MMInterfaceMySQL(
         if (!roleName.isNullOrBlank()) {
             logger.info { "Filtering by matching role name $roleName" }
             whereParameters[roleNameColumn] = roleName
+        }
+        if (whereParameters.isEmpty()) {
+            val message = "A user or role name has to be specified"
+            logger.error { message }
+            throw IllegalArgumentException(message)
         }
 
         val roleTuples = HashSet<RoleTuple>()
@@ -1000,17 +1010,17 @@ class MMInterfaceMySQL(
 
     /**
      * Retrieve the permission tuples matching the [roleName] and/or
-     * the [fileName], further filtering by [roleToken], [fileToken],
-     * [permission], [roleVersionNumber] and [symKeyVersionNumber] and
-     * not matching the [roleNameToExclude], if given, starting from
-     * the [offset] limiting the number of tuples to return to the given
-     * [limit] and with the (possibly) relevant information of whether
-     * the user invoking this function [isAdmin]. If no permission tuples
-     * are found, return an empty set
+     * the [fileName], further filtering by [roleVersionNumber],
+     * [permission] and [symKeyVersionNumber], and not matching the
+     * [roleNameToExclude], if given, starting from the [offset]
+     * limiting the number of tuples to return to the given [limit]
+     * and with the (possibly) relevant information of whether the
+     * user invoking this function [isAdmin]. If no permission tuples
+     * are found, return an empty set. This method should support
+     * invocations by non-admin users
      */
     override fun getPermissionTuples(
         roleName: String?, fileName: String?,
-        roleToken: String?, fileToken: String?,
         permission: PermissionType?,
         roleNameToExclude: String?,
         roleVersionNumber: Int?, symKeyVersionNumber: Int?,
@@ -1030,14 +1040,6 @@ class MMInterfaceMySQL(
         }
 
 
-        if (!roleToken.isNullOrBlank()) {
-            logger.info { "Filtering by matching role token $roleToken" }
-            whereParameters[roleTokenColumn] = roleToken
-        }
-        if (!fileToken.isNullOrBlank()) {
-            logger.info { "Filtering by matching file token $fileToken" }
-            whereParameters[fileTokenColumn] = fileToken
-        }
         if (permission != null) {
             logger.info { "Filtering by matching permission $permission" }
             whereParameters[permissionColumn] = permission
@@ -1095,7 +1097,8 @@ class MMInterfaceMySQL(
      * from the [offset] limiting the number of tuples to return
      * to the given [limit] and with the (possibly) relevant
      * information of whether the user invoking this function
-     * [isAdmin]. If no file tuples are found, return an empty set
+     * [isAdmin]. If no file tuples are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     override fun getFileTuples(
         fileName: String,
@@ -1143,7 +1146,8 @@ class MMInterfaceMySQL(
      * the [token] (at least one required). Note that
      * only operational or deleted elements are considered,
      * and files do not have public keys. If the key was
-     * not found, return null
+     * not found, return null. This method should support
+     * invocations by non-admin users
      */
     override fun getPublicKey(
         name: String?,
@@ -1152,6 +1156,8 @@ class MMInterfaceMySQL(
         asymKeyType: AsymKeysType,
     ): ByteArray? {
         logger.info { "Getting public key of type $asymKeyType of a element of type $elementType" }
+
+        // TODO support invocations by non-admin users
 
         val whereParameters = LinkedHashMap<String, Any?>()
         if (!name.isNullOrBlank()) {
@@ -1221,12 +1227,17 @@ class MMInterfaceMySQL(
      * have version numbers. Note also that only the latest
      * version number of files (i.e., the one used for encryption
      * are considered). If the version number was not found,
-     * return null
+     * return null. This method should support invocations by
+     * non-admin users
      */
     override fun getVersionNumber(
-        name: String?, token: String?, elementType: ElementTypeWithVersionNumber,
+        name: String?,
+        token: String?,
+        elementType: ElementTypeWithVersionNumber,
     ): Int? {
         logger.info { "Getting version number of a $elementType" }
+
+        // TODO support invocations by non-admin users
 
         val whereParameters = LinkedHashMap<String, Any?>()
         if (!name.isNullOrBlank()) {
@@ -1266,12 +1277,14 @@ class MMInterfaceMySQL(
     /**
      * Retrieve the token of the element of
      * the given [type] matching the [name].
-     * Note that only operational elements are
-     * considered. If the token was not found,
-     * return null
+     * If the token was not found, return null.
+     * This method should support invocations
+     * by non-admin users
      */
     override fun getToken(name: String, type: ElementTypeWithStatus): String? {
         logger.info { "Getting token of a $type" }
+
+        // TODO support invocations by non-admin users
 
         /** Guard clauses */
         if (name.isBlank()) {
@@ -1283,35 +1296,44 @@ class MMInterfaceMySQL(
         val whereParameters = LinkedHashMap<String, Any?>()
         logger.info { "Filtering by matching name $name" }
         whereParameters[
-            when (type) {
-                ElementTypeWithStatus.USER -> usernameColumn
-                ElementTypeWithStatus.ROLE -> roleNameColumn
-                ElementTypeWithStatus.FILE -> fileNameColumn
-            }
+                when (type) {
+                    ElementTypeWithStatus.USER -> usernameColumn
+                    ElementTypeWithStatus.ROLE -> roleNameColumn
+                    ElementTypeWithStatus.FILE -> fileNameColumn
+                }
         ] = name
         whereParameters[statusColumn] = ElementStatus.OPERATIONAL
 
+        val table1: String
+        val table2: String
+
         val selectedColumn = when (type) {
-            ElementTypeWithStatus.USER -> userTokenColumn
-            ElementTypeWithStatus.ROLE -> roleTokenColumn
-            ElementTypeWithStatus.FILE -> fileTokenColumn
-            }
+            ElementTypeWithStatus.USER -> { table1 = usersTable; table2 = deletedUsersTable; userTokenColumn }
+            ElementTypeWithStatus.ROLE -> { table1 = rolesTable; table2 = deletedRolesTable; roleTokenColumn }
+            ElementTypeWithStatus.FILE -> { table1 = filesTable; table2 = deletedFilesTable; fileTokenColumn }
+        }
         val selectedColumns = ArrayList<String>().apply { add(selectedColumn) }
 
         var token: String? = null
 
         createSelectStatement(
-            table = when (type) {
-                ElementTypeWithStatus.USER -> usersTable
-                ElementTypeWithStatus.ROLE -> rolesTable
-                ElementTypeWithStatus.FILE -> filesTable
-            },
-            whereParameters = whereParameters, selectedColumns = selectedColumns,
+            table = table1,
+            whereParameters = whereParameters,
+            selectedColumns = selectedColumns,
             limit = 1, offset = 0,
-        ).use {
-            val rs = it.executeQuery()
-            if (rs.next()) {
-                token = rs.getString(selectedColumn)
+        ).use { firstStatement ->
+            createSelectStatement(
+                table = table2,
+                whereParameters = whereParameters,
+                selectedColumns = selectedColumns,
+                limit = 1, offset = 0,
+            ).use { secondStatement ->
+                connection!!.prepareStatement("(${firstStatement.asString()}) UNION (${secondStatement.asString()})").use {
+                    val rs = it.executeQuery()
+                    if (rs.next()) {
+                        token = rs.getString(selectedColumn)
+                    }
+                }
             }
         }
         logger.debug { "Token was ${ if (token == null) "not " else ""} found"  }
@@ -1320,30 +1342,55 @@ class MMInterfaceMySQL(
 
     /**
      * Retrieve the status of the element of the
-     * given [type] matching the given [name].
-     * If the status was not found, return null
+     * given [type] by matching the [name]
+     * or [token] (at least one required).
+     * If the status was not found, return null.
+     * This method should support invocations by
+     * non-admin users
      */
-    override fun getStatus(name: String, type: ElementTypeWithStatus): ElementStatus? {
-        logger.debug { "Getting the status of element $type with name $name" }
+    override fun getStatus(name: String?, token: String?, type: ElementTypeWithStatus): ElementStatus? {
+        logger.debug { "Getting the status of a $type" }
 
-        /** Guard clauses */
-        if (name.isBlank()) {
-            val message = "Name given blank for query"
-            logger.error { message }
-            throw IllegalStateException(message)
-        }
+        // TODO support invocations by non-admin users
 
         val table1: String
         val table2: String
 
-        val column = when (type) {
-            ElementTypeWithStatus.USER -> { table1 = usersTable; table2 = deletedUsersTable; usernameColumn }
-            ElementTypeWithStatus.ROLE -> { table1 = rolesTable; table2 = deletedRolesTable; roleNameColumn }
-            ElementTypeWithStatus.FILE -> { table1 = filesTable; table2 = deletedFilesTable; fileNameColumn }
+        when (type) {
+            ElementTypeWithStatus.USER -> { table1 = usersTable; table2 = deletedUsersTable; }
+            ElementTypeWithStatus.ROLE -> { table1 = rolesTable; table2 = deletedRolesTable; }
+            ElementTypeWithStatus.FILE -> { table1 = filesTable; table2 = deletedFilesTable; }
+        }
+        val selectedColumns = ArrayList<String>().apply { statusColumn }
+
+
+        val whereParameters = LinkedHashMap<String, Any?>()
+        if (!name.isNullOrBlank()) {
+            logger.info { "Filtering by matching name $name" }
+            whereParameters[
+                when (type) {
+                    ElementTypeWithStatus.USER -> usernameColumn
+                    ElementTypeWithStatus.ROLE -> roleNameColumn
+                    ElementTypeWithStatus.FILE -> fileNameColumn
+                }
+            ] = name
+        }
+        if (!token.isNullOrBlank()) {
+            logger.info { "Filtering by matching token $token" }
+            whereParameters[
+                    when (type) {
+                        ElementTypeWithStatus.USER -> userTokenColumn
+                        ElementTypeWithStatus.ROLE -> roleTokenColumn
+                        ElementTypeWithStatus.FILE -> fileTokenColumn
+                    }
+            ] = token
+        }
+        if (whereParameters.isEmpty()) {
+            val message = "A name or a token has to be specified"
+            logger.error { message }
+            throw IllegalArgumentException(message)
         }
 
-        val whereParameters = LinkedHashMap<String, Any?>().apply { put(column, name) }
-        val selectedColumns = ArrayList<String>().apply { statusColumn }
         createSelectStatement(
             table = table1,
             whereParameters = whereParameters,
@@ -1407,7 +1454,7 @@ class MMInterfaceMySQL(
             connection!!.prepareStatement("INSERT INTO $deletedUsersTable (${selectStatement.asString()})").use {
                 if (it.executeUpdate() != 1) {
                     logger.warn { "User $username not found in the metadata" }
-                    return when (getStatus(username, ElementTypeWithStatus.USER)) {
+                    return when (getStatus(name = username, type = ElementTypeWithStatus.USER)) {
                         ElementStatus.DELETED -> OutcomeCode.CODE_013_USER_WAS_DELETED
                         null -> OutcomeCode.CODE_004_USER_NOT_FOUND
                         else -> {
@@ -1486,7 +1533,7 @@ class MMInterfaceMySQL(
             connection!!.prepareStatement("INSERT INTO $deletedRolesTable (${selectStatement.asString()})").use {
                 if (it.executeUpdate() != 1) {
                     logger.warn { "Role $roleName not found in the metadata" }
-                    return when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                    return when (getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)) {
                         ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
                         null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
                         else -> {
@@ -1543,7 +1590,7 @@ class MMInterfaceMySQL(
             connection!!.prepareStatement("INSERT INTO $deletedFilesTable (${selectStatement.asString()})").use {
                 if (it.executeUpdate() != 1) {
                     logger.warn { "File $fileName not found in the metadata" }
-                    return when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                    return when (getStatus(name = fileName, type = ElementTypeWithStatus.FILE)) {
                         ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
                         null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
                         else -> {
@@ -1607,15 +1654,10 @@ class MMInterfaceMySQL(
                  * are no tuples or because the role is missing or
                  * was deleted
                  */
-                when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
-                    ElementStatus.INCOMPLETE -> {
-                        val message = "Role $roleName has incomplete status"
-                        logger.error { message }
-                        throw IllegalStateException(message)
-                    }
+                when (getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)) {
                     ElementStatus.OPERATIONAL -> OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND
                     ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
-                    null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                    ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
                 }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1625,8 +1667,7 @@ class MMInterfaceMySQL(
 
     /**
      * Delete the permission tuples matching the [roleName]
-     * and/or the [fileName] (at least one required), further
-     * filtering by [roleVersionNumber], if given. Finally,
+     * and/or the [fileName] (at least one required). Finally,
      * return the outcome code. Check that [roleName] is not
      * the admin. Also check that at least one permission tuple
      * is deleted, and if not check whether the [roleName] and
@@ -1635,7 +1676,6 @@ class MMInterfaceMySQL(
      override fun deletePermissionTuples(
         roleName: String?,
         fileName: String?,
-        roleVersionNumber: Int?
     ): OutcomeCode {
         logger.info { "Deleting permission tuples" }
 
@@ -1649,10 +1689,6 @@ class MMInterfaceMySQL(
         if (!roleName.isNullOrBlank()) {
             logger.info { "Filtering by matching role name $roleName" }
             whereParameters[roleNameColumn] = roleName
-        }
-        if (roleVersionNumber != null) {
-            logger.info { "Filtering by matching role version number $roleVersionNumber" }
-            whereParameters[roleVersionNumberColumn] = roleVersionNumber
         }
         if (!fileName.isNullOrBlank()) {
             logger.info { "Filtering by matching file name $fileName" }
@@ -1683,15 +1719,10 @@ class MMInterfaceMySQL(
                  * missing or was deleted
                  */
                 val roleExists = if (roleName != null) {
-                    when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
-                        ElementStatus.INCOMPLETE -> {
-                            val message = "Role $roleName has incomplete status"
-                            logger.error { message }
-                            throw IllegalStateException(message)
-                        }
+                    when (getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)) {
                         ElementStatus.OPERATIONAL -> OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
                         ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
-                        null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
+                        ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
                     }
                 } else {
                     OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
@@ -1699,21 +1730,16 @@ class MMInterfaceMySQL(
 
                 if (roleExists == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND) {
                     if (fileName != null) {
-                        when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
-                            ElementStatus.INCOMPLETE -> {
-                                val message = "File $fileName has incomplete status"
-                                logger.error { message }
-                                throw IllegalStateException(message)
-                            }
+                        when (getStatus(name = fileName, type = ElementTypeWithStatus.FILE)) {
                             ElementStatus.OPERATIONAL -> OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
                             ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
-                            null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                            ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
                         }
                     } else {
                         OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
                     }
                 } else {
-                    OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                    roleExists
                 }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1748,15 +1774,10 @@ class MMInterfaceMySQL(
                  * are no tuples or because the file is missing or
                  * was deleted
                  */
-                when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
-                    ElementStatus.INCOMPLETE -> {
-                        val message = "File $fileName has incomplete status"
-                        logger.error { message }
-                        throw IllegalStateException(message)
-                    }
+                when (getStatus(name = fileName, type = ElementTypeWithStatus.FILE)) {
                     ElementStatus.OPERATIONAL -> OutcomeCode.CODE_009_FILETUPLE_NOT_FOUND
                     ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
-                    null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
+                    ElementStatus.INCOMPLETE, null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
                 }
             } else {
                 OutcomeCode.CODE_000_SUCCESS
@@ -1791,7 +1812,7 @@ class MMInterfaceMySQL(
         ).use {
             if (it.executeUpdate() != 1) {
                 logger.warn { "File $fileName not found in the metadata" }
-                return when (getStatus(fileName, ElementTypeWithStatus.FILE)) {
+                return when (getStatus(name = fileName, type = ElementTypeWithStatus.FILE)) {
                     ElementStatus.DELETED -> OutcomeCode.CODE_015_FILE_WAS_DELETED
                     null -> OutcomeCode.CODE_006_FILE_NOT_FOUND
                     else -> {
@@ -1840,7 +1861,7 @@ class MMInterfaceMySQL(
         ).use {
             if (it.executeUpdate() != 1) {
                 logger.warn { "Role $roleName not found in the metadata" }
-                when (getStatus(roleName, ElementTypeWithStatus.ROLE)) {
+                when (getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)) {
                     ElementStatus.DELETED -> OutcomeCode.CODE_014_ROLE_WAS_DELETED
                     null -> OutcomeCode.CODE_005_ROLE_NOT_FOUND
                     else -> {
@@ -1970,8 +1991,8 @@ class MMInterfaceMySQL(
                 OutcomeCode.CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS
             }
         } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks-1}" }
             locks--
+            logger.debug { "Decrement lock number to $locks" }
             OutcomeCode.CODE_000_SUCCESS
         } else {
             OutcomeCode.CODE_000_SUCCESS
@@ -2006,14 +2027,23 @@ class MMInterfaceMySQL(
                 OutcomeCode.CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS
             }
         } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks-1}" }
             locks--
+            logger.debug { "Decrement lock number to $locks" }
             OutcomeCode.CODE_000_SUCCESS
         } else {
             OutcomeCode.CODE_000_SUCCESS
         }
     }
 
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     */
+    override fun deinit() {
+        /** No resources or fields to de-initialize */
+    }
 
 
     /**

@@ -24,9 +24,9 @@ object Parameters {
     val cryptoType = CryptoType.SODIUM
     val coreType = CoreType.RBAC_CLOUD
 
-    private const val proxyURL = "0.0.0.0"
-    private const val proxyPORT = "8443"
-    const val proxyBaseAPI = "$proxyURL:$proxyPORT"
+    private const val cryptoACURL = "0.0.0.0"
+    private const val cryptoACPORT = "8443"
+    const val cryptoACBaseAPI = "$cryptoACURL:$cryptoACPORT"
 
     val cryptoObject = CryptoFactory.getCrypto(cryptoType)
     val adminAsymEncKeys = cryptoObject.generateAsymEncKeys()
@@ -135,7 +135,8 @@ object Parameters {
         port = 6379,
         url = "10.1.0.5",
         password = "password",
-        username = ADMIN
+        username = ADMIN,
+        token = ADMIN,
     )
     val adminCoreRBACMQTTParameters = CoreParametersMQTT(
         User(
@@ -202,6 +203,7 @@ object Parameters {
             url = mmInterfaceRedisParameters.url,
             username = aliceName,
             password = aliceName,
+            token = aliceUser.token,
         ),
         dmInterfaceParameters = DMInterfaceMosquittoParameters(
             port = 1883,
@@ -260,6 +262,7 @@ object Parameters {
             url = mmInterfaceRedisParameters.url,
             username = bobName,
             password = bobName,
+            token = bobUser.token,
         ),
         dmInterfaceParameters = DMInterfaceMosquittoParameters(
             port = 1883,

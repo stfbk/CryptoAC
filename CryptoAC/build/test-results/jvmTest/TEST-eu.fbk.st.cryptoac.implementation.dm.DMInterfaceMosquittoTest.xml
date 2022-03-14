@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquittoTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-03-11T15:15:13" hostname="sberlato" time="7.702">
+  <properties/>
+  <testcase name="b b()[jvm]" classname="eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquittoTest" time="7.702"/>
+  <system-out><![CDATA[[Test worker] DEBUG - Creating crypto object of type SODIUM 
+[Test worker @coroutine#1] INFO  - Initializing the Sodium library 
+[Test worker @coroutine#1] DEBUG - Extracting /dynamic-linux-x86-64-libsodium.so from file:/home/sberlato/.gradle/caches/modules-2/files-2.1/com.ionspin.kotlin/multiplatform-crypto-libsodium-bindings-jvm/0.8.4/aea8a135484d245e5a271d961fbd3d6c7dcd05dd/multiplatform-crypto-libsodium-bindings-jvm-0.8.4.jar 
+[Test worker @coroutine#1] DEBUG - Extracted: /tmp/resource-loader4756824599263379351/dynamic-linux-x86-64-libsodium.so 
+[Test worker] DEBUG - Generating encryption asymmetric key pair 
+[Test worker] DEBUG - Generating signing asymmetric key pair 
+[Test worker] DEBUG - Encrypting asymmetric key pair 
+[Test worker] DEBUG - Encrypting asymmetric key pair 
+[Test worker] DEBUG - Creating signature for 1738 bytes 
+[Test worker] DEBUG - Generating encryption asymmetric key pair 
+[Test worker] DEBUG - Generating signing asymmetric key pair 
+[Test worker] DEBUG - Generating encryption asymmetric key pair 
+[Test worker] DEBUG - Generating signing asymmetric key pair 
+[Test worker] DEBUG - Generating encryption asymmetric key pair 
+[Test worker] DEBUG - Generating signing asymmetric key pair 
+[Test worker] DEBUG - Generating encryption asymmetric key pair 
+[Test worker] DEBUG - Generating signing asymmetric key pair 
+[Test worker] INFO  - Locking the status of the DM 
+[Test worker] DEBUG - connectSync invoked (client ID c8GOLiMzAA764vLEjHO5) 
+[Test worker] DEBUG - client is not connected 
+[Test worker] DEBUG - connecting 
+[Test worker @coroutine#2] DEBUG - waiting for client to be connected 
+[MQTT Call: c8GOLiMzAA764vLEjHO5] INFO  - TEST: connectComplete 
+[MQTT Rec: c8GOLiMzAA764vLEjHO5] INFO  - MQTT client was disconnected: MqttDisconnectResponse [returnCode=152, reasonString=null, userProperties=[], serverReference=null, exception=null] 
+[MQTT Call: c8GOLiMzAA764vLEjHO5] INFO  - TEST: connectComplete 
+[Test worker] INFO  - Unlock the status of the DM 
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

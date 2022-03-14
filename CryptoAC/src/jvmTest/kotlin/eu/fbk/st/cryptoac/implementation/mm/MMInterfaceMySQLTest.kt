@@ -2,15 +2,11 @@ package eu.fbk.st.cryptoac.implementation.mm
 
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.Parameters
+import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.TestUtilities.Companion.resetMMMySQL
-import eu.fbk.st.cryptoac.core.elements.ElementTypeWithKey
 import eu.fbk.st.cryptoac.core.elements.User
-import eu.fbk.st.cryptoac.core.tuples.RoleTuple
-import eu.fbk.st.cryptoac.crypto.AsymKeysType
-import eu.fbk.st.cryptoac.crypto.EncryptedAsymKeys
 import eu.fbk.st.cryptoac.runCommand
 import org.junit.jupiter.api.*
-import java.io.File
 import java.sql.SQLException
 import java.util.concurrent.TimeUnit
 
@@ -20,19 +16,12 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
     override val mm: MMInterface =
         MMInterfaceMySQL(Parameters.mmInterfaceMySQLParameters)
 
-
-    // TODO do not use "processBuild.waitFor", instead read
-    //  the output until you find a specific string that
-    //  indicates that the process terminated
-
     private var processDocker: Process? = null
 
     @BeforeAll
     override fun setUpAll() {
-        val processBuild = "./buildAll.sh".runCommand(File("../Documentation/Installation/"))
-        processBuild.waitFor(10, TimeUnit.SECONDS)
-        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_mysql\"".runCommand(File("../Documentation/Installation/"))
-        processDocker!!.waitFor(10, TimeUnit.SECONDS)
+        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_mysql\"".runCommand(dir, hashSetOf("port: 3306  MySQL Community Server - GPL"))
     }
 
     @BeforeEach
@@ -51,8 +40,7 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
     override fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        val cleanProcess = "./clean.sh".runCommand(File("../Documentation/Installation/"))
-        cleanProcess.waitFor(5, TimeUnit.SECONDS)
+        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
     override fun addAndInitUser(user: User): MMInterface {
@@ -63,6 +51,11 @@ internal class MMInterfaceMySQLTest: MMInterfaceTest() {
         userMM.initUser(user)
         assert(userMM.unlock() == OutcomeCode.CODE_000_SUCCESS)
         return userMM
+    }
+
+    @Test
+    override fun initAdmin() {
+        /** Already done during the setup */
     }
 
     @Test

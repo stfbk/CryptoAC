@@ -131,17 +131,23 @@ class RMInterfaceCryptoAC(
 
     /**
      * Invoke the RM to validate the update of
-     * a resource involving the given [newFileTuple]
-     * and [symEncKeyVersionNumber], and return the
+     * a resource using the given [roleName] and
+     * involving the given [newFileTuple] and
+     * [symEncKeyVersionNumber], and return the
      * outcome code
      */
-    override fun checkWriteFile(symEncKeyVersionNumber: Int, newFileTuple: FileTuple): OutcomeCode {
+    override fun checkWriteFile(
+        roleName: String,
+        symEncKeyVersionNumber: Int,
+        newFileTuple: FileTuple
+    ): OutcomeCode {
 
         var code = OutcomeCode.CODE_000_SUCCESS
         runBlocking {
             val rmURL = "$HTTPS$rmBaseAPI${API.RM}files/${CoreType.RBAC_CLOUD}/"
             logger.info { "Asking the RM to check a write file operation sending a PATCH request to $rmURL" }
             val writeFileRequest = WriteFileRequest(
+                roleName = roleName,
                 fileTuple = newFileTuple,
                 symKeyVersionNumber = symEncKeyVersionNumber,
             )
@@ -171,6 +177,16 @@ class RMInterfaceCryptoAC(
         return code
     }
 
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     */
+    override fun deinit() {
+        /** No resources or fields to de-initialize */
+    }
+
     /** Return the Ktor Http client */
     private fun getKtorClient(): HttpClient = HttpClient(Jetty) {
         expectSuccess = false
@@ -184,15 +200,26 @@ class RMInterfaceCryptoAC(
 
 
 /**
- * A wrapper for an add file request, which has a file tuple,
- * a permission tuple and a symmetric key version number
+ * A wrapper for an add file request, which has
+ * the new [fileTuple], the new permission tuple
+ * giving the admin access to the file and the
+ * [symKeyVersionNumber]
  */
 @Serializable
-data class AddFileRequest(val fileTuple: FileTuple, val permissionTuple: PermissionTuple, val symKeyVersionNumber: Int)
+data class AddFileRequest(
+    val fileTuple: FileTuple,
+    val permissionTuple: PermissionTuple,
+    val symKeyVersionNumber: Int,
+)
 
 /**
- * A wrapper for an add file request, which has a file tuple,
- * a permission tuple and a symmetric key version number
+ * A wrapper for a write file request, which has
+ * the new [fileTuple], the [roleName] used to
+ * access the file and the [symKeyVersionNumber]
  */
 @Serializable
-data class WriteFileRequest(val fileTuple: FileTuple, val symKeyVersionNumber: Int)
+data class WriteFileRequest(
+    val roleName: String,
+    val fileTuple: FileTuple,
+    val symKeyVersionNumber: Int,
+)

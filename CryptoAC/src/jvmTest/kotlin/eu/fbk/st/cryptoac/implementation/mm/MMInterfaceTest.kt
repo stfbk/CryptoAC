@@ -39,9 +39,7 @@ internal abstract class MMInterfaceTest {
 
 
     @Test
-    fun initAdmin() {
-        // TODO
-    }
+    abstract fun initAdmin()
 
     @Test
     open fun `init user of existing user works`() {
@@ -989,90 +987,130 @@ internal abstract class MMInterfaceTest {
 
     }
 
+
+
     @Test
-    open fun `get element status with existing, deleted and non-existing elements works`() {
+    open fun `get element status with existing, deleted and non-existing elements by name or token works`() {
 
-        /** get status of administrator user */
+        /** get status of administrator user by name or token */
         myRun {
-            val status = mm!!.getStatus(ADMIN, ElementTypeWithStatus.USER)
-            assert(status == ElementStatus.OPERATIONAL)
+            val statusByName = mm!!.getStatus(name = ADMIN, type = ElementTypeWithStatus.USER)
+            assert(statusByName == ElementStatus.OPERATIONAL)
+            val statusByToken = mm!!.getStatus(token = ADMIN, type = ElementTypeWithStatus.USER)
+            assert(statusByToken == ElementStatus.OPERATIONAL)
         }
 
-        /** get status of administrator role */
+        /** get status of administrator role by name or token */
         myRun {
-            val status = mm!!.getStatus(ADMIN, ElementTypeWithStatus.ROLE)
-            assert(status == ElementStatus.OPERATIONAL)
+            val statusByName = mm!!.getStatus(name = ADMIN, type = ElementTypeWithStatus.ROLE)
+            assert(statusByName == ElementStatus.OPERATIONAL)
+            val statusByToken = mm!!.getStatus(token = ADMIN, type = ElementTypeWithStatus.ROLE)
+            assert(statusByToken == ElementStatus.OPERATIONAL)
         }
 
-        /** get status of non-existing user */
+        /** get status of non-existing user by name or token */
         myRun {
-            val status = mm!!.getStatus("not-existing", ElementTypeWithStatus.USER)
-            assert(status == null)
+            val statusByName = mm!!.getStatus(name = "not-existing", type = ElementTypeWithStatus.USER)
+            assert(statusByName == null)
+            val statusByToken = mm!!.getStatus(token = "not-existing", type = ElementTypeWithStatus.USER)
+            assert(statusByToken == null)
         }
 
-        /** get status of existing but incomplete user */
+        /** get status of existing but incomplete user by name or token */
         myRun {
             assert(mm!!.addUser(Parameters.aliceUser).code == OutcomeCode.CODE_000_SUCCESS)
-            val status = mm!!.getStatus(Parameters.aliceUser.name, ElementTypeWithStatus.USER)
-            assert(status == ElementStatus.INCOMPLETE)
+            val aliceName = Parameters.aliceUser.name
+            val aliceToken = Parameters.aliceUser.token
+            val statusByName = mm!!.getStatus(name = aliceName, type = ElementTypeWithStatus.USER)
+            assert(statusByName == ElementStatus.INCOMPLETE)
+            val statusByToken = mm!!.getStatus(token = aliceToken, type = ElementTypeWithStatus.USER)
+            assert(statusByToken == ElementStatus.INCOMPLETE)
         }
 
-        /** get status of operational user */
+        /** get status of operational user by name or token */
         myRun {
             addAndInitUser(Parameters.bobUser)
-            val status = mm!!.getStatus(Parameters.bobUser.name, ElementTypeWithStatus.USER)
-            assert(status == ElementStatus.OPERATIONAL)
+            val bobName = Parameters.bobUser.name
+            val bobToken = Parameters.bobUser.token
+            val statusByName = mm!!.getStatus(name = bobName, type = ElementTypeWithStatus.USER)
+            assert(statusByName == ElementStatus.OPERATIONAL)
+            val statusByToken = mm!!.getStatus(token = bobToken, type = ElementTypeWithStatus.USER)
+            assert(statusByToken == ElementStatus.OPERATIONAL)
         }
 
-        /** get status of deleted user */
+        /** get status of deleted user by name or token */
         myRun {
             addAndInitUser(Parameters.carlUser)
             assert(mm!!.deleteUser(Parameters.carlUser.name) == OutcomeCode.CODE_000_SUCCESS)
-            val status = mm!!.getStatus(Parameters.carlUser.name, ElementTypeWithStatus.USER)
-            assert(status == ElementStatus.DELETED)
+            val carlName = Parameters.carlUser.name
+            val carlToken = Parameters.carlUser.token
+            val statusByName = mm!!.getStatus(name = carlName, type = ElementTypeWithStatus.USER)
+            assert(statusByName == ElementStatus.DELETED)
+            val statusByToken = mm!!.getStatus(token = carlToken, type = ElementTypeWithStatus.USER)
+            assert(statusByToken == ElementStatus.DELETED)
         }
 
-        /** get status of non-existing role */
+        /** get status of non-existing role by name or token */
         myRun {
-            val status = mm!!.getStatus("not-existing", ElementTypeWithStatus.ROLE)
-            assert(status == null)
+            val statusByName = mm!!.getStatus(name = "not-existing", type = ElementTypeWithStatus.ROLE)
+            assert(statusByName == null)
+            val statusByToken = mm!!.getStatus(token = "not-existing", type = ElementTypeWithStatus.ROLE)
+            assert(statusByToken == null)
         }
 
-        /** get status of operational role */
+        /** get status of operational role by name or token */
         myRun {
             val roleOperational = addRole("roleOperational")
-            val status = mm!!.getStatus(roleOperational.name, ElementTypeWithStatus.ROLE)
-            assert(status == ElementStatus.OPERATIONAL)
+            val roleName = roleOperational.name
+            val roleToken = roleOperational.token
+            val statusByName = mm!!.getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)
+            assert(statusByName == ElementStatus.OPERATIONAL)
+            val statusByToken = mm!!.getStatus(token = roleToken, type = ElementTypeWithStatus.ROLE)
+            assert(statusByToken == ElementStatus.OPERATIONAL)
         }
 
-        /** get status of deleted role */
+        /** get status of deleted role by name or token */
         myRun {
             val roleDeleted = addRole("roleDeleted")
             assert(mm!!.deleteRoleTuples(roleDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(mm!!.deleteRole(roleDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
-            val status = mm!!.getStatus(roleDeleted.name, ElementTypeWithStatus.ROLE)
-            assert(status == ElementStatus.DELETED)
+            val roleName = roleDeleted.name
+            val roleToken = roleDeleted.token
+            val statusByName = mm!!.getStatus(name = roleName, type = ElementTypeWithStatus.ROLE)
+            assert(statusByName == ElementStatus.DELETED)
+            val statusByToken = mm!!.getStatus(token = roleToken, type = ElementTypeWithStatus.ROLE)
+            assert(statusByToken == ElementStatus.DELETED)
         }
 
-        /** get status of non-existing file */
+        /** get status of non-existing file by name or token */
         myRun {
-            val status = mm!!.getStatus("not-existing", ElementTypeWithStatus.FILE)
-            assert(status == null)
+            val statusByName = mm!!.getStatus(name = "not-existing", type = ElementTypeWithStatus.FILE)
+            assert(statusByName == null)
+            val statusByToken = mm!!.getStatus(token = "not-existing", type = ElementTypeWithStatus.FILE)
+            assert(statusByToken == null)
         }
 
-        /** get status of operational file */
+        /** get status of operational file by name or token */
         myRun {
             val fileOperational = addFile("fileOperational")
-            val status = mm!!.getStatus(fileOperational.name, ElementTypeWithStatus.FILE)
-            assert(status == ElementStatus.OPERATIONAL)
+            val fileName = fileOperational.name
+            val fileToken = fileOperational.token
+            val statusByName = mm!!.getStatus(name = fileName, type = ElementTypeWithStatus.FILE)
+            assert(statusByName == ElementStatus.OPERATIONAL)
+            val statusByToken = mm!!.getStatus(token = fileToken, type = ElementTypeWithStatus.FILE)
+            assert(statusByToken == ElementStatus.OPERATIONAL)
         }
 
-        /** get status of deleted file */
+        /** get status of deleted file by name or token */
         myRun {
             val fileDeleted = addFile("fileDeleted")
             assert(mm!!.deleteFile(fileDeleted.name) == OutcomeCode.CODE_000_SUCCESS)
-            val status = mm!!.getStatus(fileDeleted.name, ElementTypeWithStatus.FILE)
-            assert(status == ElementStatus.DELETED)
+            val fileName = fileDeleted.name
+            val fileToken = fileDeleted.token
+            val statusByName = mm!!.getStatus(name = fileName, type = ElementTypeWithStatus.FILE)
+            assert(statusByName == ElementStatus.DELETED)
+            val statusByToken = mm!!.getStatus(token = fileToken, type = ElementTypeWithStatus.FILE)
+            assert(statusByToken == ElementStatus.DELETED)
         }
     }
 
@@ -1236,28 +1274,19 @@ internal abstract class MMInterfaceTest {
 
 
     @Test
-    open fun `delete existing permission tuples by role or file name or role version number works`() {
+    open fun `delete existing permission tuples by role or file works`() {
         val student = addRole("student", 1)
         val director = addRole("director", 1)
-        val employee = addRole("employee", 2)
         val exam = addFile("exam")
         addPermissionTuple(student, exam)
         addPermissionTuple(director, exam)
-        addPermissionTuple(employee, exam)
 
         /** delete existing permission tuples by role name */
         myRun {
-            assert(mm!!.getPermissionTuples(fileName = exam.name).size == 3)
+            assert(mm!!.getPermissionTuples(fileName = exam.name).size == 2)
             assert(mm!!.deletePermissionTuples(roleName = student.name) == OutcomeCode.CODE_000_SUCCESS)
         }
-        assert(mm!!.getPermissionTuples(fileName = exam.name).size == 2)
-
-        /** delete existing permission tuples by version number */
-        myRun {
-            assert(mm!!.deletePermissionTuples(fileName = exam.name, roleVersionNumber = 1) == OutcomeCode.CODE_000_SUCCESS)
-        }
         assert(mm!!.getPermissionTuples(fileName = exam.name).size == 1)
-
 
         /** delete existing permission tuples by file name */
         myRun {
@@ -1272,7 +1301,6 @@ internal abstract class MMInterfaceTest {
         /** delete non-existing permission tuples */
         myRun {
             assert(mm!!.deletePermissionTuples(roleName = "non-existing") == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND)
-            assert(mm!!.deletePermissionTuples(roleName = "non-existing", roleVersionNumber = 1) == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND)
             assert(mm!!.deletePermissionTuples(fileName = "non-existing") == OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND)
         }
 

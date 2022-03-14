@@ -65,6 +65,14 @@
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
+  var CharRange = Kotlin.kotlin.ranges.CharRange;
+  var plus = Kotlin.kotlin.collections.plus_q4559j$;
+  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
+  var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var Random = Kotlin.kotlin.random.Random;
+  var getCallableRef = Kotlin.getCallableRef;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var mu = $module$kotlin_logging_js_legacy.mu;
   var Unit = Kotlin.kotlin.Unit;
   var ensureNotNull = Kotlin.ensureNotNull;
@@ -89,14 +97,6 @@
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
   var charsets = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.charsets;
   var encodeToByteArray = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.charsets.encodeToByteArray_fj4osb$;
-  var CharRange = Kotlin.kotlin.ranges.CharRange;
-  var plus = Kotlin.kotlin.collections.plus_q4559j$;
-  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
-  var IntRange = Kotlin.kotlin.ranges.IntRange;
-  var Random = Kotlin.kotlin.random.Random;
-  var getCallableRef = Kotlin.getCallableRef;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal.NullableSerializer;
   var toString = Kotlin.toString;
   var contentEquals = Kotlin.arrayEquals;
@@ -836,6 +836,7 @@
     OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_instance = new OutcomeCode('CODE_057_INTERFACE_TYPE_UPDATED', 57);
     OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance = new OutcomeCode('CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM', 58);
     OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_instance = new OutcomeCode('CODE_059_ACCESS_DENIED_TO_DM', 59);
+    OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_instance = new OutcomeCode('CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED', 60);
     OutcomeCode$Companion_getInstance();
   }
   var OutcomeCode$CODE_000_SUCCESS_instance;
@@ -1138,6 +1139,11 @@
     OutcomeCode_initFields();
     return OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_instance;
   }
+  var OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_instance;
+  function OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance() {
+    OutcomeCode_initFields();
+    return OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_instance;
+  }
   OutcomeCode.prototype.getNumber = function () {
     return split(this.toString(), ['_']).get_za3lpa$(1);
   };
@@ -1173,7 +1179,7 @@
     }return OutcomeCode$Companion_instance;
   }
   function OutcomeCode$$serializer() {
-    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 60);
+    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 61);
     this.descriptor.addElement_ivxn3r$('CODE_000_SUCCESS');
     this.descriptor.addElement_ivxn3r$('CODE_001_USER_ALREADY_EXISTS');
     this.descriptor.addElement_ivxn3r$('CODE_002_ROLE_ALREADY_EXISTS');
@@ -1234,6 +1240,7 @@
     this.descriptor.addElement_ivxn3r$('CODE_057_INTERFACE_TYPE_UPDATED');
     this.descriptor.addElement_ivxn3r$('CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM');
     this.descriptor.addElement_ivxn3r$('CODE_059_ACCESS_DENIED_TO_DM');
+    this.descriptor.addElement_ivxn3r$('CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED');
     OutcomeCode$$serializer_instance = this;
   }
   Object.defineProperty(OutcomeCode$$serializer.prototype, 'descriptor', {
@@ -1268,7 +1275,7 @@
     interfaces: [Enum]
   };
   function OutcomeCode$values() {
-    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_036_ADMIN_NAME_getInstance(), OutcomeCode$CODE_037_FORBIDDEN_getInstance(), OutcomeCode$CODE_038_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_049_UNEXPECTED_getInstance(), OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance(), OutcomeCode$CODE_054_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance(), OutcomeCode$CODE_056_DELETE_USER_MM_getInstance(), OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance()];
+    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_036_ADMIN_NAME_getInstance(), OutcomeCode$CODE_037_FORBIDDEN_getInstance(), OutcomeCode$CODE_038_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_049_UNEXPECTED_getInstance(), OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance(), OutcomeCode$CODE_054_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance(), OutcomeCode$CODE_056_DELETE_USER_MM_getInstance(), OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance(), OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance()];
   }
   OutcomeCode.values = OutcomeCode$values;
   function OutcomeCode$valueOf(name) {
@@ -1393,6 +1400,8 @@
         return OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance();
       case 'CODE_059_ACCESS_DENIED_TO_DM':
         return OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance();
+      case 'CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED':
+        return OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance();
       default:throwISE('No enum constant eu.fbk.st.cryptoac.OutcomeCode.' + name);
     }
   }
@@ -1512,6 +1521,7 @@
     this.DM_PASSWORD = 'DM_Password';
     this.MM_URL = 'MM_URL';
     this.MM_PASSWORD = 'MM_Password';
+    this.MM_TOKEN = 'MM_Token';
     this.MM_PORT = 'MM_Port';
     this.OPA_URL = 'OPA_URL';
     this.OPA_POLICY_MODEL = 'OPA_POLICY_MODEL';
@@ -1556,6 +1566,52 @@
   SafeRegex.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SafeRegex',
+    interfaces: []
+  };
+  function Utils() {
+    Utils$Companion_getInstance();
+  }
+  function Utils$Companion() {
+    Utils$Companion_instance = this;
+  }
+  Utils$Companion.prototype.generateRandomString_za3lpa$ = function (length) {
+    if (length === void 0)
+      length = 20;
+    var charPool = plus_0(plus(new CharRange(97, 122), new CharRange(65, 90)), new CharRange(48, 57));
+    var $receiver = new IntRange(1, length);
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(Random.Default.nextInt_vux9f0$(0, charPool.size));
+    }
+    var transform = getCallableRef('get', function ($receiver, p1) {
+      return $receiver.get_za3lpa$(p1);
+    }.bind(null, charPool));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault(destination, 10));
+    var tmp$_0;
+    tmp$_0 = destination.iterator();
+    while (tmp$_0.hasNext()) {
+      var item_0 = tmp$_0.next();
+      destination_0.add_11rb$(transform(item_0));
+    }
+    return joinToString(destination_0, '');
+  };
+  Utils$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Utils$Companion_instance = null;
+  function Utils$Companion_getInstance() {
+    if (Utils$Companion_instance === null) {
+      new Utils$Companion();
+    }return Utils$Companion_instance;
+  }
+  Utils.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Utils',
     interfaces: []
   };
   function polymorphic$lambda($receiver) {
@@ -3202,7 +3258,13 @@
     this.asymEncKeys_zhhky6$_0 = asymEncKeys;
     this.asymSigKeys_cezwgr$_0 = asymSigKeys;
     this.isAdmin = isAdmin;
-    this.token_vgvmqn$_0 = ActiveElement$Companion_getInstance().generateToken_qp1mpu$(void 0, this.name, this.asymEncKeys, this.asymSigKeys);
+    var tmp$;
+    if (equals(this.name, Constants_getInstance().ADMIN)) {
+      tmp$ = Constants_getInstance().ADMIN;
+    } else {
+      tmp$ = Utils$Companion_getInstance().generateRandomString_za3lpa$();
+    }
+    this.token_vgvmqn$_0 = tmp$;
   }
   Object.defineProperty(User.prototype, 'name', {
     get: function () {
@@ -3304,6 +3366,12 @@
     }
   });
   User$$serializer.prototype.serialize_55azsf$ = function (encoder, value) {
+    var tmp$;
+    if (equals(this.name, Constants_getInstance().ADMIN)) {
+      tmp$ = Constants_getInstance().ADMIN;
+    } else {
+      tmp$ = Utils$Companion_getInstance().generateRandomString_za3lpa$();
+    }
     var output = encoder.beginStructure_24f42q$(this.descriptor);
     output.encodeStringElement_iij8qq$(this.descriptor, 0, value.name);
     if (!equals(value.status, ElementStatus$INCOMPLETE_getInstance()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 1))
@@ -3314,7 +3382,7 @@
       output.encodeNullableSerializableElement_qw92s8$(this.descriptor, 3, AsymKeys$$serializer_getInstance(), value.asymSigKeys);
     if (!equals(value.isAdmin, false) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 4))
       output.encodeBooleanElement_qh7jdn$(this.descriptor, 4, value.isAdmin);
-    if (!equals(value.token, ActiveElement$Companion_getInstance().generateToken_qp1mpu$(void 0, this.name, this.asymEncKeys, this.asymSigKeys)) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 5))
+    if (!equals(value.token, tmp$) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 5))
       output.encodeStringElement_iij8qq$(this.descriptor, 5, value.token);
     output.endStructure_24f42q$(this.descriptor);
   };
@@ -3378,6 +3446,12 @@
     }return User$$serializer_instance;
   }
   function User_init(seen1, name, status, asymEncKeys, asymSigKeys, isAdmin, token, serializationConstructorMarker) {
+    var tmp$;
+    if (equals($this.name, Constants_getInstance().ADMIN)) {
+      tmp$ = Constants_getInstance().ADMIN;
+    } else {
+      tmp$ = Utils$Companion_getInstance().generateRandomString_za3lpa$();
+    }
     var $this = serializationConstructorMarker || Object.create(User.prototype);
     $this = ActiveElement_init(seen1, $this);
     if ((seen1 & 1) === 0)
@@ -3401,7 +3475,7 @@
     else
       $this.isAdmin = isAdmin;
     if ((seen1 & 32) === 0)
-      $this.token_vgvmqn$_0 = ActiveElement$Companion_getInstance().generateToken_qp1mpu$(void 0, $this.name, $this.asymEncKeys, $this.asymSigKeys);
+      $this.token_vgvmqn$_0 = tmp$;
     else
       $this.token_vgvmqn$_0 = token;
     return $this;
@@ -6011,12 +6085,13 @@
     return Unit;
   }
   var logger_5;
-  function MMInterfaceRedisParameters(username, password, port, url) {
+  function MMInterfaceRedisParameters(username, password, port, url, token) {
     MMInterfaceRedisParameters$Companion_getInstance();
     this.username_pbcrin$_0 = username;
     this.password_44p8oa$_0 = password;
     this.port_9l8jg$_0 = port;
     this.url_iboihs$_0 = url;
+    this.token = token;
     this.mmType_hb4az9$_0 = MMType$REDIS_getInstance();
   }
   Object.defineProperty(MMInterfaceRedisParameters.prototype, 'username', {
@@ -6065,12 +6140,12 @@
     tmp$ = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().USERNAME));
     tmp$_0 = toInt(ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MM_PORT)));
     tmp$_1 = ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MM_URL));
-    return new MMInterfaceRedisParameters(tmp$, ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MM_PASSWORD)), tmp$_0, tmp$_1);
+    return new MMInterfaceRedisParameters(tmp$, ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MM_PASSWORD)), tmp$_0, tmp$_1, ensureNotNull(parameters.get_11rb$(SERVER_getInstance().MM_TOKEN)));
   };
   MMInterfaceRedisParameters$Companion.prototype.toMap_4poj22$ = function (parameters) {
     if (parameters === void 0)
       parameters = null;
-    return listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().MM_URL, replace(SERVER_getInstance().MM_URL, '_', ' '), InputType$text_getInstance(), void 0, parameters != null ? parameters.url : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().MM_PASSWORD, replace(SERVER_getInstance().MM_PASSWORD, '_', ' '), InputType$password_getInstance(), void 0, parameters != null ? parameters.password : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().MM_PORT, replace(SERVER_getInstance().MM_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(parameters != null ? parameters.port : null), 'darkTextField')]));
+    return listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().MM_URL, replace(SERVER_getInstance().MM_URL, '_', ' '), InputType$text_getInstance(), void 0, parameters != null ? parameters.url : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().MM_TOKEN, replace(SERVER_getInstance().MM_TOKEN, '_', ' '), InputType$text_getInstance(), void 0, parameters != null ? parameters.token : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().MM_PASSWORD, replace(SERVER_getInstance().MM_PASSWORD, '_', ' '), InputType$password_getInstance(), void 0, parameters != null ? parameters.password : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().MM_PORT, replace(SERVER_getInstance().MM_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(parameters != null ? parameters.port : null), 'darkTextField')]));
   };
   MMInterfaceRedisParameters$Companion.prototype.serializer = function () {
     return MMInterfaceRedisParameters$$serializer_getInstance();
@@ -6106,6 +6181,12 @@
       return 'Port number ' + this$MMInterfaceRedisParameters.port + ' is inconsistent';
     };
   }
+  function MMInterfaceRedisParameters$checkParameters$lambda_3(this$MMInterfaceRedisParameters) {
+    return function () {
+      var $receiver = this$MMInterfaceRedisParameters.token;
+      return 'Token ' + encodeToByteArray(charsets.Charsets.UTF_8.newEncoder(), $receiver, 0, $receiver.length) + ' does not respect BASE64 regex';
+    };
+  }
   MMInterfaceRedisParameters.prototype.checkParameters = function () {
     if (!SafeRegex$Companion_getInstance().TEXT.matches_6bul2c$(this.username)) {
       logger_5.warn_nq59yw$(MMInterfaceRedisParameters$checkParameters$lambda(this));
@@ -6118,6 +6199,9 @@
       return false;
     } else if (this.port <= 0 || this.port >= 65535) {
       logger_5.warn_nq59yw$(MMInterfaceRedisParameters$checkParameters$lambda_2(this));
+      return false;
+    } else if (!SafeRegex$Companion_getInstance().BASE64.matches_6bul2c$(this.token)) {
+      logger_5.warn_nq59yw$(MMInterfaceRedisParameters$checkParameters$lambda_3(this));
       return false;
     } else {
       return true;
@@ -6156,6 +6240,10 @@
       return false;
     if (!equals(this.url, other.url))
       return false;
+    if (!equals(this.token, other.token))
+      return false;
+    if (this.mmType !== other.mmType)
+      return false;
     return true;
   };
   MMInterfaceRedisParameters.prototype.hashCode = function () {
@@ -6163,14 +6251,17 @@
     result = (31 * result | 0) + hashCode(this.password) | 0;
     result = (31 * result | 0) + this.port | 0;
     result = (31 * result | 0) + hashCode(this.url) | 0;
+    result = (31 * result | 0) + hashCode(this.token) | 0;
+    result = (31 * result | 0) + this.mmType.hashCode() | 0;
     return result;
   };
   function MMInterfaceRedisParameters$$serializer() {
-    this.descriptor_5crmhu$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.implementation.mm.MMInterfaceRedisParameters', this, 5);
+    this.descriptor_5crmhu$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.implementation.mm.MMInterfaceRedisParameters', this, 6);
     this.descriptor.addElement_ivxn3r$('username', false);
     this.descriptor.addElement_ivxn3r$('password', false);
     this.descriptor.addElement_ivxn3r$('port', false);
     this.descriptor.addElement_ivxn3r$('url', false);
+    this.descriptor.addElement_ivxn3r$('token', false);
     this.descriptor.addElement_ivxn3r$('mmType', true);
     MMInterfaceRedisParameters$$serializer_instance = this;
   }
@@ -6186,8 +6277,9 @@
     output.encodeStringElement_iij8qq$(this.descriptor, 1, value.password);
     output.encodeIntElement_ptg7oe$(this.descriptor, 2, value.port);
     output.encodeStringElement_iij8qq$(this.descriptor, 3, value.url);
-    if (!equals(value.mmType, MMType$REDIS_getInstance()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 4))
-      output.encodeSerializableElement_r4qlx7$(this.descriptor, 4, new EnumSerializer('eu.fbk.st.cryptoac.implementation.mm.MMType', MMType$values()), value.mmType);
+    output.encodeStringElement_iij8qq$(this.descriptor, 4, value.token);
+    if (!equals(value.mmType, MMType$REDIS_getInstance()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 5))
+      output.encodeSerializableElement_r4qlx7$(this.descriptor, 5, new EnumSerializer('eu.fbk.st.cryptoac.implementation.mm.MMType', MMType$values()), value.mmType);
     output.endStructure_24f42q$(this.descriptor);
   };
   MMInterfaceRedisParameters$$serializer.prototype.deserialize_bq71mq$ = function (decoder) {
@@ -6197,7 +6289,8 @@
     , local1
     , local2
     , local3
-    , local4;
+    , local4
+    , local5;
     var input = decoder.beginStructure_24f42q$(this.descriptor);
     loopLabel: while (true) {
       index = input.decodeElementIndex_24f42q$(this.descriptor);
@@ -6219,8 +6312,12 @@
           bitMask0 |= 8;
           break;
         case 4:
-          local4 = input.decodeSerializableElement_12e8id$(this.descriptor, 4, new EnumSerializer('eu.fbk.st.cryptoac.implementation.mm.MMType', MMType$values()), local4);
+          local4 = input.decodeStringElement_szpzho$(this.descriptor, 4);
           bitMask0 |= 16;
+          break;
+        case 5:
+          local5 = input.decodeSerializableElement_12e8id$(this.descriptor, 5, new EnumSerializer('eu.fbk.st.cryptoac.implementation.mm.MMType', MMType$values()), local5);
+          bitMask0 |= 32;
           break;
         case -1:
           break loopLabel;
@@ -6228,10 +6325,10 @@
       }
     }
     input.endStructure_24f42q$(this.descriptor);
-    return MMInterfaceRedisParameters_init(bitMask0, local0, local1, local2, local3, local4, null);
+    return MMInterfaceRedisParameters_init(bitMask0, local0, local1, local2, local3, local4, local5, null);
   };
   MMInterfaceRedisParameters$$serializer.prototype.childSerializers = function () {
-    return [internal.StringSerializer, internal.StringSerializer, internal.IntSerializer, internal.StringSerializer, new EnumSerializer('eu.fbk.st.cryptoac.implementation.mm.MMType', MMType$values())];
+    return [internal.StringSerializer, internal.StringSerializer, internal.IntSerializer, internal.StringSerializer, internal.StringSerializer, new EnumSerializer('eu.fbk.st.cryptoac.implementation.mm.MMType', MMType$values())];
   };
   MMInterfaceRedisParameters$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -6244,7 +6341,7 @@
       new MMInterfaceRedisParameters$$serializer();
     }return MMInterfaceRedisParameters$$serializer_instance;
   }
-  function MMInterfaceRedisParameters_init(seen1, username, password, port, url, mmType, serializationConstructorMarker) {
+  function MMInterfaceRedisParameters_init(seen1, username, password, port, url, token, mmType, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(MMInterfaceRedisParameters.prototype);
     if ((seen1 & 1) === 0)
       throw MissingFieldException_init('username');
@@ -6263,6 +6360,10 @@
     else
       $this.url_iboihs$_0 = url;
     if ((seen1 & 16) === 0)
+      throw MissingFieldException_init('token');
+    else
+      $this.token = token;
+    if ((seen1 & 32) === 0)
       $this.mmType_hb4az9$_0 = MMType$REDIS_getInstance();
     else
       $this.mmType_hb4az9$_0 = mmType;
@@ -10841,7 +10942,7 @@
           case 0:
             if (this.local$this$Dashboard.props.userIsLogged) {
               this.state_0 = 2;
-              this.result_0 = this.local$this$Dashboard.getProfileFromProxy_0(void 0, this);
+              this.result_0 = this.local$this$Dashboard.getProfileFromCryptoAC_0(void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
@@ -11304,17 +11405,17 @@
       this.props.handleDisplayAlert(OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
     }
   };
-  function Dashboard$getProfileFromProxy$lambda(closure$username, closure$actualEndpoint) {
+  function Dashboard$getProfileFromCryptoAC$lambda(closure$username, closure$actualEndpoint) {
     return function () {
       return 'Getting the profile for user ' + toString(closure$username) + ' at endpoint ' + closure$actualEndpoint;
     };
   }
-  function Dashboard$getProfileFromProxy$lambda_0(closure$status) {
+  function Dashboard$getProfileFromCryptoAC$lambda_0(closure$status) {
     return function () {
       return 'Response status is ' + closure$status;
     };
   }
-  function Dashboard$getProfileFromProxy$lambda_1(this$Dashboard, closure$parameters) {
+  function Dashboard$getProfileFromCryptoAC$lambda_1(this$Dashboard, closure$parameters) {
     return function ($receiver) {
       this$Dashboard.props.handleChangeUserHasProfile(true);
       this$Dashboard.props.handleChangeUserIsAdmin(closure$parameters.user.isAdmin);
@@ -11322,12 +11423,12 @@
       return Unit;
     };
   }
-  function Dashboard$getProfileFromProxy$lambda_2(closure$status, closure$outcomeCode) {
+  function Dashboard$getProfileFromCryptoAC$lambda_2(closure$status, closure$outcomeCode) {
     return function () {
       return 'Response status is ' + closure$status + ', code is ' + closure$outcomeCode;
     };
   }
-  function Dashboard$getProfileFromProxy$lambda_3(this$Dashboard) {
+  function Dashboard$getProfileFromCryptoAC$lambda_3(this$Dashboard) {
     return function ($receiver) {
       this$Dashboard.props.handleChangeUserHasProfile(false);
       this$Dashboard.props.handleChangeUserIsAdmin(false);
@@ -11335,7 +11436,7 @@
       return Unit;
     };
   }
-  function Coroutine$getProfileFromProxy_0($this, username_0, continuation_0) {
+  function Coroutine$getProfileFromCryptoAC_0($this, username_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 6;
     this.$this = $this;
@@ -11343,14 +11444,14 @@
     this.local$status = void 0;
     this.local$username = username_0;
   }
-  Coroutine$getProfileFromProxy_0.$metadata$ = {
+  Coroutine$getProfileFromCryptoAC_0.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$getProfileFromProxy_0.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$getProfileFromProxy_0.prototype.constructor = Coroutine$getProfileFromProxy_0;
-  Coroutine$getProfileFromProxy_0.prototype.doResume = function () {
+  Coroutine$getProfileFromCryptoAC_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$getProfileFromCryptoAC_0.prototype.constructor = Coroutine$getProfileFromCryptoAC_0;
+  Coroutine$getProfileFromCryptoAC_0.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
@@ -11358,7 +11459,7 @@
             if (this.local$username === void 0)
               this.local$username = this.$this.props.username;
             var actualEndpoint = baseURL + replace(API_getInstance().PROFILES, '{Core}', this.$this.props.coreType.toString()) + '/' + toString(this.local$username);
-            logger_12.info_nq59yw$(Dashboard$getProfileFromProxy$lambda(this.local$username, actualEndpoint));
+            logger_12.info_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda(this.local$username, actualEndpoint));
             var $receiver_0 = this.$this.props.httpClient;
             var host_0;
             var body_0;
@@ -11445,7 +11546,7 @@
             var httpResponse = this.result_0;
             this.local$status = httpResponse.status;
             if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_12.info_nq59yw$(Dashboard$getProfileFromProxy$lambda_0(this.local$status));
+              logger_12.info_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda_0(this.local$status));
               this.state_0 = 11;
               this.result_0 = readText(httpResponse, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
@@ -11464,9 +11565,9 @@
             var $receiver = myJson;
             var tmp$;
             var outcomeCode = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), text);
-            logger_12.warn_nq59yw$(Dashboard$getProfileFromProxy$lambda_2(this.local$status, outcomeCode));
+            logger_12.warn_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda_2(this.local$status, outcomeCode));
             this.$this.props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance());
-            setState(this.$this, Dashboard$getProfileFromProxy$lambda_3(this.$this));
+            setState(this.$this, Dashboard$getProfileFromCryptoAC$lambda_3(this.$this));
             this.$this.getFieldsFromParameters_0(new User(ensureNotNull(this.$this.props.username)), CryptoType$SODIUM_getInstance());
             this.state_0 = 12;
             continue;
@@ -11476,7 +11577,7 @@
             var tmp$_0;
             var parameters = $receiver_2.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver_2.serializersModule, createKType(getKClass(CoreParameters), [], false)), KSerializer) ? tmp$_0 : throwCCE(), profileAsString);
             if (this.$this.parseProfileAndUpdateFields_0(parameters, true)) {
-              setState(this.$this, Dashboard$getProfileFromProxy$lambda_1(this.$this, parameters));
+              setState(this.$this, Dashboard$getProfileFromCryptoAC$lambda_1(this.$this, parameters));
             }
             this.state_0 = 12;
             continue;
@@ -11496,8 +11597,8 @@
       }
      while (true);
   };
-  Dashboard.prototype.getProfileFromProxy_0 = function (username_0, continuation_0, suspended) {
-    var instance = new Coroutine$getProfileFromProxy_0(this, username_0, continuation_0);
+  Dashboard.prototype.getProfileFromCryptoAC_0 = function (username_0, continuation_0, suspended) {
+    var instance = new Coroutine$getProfileFromCryptoAC_0(this, username_0, continuation_0);
     if (suspended)
       return instance;
     else
@@ -12831,7 +12932,7 @@
     };
   }
   function RBACDashboard$getElements$lambda_1() {
-    return 'Proxy is unreachable';
+    return 'CryptoAC is unreachable';
   }
   function RBACDashboard$getElements$lambda_2(closure$e) {
     return function () {
@@ -16573,7 +16674,7 @@
           var attackers = element_3.value;
           var tmp$_10;
           tmp$_10 = attackers.iterator();
-          loop_label_0: while (tmp$_10.hasNext()) {
+          while (tmp$_10.hasNext()) {
             var element_4 = tmp$_10.next();
             var name = domain.toString();
             var $receiver_0 = Domains.values();
@@ -17106,15 +17207,15 @@
   function Entities_initFields() {
     Entities_initFields = function () {
     };
-    Entities$Proxy_instance = new Entities('Proxy', 0);
+    Entities$CryptoAC_instance = new Entities('CryptoAC', 0);
     Entities$RM_instance = new Entities('RM', 1);
     Entities$MM_instance = new Entities('MM', 2);
     Entities$DM_instance = new Entities('DM', 3);
   }
-  var Entities$Proxy_instance;
-  function Entities$Proxy_getInstance() {
+  var Entities$CryptoAC_instance;
+  function Entities$CryptoAC_getInstance() {
     Entities_initFields();
-    return Entities$Proxy_instance;
+    return Entities$CryptoAC_instance;
   }
   var Entities$RM_instance;
   function Entities$RM_getInstance() {
@@ -17137,13 +17238,13 @@
     interfaces: [Enum]
   };
   function Entities$values() {
-    return [Entities$Proxy_getInstance(), Entities$RM_getInstance(), Entities$MM_getInstance(), Entities$DM_getInstance()];
+    return [Entities$CryptoAC_getInstance(), Entities$RM_getInstance(), Entities$MM_getInstance(), Entities$DM_getInstance()];
   }
   Entities.values = Entities$values;
   function Entities$valueOf(name) {
     switch (name) {
-      case 'Proxy':
-        return Entities$Proxy_getInstance();
+      case 'CryptoAC':
+        return Entities$CryptoAC_getInstance();
       case 'RM':
         return Entities$RM_getInstance();
       case 'MM':
@@ -17162,21 +17263,21 @@
   function EntitiesWithChannels_initFields() {
     EntitiesWithChannels_initFields = function () {
     };
-    EntitiesWithChannels$Proxy_instance = new EntitiesWithChannels('Proxy', 0);
+    EntitiesWithChannels$CryptoAC_instance = new EntitiesWithChannels('CryptoAC', 0);
     EntitiesWithChannels$RM_instance = new EntitiesWithChannels('RM', 1);
     EntitiesWithChannels$MM_instance = new EntitiesWithChannels('MM', 2);
     EntitiesWithChannels$DM_instance = new EntitiesWithChannels('DM', 3);
-    EntitiesWithChannels$Proxy_RM_instance = new EntitiesWithChannels('Proxy_RM', 4);
-    EntitiesWithChannels$Proxy_DM_instance = new EntitiesWithChannels('Proxy_DM', 5);
-    EntitiesWithChannels$Proxy_MM_instance = new EntitiesWithChannels('Proxy_MM', 6);
+    EntitiesWithChannels$CryptoAC_RM_instance = new EntitiesWithChannels('CryptoAC_RM', 4);
+    EntitiesWithChannels$CryptoAC_DM_instance = new EntitiesWithChannels('CryptoAC_DM', 5);
+    EntitiesWithChannels$CryptoAC_MM_instance = new EntitiesWithChannels('CryptoAC_MM', 6);
     EntitiesWithChannels$RM_MM_instance = new EntitiesWithChannels('RM_MM', 7);
     EntitiesWithChannels$RM_DM_instance = new EntitiesWithChannels('RM_DM', 8);
     EntitiesWithChannels$MM_DM_instance = new EntitiesWithChannels('MM_DM', 9);
   }
-  var EntitiesWithChannels$Proxy_instance;
-  function EntitiesWithChannels$Proxy_getInstance() {
+  var EntitiesWithChannels$CryptoAC_instance;
+  function EntitiesWithChannels$CryptoAC_getInstance() {
     EntitiesWithChannels_initFields();
-    return EntitiesWithChannels$Proxy_instance;
+    return EntitiesWithChannels$CryptoAC_instance;
   }
   var EntitiesWithChannels$RM_instance;
   function EntitiesWithChannels$RM_getInstance() {
@@ -17193,20 +17294,20 @@
     EntitiesWithChannels_initFields();
     return EntitiesWithChannels$DM_instance;
   }
-  var EntitiesWithChannels$Proxy_RM_instance;
-  function EntitiesWithChannels$Proxy_RM_getInstance() {
+  var EntitiesWithChannels$CryptoAC_RM_instance;
+  function EntitiesWithChannels$CryptoAC_RM_getInstance() {
     EntitiesWithChannels_initFields();
-    return EntitiesWithChannels$Proxy_RM_instance;
+    return EntitiesWithChannels$CryptoAC_RM_instance;
   }
-  var EntitiesWithChannels$Proxy_DM_instance;
-  function EntitiesWithChannels$Proxy_DM_getInstance() {
+  var EntitiesWithChannels$CryptoAC_DM_instance;
+  function EntitiesWithChannels$CryptoAC_DM_getInstance() {
     EntitiesWithChannels_initFields();
-    return EntitiesWithChannels$Proxy_DM_instance;
+    return EntitiesWithChannels$CryptoAC_DM_instance;
   }
-  var EntitiesWithChannels$Proxy_MM_instance;
-  function EntitiesWithChannels$Proxy_MM_getInstance() {
+  var EntitiesWithChannels$CryptoAC_MM_instance;
+  function EntitiesWithChannels$CryptoAC_MM_getInstance() {
     EntitiesWithChannels_initFields();
-    return EntitiesWithChannels$Proxy_MM_instance;
+    return EntitiesWithChannels$CryptoAC_MM_instance;
   }
   var EntitiesWithChannels$RM_MM_instance;
   function EntitiesWithChannels$RM_MM_getInstance() {
@@ -17229,25 +17330,25 @@
     interfaces: [Enum]
   };
   function EntitiesWithChannels$values() {
-    return [EntitiesWithChannels$Proxy_getInstance(), EntitiesWithChannels$RM_getInstance(), EntitiesWithChannels$MM_getInstance(), EntitiesWithChannels$DM_getInstance(), EntitiesWithChannels$Proxy_RM_getInstance(), EntitiesWithChannels$Proxy_DM_getInstance(), EntitiesWithChannels$Proxy_MM_getInstance(), EntitiesWithChannels$RM_MM_getInstance(), EntitiesWithChannels$RM_DM_getInstance(), EntitiesWithChannels$MM_DM_getInstance()];
+    return [EntitiesWithChannels$CryptoAC_getInstance(), EntitiesWithChannels$RM_getInstance(), EntitiesWithChannels$MM_getInstance(), EntitiesWithChannels$DM_getInstance(), EntitiesWithChannels$CryptoAC_RM_getInstance(), EntitiesWithChannels$CryptoAC_DM_getInstance(), EntitiesWithChannels$CryptoAC_MM_getInstance(), EntitiesWithChannels$RM_MM_getInstance(), EntitiesWithChannels$RM_DM_getInstance(), EntitiesWithChannels$MM_DM_getInstance()];
   }
   EntitiesWithChannels.values = EntitiesWithChannels$values;
   function EntitiesWithChannels$valueOf(name) {
     switch (name) {
-      case 'Proxy':
-        return EntitiesWithChannels$Proxy_getInstance();
+      case 'CryptoAC':
+        return EntitiesWithChannels$CryptoAC_getInstance();
       case 'RM':
         return EntitiesWithChannels$RM_getInstance();
       case 'MM':
         return EntitiesWithChannels$MM_getInstance();
       case 'DM':
         return EntitiesWithChannels$DM_getInstance();
-      case 'Proxy_RM':
-        return EntitiesWithChannels$Proxy_RM_getInstance();
-      case 'Proxy_DM':
-        return EntitiesWithChannels$Proxy_DM_getInstance();
-      case 'Proxy_MM':
-        return EntitiesWithChannels$Proxy_MM_getInstance();
+      case 'CryptoAC_RM':
+        return EntitiesWithChannels$CryptoAC_RM_getInstance();
+      case 'CryptoAC_DM':
+        return EntitiesWithChannels$CryptoAC_DM_getInstance();
+      case 'CryptoAC_MM':
+        return EntitiesWithChannels$CryptoAC_MM_getInstance();
       case 'RM_MM':
         return EntitiesWithChannels$RM_MM_getInstance();
       case 'RM_DM':
@@ -17652,7 +17753,7 @@
   PerformanceRequirements.valueOf_61zpoe$ = PerformanceRequirements$valueOf;
   function getImageFromEntity(entity) {
     switch (entity.name) {
-      case 'Proxy':
+      case 'CryptoAC':
         return 'proxy.png';
       case 'RM':
         return 'rm.png';
@@ -20068,6 +20169,9 @@
   Object.defineProperty(OutcomeCode, 'CODE_059_ACCESS_DENIED_TO_DM', {
     get: OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance
   });
+  Object.defineProperty(OutcomeCode, 'CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED', {
+    get: OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance
+  });
   Object.defineProperty(OutcomeCode, 'Companion', {
     get: OutcomeCode$Companion_getInstance
   });
@@ -20095,6 +20199,10 @@
     get: SafeRegex$Companion_getInstance
   });
   package$cryptoac.SafeRegex = SafeRegex;
+  Object.defineProperty(Utils, 'Companion', {
+    get: Utils$Companion_getInstance
+  });
+  package$cryptoac.Utils = Utils;
   Object.defineProperty(CoreParameters, 'Companion', {
     get: CoreParameters$Companion_getInstance
   });
@@ -20427,7 +20535,7 @@
   Object.defineProperty(MMInterfaceRedisParameters, '$serializer', {
     get: MMInterfaceRedisParameters$$serializer_getInstance
   });
-  package$mm.MMInterfaceRedisParameters_init_owlmu0$ = MMInterfaceRedisParameters_init;
+  package$mm.MMInterfaceRedisParameters_init_vkx0s3$ = MMInterfaceRedisParameters_init;
   package$mm.MMInterfaceRedisParameters = MMInterfaceRedisParameters;
   Object.defineProperty(OPAInterfaceParameters, 'Companion', {
     get: OPAInterfaceParameters$Companion_getInstance
@@ -20667,8 +20775,8 @@
     get: DomainsWithChannels$OnPremise_CSP_getInstance
   });
   package$tradeoffboard.DomainsWithChannels = DomainsWithChannels;
-  Object.defineProperty(Entities, 'Proxy', {
-    get: Entities$Proxy_getInstance
+  Object.defineProperty(Entities, 'CryptoAC', {
+    get: Entities$CryptoAC_getInstance
   });
   Object.defineProperty(Entities, 'RM', {
     get: Entities$RM_getInstance
@@ -20680,8 +20788,8 @@
     get: Entities$DM_getInstance
   });
   package$tradeoffboard.Entities = Entities;
-  Object.defineProperty(EntitiesWithChannels, 'Proxy', {
-    get: EntitiesWithChannels$Proxy_getInstance
+  Object.defineProperty(EntitiesWithChannels, 'CryptoAC', {
+    get: EntitiesWithChannels$CryptoAC_getInstance
   });
   Object.defineProperty(EntitiesWithChannels, 'RM', {
     get: EntitiesWithChannels$RM_getInstance
@@ -20692,14 +20800,14 @@
   Object.defineProperty(EntitiesWithChannels, 'DM', {
     get: EntitiesWithChannels$DM_getInstance
   });
-  Object.defineProperty(EntitiesWithChannels, 'Proxy_RM', {
-    get: EntitiesWithChannels$Proxy_RM_getInstance
+  Object.defineProperty(EntitiesWithChannels, 'CryptoAC_RM', {
+    get: EntitiesWithChannels$CryptoAC_RM_getInstance
   });
-  Object.defineProperty(EntitiesWithChannels, 'Proxy_DM', {
-    get: EntitiesWithChannels$Proxy_DM_getInstance
+  Object.defineProperty(EntitiesWithChannels, 'CryptoAC_DM', {
+    get: EntitiesWithChannels$CryptoAC_DM_getInstance
   });
-  Object.defineProperty(EntitiesWithChannels, 'Proxy_MM', {
-    get: EntitiesWithChannels$Proxy_MM_getInstance
+  Object.defineProperty(EntitiesWithChannels, 'CryptoAC_MM', {
+    get: EntitiesWithChannels$CryptoAC_MM_getInstance
   });
   Object.defineProperty(EntitiesWithChannels, 'RM_MM', {
     get: EntitiesWithChannels$RM_MM_getInstance
@@ -20947,8 +21055,8 @@
   logger_15 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_15);
   logger_16 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_16);
   logger_17 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_17);
-  performanceRequirementsImpact = hashMapOf([to(PerformanceRequirements$Redundancy_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Scalability_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Reliability_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Maintenance_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$DoS_Resilience_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$On_premise_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$CSP_Vendor_Lock_in_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$CSP_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Latency_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Throughput_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Computational_Power_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Storage_capacity_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$ESP_Vendor_Lock_in_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$ESP_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$Proxy_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)]))]);
-  securityRequirementsImpact = hashMapOf([to(SecurityRequirements$Confidentiality_getInstance(), hashMapOf([to(EntitiesWithChannels$Proxy_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())])), to(SecurityRequirements$Integrity_getInstance(), hashMapOf([to(EntitiesWithChannels$Proxy_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())])), to(SecurityRequirements$Availability_getInstance(), hashMapOf([to(EntitiesWithChannels$Proxy_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$Proxy_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())]))]);
+  performanceRequirementsImpact = hashMapOf([to(PerformanceRequirements$Redundancy_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Scalability_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Reliability_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Maintenance_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$DoS_Resilience_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$On_premise_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$CSP_Vendor_Lock_in_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$CSP_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Latency_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Throughput_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Computational_Power_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Storage_capacity_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$ESP_Vendor_Lock_in_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$ESP_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)]))]);
+  securityRequirementsImpact = hashMapOf([to(SecurityRequirements$Confidentiality_getInstance(), hashMapOf([to(EntitiesWithChannels$CryptoAC_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())])), to(SecurityRequirements$Integrity_getInstance(), hashMapOf([to(EntitiesWithChannels$CryptoAC_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())])), to(SecurityRequirements$Availability_getInstance(), hashMapOf([to(EntitiesWithChannels$CryptoAC_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())]))]);
   logger_18 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_18);
   main();
   Kotlin.defineModule('CryptoAC', _);

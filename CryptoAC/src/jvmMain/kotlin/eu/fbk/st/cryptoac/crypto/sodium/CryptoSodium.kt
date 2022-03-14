@@ -36,7 +36,10 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
         runBlocking {
             try {
                 if (LibsodiumInitializer.isInitialized()) {
-                    logger.warn { "Receive request to initialize the Sodium library, but it was already initialized" }
+                    logger.warn {
+                        "Receive request to initialize the Sodium " +
+                        "library, but it was already initialized"
+                    }
                 } else {
                     logger.info { "Initializing the Sodium library" }
                     LibsodiumInitializer.initialize()

@@ -41,7 +41,9 @@ abstract class MMInterface {
      * public keys and token of the [user], updating also
      * the status flag, and return the outcome code. Check
      * that the user is not already present, was not already
-     * initialized and was not already deleted
+     * initialized and was not already deleted. This method
+     * should support invocations by non-admin users
+     * // TODO add isAdmin parameter and update doc
      */
     abstract fun initUser(user: User): OutcomeCode
 
@@ -107,12 +109,15 @@ abstract class MMInterface {
      * Retrieve data of the users matching the specified
      * [username] and [status], if given, starting from
      * the [offset] limiting the number of users to return
-     * to the given [limit]. If no users are found, return
-     * an empty set
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function
+     * [isAdmin]. If no users are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     abstract fun getUsers(
         username: String? = null,
         status: ElementStatus? = null,
+        isAdmin: Boolean = true,
         offset: Int = DEFAULT_OFFSET, limit: Int = DEFAULT_LIMIT,
     ): HashSet<User>
 
@@ -120,12 +125,15 @@ abstract class MMInterface {
      * Retrieve data of the roles matching the specified
      * [roleName] and [status], if given, starting from
      * the [offset] limiting the number of roles to return
-     * to the given [limit]. If no roles are found, return
-     * an empty set
+     * to the given [limit] and with the (possibly) relevant
+     * information of whether the user invoking this function
+     * [isAdmin]. If no roles are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     abstract fun getRoles(
         roleName: String? = null,
         status: ElementStatus? = null,
+        isAdmin: Boolean = true,
         offset: Int = DEFAULT_OFFSET, limit: Int = DEFAULT_LIMIT,
     ): HashSet<Role>
 
@@ -135,7 +143,8 @@ abstract class MMInterface {
      * the [offset] limiting the number of files to return
      * to the given [limit] and with the (possibly) relevant
      * information of whether the user invoking this function
-     * [isAdmin]. If no files are found, return an empty set
+     * [isAdmin]. If no files are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     abstract fun getFiles(
         fileName: String? = null,
@@ -147,12 +156,14 @@ abstract class MMInterface {
 
     /**
      * Retrieve the role tuples matching the [username]
-     * and/or the [roleName], starting from the [offset]
-     * limiting the number of tuples to return to the
-     * given [limit] and with the (possibly) relevant
-     * information of whether the user invoking this
-     * function [isAdmin]. If no role tuples are found,
-     * return an empty set
+     * and/or the [roleName] (at least one required),
+     * starting from the [offset] limiting the number
+     * of tuples to return to the given [limit] and
+     * with the (possibly) relevant information of
+     * whether the user invoking this function
+     * [isAdmin]. If no role tuples are found,
+     * return an empty set. This method should
+     * support invocations by non-admin users
      */
     abstract fun getRoleTuples(
         username: String? = null, roleName: String? = null,
@@ -162,17 +173,17 @@ abstract class MMInterface {
 
     /**
      * Retrieve the permission tuples matching the [roleName] and/or
-     * the [fileName], further filtering by [roleToken], [fileToken],
-     * [permission], [roleVersionNumber] and [symKeyVersionNumber] and
-     * not matching the [roleNameToExclude], if given, starting from
-     * the [offset] limiting the number of tuples to return to the given
-     * [limit] and with the (possibly) relevant information of whether
-     * the user invoking this function [isAdmin]. If no permission tuples
-     * are found, return an empty set
+     * the [fileName], further filtering by [roleVersionNumber],
+     * [permission] and [symKeyVersionNumber], and not matching the
+     * [roleNameToExclude], if given, starting from the [offset]
+     * limiting the number of tuples to return to the given [limit]
+     * and with the (possibly) relevant information of whether the
+     * user invoking this function [isAdmin]. If no permission tuples
+     * are found, return an empty set. This method should support
+     * invocations by non-admin users
      */
     abstract fun getPermissionTuples(
         roleName: String? = null, fileName: String? = null,
-        roleToken: String? = null, fileToken: String? = null,
         permission: PermissionType? = null,
         roleNameToExclude: String? = null,
         roleVersionNumber: Int? = null, symKeyVersionNumber: Int? = null,
@@ -185,7 +196,8 @@ abstract class MMInterface {
      * from the [offset] limiting the number of tuples to return
      * to the given [limit] and with the (possibly) relevant
      * information of whether the user invoking this function
-     * [isAdmin]. If no file tuples are found, return an empty set
+     * [isAdmin]. If no file tuples are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     abstract fun getFileTuples(
         fileName: String,
@@ -201,7 +213,9 @@ abstract class MMInterface {
      * the [token] (at least one required). Note that
      * only operational or deleted elements are considered,
      * and files do not have public keys. If the key was
-     * not found, return null
+     * not found, return null. This method should support
+     * invocations by non-admin users
+     * // TODO add isAdmin parameter and update doc
      */
     abstract fun getPublicKey(
         name: String? = null,
@@ -218,27 +232,40 @@ abstract class MMInterface {
      * have version numbers. Note also that only the latest
      * version number of files (i.e., the one used for encryption
      * are considered). If the version number was not found,
-     * return null
+     * return null. This method should support invocations by
+     * non-admin users
+     * // TODO add isAdmin parameter and update doc
      */
     abstract fun getVersionNumber(
-        name: String? = null, token: String? = null, elementType: ElementTypeWithVersionNumber
+        name: String? = null,
+        token: String? = null,
+        elementType: ElementTypeWithVersionNumber
     ): Int?
 
     /**
      * Retrieve the token of the element of
      * the given [type] matching the [name].
-     * Note that only operational elements are
-     * considered. If the token was not found,
-     * return null
+     * If the token was not found, return null.
+     * This method should support invocations
+     * by non-admin users
+     * // TODO add isAdmin parameter and update doc
      */
     abstract fun getToken(name: String, type: ElementTypeWithStatus): String?
 
     /**
      * Retrieve the status of the element of the
-     * given [type] matching the given [name].
-     * If the status was not found, return null
+     * given [type] by matching the [name]
+     * or [token] (at least one required).
+     * If the status was not found, return null.
+     * This method should support invocations by
+     * non-admin users
+     * // TODO add isAdmin parameter and update doc
      */
-    abstract fun getStatus(name: String, type: ElementTypeWithStatus): ElementStatus?
+    abstract fun getStatus(
+        name: String? = null,
+        token: String? = null,
+        type: ElementTypeWithStatus
+    ): ElementStatus?
 
 
     /**
@@ -287,8 +314,7 @@ abstract class MMInterface {
 
     /**
      * Delete the permission tuples matching the [roleName]
-     * and/or the [fileName] (at least one required), further
-     * filtering by [roleVersionNumber], if given. Finally,
+     * and/or the [fileName] (at least one required). Finally,
      * return the outcome code. Check that [roleName] is not
      * the admin. Also check that at least one permission tuple
      * is deleted, and if not check whether the [roleName] and
@@ -297,7 +323,6 @@ abstract class MMInterface {
     abstract fun deletePermissionTuples(
         roleName: String? = null,
         fileName: String? = null,
-        roleVersionNumber: Int? = null
     ): OutcomeCode
 
     /**
@@ -370,15 +395,16 @@ abstract class MMInterface {
      * outcome code
      */
     abstract fun unlock(): OutcomeCode
+
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     */
+    abstract fun deinit()
 }
 
-
-
-/** Wrapper for the outcome [code] and a [boolean] value */
-data class WrappedBoolean(
-    val code: OutcomeCode = OutcomeCode.CODE_000_SUCCESS,
-    val boolean: Boolean? = null
-)
 
 /** Wrapper for the outcome [code] and eventual [parameters] */
 @Serializable

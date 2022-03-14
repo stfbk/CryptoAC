@@ -27,7 +27,6 @@ internal abstract class CoreRBACTest : CoreTest() {
             val aliceUser = users.first { it.name == alice }
             assert(!aliceUser.isAdmin)
             assert(aliceUser.status == ElementStatus.INCOMPLETE)
-            assert(aliceUser.token == alice)
         }
     }
 
@@ -978,7 +977,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleNonExisting, fileNonExisting, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_005_ROLE_NOT_FOUND
             )
         }
 
@@ -990,7 +989,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleNonExisting, fileOperational, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_005_ROLE_NOT_FOUND
             )
         }
 
@@ -1002,7 +1001,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleNonExisting, fileDeleted, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_005_ROLE_NOT_FOUND
             )
         }
 
@@ -1038,7 +1037,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleDeleted, fileNonExisting, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_014_ROLE_WAS_DELETED
             )
         }
 
@@ -1050,7 +1049,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleDeleted, fileOperational, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_014_ROLE_WAS_DELETED
             )
         }
 
@@ -1062,7 +1061,7 @@ internal abstract class CoreRBACTest : CoreTest() {
             )
             assert(
                 coreRBAC.revokePermissionFromRole(roleDeleted, fileDeleted, PermissionType.READWRITE) ==
-                        OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND
+                        OutcomeCode.CODE_014_ROLE_WAS_DELETED
             )
         }
 
@@ -1517,7 +1516,7 @@ internal abstract class CoreRBACTest : CoreTest() {
 
             assert(coreRBAC.getPermissions(username = "alice").permissionTuples!!.isEmpty())
             assert(coreRBAC.getPermissions(roleName = "student").permissionTuples!!.isEmpty())
-            assert(coreRBAC.getPermissions(fileName = "exam").permissionTuples!!.filter { it.roleName == "student" }.isEmpty())
+            assert(coreRBAC.getPermissions(fileName = "exam").permissionTuples!!.none { it.roleName == "student" })
             assert(coreRBAC.getPermissions(username = "alice", roleName = "student", fileName = "exam").permissionTuples!!.isEmpty())
         }
     }

@@ -321,8 +321,8 @@ class DMInterfaceRBACCryptoAC(
             locks--
             client!!.close()
         } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks - 1}" }
             locks--
+            logger.debug { "Decrement lock number to $locks" }
         }
         return OutcomeCode.CODE_000_SUCCESS
     }
@@ -342,9 +342,19 @@ class DMInterfaceRBACCryptoAC(
             locks--
             client!!.close()
         } else if (locks > 0) {
-            logger.debug { "Decrement lock number to ${locks - 1}" }
             locks--
+            logger.debug { "Decrement lock number to $locks" }
         }
         return OutcomeCode.CODE_000_SUCCESS
+    }
+
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     */
+    override fun deinit() {
+        /** No resources or fields to de-initialize */
     }
 }

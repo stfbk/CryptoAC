@@ -1,4 +1,4 @@
-# CryptoAC
+# What is CryptoAC?
 
 Cloud-Edge services and the Internet of Things have become pervasive in our society leading to the rise of, to mention a few application scenarios, industry 4.0, smart cities and intelligent mobility. All these interconnected devices and services **use, store and exchange** across the network a large amount of **sensitive data**. However, the confidentiality and integrity of these data are often threatened by external attackers, malicious insiders and "honest-but-curious" service providers.
 

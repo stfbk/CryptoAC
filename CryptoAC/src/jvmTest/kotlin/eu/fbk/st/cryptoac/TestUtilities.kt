@@ -28,26 +28,19 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
-import java.io.File
+import java.io.*
 
 private val logger = KotlinLogging.logger {}
 
 class TestUtilities {
     companion object {
 
+        val dir = File("../Documentation/Installation/")
 
-
-
-        fun resetLocalProxy() {
-            logger.warn { "Resetting (local) proxy" }
+        fun resetLocalCryptoAC() {
+            logger.warn { "Resetting (local) CryptoAC" }
             File(USERS_PROFILE_DIRECTORY_PATH).deleteRecursively()
         }
-
-        fun resetProxy() {
-            logger.warn { "Resetting proxy" }
-            // todo delete all users and profiles
-        }
-
 
         fun resetDMCloud() {
             logger.warn { "Resetting Cloud DM" }
@@ -104,6 +97,7 @@ class TestUtilities {
                 logger.warn { "Deleting user $it from the DM" }
                 usersToDelete.add(dm.getDeleteClientCommand(it))
             }
+
             assert(dm.sendDynsecCommand(usersToDelete) == OutcomeCode.CODE_000_SUCCESS)
 
             assert(dm.unlock() == OutcomeCode.CODE_000_SUCCESS)
@@ -115,7 +109,7 @@ class TestUtilities {
             runBlocking {
                 HttpClient(CIO) {
                     expectSuccess = false
-                    // TODO configure this
+                    // TODO configure http client
                 }.use {
                     assert(
                         it.delete<HttpResponse>("${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_POLICY}").status ==
@@ -238,7 +232,7 @@ class TestUtilities {
             return HttpClient(io.ktor.client.engine.jetty.Jetty) {
                 expectSuccess = false
                 install(HttpCookies) /** To accept all cookies */
-                // TODO configure this, as for now the client accepts all certificates
+                // TODO configure http client, as for now the client accepts all certificates
                 engine {
                     sslContextFactory.isTrustAll = true
                 }
@@ -355,13 +349,42 @@ class TestUtilities {
     }
 }
 
-fun String.runCommand(workingDir: File): Process {
+/**
+ * Execute the given string as a command for a ProcessBuilder,
+ * setting the [workingDir] and waiting until the process sends
+ * as output all strings contained in [endStrings]. For instance,
+ * this is useful when you need to launch a command that takes some
+ * time to execute, and you want to wait until its completion
+ */
+fun String.runCommand(workingDir: File, endStrings: HashSet<String>): Process {
     val arguments = this.split(Regex(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).map {
         it.replace("\"", "")
     }.toTypedArray()
-    return ProcessBuilder(*arguments)
+    val process = ProcessBuilder(*arguments)
         .directory(workingDir)
-        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-        .redirectError(ProcessBuilder.Redirect.INHERIT)
         .start()
+
+    var output = ""
+    var error = ""
+    val inputStream = BufferedReader(InputStreamReader(process.inputStream))
+    val errorStream = BufferedReader(InputStreamReader(process.errorStream))
+    while (
+        endStrings.isNotEmpty() &&
+        (
+            inputStream.readLine()?.also { output = it } != null ||
+            errorStream.readLine()?.also { error = it } != null
+        )
+    ) {
+        if (error != "") {
+            println("runCommand [error]: $error")
+            error = ""
+        }
+        if (output != "") {
+            println("runCommand [output]: $output")
+            endStrings.removeIf { output.contains(it) }
+            output = ""
+        }
+    }
+    inputStream.close()
+    return process
 }

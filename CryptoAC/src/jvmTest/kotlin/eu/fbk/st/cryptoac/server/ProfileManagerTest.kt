@@ -14,7 +14,7 @@ internal class ProfileManagerTest {
 
     @AfterEach
     fun tearDown() {
-        TestUtilities.resetLocalProxy()
+        TestUtilities.resetLocalCryptoAC()
     }
 
     @Test

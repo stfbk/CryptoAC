@@ -1,20 +1,13 @@
 package eu.fbk.st.cryptoac.implementation.mm
 
-import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.Parameters
-import eu.fbk.st.cryptoac.TestUtilities
 import eu.fbk.st.cryptoac.TestUtilities.Companion.assertUnLockAndLock
+import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.TestUtilities.Companion.resetMMRedis
-import eu.fbk.st.cryptoac.core.elements.ElementTypeWithKey
 import eu.fbk.st.cryptoac.core.elements.User
-import eu.fbk.st.cryptoac.core.tuples.RoleTuple
-import eu.fbk.st.cryptoac.crypto.AsymKeysType
-import eu.fbk.st.cryptoac.crypto.EncryptedAsymKeys
 import eu.fbk.st.cryptoac.runCommand
 import org.junit.jupiter.api.*
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class MMInterfaceRedisTest: MMInterfaceTest() {
@@ -22,18 +15,12 @@ internal class MMInterfaceRedisTest: MMInterfaceTest() {
     override val mm: MMInterface =
         MMInterfaceRedis(Parameters.mmInterfaceRedisParameters)
 
-    // TODO do not use "processBuild.waitFor", instead read
-    //  the output until you find a specific string that
-    //  indicates that the process terminated
-
     private var processDocker: Process? = null
 
     @BeforeAll
     override fun setUpAll() {
-        val processBuild = "./buildAll.sh".runCommand(File("../Documentation/Installation/"))
-        processBuild.waitFor(5, TimeUnit.SECONDS)
-        processDocker = "./startCryptoAC_MQTT.sh \"cryptoac_redis\"".runCommand(File("../Documentation/Installation/"))
-        processDocker!!.waitFor(3, TimeUnit.SECONDS)
+        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_MQTT.sh \"cryptoac_redis\"".runCommand(dir, hashSetOf("Server initialized"))
     }
 
     @BeforeEach
@@ -52,8 +39,7 @@ internal class MMInterfaceRedisTest: MMInterfaceTest() {
     override fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        val cleanProcess = "./clean.sh".runCommand(File("../Documentation/Installation/"))
-        cleanProcess.waitFor(5, TimeUnit.SECONDS)
+        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
     /** Add a user in the MM and return an instance of the interface */
@@ -67,5 +53,10 @@ internal class MMInterfaceRedisTest: MMInterfaceTest() {
         assert(userMM.unlock() == OutcomeCode.CODE_000_SUCCESS)
         assertUnLockAndLock(mm)
         return userMM
+    }
+
+    @Test
+    override fun initAdmin() {
+        /** Already done during the setup */
     }
 }

@@ -215,7 +215,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
 
         MainScope().launch {
             if (props.userIsLogged) {
-                getProfileFromProxy()
+                getProfileFromCryptoAC()
             } else {
                 logger.warn { "Trying to see the dashboard but user is not logged in" }
                 props.handleDisplayAlert(OutcomeCode.CODE_051_LOGIN_REQUIRED, CryptoACAlertSeverity.INFO)
@@ -351,7 +351,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
     }
 
     /** Get the profile of the [username] for the current coreType */
-    private suspend fun getProfileFromProxy(username: String? = props.username) {
+    private suspend fun getProfileFromCryptoAC(username: String? = props.username) {
         val actualEndpoint = "$baseURL${PROFILES.replace("{Core}", props.coreType.toString())}/$username"
         logger.info { "Getting the profile for user $username at endpoint $actualEndpoint" }
         val httpResponse: HttpResponse = props.httpClient.get(actualEndpoint)

@@ -102,7 +102,7 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
             props.httpClient.get(endpoint)
         } catch (e: Error) {
             if (e.message == "Fail to fetch") {
-                logger.error { "Proxy is unreachable" }
+                logger.error { "CryptoAC is unreachable" }
                 props.handleDisplayAlert(OutcomeCode.CODE_046_CRYPTOAC_CONNECTION_TIMEOUT, CryptoACAlertSeverity.ERROR)
             } else {
                 logger.error { "Error during HTTP request (${e.message}), see console log for details" }

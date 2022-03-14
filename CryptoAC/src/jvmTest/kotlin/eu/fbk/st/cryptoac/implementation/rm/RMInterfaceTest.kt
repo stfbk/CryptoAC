@@ -112,7 +112,9 @@ internal abstract class RMInterfaceTest {
             )
             assert(
                 rm!!.checkWriteFile(
-                    writeFileRequest.symKeyVersionNumber, writeFileRequest.fileTuple
+                    Constants.ADMIN,
+                    writeFileRequest.symKeyVersionNumber,
+                    writeFileRequest.fileTuple,
                 ) == OutcomeCode.CODE_000_SUCCESS
             )
         }
@@ -134,7 +136,9 @@ internal abstract class RMInterfaceTest {
         val writeFileRequest = createWriteFileRequest(newFile.name, addFileRequest.fileTuple.fileToken, 1)
         assert(
             rm!!.checkWriteFile(
-                writeFileRequest.symKeyVersionNumber, writeFileRequest.fileTuple
+                Constants.ADMIN,
+                writeFileRequest.symKeyVersionNumber,
+                writeFileRequest.fileTuple,
             ) == OutcomeCode.CODE_000_SUCCESS
         )
 
@@ -142,7 +146,9 @@ internal abstract class RMInterfaceTest {
         run {
             assert(
                 rm!!.checkWriteFile(
-                    writeFileRequest.symKeyVersionNumber, writeFileRequest.fileTuple
+                    Constants.ADMIN,
+                    writeFileRequest.symKeyVersionNumber,
+                    writeFileRequest.fileTuple,
                 ) == OutcomeCode.CODE_006_FILE_NOT_FOUND
             )
         }
@@ -152,7 +158,9 @@ internal abstract class RMInterfaceTest {
             val nonExistingWriteFileRequest = createWriteFileRequest("non-existing", "non-existing", 1)
             assert(
                 rm!!.checkWriteFile(
-                    nonExistingWriteFileRequest.symKeyVersionNumber, nonExistingWriteFileRequest.fileTuple
+                    Constants.ADMIN,
+                    nonExistingWriteFileRequest.symKeyVersionNumber,
+                    nonExistingWriteFileRequest.fileTuple,
                 ) == OutcomeCode.CODE_006_FILE_NOT_FOUND
             )
         }
@@ -161,8 +169,11 @@ internal abstract class RMInterfaceTest {
         run {
             assert(dm!!.deleteFile(newFile.name) == OutcomeCode.CODE_000_SUCCESS)
             assert(
-                rm!!.checkWriteFile(writeFileRequest.symKeyVersionNumber,
-                    writeFileRequest.fileTuple) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
+                rm!!.checkWriteFile(
+                    Constants.ADMIN,
+                    writeFileRequest.symKeyVersionNumber,
+                    writeFileRequest.fileTuple,
+                ) == OutcomeCode.CODE_006_FILE_NOT_FOUND)
         }
     }
 
@@ -181,6 +192,10 @@ internal abstract class RMInterfaceTest {
         val file = TestUtilities.createFile(fileName = fileName, symEncKeyVersionNumber = symKeyVersionNumber, enforcement = EnforcementType.COMBINED)
         file.token = fileToken
         val fileTuple = TestUtilities.createFileTuple(file)
-        return WriteFileRequest(fileTuple, symKeyVersionNumber)
+        return WriteFileRequest(
+            Constants.ADMIN,
+            fileTuple,
+            symKeyVersionNumber,
+        )
     }
 }

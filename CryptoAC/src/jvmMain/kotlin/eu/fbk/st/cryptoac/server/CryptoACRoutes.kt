@@ -37,6 +37,7 @@ import eu.fbk.st.cryptoac.encodeBase64
 import eu.fbk.st.cryptoac.inputStream
 import eu.fbk.st.cryptoac.server.SessionController.Companion.addSocketToSection
 import eu.fbk.st.cryptoac.server.SessionController.Companion.createSession
+import eu.fbk.st.cryptoac.server.SessionController.Companion.deinitAllCores
 import eu.fbk.st.cryptoac.server.SessionController.Companion.doesSessionExists
 import eu.fbk.st.cryptoac.server.SessionController.Companion.getOrCreateCore
 import eu.fbk.st.cryptoac.server.SessionController.Companion.getSessionUsername
@@ -353,8 +354,7 @@ fun Route.profileRouting() {
                  * If the user is logged-in and with a
                  * profile, store the core in the session
                  */
-                // TODO when the session is destroyed, you have to clear
-                //  out the MQTT core, so to disconnect the MQTT client (?)
+
                 if (requestedUsername == loggedUser) {
                     setSessionCore(call.sessions, CoreFactory.getCore(coreParameters))
                 }
@@ -1079,9 +1079,10 @@ fun Route.userRouting() {
 
                 var enforcementInput: String? = null
                 var newFileName: String? = null
-                var stream: InputStream? = null
+                var stream: InputStream = "".inputStream()
 
-                if (call.request.contentType().match(ContentType.MultiPart.FormData)) {
+                val cType = call.request.contentType()
+                if (cType.match(ContentType.MultiPart.FormData)) {
                     call.receiveMultipart().forEachPart { part ->
                         when (part) {
                             is PartData.FormItem -> {
@@ -1099,17 +1100,21 @@ fun Route.userRouting() {
                                 logger.warn { "Received unexpected binary ${part.name}" }
                             }
                             else -> {
-                                // TODO
+                                logger.warn { "Received unexpected part type ${part.javaClass}" }
                             }
                         }
                     }
-                } else if (call.request.contentType().match(ContentType.Application.FormUrlEncoded)) {
+                } else if (cType.match(ContentType.Application.FormUrlEncoded)) {
                     val parameters = call.receiveParameters()
                     newFileName = parameters[FILE_NAME]
                     enforcementInput = parameters[ENFORCEMENT]
-                    stream = "todo this is useless".inputStream() // TODO
+                    stream = (parameters[FILE_CONTENT] ?: "").inputStream()
                 } else {
-                    // TODO
+                    return@post unprocessableEntity(
+                        call,
+                        "Wrong content type $cType",
+                        OutcomeCode.CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED
+                    )
                 }
 
 
@@ -1130,13 +1135,6 @@ fun Route.userRouting() {
                         )
                     }
                 }
-                if (stream == null) {
-                    return@post unprocessableEntity(
-                        call,
-                        "Missing $FILE_CONTENT parameter",
-                        OutcomeCode.CODE_019_MISSING_PARAMETERS
-                    )
-                }
                 if (newFileName == null) {
                     return@post unprocessableEntity(
                         call,
@@ -1151,7 +1149,7 @@ fun Route.userRouting() {
                 }
 
                 /** Create the new file */
-                val addFileCode = coreObject.addFile(newFileName!!, stream!!, enforcement)
+                val addFileCode = coreObject.addFile(newFileName!!, stream, enforcement)
                 if (addFileCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@post internalError(
                         call,
@@ -1179,7 +1177,8 @@ fun Route.userRouting() {
                 var fileName: String? = null
                 var stream: InputStream? = null
 
-                if (call.request.contentType().match(ContentType.MultiPart.FormData)) {
+                val cType = call.request.contentType()
+                if (cType.match(ContentType.MultiPart.FormData)) {
                     call.receiveMultipart().forEachPart { part ->
                         when (part) {
                             is PartData.FormItem -> {
@@ -1194,13 +1193,17 @@ fun Route.userRouting() {
                             }
                         }
                     }
-                } else if (call.request.contentType().match(ContentType.Application.FormUrlEncoded)) {
+                } else if (cType.match(ContentType.Application.FormUrlEncoded)) {
                     val parameters = call.receiveParameters()
                     fileName = parameters[FILE_NAME]
                     val fileContent = parameters[FILE_CONTENT]
                     stream = fileContent?.inputStream()
                 } else {
-                    // TODO
+                    return@patch unprocessableEntity(
+                        call,
+                        "Wrong content type $cType",
+                        OutcomeCode.CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED
+                    )
                 }
 
                 if (fileName == null) {
@@ -1379,6 +1382,7 @@ fun Route.userRouting() {
 /** Routes related to user's login; login (post), logout (delete) */
 fun Route.loginRouting() {
 
+    /** TODO authenticate OAuth https://ktor.io/docs/authentication.html  */
     /** Wrap all routes related to log in */
     route(LOGIN) {
 
@@ -1413,7 +1417,13 @@ fun Route.loginRouting() {
         /** Log out the user */
         delete {
             if (doesSessionExists(call.sessions)) {
-                logger.info { "Received logout request from user ${getSessionUsername(call.sessions)} " }
+                val username = getSessionUsername(call.sessions)
+                logger.info { "Received logout request from user $username " }
+
+                // TODO when Ktor will have automatic session expire,
+                //  remember to invoke this function also in that case
+                deinitAllCores(call.sessions)
+
                 call.sessions.clear<UserSession>()
                 return@delete ok(call)
             }

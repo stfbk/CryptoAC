@@ -253,7 +253,7 @@ class Actions: RComponent<ActionsProps, State>() {
                     val win = window.open(url = endpointWithParameters.toString(), target = "_blank")
                     props.handleChangeBackdropIsOpen(false)
                     win?.onload = {
-                        /** The file was correctly downloaded from the proxy */
+                        /** The file was correctly downloaded from CryptoAC */
                         if (win!!.document == undefined) {
                             logger.info { "Get request successful" }
                             props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
@@ -323,7 +323,7 @@ class Actions: RComponent<ActionsProps, State>() {
 
 
 
-    /** Handle the [response] from the proxy by showing in the alert the outcome code */
+    /** Handle the [response] from CryptoAC by showing in the alert the outcome code */
     private fun callbackShowOutcomeCode(response: HttpResponse) {
 
         props.handleChangeBackdropIsOpen(false)
@@ -341,7 +341,7 @@ class Actions: RComponent<ActionsProps, State>() {
         }
     }
 
-    /** Handle the [response] from the proxy by getting the profile of the new user */
+    /** Handle the [response] from CryptoAC by getting the profile of the new user */
     private fun callbackDownloadUserProfile(response: HttpResponse, values: HashMap<String, String>) {
 
         props.handleChangeBackdropIsOpen(false)
@@ -366,7 +366,7 @@ class Actions: RComponent<ActionsProps, State>() {
         }
     }
 
-    /** Handle the [response] from the proxy by displaying the received MQTT messages in the content */
+    /** Handle the [response] from CryptoAC by displaying the received MQTT messages in the content */
     private fun callbackSubscribeToTopic(response: HttpResponse, values: HashMap<String, String>) {
 
         props.handleChangeBackdropIsOpen(false)

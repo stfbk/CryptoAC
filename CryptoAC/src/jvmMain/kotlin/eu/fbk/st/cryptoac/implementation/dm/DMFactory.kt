@@ -1,7 +1,7 @@
 package eu.fbk.st.cryptoac.implementation.dm
 
+import eu.fbk.st.cryptoac.Utils.Companion.generateRandomString
 import eu.fbk.st.cryptoac.core.CryptoACMqttClient
-import eu.fbk.st.cryptoac.generateRandomString
 import mu.KotlinLogging
 import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence
 
@@ -32,7 +32,10 @@ class DMFactory {
                         val client = CryptoACMqttClient(
                             brokerBaseAPI,
                             generateRandomString(),
-                            MemoryPersistence()
+                            MemoryPersistence(),
+                            dmParameters.tls,
+                            dmParameters.username,
+                            dmParameters.password,
                         ) // TODO check configuration of client is ok
                         DMInterfaceMosquitto(dmParameters, client)
                     } else {

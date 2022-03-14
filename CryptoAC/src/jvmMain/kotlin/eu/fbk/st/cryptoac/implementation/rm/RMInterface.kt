@@ -24,9 +24,22 @@ abstract class RMInterface {
 
     /**
      * Invoke the RM to validate the update of
-     * a resource involving the given [newFileTuple]
-     * and [symEncKeyVersionNumber], and return the
+     * a resource using the given [roleName] and
+     * involving the given [newFileTuple] and
+     * [symEncKeyVersionNumber], and return the
      * outcome code
      */
-    abstract fun checkWriteFile(symEncKeyVersionNumber: Int, newFileTuple: FileTuple): OutcomeCode
+    abstract fun checkWriteFile(
+        roleName: String,
+        symEncKeyVersionNumber: Int,
+        newFileTuple: FileTuple
+    ): OutcomeCode
+
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     */
+    abstract fun deinit()
 }

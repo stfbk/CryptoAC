@@ -9,7 +9,7 @@ import eu.fbk.st.cryptoac.SERVER.CORE
  */
 object API {
 
-    /** (any mode) the HTTP protocol. TODO this should removed and only HTTPS should be used*/
+    /** (any mode) the HTTP protocol. TODO this should removed and only HTTPS should be used */
     const val HTTP = "http://"
 
     /** (any mode) the HTTPS protocol */

@@ -32,7 +32,7 @@ external interface MQTTDashboardState : RBACDashboardState {
     /** The list of MQTT messages, sorted by topic */
     var mqttMessages: HashMap<String, MutableList<String>>
 
-    /** The Web Socket Secure for communication with the proxy */
+    /** The Web Socket Secure for communication with CryptoAC */
     var wss: DefaultClientWebSocketSession
 }
 
@@ -348,7 +348,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
      * Init by retrieving the lists of users, roles and
      * files (admin only), assignments and permissions.
      * Also, create a (secure) web socket to receive
-     * MQTT messages from the proxy.
+     * MQTT messages from CryptoAC.
      */
     override fun MQTTDashboardState.init() {
         logger.info { "Initializing the state of the RBACMQTTDashboard component" }
@@ -380,7 +380,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
             }
 
 
-            /** Create the socket to receive MQTT messages from the proxy */
+            /** Create the socket to receive MQTT messages from CryptoAC */
             val path = "$CRYPTOAC${FILES.replace("{Core}", props.coreType.toString())}"
             val tempWSS = props.httpClient.webSocketSession(
                 method = HttpMethod.Get,

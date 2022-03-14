@@ -12,6 +12,7 @@
       "type":"eu.fbk.st.cryptoac.implementation.mm.MMInterfaceRedisParameters",
       "mmType":"REDIS",
       "username":"admin",
+      "token":"admin",
       "password":"password",
       "port":6379,
       "url":"10.1.0.5"

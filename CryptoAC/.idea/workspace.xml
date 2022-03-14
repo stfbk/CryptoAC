@@ -5,41 +5,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a787849-4788-4a0a-90f0-53d3ff5a735e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/OutcomeCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/OutcomeCode.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/App.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/App.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/Login.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/Login.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/Dashboard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/Dashboard.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACCLOUDDashboard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACCLOUDDashboard.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACDashboard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACDashboard.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACMQTTDashboard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACMQTTDashboard.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/TradeOffBoard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/TradeOffBoard.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/Actions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/Actions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreRBACCLOUD.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreRBACCLOUD.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreRBACMQTT.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreRBACMQTT.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/Crypto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/Crypto.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/CryptoParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/CryptoParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/java/CryptoJava.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/java/CryptoJava.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/openssl/CryptoOpenSSL.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/sodium/CryptoSodium.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/crypto/sodium/CryptoSodium.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMCloud.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMCloud.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMFactory.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMFactory.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMInterfaceMosquitto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMInterfaceMosquitto.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMInterfaceRBACCryptoAC.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMInterfaceRBACCryptoAC.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterface.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterface.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceMySQL.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceMySQL.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceRedis.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceRedis.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterface.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterface.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMCloud.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMCloud.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterface.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterface.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceCryptoAC.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceCryptoAC.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/CryptoACRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/CryptoACRoutes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/Parameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/Parameters.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/TestUtilities.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/TestUtilities.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/core/CoreRBACMQTTTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/core/CoreRBACMQTTTest.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/core/CoreRBACTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/core/CoreRBACTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/crypto/CryptoTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/crypto/CryptoTest.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMInterfaceMosquittoTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/dm/DMInterfaceMosquittoTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceMySQLTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceMySQLTest.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceRedisTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceRedisTest.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterfaceTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/opa/OPAInterfaceTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProxyRoutesTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProxyRoutesTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProxyUtilities.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProxyUtilities.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceCryptoACTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceCryptoACTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/implementation/rm/RMInterfaceTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProfileManagerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProfileManagerTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProxyRoutesTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/CryptoACRoutesTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/ProxyUtilities.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/server/CryptoACUtilities.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-1.0-SNAPSHOT/lib/CryptoAC-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-1.0-SNAPSHOT/lib/CryptoAC-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/mosquitto.conf" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/mosquitto.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/RM/swagger_CryptoAC_RM.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentation/RM/swagger_CryptoAC_RM.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Students/Alessandro Colombo/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../Students/Alessandro Colombo/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Students/Enrico Marconi/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../Students/Enrico Marconi/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,8 +135,8 @@
         <option value="Rego File" />
         <option value="Kotlin Object" />
         <option value="JUnit5 Test Class" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Enum" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -219,33 +219,10 @@
       <recent name="eu.fbk.st.cryptoac.implementation.ds" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.All in CryptoAC.jvmTest">
+  <component name="RunManager" selected="JUnit.All in CryptoAC.jvmTest (2)">
     <configuration default="true" type="OPA_RUN_CONFIGURATION" factoryName="Opa configuration factory">
       <option name="query" value="" />
       <option name="addtionalargs" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="CoreRBACCLOUDTest.assign blank, non-existing, incomplete or deleted user to blank, non-existing or deleted role fails" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":cleanJvmTest" />
-            <option value=":jvmTest" />
-            <option value="--tests &quot;eu.fbk.st.cryptoac.core.CoreRBACCLOUDTest.assign blank, non-existing, incomplete or deleted user to blank, non-existing or deleted role fails&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="CryptoAC [distZip]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -269,6 +246,46 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="DMInterfaceMosquittoTest.b b" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="-Djava.util.logging.config.file=$PROJECT_DIR$/jsr47min.properties" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":cleanJvmTest" />
+            <option value=":jvmTest" />
+            <option value="--tests" />
+            <option value="&quot;eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquittoTest.b b&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="All in CryptoAC.jvmTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CryptoAC.jvmTest" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in CryptoAC.jvmTest (2)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CryptoAC.jvmTest" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="All in CryptoAC.jvmTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CryptoAC.jvmTest" />
       <option name="PACKAGE_NAME" value="" />
@@ -277,49 +294,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ProxyRoutesTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CryptoAC.jvmTest" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="eu.fbk.st.cryptoac.server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="eu.fbk.st.cryptoac.server" />
-      <option name="MAIN_CLASS_NAME" value="eu.fbk.st.cryptoac.server.ProxyRoutesTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="eu.fbk.st.cryptoac.server in CryptoAC.jvmTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CryptoAC.jvmTest" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="eu.fbk.st.cryptoac.server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="eu.fbk.st.cryptoac.server" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
-      <item itemvalue="Gradle.CryptoAC [distZip]" />
+      <item itemvalue="Gradle.DMInterfaceMosquittoTest.b b" />
       <item itemvalue="JUnit.All in CryptoAC.jvmTest" />
-      <item itemvalue="Gradle.CoreRBACCLOUDTest.assign blank, non-existing, incomplete or deleted user to blank, non-existing or deleted role fails" />
-      <item itemvalue="JUnit.ProxyRoutesTest" />
-      <item itemvalue="JUnit.eu.fbk.st.cryptoac.server in CryptoAC.jvmTest" />
+      <item itemvalue="Gradle.CryptoAC [distZip]" />
+      <item itemvalue="JUnit.All in CryptoAC.jvmTest (1)" />
+      <item itemvalue="JUnit.All in CryptoAC.jvmTest (2)" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.All in CryptoAC.jvmTest" />
-        <item itemvalue="JUnit.ProxyRoutesTest" />
-        <item itemvalue="JUnit.eu.fbk.st.cryptoac.server in CryptoAC.jvmTest" />
+        <item itemvalue="JUnit.All in CryptoAC.jvmTest (2)" />
+        <item itemvalue="JUnit.All in CryptoAC.jvmTest (1)" />
         <item itemvalue="Gradle.CryptoAC [distZip]" />
-        <item itemvalue="Gradle.CoreRBACCLOUDTest.assign blank, non-existing, incomplete or deleted user to blank, non-existing or deleted role fails" />
+        <item itemvalue="Gradle.DMInterfaceMosquittoTest.b b" />
+        <item itemvalue="JUnit.All in CryptoAC.jvmTest" />
       </list>
     </recent_temporary>
   </component>

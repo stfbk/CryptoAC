@@ -539,8 +539,8 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
                 code
             }
             locks > 0 -> {
-                logger.debug { "Decrement lock number to ${locks-1}" }
                 locks--
+                logger.debug { "Decrement lock number to $locks" }
                 OutcomeCode.CODE_000_SUCCESS
             }
             else -> {
@@ -569,14 +569,24 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
                 OutcomeCode.CODE_000_SUCCESS
             }
             locks > 0 -> {
-                logger.debug { "Decrement lock number to ${locks-1}" }
                 locks--
+                logger.debug { "Decrement lock number to $locks" }
                 OutcomeCode.CODE_000_SUCCESS
             }
             else -> {
                 OutcomeCode.CODE_000_SUCCESS
             }
         }
+    }
+
+    /**
+     * This function is invoked whenever the interface
+     * is dismissed, and it should contain the code to
+     * de-initialize the interface (e.g., possibly disconnect
+     * from remote services like MQTT brokers, databases, etc.)
+     */
+    fun deinit() {
+        /** No resources or fields to de-initialize */
     }
 
 

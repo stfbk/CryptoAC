@@ -2,32 +2,25 @@ package eu.fbk.st.cryptoac.implementation.opa
 
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.Parameters
+import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.TestUtilities.Companion.resetOPACloud
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
 import eu.fbk.st.cryptoac.runCommand
 import org.junit.jupiter.api.*
 
 import org.junit.jupiter.api.Assertions.*
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class OPAInterfaceTest {
 
     private val opa = OPAInterface(Parameters.opaInterfaceParameters)
 
-    // TODO do not use "processBuild.waitFor", instead read
-    //  the output until you find a specific string that
-    //  indicates that the process terminated
-
     private var processDocker: Process? = null
 
     @BeforeAll
     fun setUpAll() {
-        val processBuild = "./buildAll.sh".runCommand(File("../Documentation/Installation/"))
-        processBuild.waitFor(10, TimeUnit.SECONDS)
-        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_opa\"".runCommand(File("../Documentation/Installation/"))
-        processDocker!!.waitFor(5, TimeUnit.SECONDS)
+        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_CLOUD.sh \"cryptoac_opa\"".runCommand(dir, hashSetOf("release_notes"))
     }
 
     @BeforeEach
@@ -46,8 +39,7 @@ internal class OPAInterfaceTest {
     fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        val cleanProcess = "./clean.sh".runCommand(File("../Documentation/Installation/"))
-        cleanProcess.waitFor(5, TimeUnit.SECONDS)
+        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
 

@@ -140,6 +140,19 @@ class CoreRBACMQTT(
     }
 
     /**
+     * This function is invoked whenever the core object
+     * is dismissed, and it should contain the code to
+     * de-initialize the core (e.g., possibly disconnect from
+     * remote services like MQTT brokers, databases, etc.)
+     */
+    override fun deinit() {
+        mm.deinit()
+        dm.deinit()
+        runBlocking { wss?.close() }
+        // TODO wipe crypto material from user object
+    }
+
+    /**
      * Add a user with the given [username] to the policy
      * and return eventual configuration parameters along
      * with the outcome code (if an error occurred, the
@@ -161,7 +174,8 @@ class CoreRBACMQTT(
         }
 
         /** Add the user in the MM */
-        val addUserResult = mm.addUser(User(username))
+        val userToAdd = User(name = username)
+        val addUserResult = mm.addUser(userToAdd)
         return if (addUserResult.code != OutcomeCode.CODE_000_SUCCESS) {
             CodeCoreParameters(endOfMethod(addUserResult.code))
         }
@@ -182,7 +196,7 @@ class CoreRBACMQTT(
                 CodeCoreParameters(
                     endOfMethod(OutcomeCode.CODE_000_SUCCESS),
                     CoreParametersMQTT(
-                        user = User(name = username),
+                        user = userToAdd,
                         cryptoType = coreParameters.cryptoType,
                         mmInterfaceParameters = mmUserInterfaceParameters,
                         dmInterfaceParameters = when (coreParameters.dmInterfaceParameters.dmType) {
@@ -254,7 +268,7 @@ class CoreRBACMQTT(
         return if (code != OutcomeCode.CODE_000_SUCCESS) {
             endOfMethod(code)
         } else {
-            // TODO does this also delete the user's assignments or not?
+            /** This implicitly deletes the user's assignments to roles */
             endOfMethod(dm.sendDynsecCommand(hashSetOf(dm.getDeleteClientCommand(username))))
         }
     }
@@ -304,13 +318,16 @@ class CoreRBACMQTT(
         /** Create the new RoleTuple linking the admin with the new [roleName] */
         val adminRoleTuple = RoleTuple(
             username = ADMIN, roleName = roleName,
-            encryptedAsymEncKeys = encryptedAsymEncKeys, encryptedAsymSigKeys =encryptedAsymSigKeys,
+            encryptedAsymEncKeys = encryptedAsymEncKeys,
+            encryptedAsymSigKeys =encryptedAsymSigKeys,
         )
 
         /** Sign the new RoleTuple with the asymmetric signing private key of the admin */
         val signature = crypto.createSignature(adminRoleTuple.getBytesForSignature(), asymSigKeyPair.private)
         adminRoleTuple.updateSignature(
-            newSignature = signature, newSigner = ADMIN, newSignerType = ElementTypeWithKey.USER
+            newSignature = signature,
+            newSigner = ADMIN,
+            newSignerType = ElementTypeWithKey.USER
         )
 
         /** Update the metadata */
@@ -325,7 +342,6 @@ class CoreRBACMQTT(
 
         return endOfMethod(dm.sendDynsecCommand(hashSetOf(
             dm.getCreateRoleCommand(roleName),
-            //dm.getAddClientRoleCommand(ADMIN, roleName) // TODO no need for this?
         )))
     }
 
@@ -382,9 +398,7 @@ class CoreRBACMQTT(
         if (code != OutcomeCode.CODE_000_SUCCESS) {
             return endOfMethod(code)
         }
-
-        /** Delete the role from the DM */
-        // TODO does this also delete the role's assignments/permissions or not?
+        /** This implicitly deletes the roles' permissions to topics */
         return endOfMethod(dm.sendDynsecCommand(hashSetOf(dm.getDeleteRoleCommand(roleName))))
     }
 
@@ -486,6 +500,15 @@ class CoreRBACMQTT(
             return code
         }
 
+        /** Get all roles having permission on the topic */
+        val removePermissionFromRolesDM = hashSetOf<String>()
+        mm.getPermissionTuples(fileName = fileName).forEach {
+            val permissions = computeACLTypesFromPermission(it.permission)
+            permissions.forEach { aclType ->
+                removePermissionFromRolesDM.add(dm.getRemoveRoleACLCommand(it.roleName, aclType, fileName))
+            }
+        }
+
         /** Delete the permission tuples matching the [fileName] from the MM */
         code = mm.deletePermissionTuples(fileName = fileName)
         if (code != OutcomeCode.CODE_000_SUCCESS) {
@@ -498,7 +521,12 @@ class CoreRBACMQTT(
             return endOfMethod(code)
         }
 
-        // TODO also remove all ACLs regarding the file?
+        /** Remove permission on topic to all roles */
+        code = dm.sendDynsecCommand(removePermissionFromRolesDM)
+        if (code != OutcomeCode.CODE_000_SUCCESS) {
+            return endOfMethod(code)
+        }
+
         /** Delete the file from the DM */
         return endOfMethod(dm.deleteFile(fileName).apply {
             if (this == OutcomeCode.CODE_000_SUCCESS) {
@@ -571,7 +599,7 @@ class CoreRBACMQTT(
         /** If we did not find the user's key, it means that the user does not exist (or was deleted) */
         if (userAsymEncPublicKeyBytes == null) {
             logger.warn { "User's key not found. Checking the user's status" }
-            val status = mm.getStatus(username, ElementTypeWithStatus.USER)
+            val status = mm.getStatus(name = username, type = ElementTypeWithStatus.USER)
             return if (status != null) {
                 logger.warn { "User's status is $status" }
                 when (status) {
@@ -815,7 +843,7 @@ class CoreRBACMQTT(
                 }
             }
 
-            code = mm.deletePermissionTuples(roleName = roleName, roleVersionNumber = oldRoleVersionNumber)
+            code = mm.deletePermissionTuples(roleName = roleName)
             if (code != OutcomeCode.CODE_000_SUCCESS) {
                 return endOfMethod(code)
             }
@@ -988,13 +1016,8 @@ class CoreRBACMQTT(
         }
 
 
-        // TODO refactor computeACLTypesFromPermission
         /** Add the role to the file in the DM */
-        val permissions = when (permission) {
-            PermissionType.READ -> listOf(AclType.publishClientReceive, AclType.subscribePattern, AclType.unsubscribePattern)
-            PermissionType.READWRITE -> listOf(AclType.publishClientReceive, AclType.publishClientSend, AclType.subscribePattern, AclType.unsubscribePattern)
-            PermissionType.WRITE -> listOf(AclType.publishClientSend, AclType.subscribePattern, AclType.unsubscribePattern)
-        }
+        val permissions = computeACLTypesFromPermission(permission)
         val commands = hashSetOf<String>()
         permissions.forEach {
             commands.add(dm.getAddRoleACLCommand(roleName, it, fileName))
@@ -1133,17 +1156,13 @@ class CoreRBACMQTT(
             }
         }
         else {
+            // MMM should we give the possibility to assign/revoke write permission only?
             logger.warn { "Permission $permission is invalid to revoke" }
             return endOfMethod(OutcomeCode.CODE_016_INVALID_PERMISSION)
         }
 
-        // TODO refactor computeACLTypesFromPermission
         /** Remove the role from the topic in the DM */
-        val permissions = when (permission) {
-            PermissionType.READ -> listOf(AclType.publishClientReceive, AclType.subscribePattern)
-            PermissionType.READWRITE -> listOf(AclType.publishClientReceive, AclType.publishClientSend, AclType.subscribePattern)
-            PermissionType.WRITE -> listOf(AclType.publishClientSend, AclType.subscribePattern)
-        }
+        val permissions = computeACLTypesFromPermission(permission)
         val commands = hashSetOf<String>()
         permissions.forEach {
             commands.add(dm.getRemoveRoleACLCommand(roleName, it, fileName))
@@ -1197,7 +1216,7 @@ class CoreRBACMQTT(
         /**
          * Synchronize on the [subscribedTopicsKeysAndMessages] object
          * to avoid interference with the messageArrived callback function
-         **/
+         */
         synchronized(subscribedTopicsKeysAndMessages) {
 
             logger.info { "Publishing a message in topic $fileName by user ${user.name}" }
@@ -1233,18 +1252,18 @@ class CoreRBACMQTT(
                  * up-to-date
                  */
                 logger.debug { "Getting enforcement from MM" }
-                val file = mm.getFiles(
+                val fileObject = mm.getFiles(
                     fileName = fileName,
-                    isAdmin = false,
+                    isAdmin = user.isAdmin
                 ).firstOrNull()
-                if (file == null) {
+                if (fileObject == null) {
                     logger.warn {
                         "File not found. Either ${user.name} does not have " +
                         "access to topic $fileName or topic does not exist"
                     }
                     return endOfMethod(OutcomeCode.CODE_006_FILE_NOT_FOUND)
                 }
-                file.enforcement
+                fileObject.enforcement
             }
 
             return when (enforcement) {
@@ -1348,7 +1367,15 @@ class CoreRBACMQTT(
             CodeRoleTuples(code)
         } else {
             val roleTuples = mm.getRoleTuples(
-                username = username, roleName = roleName,
+                username = if (
+                    !user.isAdmin ||
+                    (username.isNullOrBlank() && roleName.isNullOrBlank())
+                ) {
+                    user.name
+                } else {
+                    username
+                },
+                roleName = roleName,
                 isAdmin = user.isAdmin,
                 offset = 0, limit = NO_LIMIT,
             )
@@ -1372,7 +1399,15 @@ class CoreRBACMQTT(
         } else {
             val permissionTuples = HashSet<PermissionTuple>()
             mm.getRoleTuples(
-                username = username, roleName = roleName,
+                username = if (
+                    !user.isAdmin ||
+                    (username.isNullOrBlank() && roleName.isNullOrBlank())
+                ) {
+                    user.name
+                } else {
+                    username
+                },
+                roleName = roleName,
                 isAdmin = user.isAdmin,
                 offset = 0, limit = NO_LIMIT).forEach {
                 permissionTuples.addAll(
@@ -1486,8 +1521,110 @@ class CoreRBACMQTT(
         }
     }
 
+    /**
+     * Given an MQTT [message] for a given [topic], send it to
+     * the client through WSS. If the client is not connected
+     * to the WSS, cache the message to send it later.
+     */
+    private fun cacheOrSendMessage(topic: String, message: MQTTMessage) {
+        if (wss == null) {
+            logger.info { "User ${user.name} is not connected through WSS, caching the message" }
+            subscribedTopicsKeysAndMessages[topic]!!.messages.add(message)
+            // TODO we cached the message, now check for reconnection
+            //  from the WSS to then send to it the messages
+        } else {
+            runBlocking {
+                logger.info { "Sending the message to the client through WSS" }
+                wss!!.send(myJson.encodeToString(message))
+            }
+        }
+    }
 
+    /**
+     * Get from the MM and decrypt the symmetric key of
+     * the [topic] with the [versionNumber], if given.
+     * Finally, return the key along with an outcome code
+     */
+    private fun getLatestSymmetricKey(
+        topic: String,
+        versionNumber: Int? = null,
+    ): CodeSymmetricKeyCryptoAC {
+        logger.debug { "Getting the symmetric key for topic $topic (version number: $versionNumber)" }
 
+        // we get the role tuple of the role that can read the file. With the
+        // role tuple, we can decrypt the role private key. With the role private
+        // key, we can decrypt the symmetric key. With the symmetric key, we can
+        // decrypt the file
+        val fileRoleTuples = mm.getRoleTuples(
+            username = user.name,
+            isAdmin = user.isAdmin,
+            offset = 0, limit = 1,
+        )
+
+        if (fileRoleTuples.isEmpty()) {
+            return (CodeSymmetricKeyCryptoAC(OutcomeCode.CODE_006_FILE_NOT_FOUND))
+        }
+
+        var fileRoleTuple: RoleTuple? = null
+        var filePermissionTuple: PermissionTuple? = null
+
+        run found@{
+            fileRoleTuples.forEach { currentRoleTuple ->
+                /** Verify the signature of the RoleTuple */
+                verifyTupleSignature(currentRoleTuple)
+
+                /**
+                 * The [versionNumber] may even be null, but there
+                 * is one permission tuple per topic anyway
+                 */
+                filePermissionTuple = mm.getPermissionTuples(
+                    roleName = currentRoleTuple.roleName,
+                    fileName = topic,
+                    symKeyVersionNumber = versionNumber,
+                    isAdmin = user.isAdmin,
+                    offset = 0, limit = 1,
+                ).firstOrNull()
+
+                if (filePermissionTuple != null) {
+                    /** Verify the signature of the PermissionTuple */
+                    verifyTupleSignature(filePermissionTuple!!)
+                    fileRoleTuple = currentRoleTuple
+                    return@found
+                }
+            }
+        }
+
+        if (filePermissionTuple == null) {
+            return (CodeSymmetricKeyCryptoAC(OutcomeCode.CODE_006_FILE_NOT_FOUND))
+        }
+
+        // now we decrypt the keys of the role. Then, we use the keys of the role
+        // to decrypt the symmetric key. Finally, we decrypt the file
+        val roleAsymEncKeys = crypto.decryptAsymEncKeys(
+            encryptingKey = asymEncKeyPair.public,
+            decryptingKey = asymEncKeyPair.private,
+            encryptedAsymEncKeys = fileRoleTuple!!.encryptedAsymEncKeys!!
+        )
+        return CodeSymmetricKeyCryptoAC(
+            key = crypto.decryptSymKey(
+                encryptingKey = roleAsymEncKeys.public,
+                decryptingKey = roleAsymEncKeys.private,
+                encryptedSymKey = filePermissionTuple!!.encryptedSymKey!!
+            ),
+            versionNumber = filePermissionTuple!!.symKeyVersionNumber
+        )
+    }
+
+    /**
+     * Map the given CryptoAC [permission]
+     * to the Mosquitto DYNSEC permissions
+     */
+    private fun computeACLTypesFromPermission(permission: PermissionType) =
+        when (permission) {
+            PermissionType.READ -> listOf(AclType.publishClientReceive, AclType.subscribePattern, AclType.unsubscribePattern)
+            PermissionType.READWRITE -> listOf(AclType.publishClientReceive, AclType.publishClientSend, AclType.subscribePattern, AclType.unsubscribePattern)
+            PermissionType.WRITE -> listOf(AclType.publishClientSend, AclType.subscribePattern, AclType.unsubscribePattern)
+        }
 
 
 
@@ -1522,7 +1659,7 @@ class CoreRBACMQTT(
         /**
          * Synchronize on the [subscribedTopicsKeysAndMessages] object
          * to avoid interference with the writeFile function
-         **/
+         */
         synchronized(subscribedTopicsKeysAndMessages) {
 
             try {
@@ -1735,17 +1872,19 @@ class CoreRBACMQTT(
     }
 
     /**
-     * This method is called when the server gracefully disconnects from the client
-     * by sending a [disconnectResponse] packet, or when the TCP connection is lost due to a
-     * network issue or if the client encounters an error.
+     * This method is called when the server gracefully disconnects
+     * from the client by sending a [disconnectResponse] packet, or
+     * when the TCP connection is lost due to a network issue or if
+     * the client encounters an error.
      *
-     * In this implementation, try to reconnect to the broker
+     * In this implementation, try to reconnect to the broker only
+     * if the error code is
      */
     override fun disconnected(disconnectResponse: MqttDisconnectResponse?) {
-        logger.warn { "MQTT client for ${user.name} was disconnected: ${disconnectResponse.toString()}" }
-        logger.info { "Trying to reconnect" }
-        dm.client.connectSync(reconnecting = true, coreParameters.dmInterfaceParameters.tls)
-        // TODO catch exceptions?
+        logger.warn {
+            "MQTT client for ${user.name} was disconnected: " +
+            disconnectResponse.toString()
+        }
     }
 
     /**
@@ -1802,157 +1941,116 @@ class CoreRBACMQTT(
     override fun mqttErrorOccurred(exception: MqttException?) {
         logger.warn { "mqttErrorOccurred: ${exception.toString()}" }
     }
-
-    /**
-     * Given an MQTT [message] for a given [topic], send it to
-     * the client through WSS. If the client is not connected
-     * to the WSS, cache the message to send it later.
-     */
-    private fun cacheOrSendMessage(topic: String, message: MQTTMessage) {
-        if (wss == null) {
-            logger.info { "User ${user.name} is not connected through WSS, caching the message" }
-            subscribedTopicsKeysAndMessages[topic]!!.messages.add(message)
-            // TODO we cached the message, now check for reconnection
-            //  from the WSS to then send to it the messages
-        } else {
-            runBlocking {
-                logger.info { "Sending the message to the client through WSS" }
-                wss!!.send(myJson.encodeToString(message))
-            }
-        }
-    }
-
-    /**
-     * Get from the MM and decrypt the symmetric key of
-     * the [topic] with the [versionNumber], if given.
-     * Finally, return the key along with an outcome code
-     */
-    private fun getLatestSymmetricKey(
-        topic: String,
-        versionNumber: Int? = null,
-    ): CodeSymmetricKeyCryptoAC {
-        logger.debug { "Getting the symmetric key for topic $topic (version number: $versionNumber)" }
-
-        // we get the role tuple of the role that can read the file. With the
-        // role tuple, we can decrypt the role private key. With the role private
-        // key, we can decrypt the symmetric key. With the symmetric key, we can
-        // decrypt the file
-        val fileRoleTuples = mm.getRoleTuples(
-            username = user.name,
-            isAdmin = user.isAdmin,
-            offset = 0, limit = 1,
-        )
-
-        if (fileRoleTuples.isEmpty()) {
-            return (CodeSymmetricKeyCryptoAC(OutcomeCode.CODE_006_FILE_NOT_FOUND))
-        }
-
-        var filePermissionTuple: PermissionTuple? = null
-        var fileRoleTuple: RoleTuple? = null
-
-        run found@{
-            fileRoleTuples.forEach { currentRoleTuple ->
-                /** Verify the signature of the RoleTuple */
-                verifyTupleSignature(currentRoleTuple)
-
-                /**
-                 * The [versionNumber] may even be null, but there
-                 * is one permission tuple per topic anyway
-                 */
-                filePermissionTuple = mm.getPermissionTuples(
-                    roleName = currentRoleTuple.roleName,
-                    fileName = topic,
-                    symKeyVersionNumber = versionNumber,
-                    isAdmin = user.isAdmin,
-                    offset = 0, limit = 1,
-                ).firstOrNull()
-
-                if (filePermissionTuple != null) {
-                    /** Verify the signature of the PermissionTuple */
-                    verifyTupleSignature(filePermissionTuple!!)
-                    fileRoleTuple = currentRoleTuple
-                    return@found
-                }
-            }
-        }
-
-        if (filePermissionTuple == null) {
-            return (CodeSymmetricKeyCryptoAC(OutcomeCode.CODE_006_FILE_NOT_FOUND))
-        }
-
-        // now we decrypt the keys of the role. Then, we use the keys of the role
-        // to decrypt the symmetric key. Finally, we decrypt the file
-        val roleAsymEncKeys = crypto.decryptAsymEncKeys(
-            encryptingKey = asymEncKeyPair.public,
-            decryptingKey = asymEncKeyPair.private,
-            encryptedAsymEncKeys = fileRoleTuple!!.encryptedAsymEncKeys!!
-        )
-        return CodeSymmetricKeyCryptoAC(
-            key = crypto.decryptSymKey(
-                encryptingKey = roleAsymEncKeys.public,
-                decryptingKey = roleAsymEncKeys.private,
-                encryptedSymKey = filePermissionTuple!!.encryptedSymKey!!
-            ),
-            versionNumber = filePermissionTuple!!.symKeyVersionNumber
-        )
-    }
 }
 
-/** Extension of MqttClient to provide synchronized methods for connection  */
+/**
+ * Extension of MqttClient to provide synchronized
+ * methods for connection. Furthermore, specify
+ * whether to enable [tls] and the [username]
+ * and [password] to use
+ */
 class CryptoACMqttClient(
-    serverURI: String, clientId: String, persistence: MqttClientPersistence
+    serverURI: String,
+    clientId: String,
+    persistence: MqttClientPersistence,
+    private val tls: Boolean,
+    private val username: String,
+    private val password: ByteArray
 ) : MqttClient(serverURI, clientId, persistence) {
 
-    /** Whether the MQTT client already connected once to the broker */
-    var alreadyConnectedOnce: Boolean = false
+    /**
+     * Whether the MQTT client already
+     * connected once to the broker
+     */
+    private var alreadyConnectedOnce: Boolean = false
 
     /**
-     * Synchronously reconnect (when [reconnecting]) or connect
-     * with the given [username] and [password] to the MQTT broker
-     * using [tsl] or not
+     * Whether the MQTT client is already
+     * reconnecting to the broker
      */
-    @Synchronized fun connectSync(
-        reconnecting: Boolean,
-        tsl: Boolean,
-        username: String? = null,
-        password: ByteArray? = null
-    ) {
-        try {
-            logger.debug { "connectSync invoked" }
-            if (!isConnected) {
-                logger.debug { "client is not connected" }
-                if (reconnecting) {
-                    logger.debug { "reconnecting" }
-                    super.reconnect()
-                } else {
-                    logger.debug { "connecting" }
-                    val connOpts = MqttConnectionOptions()
-                    connOpts.isCleanStart = if (alreadyConnectedOnce) {
-                        false
+    private var connecting: Boolean = false
+
+    /**
+     * Synchronously connect to the MQTT broker. Return
+     * true if the client is connected, false otherwise
+     */
+    @Synchronized fun connectSync(): Boolean {
+        /**
+         * Synchronize on the [connecting] object to avoid
+         * multiple threads connecting the MQTT client at
+         * the same time
+         */
+        synchronized(connecting) {
+            return try {
+                logger.debug { "connectSync invoked (client ID $clientId)" }
+                if (!isConnected) {
+                    logger.debug { "client is not connected" }
+                    if (!connecting) {
+                        if (alreadyConnectedOnce) {
+                            logger.debug { "reconnecting" }
+                            super.reconnect()
+                        } else {
+                            logger.debug { "connecting" }
+                            connecting = true
+                            val connOpts = MqttConnectionOptions()
+                            connOpts.isCleanStart = false
+                            connOpts.keepAliveInterval = 120
+                            connOpts.isAutomaticReconnect = true
+                            connOpts.userName = username
+                            connOpts.password = password
+                            if (tls) {
+                                connOpts.socketFactory = getTruststoreFactory()
+                            }
+                            super.connect(connOpts)
+                            alreadyConnectedOnce = true
+                            connecting = false
+                        }
                     } else {
-                        alreadyConnectedOnce = true
-                        true
+                        logger.debug { "but it is already connecting" }
                     }
-                    connOpts.userName = username!!
-                    connOpts.password = password!!
-                    if (tsl) {
-                        connOpts.socketFactory = getTruststoreFactory()
+                    val client = this
+                    runBlocking {
+                        logger.debug { "waiting for client to be connected" }
+                        waitForCondition { client.isConnected }
                     }
-                    super.connect(connOpts)
+                } else {
+                    logger.debug { "client is already connected" }
+                    true
                 }
-                val client = this
-                runBlocking {
-                    logger.debug { "waiting for client to be connected" }
-                    waitForCondition { client.isConnected }
-                }
-            } else {
-                logger.debug { "client is already connected" }
+            } catch (e: Exception) {
+                logger.error { "exception while connecting to MQTT broker" }
+                logger.error { e }
+                e.printStackTrace()
+                throw e
             }
-        } catch (e: Exception) {
-            logger.error { "exception while connecting to MQTT broker" }
-            logger.error { e }
-            e.printStackTrace()
-            throw e
+        }
+    }
+
+    /**
+     * Ensure the client is connected, then invoke the
+     * super function to publish the [message] in the
+     * [topic]. Return a proper outcome code
+     */
+    fun myPublish(topic: String, message: MqttMessage): OutcomeCode {
+        return if (connectSync()) {
+            super.publish(topic, message)
+            OutcomeCode.CODE_000_SUCCESS
+        } else {
+            OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
+        }
+    }
+
+    /**
+     * Ensure the client is connected, then invoke the
+     * super function to subscribe to the [topicFilter]
+     * with the given [qos]. Return a proper outcome code
+     */
+    fun mySubscribe(topicFilter: String, qos: Int): OutcomeCode {
+        return if (connectSync()) {
+            super.subscribe(topicFilter, qos)
+            OutcomeCode.CODE_000_SUCCESS
+        } else {
+            OutcomeCode.CODE_044_DM_CONNECTION_TIMEOUT
         }
     }
 

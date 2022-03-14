@@ -34,7 +34,7 @@ fun Route.filesRouting() {
 
     // TODO Add Docker Volumes for DM
 
-    // TODO Authenticate modules (proxy, rm, dm) to each other
+    // TODO Authenticate modules (CryptoAC, rm, dm) to each other
 
     // TODO enforce a limit on the number (or size) of files a user can up/download
 
@@ -52,7 +52,7 @@ fun Route.filesRouting() {
              * Upload a file in the DM
              */
             post {
-                // TODO authenticate user (login as in the proxy?)
+                // TODO authenticate user (login as in the CryptoAC?)
 
                 var newFileName: String? = null
                 var stream: InputStream? = null
@@ -118,7 +118,7 @@ fun Route.filesRouting() {
              * Download a file from the DM
              */
             get("{${SERVER.FILE_NAME}}") {
-                // TODO authenticate user (login as in the proxy?)
+                // TODO authenticate user (login as in the CryptoAC?)
                 // TODO ask OPA if user can read file
 
                 val fileNameToGet = call.parameters[SERVER.FILE_NAME] ?:
@@ -226,7 +226,7 @@ fun Route.filesRouting() {
              * from the DM
              */
             delete("{${SERVER.FILE_NAME}}") {
-                // TODO authenticate the user (login as in the proxy?), which has to be the admin
+                // TODO authenticate the user (login as in the CryptoAC?), which has to be the admin
 
                 val fileName = call.parameters[SERVER.FILE_NAME] ?:
                     return@delete ResponseRoutes.unprocessableEntity(
@@ -276,7 +276,7 @@ fun Route.filesRouting() {
              * storage. Check that the file exists
              */
             delete("{${SERVER.FILE_NAME}}") {
-                // TODO authenticate the user (login as in the proxy?), which has to be the admin
+                // TODO authenticate the user (login as in the CryptoAC?), which has to be the admin
 
                 val fileName = call.parameters[SERVER.FILE_NAME] ?:
                     return@delete ResponseRoutes.unprocessableEntity(
@@ -329,7 +329,7 @@ fun Route.configureRouting() {
 
         post {
 
-            // TODO authenticate user (login as in the proxy?)
+            // TODO authenticate user (login as in the CryptoAC?)
             // TODO logs
 
             /** Get the core parameters from the request */
