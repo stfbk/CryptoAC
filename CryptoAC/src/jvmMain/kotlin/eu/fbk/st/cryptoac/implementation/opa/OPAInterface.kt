@@ -98,8 +98,9 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         runBlocking {
             val opaURL = "${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_POLICY}"
             logger.info { "Creating the OPA RBAC policy sending a PUT request to $opaURL" }
-            val opaResponse = client!!.put<HttpResponse>(opaURL) {
-                body = rbacPolicyOPA
+            val opaResponse = client!!.put {
+                url(opaURL)
+                setBody(rbacPolicyOPA)
             }
             logger.debug { "Received response from the OPA" }
             if (opaResponse.status != HttpStatusCode.OK) {
@@ -114,9 +115,10 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         runBlocking {
             val opaURL = "${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_DATA}"
             logger.info { "Creating the OPA RBAC data sending a PUT request to $opaURL" }
-            val opaResponse = client!!.put<HttpResponse>(opaURL) {
+            val opaResponse = client!!.put {
+                url(opaURL)
                 contentType(ContentType.Application.Json)
-                body = "{\"$UR_KEY\":{}, \"$PA_KEY\":{}}"
+                setBody("{\"$UR_KEY\":{}, \"$PA_KEY\":{}}")
             }
             logger.debug { "Received response from the OPA" }
             /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */
@@ -447,13 +449,15 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         runBlocking {
             val opaURL = "${API.HTTP}$opaBaseAPI${API.OPA_RBAC_DATA}"
             logger.info { "Getting the OPA data sending a GET request to $opaURL" }
-            val opaResponse = client!!.get<HttpResponse>(opaURL)
+            val opaResponse = client!!.get {
+                url(opaURL)
+            }
             logger.debug { "Received response from the OPA" }
             storageOPADocument = if (opaResponse.status != HttpStatusCode.OK) {
                 logger.warn { "Received error code from the OPA (status: ${opaResponse.status})" }
                 StorageOPADocument(OutcomeCode.CODE_030_OPA_DOCUMENT_DOWNLOAD)
             } else {
-                val opaDocumentString = opaResponse.readText()
+                val opaDocumentString = opaResponse.bodyAsText()
                 logger.debug { "The current OPA data is $opaDocumentString" }
                 StorageOPADocument(opaDocument = myJson.decodeFromString<OPADocument>(opaDocumentString))
             }
@@ -476,7 +480,8 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         return if (locks == 0) {
             logger.info { "Locking the status of the OPA document" }
             client = HttpClient(CIO) {
-                expectSuccess = false // TODO configure this, as for now the client accepts all certificates
+                expectSuccess = false
+            // TODO configure this, as for now the client accepts all certificates
             }
             try {
                 val storageOPADocument = getOPADocument()
@@ -522,9 +527,10 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
                 runBlocking {
                     val opaURL = "${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_DATA}"
                     logger.info { "Restore the RBAC data sending a PUT request to $opaURL" }
-                    val opaResponse = client!!.put<HttpResponse>(opaURL) {
+                    val opaResponse = client!!.put {
+                        url(opaURL)
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(initialOPADocument)
+                        setBody(myJson.encodeToString(initialOPADocument))
                     }
                     logger.debug { "Received response from the OPA" }
                     /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */
@@ -603,14 +609,15 @@ class OPAInterface(private val opaInterfaceParameters: OPAInterfaceParameters) {
         runBlocking {
             val opaURL = "${API.HTTP}$opaBaseAPI${API.OPA_RBAC_DATA}"
             logger.info { "Updating the OPA data sending a PATCH request to $opaURL" }
-            val opaResponse = client!!.patch<HttpResponse>(opaURL) {
+            val opaResponse = client!!.patch {
+                url(opaURL)
                 contentType(ContentType.parse("application/json-patch+json"))
-                body = jsonPatch
+                setBody(jsonPatch)
             }
             logger.debug { "Received response from the OPA" }
             /** Success is 204, see https://www.openpolicyagent.org/docs/latest/rest-api/ */
             if (opaResponse.status != HttpStatusCode.NoContent) {
-                val errorMessage = opaResponse.readText()
+                val errorMessage = opaResponse.bodyAsText()
                 logger.warn { "Received error code from the OPA (status: ${opaResponse.status}, error: $errorMessage)" }
                 code = OutcomeCode.CODE_029_OPA_DOCUMENT_UPDATE
             }

@@ -4,12 +4,14 @@ import eu.fbk.st.cryptoac.crypto.*
 import mu.KotlinLogging
 import org.apache.commons.codec.binary.Base64InputStream
 import java.io.InputStream
+import java.io.SequenceInputStream
 import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.*
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.random.Random
 
 
 private val logger = KotlinLogging.logger {}
@@ -59,6 +61,9 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
 
     /** The object used for recreating encoded encryption asymmetric keys */
     private val asymEncKeyFactory: KeyFactory = KeyFactory.getInstance(asymEncKeysGenAlgorithm)
+
+    /** The length of the tag in AEAD */
+    private val tagLength = 12
 
     init {
         asymEncKeysGenerator.initialize(asymEncKeysLength)
@@ -255,16 +260,21 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
      * only is used
      *
      * In this implementation, apply a Base64 stream
-     * and then a cipher stream with the [encryptingKey]
+     * and then a cipher stream with the [encryptingKey],
+     * prepending the initialization vector to the stream
      */
     override fun encryptStream(encryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream {
         logger.debug { "Encrypting stream" }
+        val iv = Random.nextBytes(tagLength) // TODO check random
         symCipher.init(
             Cipher.ENCRYPT_MODE,
             encryptingKey.secretKey as SecretKey,
-            GCMParameterSpec(128, ByteArray(12))
+            GCMParameterSpec(128, iv)
         )
-        return CipherInputStream(Base64InputStream(stream, true), symCipher)
+        return SequenceInputStream(
+            iv.inputStream(),
+            CipherInputStream(Base64InputStream(stream, true), symCipher)
+        )
     }
 
     /**
@@ -283,7 +293,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         symCipher.init(
             Cipher.DECRYPT_MODE,
             decryptingKey.secretKey as SecretKey,
-            GCMParameterSpec(128, ByteArray(12))
+            GCMParameterSpec(128, stream.readNBytes(tagLength))
         )
         return Base64InputStream(CipherInputStream(stream, symCipher), false)
     }

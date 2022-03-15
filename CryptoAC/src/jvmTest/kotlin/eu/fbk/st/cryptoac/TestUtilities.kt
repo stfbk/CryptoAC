@@ -20,10 +20,12 @@ import eu.fbk.st.cryptoac.implementation.dm.DMInterfaceRBACMQTT
 import eu.fbk.st.cryptoac.implementation.mm.*
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.cookies.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import redis.clients.jedis.JedisPool
@@ -112,11 +114,15 @@ class TestUtilities {
                     // TODO configure http client
                 }.use {
                     assert(
-                        it.delete<HttpResponse>("${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_POLICY}").status ==
+                        it.delete {
+                            url("${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_POLICY}")
+                        }.status ==
                                 HttpStatusCode.OK
                     )
                     assert(
-                        it.delete<HttpResponse>("${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_DATA}").status ==
+                        it.delete {
+                            url("${API.HTTP}${opaBaseAPI}${API.OPA_RBAC_DATA}")
+                        }.status ==
                                 HttpStatusCode.NoContent
                     )
                 }
@@ -232,6 +238,9 @@ class TestUtilities {
             return HttpClient(io.ktor.client.engine.jetty.Jetty) {
                 expectSuccess = false
                 install(HttpCookies) /** To accept all cookies */
+                install(ContentNegotiation) {
+                    json(json = myJson)
+                }
                 // TODO configure http client, as for now the client accepts all certificates
                 engine {
                     sslContextFactory.isTrustAll = true

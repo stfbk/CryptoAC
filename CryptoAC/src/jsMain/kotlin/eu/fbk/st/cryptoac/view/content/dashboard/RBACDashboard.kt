@@ -99,7 +99,9 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
         logger.info { "Sending get request to $endpoint" }
         props.handleChangeBackdropIsOpen(true)
         val httpResponse: HttpResponse? = try {
-            props.httpClient.get(endpoint)
+            props.httpClient.get {
+                url(endpoint)
+            }
         } catch (e: Error) {
             if (e.message == "Fail to fetch") {
                 logger.error { "CryptoAC is unreachable" }
@@ -118,28 +120,28 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
             if (httpResponse.status == HttpStatusCode.OK) {
                 when (type) {
                     ElementType.USER ->  {
-                        val users: HashSet<User> = myJson.decodeFromString(httpResponse.readText())
+                        val users: HashSet<User> = myJson.decodeFromString(httpResponse.bodyAsText())
                         users.map { it.toArray() }
                     }
                     ElementType.ROLE -> {
-                        val roles: HashSet<Role> = myJson.decodeFromString(httpResponse.readText())
+                        val roles: HashSet<Role> = myJson.decodeFromString(httpResponse.bodyAsText())
                         roles.map { it.toArray() }
                     }
                     ElementType.FILE -> {
-                        val files: HashSet<eu.fbk.st.cryptoac.core.elements.File> = myJson.decodeFromString(httpResponse.readText())
+                        val files: HashSet<eu.fbk.st.cryptoac.core.elements.File> = myJson.decodeFromString(httpResponse.bodyAsText())
                         files.map { it.toArray() }
                     }
                     ElementType.ASSIGNMENT -> {
-                        val assignments: HashSet<RoleTuple> = myJson.decodeFromString(httpResponse.readText())
+                        val assignments: HashSet<RoleTuple> = myJson.decodeFromString(httpResponse.bodyAsText())
                         assignments.map { it.toArray() }
                     }
                     ElementType.PERMISSION -> {
-                        val permissions: HashSet<PermissionTuple> = myJson.decodeFromString(httpResponse.readText())
+                        val permissions: HashSet<PermissionTuple> = myJson.decodeFromString(httpResponse.bodyAsText())
                         permissions.map { it.toArray() }
                     }
                 }
             } else {
-                val text = httpResponse.readText()
+                val text = httpResponse.bodyAsText()
                 val outcomeCode: OutcomeCode = myJson.decodeFromString(text)
                 if (outcomeCode == errorCode) {
                     logger.info { "Got 0 elements of type $type" }

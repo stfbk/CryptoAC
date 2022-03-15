@@ -10,7 +10,7 @@ import eu.fbk.st.cryptoac.view.components.custom.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -117,13 +117,19 @@ class Login: RComponent<LoginProps, State>() {
         props.handleChangeBackdropIsOpen(true)
 
         MainScope().launch {
+
             try {
-                val response: HttpResponse = props.httpClient.post(endpoint) {
-                    contentType(ContentType.Application.FormUrlEncoded)
-                    body = values.toList().formUrlEncode()
+                val response = props.httpClient.submitForm(
+                    formParameters = Parameters.build {
+                        values.forEach {
+                            append(it.key, it.value)
+                        }
+                    }
+                ) {
+                    url(endpoint)
                 }
 
-                val code: OutcomeCode = response.receive()
+                val code: OutcomeCode = response.body()
                 val status = response.status
 
                 if (status == HttpStatusCode.OK) {
@@ -139,7 +145,7 @@ class Login: RComponent<LoginProps, State>() {
                     props.handleChangeUsername(null)
                     props.handleDisplayAlert(code, CryptoACAlertSeverity.ERROR)
                 }
-            } catch (e: Error) {
+            } catch (e: Throwable) {
                 props.handleChangeBackdropIsOpen(false)
                 props.handleChangeUserIsLogged(false)
                 props.handleChangeUsername(null)

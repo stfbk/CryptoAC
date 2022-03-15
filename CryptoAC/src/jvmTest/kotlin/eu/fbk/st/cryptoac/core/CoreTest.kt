@@ -8,6 +8,9 @@ internal abstract class CoreTest {
 
     abstract val core: Core
 
+    // TODO find a way to test core objects with all supported interfaces
+    //  e.g., test CoreMQTT with MySQL and CoreCloud with Redis. Remember
+    //  that JUnit5 does not have easy support for parametrized test classes
 
     @BeforeAll
     abstract fun setUpAll()

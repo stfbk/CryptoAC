@@ -1,9 +1,14 @@
 package eu.fbk.st.cryptoac.server
 
+import eu.fbk.st.cryptoac.Parameters
+import eu.fbk.st.cryptoac.Parameters.adminCoreRBACCLOUDParameters
 import eu.fbk.st.cryptoac.Parameters.aliceUser
-import eu.fbk.st.cryptoac.Parameters.aliceCoreParameters
-import eu.fbk.st.cryptoac.Parameters.bobCoreParameters
 import eu.fbk.st.cryptoac.TestUtilities
+import eu.fbk.st.cryptoac.core.CoreParameters
+import eu.fbk.st.cryptoac.core.CoreParametersMOCK
+import eu.fbk.st.cryptoac.core.myJson
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -11,6 +16,16 @@ import org.junit.jupiter.api.assertThrows
 import java.io.FileNotFoundException
 
 internal class ProfileManagerTest {
+
+    private val aliceCoreRBACMOCKParameters = CoreParametersMOCK(
+        user = aliceUser,
+        cryptoType = Parameters.cryptoType,
+    )
+    private val bobCoreRBACMOCKParameters = CoreParametersMOCK(
+        user = Parameters.bobUser,
+        cryptoType = Parameters.cryptoType,
+    )
+
 
     @AfterEach
     fun tearDown() {
@@ -22,7 +37,7 @@ internal class ProfileManagerTest {
         /** save core parameters */
         run {
             assertDoesNotThrow {
-                ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
+                ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACMOCKParameters)
             }
         }
     }
@@ -31,9 +46,9 @@ internal class ProfileManagerTest {
     fun `save core parameters twice fails`() {
         /** save core parameters twice */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACMOCKParameters)
             assertThrows<FileAlreadyExistsException> {
-                ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
+                ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACMOCKParameters)
             }
         }
     }
@@ -44,9 +59,9 @@ internal class ProfileManagerTest {
     fun `load profile parameters works`() {
         /** load profile parameters */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
-            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType)
-            assert(aliceCoreParameters == loadedParameters)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACMOCKParameters)
+            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, aliceCoreRBACMOCKParameters.coreType)
+            assert(aliceCoreRBACMOCKParameters == loadedParameters)
         }
     }
 
@@ -54,7 +69,7 @@ internal class ProfileManagerTest {
     fun `load non-existing profile parameters fails`() {
         /** load non-existing profile parameters */
         run {
-            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) == null)
+            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreRBACMOCKParameters.coreType) == null)
         }
     }
 
@@ -64,10 +79,10 @@ internal class ProfileManagerTest {
     fun `update profile parameters works`() {
         /** update profile parameters */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
-            ProfileManager.updateProfile(aliceUser.name, bobCoreParameters)
-            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType)
-            assert(aliceCoreParameters != loadedParameters)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACMOCKParameters)
+            ProfileManager.updateProfile(aliceUser.name, bobCoreRBACMOCKParameters)
+            val loadedParameters = ProfileManager.loadProfile(aliceUser.name, aliceCoreRBACMOCKParameters.coreType)
+            assert(aliceCoreRBACMOCKParameters != loadedParameters)
         }
     }
 
@@ -76,7 +91,7 @@ internal class ProfileManagerTest {
         /** update non-existing profile parameters */
         run {
             assertThrows<FileNotFoundException> {
-                ProfileManager.updateProfile(aliceUser.name, aliceCoreParameters)
+                ProfileManager.updateProfile(aliceUser.name, aliceCoreRBACMOCKParameters)
             }
         }
     }
@@ -87,10 +102,10 @@ internal class ProfileManagerTest {
     fun `delete profile parameters works`() {
         /** delete profile parameters */
         run {
-            ProfileManager.saveProfile(aliceUser.name, aliceCoreParameters)
-            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) != null)
-            assert(ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType))
-            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreParameters.coreType) == null)
+            ProfileManager.saveProfile(aliceUser.name, aliceCoreRBACMOCKParameters)
+            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreRBACMOCKParameters.coreType) != null)
+            assert(ProfileManager.deleteProfile(aliceUser.name, aliceCoreRBACMOCKParameters.coreType))
+            assert(ProfileManager.loadProfile(aliceUser.name, aliceCoreRBACMOCKParameters.coreType) == null)
         }
     }
 
@@ -98,7 +113,7 @@ internal class ProfileManagerTest {
     fun `delete non-existing profile parameters fails`() {
         /** delete non-existing profile parameters */
         run {
-            assert(!ProfileManager.deleteProfile(aliceUser.name, aliceCoreParameters.coreType))
+            assert(!ProfileManager.deleteProfile(aliceUser.name, aliceCoreRBACMOCKParameters.coreType))
         }
     }
 }

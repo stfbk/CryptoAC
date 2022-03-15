@@ -18,7 +18,7 @@ private val logger = KotlinLogging.logger {}
 class MMInterfaceMySQLParameters(
     override var username: String, override var password: String,
     override var port: Int, override var url: String
-) : MMInterfaceRBACCLOUDParameters {
+) : MMInterfaceRBACCLOUDParameters, MMInterfaceRBACMQTTParameters {
 
     /** The type of this interface */
     override val mmType: MMType = MMType.MYSQL

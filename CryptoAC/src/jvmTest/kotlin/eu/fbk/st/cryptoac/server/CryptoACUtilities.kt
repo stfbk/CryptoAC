@@ -8,6 +8,7 @@ import eu.fbk.st.cryptoac.core.tuples.RoleTuple
 import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.Parameters.cryptoACBaseAPI
 import eu.fbk.st.cryptoac.SERVER.ENFORCEMENT
+import eu.fbk.st.cryptoac.SERVER.FILE_CONTENT
 import eu.fbk.st.cryptoac.SERVER.FILE_NAME
 import eu.fbk.st.cryptoac.SERVER.PERMISSION
 import eu.fbk.st.cryptoac.SERVER.ROLE_NAME
@@ -16,17 +17,18 @@ import eu.fbk.st.cryptoac.core.*
 import eu.fbk.st.cryptoac.core.elements.File
 import eu.fbk.st.cryptoac.core.elements.Role
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.utils.io.jvm.javaio.*
+import io.ktor.http.Parameters
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.Assertions
 import java.io.InputStream
+import kotlin.io.use
 
 class CryptoACUtilities {
 
@@ -39,12 +41,13 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, ADMIN)
-                    val response = it.post<HttpResponse>("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
+                    val response = it.post {
+                        url("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/")
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(coreParameters)
+                        setBody(coreParameters)
                     }
                     Assertions.assertEquals(HttpStatusCode.OK, response.status)
-                    Assertions.assertEquals(OutcomeCode.CODE_000_SUCCESS, myJson.decodeFromString<OutcomeCode>(response.readText()))
+                    Assertions.assertEquals(OutcomeCode.CODE_000_SUCCESS, myJson.decodeFromString<OutcomeCode>(response.bodyAsText()))
                     if (login) logoutCryptoAC(it)
                 }
             }
@@ -60,13 +63,14 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.post<HttpResponse>("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
+                    val response = it.post {
+                        url("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/")
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(coreParameters)
+                        setBody(coreParameters)
                     }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode != OutcomeCode.CODE_000_SUCCESS) {
-                        assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.readText()))
+                        assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.bodyAsText()))
                     } else {
                         /** We do not care about mock core parameters */
                     }
@@ -87,19 +91,21 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.post<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}users/${core}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                            body = listOf(USERNAME to username).formUrlEncode()
+                    val response = it.submitForm(
+                        formParameters = Parameters.build {
+                            username?.let { it1 -> append(USERNAME, it1) }
+                        }) {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}users/${core}/")
                     }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        coreParameters = myJson.decodeFromString<CoreParameters>(response.readText()).apply {
+                        coreParameters = myJson.decodeFromString<CoreParameters>(response.bodyAsText()).apply {
                             assertEquals(CoreType.RBAC_MOCK, coreType)
                             assertEquals(username, this.user.name)
                         }
                     }
                     else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -120,9 +126,11 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.delete<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}users/${core}/${username}")
+                    val response = it.delete {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}users/${core}/${username}")
+                    }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -141,12 +149,14 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.post<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}roles/${core}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(ROLE_NAME to roleName).formUrlEncode()
+                    val response = it.submitForm(
+                        formParameters = Parameters.build {
+                            roleName?.let { it1 -> append(ROLE_NAME, it1) }
+                        }) {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}roles/${core}/")
                     }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -165,9 +175,11 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.delete<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}roles/${core}/${roleName}")
+                    val response = it.delete {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}roles/${core}/${roleName}")
+                    }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -188,7 +200,7 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.submitFormWithBinaryData<HttpResponse>(
+                    val response = it.submitFormWithBinaryData(
                         url = "$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/",
                         formData = formData {
                             enforcementType?.let { it1 ->
@@ -207,7 +219,7 @@ class CryptoACUtilities {
                         }
                     )
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -215,7 +227,7 @@ class CryptoACUtilities {
             }
         }
 
-        fun addFileFormUrlEncodedInRBAC_MOCK(
+        fun addFileFormInRBAC_MOCK(
             fileName: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
             enforcementType: String?,
@@ -227,12 +239,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.post<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(FILE_NAME to fileName, ENFORCEMENT to enforcementType).formUrlEncode()
+                    val response = it.submitForm(
+                        formParameters = Parameters.build {
+                            fileName?.let { it1 -> append(FILE_NAME, it1) }
+                            enforcementType?.let { it1 -> append(ENFORCEMENT, it1) }
+                        }) {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/")
                     }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -251,9 +266,11 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.delete<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/${fileName}")
+                    val response = it.delete {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/${fileName}")
+                    }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -274,14 +291,17 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/${fileName}")
-                    assertEquals(expectedStatus, response.status)
-                    if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        inputStream = response.content.toInputStream().readAllBytes().inputStream()
-                    }
-                    else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
-                            assertEquals(expectedCode, this)
+                    it.prepareGet(
+                        "$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/${fileName}"
+                    ).execute { response ->
+
+                        assertEquals(expectedStatus, response.status)
+                        if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
+                            inputStream = response.body<String>().inputStream()
+                        } else {
+                            myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
+                                assertEquals(expectedCode, this)
+                            }
                         }
                     }
                     if (login) logoutCryptoAC(it)
@@ -304,7 +324,7 @@ class CryptoACUtilities {
                     if (login) loginCryptoAC(it, loggedUser)
 
 
-                    val response = it.submitFormWithBinaryData<HttpResponse>(
+                    val response = it.submitFormWithBinaryData(
                         url = "$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/",
                         formData = formData {
                             fileContent?.let { it1 ->
@@ -319,7 +339,7 @@ class CryptoACUtilities {
                         method = HttpMethod.Patch
                     }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -327,7 +347,7 @@ class CryptoACUtilities {
             }
         }
 
-        fun writeFileFormUrlEncodedInRBAC_MOCK(
+        fun writeFileFormInRBAC_MOCK(
             fileName: String?,
             fileContent: String?,
             core: String? = CoreType.RBAC_MOCK.toString(),
@@ -339,12 +359,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.patch<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(FILE_NAME to fileName, SERVER.FILE_CONTENT to fileContent).formUrlEncode()
+                    val response = it.submitFormPatch(
+                        formParameters = Parameters.build {
+                            fileName?.let { it1 -> append(FILE_NAME, it1) }
+                            fileContent?.let { it1 -> append(FILE_CONTENT, it1) }
+                        }) {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/")
                     }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -365,12 +388,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.post<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}assignments/${core}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(USERNAME to username, ROLE_NAME to roleName).formUrlEncode()
+                    val response = it.submitForm(
+                        formParameters = Parameters.build {
+                            username?.let { it1 -> append(USERNAME, it1) }
+                            roleName?.let { it1 -> append(ROLE_NAME, it1) }
+                        }) {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}assignments/${core}/")
                     }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -390,9 +416,11 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.delete<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}assignments/${core}/${username}/${roleName}")
+                    val response = it.delete {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}assignments/${core}/${username}/${roleName}")
+                    }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -413,12 +441,16 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.post<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}permissions/${core}/") {
-                        contentType(ContentType.Application.FormUrlEncoded)
-                        body = listOf(ROLE_NAME to roleName, FILE_NAME to fileName, PERMISSION to permission).formUrlEncode()
+                    val response = it.submitForm(
+                        formParameters = Parameters.build {
+                            roleName?.let { it1 -> append(ROLE_NAME, it1) }
+                            fileName?.let { it1 -> append(FILE_NAME, it1) }
+                            permission?.let { it1 -> append(PERMISSION, it1) }
+                        }) {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}permissions/${core}/")
                     }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -439,9 +471,11 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.delete<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}permissions/${core}/${roleName}/${fileName}/${permission}")
+                    val response = it.delete {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}permissions/${core}/${roleName}/${fileName}/${permission}")
+                    }
                     assertEquals(expectedStatus, response.status)
-                    myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                    myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                         assertEquals(expectedCode, this)
                     }
                     if (login) logoutCryptoAC(it)
@@ -460,16 +494,18 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/$username")
+                    val response = it.get {
+                        url("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/$username")
+                    }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        coreParameters = myJson.decodeFromString<CoreParameters>(response.readText()).apply {
+                        coreParameters = myJson.decodeFromString<CoreParameters>(response.bodyAsText()).apply {
                             assertEquals(CoreType.RBAC_MOCK, coreType)
                             assertEquals(username, this.user.name)
                         }
                     }
                     else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -489,9 +525,11 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.delete<HttpResponse>("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/$username")
+                    val response = it.delete {
+                        url("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/$username")
+                    }
                     assertEquals(expectedStatus, response.status)
-                    assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.readText()))
+                    assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.bodyAsText()))
                     if (login) logoutCryptoAC(it)
                 }
             }
@@ -507,12 +545,13 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.patch<HttpResponse>("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/") {
+                    val response = it.patch {
+                        url("$HTTPS$cryptoACBaseAPI/v1/profile/${CoreType.RBAC_MOCK}/")
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(coreParameters)
+                        setBody(coreParameters)
                     }
                     assertEquals(expectedStatus, response.status)
-                    assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.readText()))
+                    assertEquals(expectedCode, myJson.decodeFromString<OutcomeCode>(response.bodyAsText()))
                     if (login) logoutCryptoAC(it)
                 }
             }
@@ -529,13 +568,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}users/${core}/")
+                    val response = it.get {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}users/${core}/")
+                    }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        users = myJson.decodeFromString<HashSet<User>>(response.readText())
+                        users = myJson.decodeFromString<HashSet<User>>(response.bodyAsText())
                     }
                     else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -556,13 +597,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}roles/${core}/")
+                    val response = it.get {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}roles/${core}/")
+                    }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        roles = myJson.decodeFromString<HashSet<Role>>(response.readText())
+                        roles = myJson.decodeFromString<HashSet<Role>>(response.bodyAsText())
                     }
                     else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -583,13 +626,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/")
+                    val response = it.get {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}files/${core}/")
+                    }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        files = myJson.decodeFromString<HashSet<File>>(response.readText())
+                        files = myJson.decodeFromString<HashSet<File>>(response.bodyAsText())
                     }
                     else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -610,13 +655,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}assignments/${core}/")
+                    val response = it.get {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}assignments/${core}/")
+                    }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        roleTuples = myJson.decodeFromString<HashSet<RoleTuple>>(response.readText())
+                        roleTuples = myJson.decodeFromString<HashSet<RoleTuple>>(response.bodyAsText())
                     }
                     else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -637,13 +684,15 @@ class CryptoACUtilities {
             runBlocking {
                 TestUtilities.getKtorClientJetty().use {
                     if (login) loginCryptoAC(it, loggedUser)
-                    val response = it.get<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}permissions/${core}/")
+                    val response = it.get {
+                        url("$HTTPS$cryptoACBaseAPI${API.CRYPTOAC}permissions/${core}/")
+                    }
                     assertEquals(expectedStatus, response.status)
                     if (expectedCode == OutcomeCode.CODE_000_SUCCESS) {
-                        permissionTuples = myJson.decodeFromString<HashSet<PermissionTuple>>(response.readText())
+                        permissionTuples = myJson.decodeFromString<HashSet<PermissionTuple>>(response.bodyAsText())
                     }
                     else {
-                        myJson.decodeFromString<OutcomeCode>(response.readText()).apply {
+                        myJson.decodeFromString<OutcomeCode>(response.bodyAsText()).apply {
                             assertEquals(expectedCode, this)
                         }
                     }
@@ -653,15 +702,19 @@ class CryptoACUtilities {
             return permissionTuples
         }
 
-        private suspend fun loginCryptoAC(client: HttpClient, user: String = ADMIN) {
-            val response = client.post<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.LOGIN}") {
-                contentType(ContentType.Application.FormUrlEncoded)
-                body = listOf(USERNAME to user).formUrlEncode()
+        private suspend fun loginCryptoAC(client: HttpClient, username: String = ADMIN) {
+            val response = client.submitForm(
+                formParameters = Parameters.build {
+                    append(USERNAME, username)
+                }) {
+                url("$HTTPS$cryptoACBaseAPI${API.LOGIN}")
             }
             assertEquals(HttpStatusCode.OK, response.status)
         }
         private suspend fun logoutCryptoAC(client: HttpClient) {
-            val response = client.delete<HttpResponse>("$HTTPS$cryptoACBaseAPI${API.LOGOUT}")
+            val response = client.delete {
+                url("$HTTPS$cryptoACBaseAPI${API.LOGOUT}")
+            }
             assertEquals(HttpStatusCode.OK, response.status)
         }
     }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" tests="56" skipped="0" failures="0" errors="0" timestamp="2022-03-15T13:13:54" hostname="sberlato" time="6.491">
+  <properties/>
+  <testcase name="create signature works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.345"/>
+  <testcase name="decrypt random bytes as symmetric key throws CryptographicOperationException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.384"/>
+  <testcase name="decrypt symmetric key with wrong key throws CryptographicOperationException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.158"/>
+  <testcase name="recreate different pairs of asymmetric signing keys throws InvalidKeyException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.238"/>
+  <testcase name="recreate asymmetric encryption keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.193"/>
+  <testcase name="recreate asymmetric encryption public key with empty byte array throws InvalidKeySpecException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.005"/>
+  <testcase name="recreate asymmetric encryption private key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.051"/>
+  <testcase name="generate asymmetric signing key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.073"/>
+  <testcase name="decrypt random bytes as asymmetric signing keys throws CryptographicOperationException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.252"/>
+  <testcase name="recreate different pairs of asymmetric encryption keys throws InvalidKeyException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.13"/>
+  <testcase name="generate symmetric key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.001"/>
+  <testcase name="decrypt asymmetric signing keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.258"/>
+  <testcase name="verify tampered signature throws SignatureException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.068"/>
+  <testcase name="encrypt asymmetric encryption keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.2"/>
+  <testcase name="decrypt random bytes as asymmetric encryption keys throws CryptographicOperationException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.052"/>
+  <testcase name="verify signature made with different key throws SignatureException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.238"/>
+  <testcase name="decrypt stream works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.007"/>
+  <testcase name="create signature of empty byte array throws IllegalArgumentException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.032"/>
+  <testcase name="encrypt empty stream works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.001"/>
+  <testcase name="recreate asymmetric signing private key with empty byte array throws InvalidKeySpecException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.0"/>
+  <testcase name="generate digest of empty byte array throws IllegalArgumentException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.001"/>
+  <testcase name="encrypt asymmetric signing keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.149"/>
+  <testcase name="verify signature of empty byte array or empty signature throws IllegalArgumentException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.106"/>
+  <testcase name="recreate asymmetric signing keys with private or public key missing throws InvalidKeySpecException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.043"/>
+  <testcase name="verify swapped signatures throws SignatureException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.064"/>
+  <testcase name="recreate asymmetric encryption private key with empty byte array throws InvalidKeySpecException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.001"/>
+  <testcase name="decrypt stream with wrong key()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.002"/>
+  <testcase name="decrypt asymmetric encryption keys with wrong key throws CryptographicOperationException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.298"/>
+  <testcase name="encrypt stream works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.001"/>
+  <testcase name="generate digest works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.002"/>
+  <testcase name="verify short signature throws SignatureException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.083"/>
+  <testcase name="decrypt asymmetric encryption keys of different pairs throws InvalidKeyException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.203"/>
+  <testcase name="recreate asymmetric signing public key with empty byte array throws InvalidKeySpecException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.001"/>
+  <testcase name="decrypt symmetric key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.219"/>
+  <testcase name="decrypt asymmetric signing keys with wrong key throws CryptographicOperationException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.292"/>
+  <testcase name="recreate asymmetric encryption keys with private or public key missing throws InvalidKeySpecException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.054"/>
+  <testcase name="decrypt empty stream works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.0"/>
+  <testcase name="decrypt asymmetric signing keys of different pairs throws InvalidKeyException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.417"/>
+  <testcase name="recreate asymmetric signing keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.167"/>
+  <testcase name="recreate asymmetric signing private key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.071"/>
+  <testcase name="generate asymmetric encryption key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.088"/>
+  <testcase name="recreate asymmetric signing public key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.119"/>
+  <testcase name="verify original signature works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.059"/>
+  <testcase name="recreate asymmetric encryption public key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.065"/>
+  <testcase name="decrypt asymmetric encryption keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.184"/>
+  <testcase name="encrypt symmetric key works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.166"/>
+  <testcase name="check of a pair of asymmetric signing keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.051"/>
+  <testcase name="asymmetric decryption works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.08"/>
+  <testcase name="asymmetric decryption of empty byte array throws IllegalArgumentException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.032"/>
+  <testcase name="asymmetric encryption works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.11"/>
+  <testcase name="check of asymmetric encryption keys of different pairs throws InvalidKeyException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.111"/>
+  <testcase name="asymmetric encryption of empty byte array throws IllegalArgumentException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.18"/>
+  <testcase name="asymmetric decryption of random bytes throws BadPaddingException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.045"/>
+  <testcase name="check of a pair of asymmetric encryption keys works()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.096"/>
+  <testcase name="check of asymmetric signing keys of different pairs throws InvalidKeyException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.096"/>
+  <testcase name="asymmetric decryption with wrong key throws BadPaddingException()[jvm]" classname="eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest" time="0.106"/>
+  <system-out><![CDATA[[Test worker] ERROR - Exception while decrypting symmetric key 
+[Test worker] ERROR - javax.crypto.BadPaddingException: Decryption error 
+[Test worker] ERROR - Exception while decrypting symmetric key 
+[Test worker] ERROR - javax.crypto.BadPaddingException: Decryption error 
+[Test worker] ERROR - Inconsistent encryption key pair 
+[Test worker] ERROR - Exception while decrypting asymmetric signature key pair 
+[Test worker] ERROR - javax.crypto.BadPaddingException: Decryption error 
+[Test worker] ERROR - Inconsistent encryption key pair 
+[Test worker] ERROR - Invalid signature 
+[Test worker] ERROR - Exception while decrypting asymmetric encryption key pair 
+[Test worker] ERROR - javax.crypto.BadPaddingException: Decryption error 
+[Test worker] ERROR - Invalid signature 
+[Test worker] ERROR - Invalid signature 
+[Test worker] ERROR - Invalid signature 
+[Test worker] ERROR - Exception while decrypting asymmetric encryption key pair 
+[Test worker] ERROR - javax.crypto.BadPaddingException: Decryption error 
+[Test worker] ERROR - Inconsistent encryption key pair 
+[Test worker] ERROR - Exception while decrypting asymmetric signature key pair 
+[Test worker] ERROR - javax.crypto.BadPaddingException: Decryption error 
+[Test worker] ERROR - Inconsistent encryption key pair 
+[Test worker] ERROR - Inconsistent encryption key pair 
+[Test worker] ERROR - Invalid signature 
+[Test worker] ERROR - Inconsistent signing key pair 
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

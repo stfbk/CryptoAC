@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
 val kotlinVersion = "1.6.10"
-val serializationVersion = "1.3.1"
-val ktorVersion = "1.6.5"
+val serializationVersion = "1.3.2"
+val ktorVersion = "2.0.0-beta-1"
 val libSodiumVersion = "0.8.4"
 val junitVersion = "5.8.2"
 
@@ -78,6 +78,10 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                implementation("io.ktor:ktor-client-json:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
 
                 implementation("io.github.microutils:kotlin-logging:2.1.21")
                 implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
@@ -99,7 +103,10 @@ kotlin {
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-server-core:$ktorVersion")
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
-                implementation("io.ktor:ktor-websockets:$ktorVersion")
+                implementation("io.ktor:ktor-server-websockets:$ktorVersion")
+                implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+                implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+                implementation("io.ktor:ktor-server-velocity:$ktorVersion")
 
 
                 implementation(kotlin("stdlib-jdk8"))
@@ -118,12 +125,9 @@ kotlin {
                 implementation("org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5")
 
                 implementation("io.ktor:ktor-server-jetty:$ktorVersion")
-                implementation("io.ktor:ktor-html-builder:$ktorVersion")
+                implementation("io.ktor:ktor-server-html-builder:$ktorVersion")
                 implementation("io.ktor:ktor-server-sessions:$ktorVersion")
                 implementation("io.ktor:ktor-server-tests:$ktorVersion")
-                implementation("io.ktor:ktor-client-json:$ktorVersion")
-                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-                implementation("io.ktor:ktor-velocity:$ktorVersion")
                 implementation("io.ktor:ktor-client-jetty:$ktorVersion")
                 implementation("io.ktor:ktor-network-tls-certificates:$ktorVersion")
 
@@ -150,8 +154,8 @@ kotlin {
                 implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
                 // ktor client js json
-                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
-                implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
+                //implementation("io.ktor:ktor-client-json-js:$ktorVersion")
+                //implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
 
                 implementation(npm("react", "17.0.2"))
                 implementation(npm("react-dom", "17.0.2"))

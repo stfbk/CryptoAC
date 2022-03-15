@@ -19,6 +19,7 @@ import org.apache.commons.codec.binary.Base64InputStream
 import java.io.InputStream
 import java.security.*
 import java.security.spec.InvalidKeySpecException
+import java.util.stream.Stream
 import javax.crypto.BadPaddingException
 
 private val logger = KotlinLogging.logger {}

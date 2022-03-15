@@ -5,17 +5,16 @@ import eu.fbk.st.cryptoac.ResponseRoutes.Companion.internalError
 import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.implementation.dm.registerDMRoutes
 import eu.fbk.st.cryptoac.implementation.rm.registerRMRoutes
-import eu.fbk.st.cryptoac.server.UserSession
-import eu.fbk.st.cryptoac.server.registerCryptoACRoutes
-import io.ktor.application.*
-import io.ktor.features.*
+import eu.fbk.st.cryptoac.server.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.serialization.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
 import io.ktor.server.jetty.*
-import io.ktor.sessions.*
-import io.ktor.velocity.*
-import io.ktor.websocket.*
+import io.ktor.server.plugins.*
+import io.ktor.server.request.*
+import io.ktor.server.sessions.*
+import io.ktor.server.velocity.*
+import io.ktor.server.websocket.*
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import org.apache.commons.cli.*
@@ -169,9 +168,10 @@ fun Application.module() {
 
     /** Respond appropriately to any failure state */
     install(StatusPages) {
-        exception<Throwable> { cause ->
+        exception<Throwable> { call, cause ->
             logger.error { "Request to ${call.request.uri} resulted in exception: ${cause.message}" }
             logger.error { cause }
+            cause.printStackTrace() // TODO delete
             internalError(
                 call,
                 OutcomeCode.CODE_049_UNEXPECTED.toString(),
@@ -189,6 +189,9 @@ fun Application.module() {
     }
     install(Compression) {
         gzip()
+    }
+    intercept(ApplicationCallPipeline.Plugins) {
+        logAPI(call)
     }
     when (om) {
         OperationMode.CRYPTOAC -> {
@@ -208,8 +211,15 @@ fun Application.module() {
     }
 }
 
-
-
+/**
+ * To log every API invocation
+ * TODO check if ktor has better logs (and metrics) for APIs
+ */
+fun logAPI(call: ApplicationCall) {
+    val apiURI = call.request.uri
+    val apiMethod = call.request.httpMethod.toString()
+    logger.info { "API $apiURI with method $apiMethod was invoked" }
+}
 
 
 /**

@@ -11,13 +11,17 @@ import eu.fbk.st.cryptoac.core.myJson
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.jetty.*
-import io.ktor.client.features.cookies.*
+import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.utils.io.*
-import io.ktor.utils.io.jvm.javaio.*
+import io.ktor.utils.io.core.*
+import io.ktor.utils.io.streams.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -68,13 +72,14 @@ class DMInterfaceRBACCryptoAC(
             val dmURL = "${API.HTTPS}${dmBaseAPI}${API.DM}"
             logger.info { "Configuring the DM sending a POST request to $dmURL" }
             try {
-                val dmResponse = client!!.post<HttpResponse>(dmURL) {
+                val dmResponse = client!!.post {
+                    url(dmURL)
                     contentType(ContentType.Application.Json)
-                    body = myJson.encodeToString(parameters.opaInterfaceParameters)
+                    setBody(parameters.opaInterfaceParameters)
                 }
                 logger.debug { "Received response from the DM" }
                 if (dmResponse.status != HttpStatusCode.OK) {
-                    code = myJson.decodeFromString(dmResponse.readText())
+                    code = myJson.decodeFromString(dmResponse.bodyAsText())
                     logger.warn {
                         "Received error code from the DM (code: $code, status: ${dmResponse.status})"
                     }
@@ -116,7 +121,7 @@ class DMInterfaceRBACCryptoAC(
                 }
                 logger.debug { "Received response from the DM" }
                 if (dmResponse.status != HttpStatusCode.OK) {
-                    code = myJson.decodeFromString(dmResponse.readText())
+                    code = myJson.decodeFromString(dmResponse.bodyAsText())
                     logger.warn {
                         "Received error code from the DM (code: $code, status: ${dmResponse.status})"
                     }
@@ -146,18 +151,29 @@ class DMInterfaceRBACCryptoAC(
             val dmURL = "${API.HTTPS}$dmBaseAPI${API.DM}files/${CoreType.RBAC_CLOUD}/$fileName"
             logger.info("Downloading the file $fileName from the DM sending a get request to $dmURL")
             try {
-                client!!.get<HttpStatement>(dmURL).execute { response: HttpResponse ->
+                client!!.prepareGet(dmURL).execute { response: HttpResponse ->
                     logger.debug { "Received response from the DM" }
                     if (response.status != HttpStatusCode.OK) {
-                        code = myJson.decodeFromString(response.readText())
+                        code = myJson.decodeFromString(response.bodyAsText())
                         logger.warn {
                             "Received error code from the DM (code: $code, status: ${response.status})"
                         }
                     } else {
+
+                        var byteArray = byteArrayOf()
+                        val channel: ByteReadChannel = response.body()
+                        while (!channel.isClosedForRead) {
+                            val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
+                            while (!packet.isEmpty) {
+                                byteArray += packet.readBytes()
+                            }
+                        }
+                        stream = byteArray.inputStream()
                         // TODO this is extremely inefficient, as we read the whole file into memory and
                         //  then create an ad-hoc stream. It would be better to directly stream the response
                         //  from the DM. However, how to do it?
-                        stream = response.receive<ByteReadChannel>().toInputStream().readAllBytes().inputStream()
+
+
                     }
                 }
             } catch (e: ConnectException) {
@@ -191,7 +207,7 @@ class DMInterfaceRBACCryptoAC(
                 val dmResponse: HttpResponse = client!!.put(dmURL)
                 logger.debug { "Received response from the DM" }
                 if (dmResponse.status != HttpStatusCode.OK) {
-                    code = myJson.decodeFromString(dmResponse.readText())
+                    code = myJson.decodeFromString(dmResponse.bodyAsText())
                     logger.warn {
                         "Received error code from the DM (code: $code, status: ${dmResponse.status})"
                     }
@@ -219,10 +235,12 @@ class DMInterfaceRBACCryptoAC(
             val dmURL = "${API.HTTPS}$dmBaseAPI${API.DM}files/${CoreType.RBAC_CLOUD}/$fileName"
             logger.info("Delete the file $fileName from the DM sending a delete request to $dmURL")
             try {
-                val dmResponse = client!!.delete<HttpResponse>(dmURL)
+                val dmResponse = client!!.delete {
+                    url(dmURL)
+                }
                 logger.debug { "Received response from the DM" }
                 if (dmResponse.status != HttpStatusCode.OK) {
-                    code = myJson.decodeFromString(dmResponse.readText())
+                    code = myJson.decodeFromString(dmResponse.bodyAsText())
                     logger.warn {
                         "Received error code from the DM (code: $code, status: ${dmResponse.status})"
                     }
@@ -252,10 +270,12 @@ class DMInterfaceRBACCryptoAC(
             val dmURL = "${API.HTTPS}$dmBaseAPI${API.DM}temporaryFiles/${CoreType.RBAC_CLOUD}/$fileName"
             logger.info("Delete the temporary file $fileName from the DM sending a delete request to $dmURL")
             try {
-                val dmResponse = client!!.delete<HttpResponse>(dmURL)
+                val dmResponse = client!!.delete {
+                    url(dmURL)
+                }
                 logger.debug { "Received response from the DM" }
                 if (dmResponse.status != HttpStatusCode.OK) {
-                    code = myJson.decodeFromString(dmResponse.readText())
+                    code = myJson.decodeFromString(dmResponse.bodyAsText())
                     logger.warn {
                         "Received error code from the DM (code: $code, status: ${dmResponse.status})"
                     }
@@ -293,6 +313,9 @@ class DMInterfaceRBACCryptoAC(
             client = HttpClient(Jetty) {
                 expectSuccess = false
                 install(HttpCookies) /** To accept all cookies */
+                install(io.ktor.client.plugins.ContentNegotiation) {
+                    json(json = myJson)
+                }
                 // TODO configure this, as for now the client accepts all certificates
                 engine {
                     sslContextFactory.isTrustAll = true

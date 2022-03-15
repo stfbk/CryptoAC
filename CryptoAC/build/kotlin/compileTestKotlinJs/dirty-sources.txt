@@ -1,3 +1,4 @@
+/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/elements/UserTest.kt
 /home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/tuples/PermissionTupleTest.kt
 /home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/CryptoACObjectTest.kt
 /home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/core/tuples/RoleTupleTest.kt

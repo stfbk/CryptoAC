@@ -22,7 +22,6 @@ object Parameters {
 
     /** Change these parameters to test different combinations */
     val cryptoType = CryptoType.SODIUM
-    val coreType = CoreType.RBAC_CLOUD
 
     private const val cryptoACURL = "0.0.0.0"
     private const val cryptoACPORT = "8443"
@@ -32,7 +31,8 @@ object Parameters {
     val adminAsymEncKeys = cryptoObject.generateAsymEncKeys()
     val adminAsymSigKeys = cryptoObject.generateAsymSigKeys()
     val adminUser = User(
-        ADMIN, isAdmin = true,
+        ADMIN, 
+        isAdmin = true,
         asymEncKeys = AsymKeys(
             private = adminAsymEncKeys.private.encoded.encodeBase64(),
             public = adminAsymEncKeys.public.encoded.encodeBase64(),
@@ -100,20 +100,7 @@ object Parameters {
         port = 8181, url = "10.1.0.8", policyModel = PolicyModel.RBAC
     )
     val adminCoreRBACCLOUDParameters = CoreParametersCLOUD(
-        User(
-            name = ADMIN,
-            isAdmin = true,
-            asymEncKeys = AsymKeys(
-                public = adminAsymEncKeys.public.encoded.encodeBase64(),
-                private = adminAsymEncKeys.private.encoded.encodeBase64(),
-                keysType = AsymKeysType.ENC
-            ),
-            asymSigKeys = AsymKeys(
-                public = adminAsymSigKeys.public.encoded.encodeBase64(),
-                private = adminAsymSigKeys.private.encoded.encodeBase64(),
-                keysType = AsymKeysType.SIG
-            )
-        ),
+        user = adminUser,
         cryptoType = cryptoType,
         mmInterfaceParameters = mmInterfaceMySQLParameters,
         rmInterfaceParameters = rmInterfaceCryptoACParameters,
@@ -139,20 +126,7 @@ object Parameters {
         token = ADMIN,
     )
     val adminCoreRBACMQTTParameters = CoreParametersMQTT(
-        User(
-            name = ADMIN,
-            isAdmin = true,
-            asymEncKeys = AsymKeys(
-                public = adminAsymEncKeys.public.encoded.encodeBase64(),
-                private = adminAsymEncKeys.private.encoded.encodeBase64(),
-                keysType = AsymKeysType.ENC
-            ),
-            asymSigKeys = AsymKeys(
-                public = adminAsymSigKeys.public.encoded.encodeBase64(),
-                private = adminAsymSigKeys.private.encoded.encodeBase64(),
-                keysType = AsymKeysType.SIG
-            )
-        ),
+        user = adminUser,
         cryptoType = cryptoType,
         mmInterfaceParameters = mmInterfaceRedisParameters,
         dmInterfaceParameters = dmInterfaceMosquittoParameters
@@ -182,46 +156,7 @@ object Parameters {
             keysType = AsymKeysType.SIG
         )
     )
-    private val aliceCoreRBACCLOUDParameters = CoreParametersCLOUD(
-        user = aliceUser,
-        mmInterfaceParameters = MMInterfaceMySQLParameters(
-            port = mmInterfaceMySQLParameters.port,
-            url = mmInterfaceMySQLParameters.url,
-            username = aliceName,
-            password = aliceName,
-        ),
-        cryptoType = cryptoType,
-        rmInterfaceParameters = rmInterfaceCryptoACParameters,
-        dmInterfaceParameters = dmInterfaceCryptoACParameters,
-        opaInterfaceParameters = opaInterfaceParameters
-    )
-    private val aliceCoreRBACMQTTParameters = CoreParametersMQTT(
-        user = aliceUser,
-        cryptoType = cryptoType,
-        mmInterfaceParameters = MMInterfaceRedisParameters(
-            port = mmInterfaceRedisParameters.port,
-            url = mmInterfaceRedisParameters.url,
-            username = aliceName,
-            password = aliceName,
-            token = aliceUser.token,
-        ),
-        dmInterfaceParameters = DMInterfaceMosquittoParameters(
-            port = 1883,
-            url = "0.0.0.0",
-            password = aliceName.toByteArray(),
-            username = aliceName,
-            tls = false
-        ),
-    )
-    private val aliceCoreRBACMOCKParameters = CoreParametersMOCK(
-        user = aliceUser,
-        cryptoType = cryptoType,
-    )
-    val aliceCoreParameters = when (coreType) {
-        CoreType.RBAC_CLOUD -> aliceCoreRBACCLOUDParameters
-        CoreType.RBAC_MQTT -> aliceCoreRBACMQTTParameters
-        CoreType.RBAC_MOCK -> aliceCoreRBACMOCKParameters
-    }
+
 
 
     private val bobAsymEncKeys = cryptoObject.generateAsymEncKeys()
@@ -241,46 +176,6 @@ object Parameters {
             keysType = AsymKeysType.SIG
         )
     )
-    private val bobCoreRBACCLOUDParameters = CoreParametersCLOUD(
-        user = bobUser,
-        mmInterfaceParameters = MMInterfaceMySQLParameters(
-            port = mmInterfaceMySQLParameters.port,
-            url = mmInterfaceMySQLParameters.url,
-            username = bobName,
-            password = bobName,
-        ),
-        cryptoType = cryptoType,
-        rmInterfaceParameters = rmInterfaceCryptoACParameters,
-        dmInterfaceParameters = dmInterfaceCryptoACParameters,
-        opaInterfaceParameters = opaInterfaceParameters
-    )
-    private val bobCoreRBACMQTTParameters = CoreParametersMQTT(
-        user = bobUser,
-        cryptoType = cryptoType,
-        mmInterfaceParameters = MMInterfaceRedisParameters(
-            port = mmInterfaceRedisParameters.port,
-            url = mmInterfaceRedisParameters.url,
-            username = bobName,
-            password = bobName,
-            token = bobUser.token,
-        ),
-        dmInterfaceParameters = DMInterfaceMosquittoParameters(
-            port = 1883,
-            url = "0.0.0.0",
-            password = aliceName.toByteArray(),
-            username = aliceName,
-            tls = false
-        ),
-    )
-    private val bobCoreRBACMOCKParameters = CoreParametersMOCK(
-        user = bobUser,
-        cryptoType = cryptoType,
-    )
-    val bobCoreParameters = when (coreType) {
-        CoreType.RBAC_CLOUD -> bobCoreRBACCLOUDParameters
-        CoreType.RBAC_MQTT -> bobCoreRBACMQTTParameters
-        CoreType.RBAC_MOCK -> bobCoreRBACMOCKParameters
-    }
 
     private val carlAsymEncKeys = cryptoObject.generateAsymEncKeys()
     private val carlAsymSigKeys = cryptoObject.generateAsymSigKeys()

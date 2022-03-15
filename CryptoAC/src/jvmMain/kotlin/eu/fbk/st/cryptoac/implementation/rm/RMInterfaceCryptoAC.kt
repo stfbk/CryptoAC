@@ -11,10 +11,13 @@ import eu.fbk.st.cryptoac.core.CoreParametersCLOUD
 import eu.fbk.st.cryptoac.core.myJson
 import io.ktor.client.*
 import io.ktor.client.engine.jetty.*
-import io.ktor.client.features.cookies.*
+import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -57,9 +60,10 @@ class RMInterfaceCryptoAC(
             logger.info { "Configuring the RM sending a POST request to $rmURL" }
             try {
                 getKtorClient().use {
-                    val rmResponse = it.post<HttpResponse>(rmURL) {
+                    val rmResponse = it.post {
+                        url(rmURL)
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(RMCloudParameters(
+                        setBody(RMCloudParameters(
                             parameters.cryptoType,
                             parameters.mmInterfaceParameters,
                             parameters.dmInterfaceParameters,
@@ -68,7 +72,7 @@ class RMInterfaceCryptoAC(
                     }
                     logger.debug { "Received response from the RM" }
                     if (rmResponse.status != HttpStatusCode.OK) {
-                        code = myJson.decodeFromString(rmResponse.readText())
+                        code = myJson.decodeFromString(rmResponse.bodyAsText())
                         logger.warn {
                             "Received error code from the RM (code: $code, status: ${rmResponse.status})"
                         }
@@ -105,13 +109,14 @@ class RMInterfaceCryptoAC(
             )
             try {
                 getKtorClient().use {
-                    val rmResponse = it.post<HttpResponse>(rmURL) {
+                    val rmResponse = it.post {
+                        url(rmURL)
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(addFileRequest)
+                        setBody(addFileRequest)
                     }
                     logger.debug { "Received response from the RM" }
                     if (rmResponse.status != HttpStatusCode.OK) {
-                        code = myJson.decodeFromString(rmResponse.readText())
+                        code = myJson.decodeFromString(rmResponse.bodyAsText())
                         logger.warn {
                             "Received error code from the RM (code: $code, status: ${rmResponse.status})"
                         }
@@ -153,13 +158,14 @@ class RMInterfaceCryptoAC(
             )
             try {
                 getKtorClient().use {
-                    val rmResponse = it.patch<HttpResponse>(rmURL) {
+                    val rmResponse = it.patch {
+                        url(rmURL)
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(writeFileRequest)
+                        setBody(writeFileRequest)
                     }
                     logger.debug { "Received response from the RM" }
                     if (rmResponse.status != HttpStatusCode.OK) {
-                        code = myJson.decodeFromString(rmResponse.readText())
+                        code = myJson.decodeFromString(rmResponse.bodyAsText())
                         logger.warn {
                             "Received error code from the RM (code: $code, status: ${rmResponse.status})"
                         }
@@ -191,6 +197,9 @@ class RMInterfaceCryptoAC(
     private fun getKtorClient(): HttpClient = HttpClient(Jetty) {
         expectSuccess = false
         install(HttpCookies) /** To accept all cookies */
+        install(io.ktor.client.plugins.ContentNegotiation) {
+            json(json = myJson)
+        }
         // TODO configure this, as for now the client accepts all certificates
         engine {
             sslContextFactory.isTrustAll = true

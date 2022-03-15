@@ -9,7 +9,7 @@ import eu.fbk.st.cryptoac.core.tuples.*
 import eu.fbk.st.cryptoac.crypto.*
 import eu.fbk.st.cryptoac.implementation.dm.*
 import eu.fbk.st.cryptoac.implementation.mm.*
-import io.ktor.http.cio.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging

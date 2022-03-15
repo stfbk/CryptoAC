@@ -28,7 +28,6 @@ private val logger = KotlinLogging.logger {}
  *
  * Currently, Redis does not support multiple keys pointing to the
  * same value (see https://github.com/redis/redis/issues/2668).
- * Therefore, sometimes we may need to duplicate some data.
  *
  * To regulate accesses to the metadata (e.g., the access control policy, the
  * identifiers of other users/roles/files, ...), Redis 7.0 (the most recent
@@ -37,7 +36,7 @@ private val logger = KotlinLogging.logger {}
  * has to be assigned permissions on what commands she can execute and what
  * keys she can access individually. Therefore, we need to find the right
  * balance between the ACL complexity and the possibility that users can
- * "guess" the right key to access metadata she could not (keeping in mind that
+ * "guess" the right key to access metadata they could not (keeping in mind that
  * this would only be a privacy problem, not a security problem). In the former
  * case, we would assign each user to all keys she can access, possibly resulting
  * in an explosion of the ACL size due to the number of keys in Redis. In the
@@ -46,41 +45,36 @@ private val logger = KotlinLogging.logger {}
  * Still, users would need extra information (e.g., the role token) to derive the
  * actual key (e.g., the sub-key is composed as <top level key>:<role token>)
  * to fetch the data from.
- * We chose the second approach. In detail, we have the following keys:
- * - <[userObjectPrefix] + [byUsernameKeyPrefix] + username>: for each user, we
- * have a dedicated key that contains the set of roles the user is assigned to.
- * The set consists of elements composed as <role name + role token>. Only the
- * related user has READ access to this key;
- * - <[userObjectPrefix] + [byUserTokenKeyPrefix] + user token>: the data of a user,
- * i.e., the public keys, whether the user is an admin and the status. All users
- * have READ access to this key, while the related user also has WRITE access;
- * - <[setOfUsersKey]>: set of incomplete or operational users.
- * The set consists of elements composed as <username + user token>;
- * - <[setOfDeletedUsersKey]>: set of deleted users. The set consists of elements
- * composed as <username + user token>;
+ * We chose the second approach, so we keep the ACL simple and do not have to update
+ * it every time we change the policy. In detail, we have some top-level keys that
+ * are then complemented with specific information (e.g., a user token or a role name).
+ * We have the following keys that contain extra information to identify other keys:
+ * - [setOfUsersKey]: set of username:userToken of users in Redis (ADMIN ONLY)
+ * - [setOfDeletedUsersKey]: set of username:userToken of deleted users in Redis (ADMIN ONLY)
+ * - [setOfRolesKey]: set of roleName:roleToken of roles in Redis (ADMIN ONLY)
+ * - [setOfDeletedRolesKey]: set of roleName:roleToken of deleted roles in Redis (ADMIN ONLY)
+ * - [setOfFilesKey]: set of fileName:fileToken of files in Redis (ADMIN ONLY)
+ * - [setOfDeletedFilesKey]: set of fileName:fileToken of deleted files in Redis (ADMIN ONLY)
+ * - [roleTuplesListKeyPrefix]: top-level key prefix for extra information to identify the keys of role tuples:
+ *   - [byUsernameAndRoleNameKeyPrefix]: the role token as a set (ADMIN ONLY)
+ *   - [byRoleNameKeyPrefix]: set of, for each user assigned to the role, the username plus the token (ADMIN ONLY)
+ *   - [byUsernameKeyPrefix]: set of, for each role assigned to the user, the role name plus the token (ADMIN ONLY)
+ *   - [byUserTokenKeyPrefix]: set of, for each role assigned to the user, the role name plus the token (USER WITH TOKEN CAN ACCESS)
+ * - [permissionTuplesListKeyPrefix]: top-level key prefix for extra information to identify the keys of permission tuples:
+ *   - [byRoleAndFileNameKeyPrefix]: set of, for each version number, the file name plus the token plus the key version number (ADMIN ONLY)
+ *   - [byFileNameKeyPrefix]: set of, for each permission assigned to the file, the role name plus the token plus the key version number (ADMIN ONLY)
+ *   - [byRoleNameKeyPrefix]: set of, for each permission assigned to the role, the file name plus the token plus the key version number (ADMIN ONLY)
+ *   - [byRoleTokenKeyPrefix]: set of, for each permission assigned to the role, the file name plus the token plus the key version number (USERS CAN ACCESS)
+ * - [fileTuplesListKeyPrefix]: top-level key prefix for extra information to identify the keys of file tuples:
+ *   - [byFileNameKeyPrefix]: the file token as a set (ADMIN ONLY)
  *
- *
- *
- *
- *
- * USERS:
- * - [userObjectPrefix] + [byUsernameKeyPrefix] + username: user object data
- * - [userObjectPrefix] + [byUserTokenKeyPrefix] + user token: user object data
- * - [setOfUsersKey]: list of the keys (by username) of
- *   incomplete or operational users
- * - [setOfDeletedUsersKey]: list of the keys (by username) of deleted users
- *
- * ROLES:
- * - [roleObjectPrefix] + [byRoleNameKeyPrefix] + role name: role object data
- * - [roleObjectPrefix] + [byRoleTokenKeyPrefix] + role token: role object data
- * - [setOfRolesKey]: list of the keys (by role name) of operational roles
- * - [setOfDeletedRolesKey]: list of the keys (by role name) of deleted roles
- *
- * FILES:
- * - [fileObjectPrefix] + [byFileNameKeyPrefix] + file name: file object data
- * - [fileObjectPrefix] + [byFileTokenKeyPrefix] + file token: file object data
- * - [setOfFilesKey]: list of the keys (by file name) of operational files
- * - [setOfDeletedFilesKey]: list of the keys (by file name) of deleted files
+ * Then, we save metadata on objects (i.e users, roles, files, role/permission/file tuples) under the following keys:
+ * - [userObjectPrefix] + [byUserTokenKeyPrefix]: hashset of user (name, token, sig pub key, enc pub key, isAdmin, status) (USERS CAN ACCESS)
+ * - [roleObjectPrefix] + [byRoleTokenKeyPrefix]: hashset of role (name, token, sig pub key, enc pub key, version number, status) (USERS CAN ACCESS)
+ * - [fileObjectPrefix] + [byFileTokenKeyPrefix]: hashset of file (name, token, version number, status, enforcement) (USERS CAN ACCESS)
+ * - [roleTupleObjectPrefix] + [byUserAndRoleTokenKeyPrefix]: hashset of role tuple (username, role name, encrypted sig key, encrypted ver key, encrypted enc key, encrypted dec key, role version number, signature) (USERS CAN ACCESS)
+ * - [permissionTupleObjectPrefix] + [byRoleAndFileTokenAndVersionNumberKeyPrefix]: hashset of permission tuple (role name, file name, role token, file token, encrypted sym key, sym key version number, role version number, permission, signer, signature) (USERS CAN ACCESS)
+ * - [fileTupleObjectPrefix] + [byFileTokenKeyPrefix]: hashset of file tuple (file name, file token, dec sym key version number, enforcement, role token, signer token, signature) (USERS CAN ACCESS)
  */
 class MMInterfaceRedis(
     private val mmRedisInterfaceParameters: MMInterfaceRedisParameters
@@ -269,7 +263,7 @@ class MMInterfaceRedis(
     private val byUsernameKeyPrefix = "bu$dl"
 
     /** Prefix for secondary indexes based on user and role names */
-    private val byUsernameAndRoleNamePrefix = "bur$dl"
+    private val byUsernameAndRoleNameKeyPrefix = "bur$dl"
 
     /** Prefix for secondary indexes based on user and role tokens */
     private val byUserAndRoleTokenKeyPrefix = "burt$dl"
@@ -720,7 +714,7 @@ class MMInterfaceRedis(
                 val keyOfRoleTuplesListByUser = "$roleTuplesListKeyPrefix$byUsernameKeyPrefix$username"
                 val keyOfRoleTuplesListByRole = "$roleTuplesListKeyPrefix$byRoleNameKeyPrefix$roleName"
                 val keyOfRoleTuplesListByUserAndRole =
-                    "$roleTuplesListKeyPrefix$byUsernameAndRoleNamePrefix$username$dl$roleName"
+                    "$roleTuplesListKeyPrefix$byUsernameAndRoleNameKeyPrefix$username$dl$roleName"
 
                 val roleTupleKey = "$roleTupleObjectPrefix$byUserAndRoleTokenKeyPrefix$userToken$dl$roleToken"
                 logger.debug { "Adding the role tuple of user $username and role $roleName" }
@@ -1371,7 +1365,7 @@ class MMInterfaceRedis(
                 val userToken = getToken(username!!, ElementTypeWithStatus.USER)
 
                 val keyOfRoleTuplesListByUserAndRole =
-                    "$roleTuplesListKeyPrefix$byUsernameAndRoleNamePrefix$username$dl$roleName"
+                    "$roleTuplesListKeyPrefix$byUsernameAndRoleNameKeyPrefix$username$dl$roleName"
                 val roleTokens = hashSetOf<String>()
                 jquerySmembers(keyOfRoleTuplesListByUserAndRole)?.let { roleTokens.addAll(it) }
 
@@ -2193,7 +2187,7 @@ class MMInterfaceRedis(
                 val roleTuplesKeyByUserToken = "$roleTuplesListKeyPrefix$byUserTokenKeyPrefix$userToken"
                 val roleTuplesKeyByUsername = "$roleTuplesListKeyPrefix$byUsernameKeyPrefix$username"
                 val roleTuplesKeyByUsernameAndRoleName =
-                    "$roleTuplesListKeyPrefix$byUsernameAndRoleNamePrefix$username$dl$roleName"
+                    "$roleTuplesListKeyPrefix$byUsernameAndRoleNameKeyPrefix$username$dl$roleName"
                 val roleTupleKey = "$roleTupleObjectPrefix$byUserAndRoleTokenKeyPrefix$userToken$dl$roleToken"
 
                 logger.debug { "Deleting role tuple of user $username" }

@@ -8,12 +8,12 @@ internal class ElementTest {
 
     @Test
     fun `token creation for positive values works`() {
-        assertTrue(Element.generateToken(1).length == 1)
+        assertTrue(Element.generateRandomToken(1).length == 1)
     }
 
     @Test
     fun `token creation with zero or negative values fails`() {
-        assertFails { Element.generateToken(0) }
-        assertFails { Element.generateToken(-1) }
+        assertFails { Element.generateRandomToken(0) }
+        assertFails { Element.generateRandomToken(-1) }
     }
 }

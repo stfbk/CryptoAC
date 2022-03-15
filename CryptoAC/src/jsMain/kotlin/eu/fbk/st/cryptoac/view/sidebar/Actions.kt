@@ -115,11 +115,10 @@ class Actions: RComponent<ActionsProps, State>() {
 
 
     /**
-     * Submit, with the "x-www-form-urlencoded" application content type,
-     * the given [values] at the specified [endpoint] through the [method].
+     * Submit the given [values] at the specified [endpoint] through the [method].
      * Finally, handle the HTTP response with the provided [callback] function
      */
-    private fun submitCryptoACFormUrlEncoded (
+    private fun submitCryptoACForm (
         method: HttpMethod, endpoint: String,
         values: HashMap<String, String>,
         callback: (HttpResponse, HashMap<String, String>) -> Unit,
@@ -134,15 +133,26 @@ class Actions: RComponent<ActionsProps, State>() {
             try {
                 if (method == HttpMethod.Post || method == HttpMethod.Patch) {
                     if (method == HttpMethod.Post) {
-                        callback(props.httpClient.post(endpoint) {
-                            contentType(ContentType.Application.FormUrlEncoded)
-                            body = values.toList().formUrlEncode()
-                        }, values)
+                        callback(
+                            props.httpClient.submitForm(
+                                formParameters = Parameters.build {
+                                    values.forEach {
+                                        append(it.key, it.value)
+                                    }
+                                }) {
+                                url(endpoint)
+                            }, values
+                        )
                     } else {
-                        callback(props.httpClient.patch(endpoint) {
-                            contentType(ContentType.Application.FormUrlEncoded)
-                            body = values.toList().formUrlEncode()
-                        }, values)
+                        callback(
+                            props.httpClient.submitFormPatch(
+                                formParameters = Parameters.build {
+                                    values.forEach {
+                                        append(it.key, it.value)
+                                    }
+                                }) {
+                                url(endpoint)
+                            }, values)
                     }
                 }
                 else {
@@ -302,9 +312,9 @@ class Actions: RComponent<ActionsProps, State>() {
                         values.forEach { endpointWithParameters.append("/").append(it.value) }
                     }
                     if (method == HttpMethod.Delete) {
-                        callback(props.httpClient.delete(endpointWithParameters.toString()), values)
+                        callback(props.httpClient.delete { url (endpointWithParameters.toString()) }, values)
                     } else if (method == HttpMethod.Get) {
-                        callback(props.httpClient.get(endpointWithParameters.toString()), values)
+                        callback(props.httpClient.get { url(endpointWithParameters.toString()) }, values)
                     }
                 }
                 else {
@@ -334,7 +344,7 @@ class Actions: RComponent<ActionsProps, State>() {
                 logger.info { "Response status is $status" }
                 props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
             } else {
-                val outcomeCode = myJson.decodeFromString<OutcomeCode>(response.readText())
+                val outcomeCode = myJson.decodeFromString<OutcomeCode>(response.bodyAsText())
                 logger.warn { "Response status is $status, outcome code is $outcomeCode" }
                 props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity.ERROR)
             }
@@ -350,7 +360,7 @@ class Actions: RComponent<ActionsProps, State>() {
             val status = response.status
             if (status == HttpStatusCode.OK) {
                 logger.info { "Response status is $status" }
-                val text = response.readText()
+                val text = response.bodyAsText()
                 val element = document.createElement("a")
                 element.setAttribute("href", "data:application/json;charset=utf-8,$text")
                 element.setAttribute("download", "${values[SERVER.USERNAME]}.json")
@@ -359,7 +369,7 @@ class Actions: RComponent<ActionsProps, State>() {
                 element.asDynamic().click()
                 document.body!!.removeChild(element)
             } else {
-                val outcomeCode = myJson.decodeFromString<OutcomeCode>(response.readText())
+                val outcomeCode = myJson.decodeFromString<OutcomeCode>(response.bodyAsText())
                 logger.warn { "Response status is $status, outcome code is $outcomeCode" }
                 props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity.ERROR)
             }
@@ -378,7 +388,7 @@ class Actions: RComponent<ActionsProps, State>() {
                 props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
                 props.handleAddTableInContent(values[SERVER.FILE_NAME]!!)
             } else {
-                val outcomeCode = myJson.decodeFromString<OutcomeCode>(response.readText())
+                val outcomeCode = myJson.decodeFromString<OutcomeCode>(response.bodyAsText())
                 logger.warn { "Response status is $status, outcome code is $outcomeCode" }
                 props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity.ERROR)
             }
@@ -397,7 +407,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, params -> callbackDownloadUserProfile(response, params) }
+                submitCryptoACForm(method, endpoint, values) { response, params -> callbackDownloadUserProfile(response, params) }
             },
             cryptoACFormFields = listOf(listOf(
                 CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)
@@ -413,7 +423,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(listOf(
                 CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)
@@ -429,7 +439,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)),
@@ -446,7 +456,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_CLOUD,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)),
@@ -613,7 +623,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, params-> callbackDownloadUserProfile(response, params) }
+                submitCryptoACForm(method, endpoint, values) { response, params-> callbackDownloadUserProfile(response, params) }
             },
             cryptoACFormFields = listOf(listOf(
                 CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)
@@ -629,7 +639,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(listOf(
                 CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)
@@ -645,7 +655,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME, InputType.text)),
@@ -664,7 +674,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)),
@@ -681,7 +691,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)),
@@ -793,7 +803,7 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Patch,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACFormUrlEncoded(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
+                submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(listOf(
                 CryptoACFormField(SERVER.FILE_NAME, "Topic Name", InputType.text),

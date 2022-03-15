@@ -8,12 +8,12 @@ import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.server.FileSaveMode
 import eu.fbk.st.cryptoac.server.FileSystemManager
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters
-import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import java.io.File
@@ -38,7 +38,7 @@ fun Route.filesRouting() {
 
     // TODO enforce a limit on the number (or size) of files a user can up/download
 
-    // TODO thinks about ciclically deleting files from the temporary folder
+    // TODO thinks about cyclically deleting files from the temporary folder
 
     // TODO - [DM] When a user creates a file, what if another file with the same name already exists? Do
     //  we return 403 or 404? What if we use the token of the file as primary key?
@@ -150,7 +150,13 @@ fun Route.filesRouting() {
                         OutcomeCode.CODE_006_FILE_NOT_FOUND
                     )
                 } else {
-                    call.response.header("Content-Disposition", "attachment; filename=\"$fileNameToGet\"")
+                    call.response.header(
+                        HttpHeaders.ContentDisposition,
+                        ContentDisposition.Attachment.withParameter(
+                            ContentDisposition.Parameters.FileName, fileNameToGet
+                        ).toString()
+                    )
+                    //call.response.header("Content-Disposition", "attachment; filename=\"$fileNameToGet\"")
                     val contentType = ContentType.fromFileExtension(File(fileNameToGet).extension).firstOrNull()
                         ?: ContentType.Application.OctetStream
 
@@ -336,8 +342,10 @@ fun Route.configureRouting() {
             // TODO this should be "val opaParametersCloud = call.receive<opaParametersCloudString>()",
             //  but a bug in kotlinx serialization library prevents it. Therefore, receive as string and then serialize.
             //  When a new version of the kotlinx serialization library is provided, try again
-            val opaParametersCloudString = call.receive<String>()
-            opaInterfaceParameters = myJson.decodeFromString(opaParametersCloudString)
+            //val opaParametersCloudString = call.receive<String>()
+            //opaInterfaceParameters = myJson.decodeFromString(opaParametersCloudString)
+
+            opaInterfaceParameters = call.receive()
 
             // TODO check that received parameters are ok, i.e., OPA server is
             //  running at the specified url and port. if not, return an error code:

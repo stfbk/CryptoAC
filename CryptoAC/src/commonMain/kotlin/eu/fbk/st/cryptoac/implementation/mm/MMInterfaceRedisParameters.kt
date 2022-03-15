@@ -90,7 +90,7 @@ class MMInterfaceRedisParameters(
         } else if (port <= 0 || port >= 65535) {
             logger.warn { "Port number $port is inconsistent" }
             false
-        } else if (!SafeRegex.BASE64.matches(token)) {
+        } else if (!SafeRegex.TEXT.matches(token)) {
             logger.warn { "Token ${token.toByteArray()} does not respect BASE64 regex" }
             false
         } else {

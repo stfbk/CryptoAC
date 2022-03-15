@@ -9,13 +9,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.junit.jupiter.api.*
-import java.lang.AssertionError
 import kotlin.test.assertFalse
+
 
 private val logger = KotlinLogging.logger {}
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class CoreRBACMQTTTest : CoreRBACTest() {
+internal open class CoreRBACMQTTTest : CoreRBACTest() {
 
     override val core: CoreRBACMQTT =
         CoreFactory.getCore(Parameters.adminCoreRBACMQTTParameters) as CoreRBACMQTT

@@ -66,7 +66,7 @@ class SafeRegex {
          *   (?:                    # start of non-capturing group #1
          *     [A-Za-z0-9+/]{4}+    # one or more repetitions of 4 of these chars
          *   )                      # end of group #1
-         *   (?:                    # start of non-capturing group #1
+         *   (?:                    # start of non-capturing group #2
          *     [A-Za-z0-9+/]{2}==   # two of these chars followed by "=="
          *     |                    # or
          *     [A-Za-z0-9+/]{3}=    # three of these chars followed by "="

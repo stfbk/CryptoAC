@@ -20,11 +20,7 @@ class Role(
         requirePositiveNumber(versionNumber)
     }
 
-    override var token: String = generateToken(
-        name = name,
-        asymEncKeys = asymEncKeys,
-        asymSigKeys = asymSigKeys
-    )
+    override var token: String = generateRandomTokenForAdmin(name)
 
     /** Return a String array of the significant fields of this role */
     override fun toArray(): Array<String> = arrayOf(name, status.toString(), token)

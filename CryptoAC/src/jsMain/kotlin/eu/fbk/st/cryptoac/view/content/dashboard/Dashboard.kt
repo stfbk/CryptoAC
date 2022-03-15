@@ -31,7 +31,6 @@ import kotlinx.css.*
 import kotlinx.html.hidden
 import kotlinx.html.js.onChangeFunction
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import org.w3c.dom.HTMLInputElement
 import org.w3c.files.File
@@ -270,7 +269,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                     CoreParametersMQTT(
                         user = user,
                         cryptoType = cryptoType,
-                        mmInterfaceParameters = mmParameters as MMInterfaceRBACMQTTParameters,
+                        mmInterfaceParameters = mmParameters,
                         dmInterfaceParameters = dmParameters as DMInterfaceRBACMQTTParameters,
                     )
                 }
@@ -289,17 +288,19 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                 /** Send the HTTPS request */
                 props.handleChangeBackdropIsOpen(true)
                 val response: HttpResponse = if (method == HttpMethod.Post) {
-                    props.httpClient.post(endpoint) {
+                    props.httpClient.post {
+                        url(endpoint)
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(parameters)
+                        setBody(parameters)
                     }
                 } else {
-                    props.httpClient.patch(endpoint) {
+                    props.httpClient.patch {
+                        url(endpoint)
                         contentType(ContentType.Application.Json)
-                        body = myJson.encodeToString(parameters)
+                        setBody(parameters)
                     }
                 }
-                val code: OutcomeCode = response.receive()
+                val code: OutcomeCode = response.body()
                 val status = response.status
                 props.handleChangeBackdropIsOpen(false)
 
@@ -352,14 +353,14 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
 
     /** Get the profile of the [username] for the current coreType */
     private suspend fun getProfileFromCryptoAC(username: String? = props.username) {
-        val actualEndpoint = "$baseURL${PROFILES.replace("{Core}", props.coreType.toString())}/$username"
+        val actualEndpoint = "$baseURL${PROFILES.replace("{Core}", props.coreType.toString())}$username"
         logger.info { "Getting the profile for user $username at endpoint $actualEndpoint" }
-        val httpResponse: HttpResponse = props.httpClient.get(actualEndpoint)
+        val httpResponse = props.httpClient.get { url(actualEndpoint) }
 
         val status = httpResponse.status
         if (status == HttpStatusCode.OK) {
             logger.info { "Response status is $status" }
-            val profileAsString = httpResponse.readText()
+            val profileAsString = httpResponse.bodyAsText()
             val parameters = myJson.decodeFromString<CoreParameters>(profileAsString)
             if (parseProfileAndUpdateFields(parameters, forceTypesUpdate = true)) {
                 setState {
@@ -369,7 +370,7 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                 }
             }
         } else {
-            val text = httpResponse.readText()
+            val text = httpResponse.bodyAsText()
             val outcomeCode: OutcomeCode = myJson.decodeFromString(text)
             logger.warn { "Response status is ${status}, code is $outcomeCode" }
             props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity.ERROR)
@@ -577,6 +578,14 @@ class Dashboard: RComponent<DashboardProps, DashboardState>() {
                             InputType.number,
                             className = "darkTextField",
                             defaultValue = opaParameters?.port.toString()
+                        ),
+                        CryptoACFormField(
+                            SERVER.OPA_POLICY_MODEL,
+                            SERVER.OPA_POLICY_MODEL.replace("_", " "),
+                            InputType.select,
+                            options = PolicyModel.values().map { it.toString() },
+                            className = "darkTextField",
+                            defaultValue = opaParameters?.policyModel.toString()
                         ),
                     )
                 )

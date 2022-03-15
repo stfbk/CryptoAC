@@ -1,11 +1,8 @@
 package eu.fbk.st.cryptoac.core.elements
 
-import eu.fbk.st.cryptoac.Constants
 import eu.fbk.st.cryptoac.Constants.ADMIN
-import eu.fbk.st.cryptoac.Utils.Companion.generateRandomString
 import eu.fbk.st.cryptoac.crypto.AsymKeys
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 /**
  * A User is an ActiveElement representing a user.
@@ -18,11 +15,8 @@ class User(
     override val asymEncKeys: AsymKeys? = null, override val asymSigKeys: AsymKeys? = null,
     val isAdmin: Boolean = false,
 ) : ActiveElement() {
-    override var token: String = if (name == ADMIN) {
-        ADMIN
-    } else {
-        generateRandomString()
-    }
+
+    override var token: String = generateRandomTokenForAdmin(name)
 
     /** Return a String array of the significant fields of this user */
     override fun toArray(): Array<String> = arrayOf(name, status.toString(), isAdmin.toString(), token)

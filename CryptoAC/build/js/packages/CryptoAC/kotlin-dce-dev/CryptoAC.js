@@ -1,13 +1,17 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
-    define(['exports', 'kotlin', 'kotlinx-serialization-kotlinx-serialization-core-js-legacy', 'kotlin-logging-js-legacy', 'kotlinx-serialization-kotlinx-serialization-json-js-legacy', 'ktor-ktor-io-js-legacy', 'kotlin-css', 'kotlin-styled', '@material-ui/core', 'kotlin-react-legacy', 'react-icons/fa', 'react-pro-sidebar', 'kotlin-react-dom-legacy', 'ktor-ktor-client-core-js-legacy', 'ktor-ktor-client-json-js-legacy', 'ktor-ktor-client-serialization-js-legacy', 'kotlinx-coroutines-core', 'ktor-ktor-http-js-legacy', '@material-ui/lab', 'kotlinx-html-js', 'kotlin-react-dom', 'ktor-ktor-http-cio-js-legacy', 'kotlin-react-core'], factory);
+    define(['exports', 'kotlin', 'kotlinx-serialization-kotlinx-serialization-core-js-legacy', 'ktor-ktor-http-js-legacy', 'ktor-ktor-client-core-js-legacy', 'kotlin-logging-js-legacy', 'kotlinx-serialization-kotlinx-serialization-json-js-legacy', 'ktor-ktor-io-js-legacy', 'kotlin-css', 'kotlin-styled', '@material-ui/core', 'kotlin-react-legacy', 'react-icons/fa', 'react-pro-sidebar', 'kotlin-react-dom-legacy', 'ktor-ktor-client-content-negotiation-js-legacy', 'ktor-ktor-serialization-kotlinx-json-js-legacy', 'kotlinx-coroutines-core', '@material-ui/lab', 'kotlinx-html-js', 'kotlin-react-dom', 'ktor-ktor-websockets-js-legacy', 'kotlin-react-core'], factory);
   else if (typeof exports === 'object')
-    factory(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-core-js-legacy'), require('kotlin-logging-js-legacy'), require('kotlinx-serialization-kotlinx-serialization-json-js-legacy'), require('ktor-ktor-io-js-legacy'), require('kotlin-css'), require('kotlin-styled'), require('@material-ui/core'), require('kotlin-react-legacy'), require('react-icons/fa'), require('react-pro-sidebar'), require('kotlin-react-dom-legacy'), require('ktor-ktor-client-core-js-legacy'), require('ktor-ktor-client-json-js-legacy'), require('ktor-ktor-client-serialization-js-legacy'), require('kotlinx-coroutines-core'), require('ktor-ktor-http-js-legacy'), require('@material-ui/lab'), require('kotlinx-html-js'), require('kotlin-react-dom'), require('ktor-ktor-http-cio-js-legacy'), require('kotlin-react-core'));
+    factory(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-core-js-legacy'), require('ktor-ktor-http-js-legacy'), require('ktor-ktor-client-core-js-legacy'), require('kotlin-logging-js-legacy'), require('kotlinx-serialization-kotlinx-serialization-json-js-legacy'), require('ktor-ktor-io-js-legacy'), require('kotlin-css'), require('kotlin-styled'), require('@material-ui/core'), require('kotlin-react-legacy'), require('react-icons/fa'), require('react-pro-sidebar'), require('kotlin-react-dom-legacy'), require('ktor-ktor-client-content-negotiation-js-legacy'), require('ktor-ktor-serialization-kotlinx-json-js-legacy'), require('kotlinx-coroutines-core'), require('@material-ui/lab'), require('kotlinx-html-js'), require('kotlin-react-dom'), require('ktor-ktor-websockets-js-legacy'), require('kotlin-react-core'));
   else {
     if (typeof kotlin === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlinx-serialization-kotlinx-serialization-core-js-legacy'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlinx-serialization-kotlinx-serialization-core-js-legacy' was not found. Please, check whether 'kotlinx-serialization-kotlinx-serialization-core-js-legacy' is loaded prior to 'CryptoAC'.");
+    }if (typeof this['ktor-ktor-http-js-legacy'] === 'undefined') {
+      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-http-js-legacy' was not found. Please, check whether 'ktor-ktor-http-js-legacy' is loaded prior to 'CryptoAC'.");
+    }if (typeof this['ktor-ktor-client-core-js-legacy'] === 'undefined') {
+      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-core-js-legacy' was not found. Please, check whether 'ktor-ktor-client-core-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlin-logging-js-legacy'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin-logging-js-legacy' was not found. Please, check whether 'kotlin-logging-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlinx-serialization-kotlinx-serialization-json-js-legacy'] === 'undefined') {
@@ -28,29 +32,25 @@
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'react-pro-sidebar' was not found. Please, check whether 'react-pro-sidebar' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlin-react-dom-legacy'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin-react-dom-legacy' was not found. Please, check whether 'kotlin-react-dom-legacy' is loaded prior to 'CryptoAC'.");
-    }if (typeof this['ktor-ktor-client-core-js-legacy'] === 'undefined') {
-      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-core-js-legacy' was not found. Please, check whether 'ktor-ktor-client-core-js-legacy' is loaded prior to 'CryptoAC'.");
-    }if (typeof this['ktor-ktor-client-json-js-legacy'] === 'undefined') {
-      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-json-js-legacy' was not found. Please, check whether 'ktor-ktor-client-json-js-legacy' is loaded prior to 'CryptoAC'.");
-    }if (typeof this['ktor-ktor-client-serialization-js-legacy'] === 'undefined') {
-      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-serialization-js-legacy' was not found. Please, check whether 'ktor-ktor-client-serialization-js-legacy' is loaded prior to 'CryptoAC'.");
+    }if (typeof this['ktor-ktor-client-content-negotiation-js-legacy'] === 'undefined') {
+      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-client-content-negotiation-js-legacy' was not found. Please, check whether 'ktor-ktor-client-content-negotiation-js-legacy' is loaded prior to 'CryptoAC'.");
+    }if (typeof this['ktor-ktor-serialization-kotlinx-json-js-legacy'] === 'undefined') {
+      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-serialization-kotlinx-json-js-legacy' was not found. Please, check whether 'ktor-ktor-serialization-kotlinx-json-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'CryptoAC'.");
-    }if (typeof this['ktor-ktor-http-js-legacy'] === 'undefined') {
-      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-http-js-legacy' was not found. Please, check whether 'ktor-ktor-http-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['@material-ui/lab'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency '@material-ui/lab' was not found. Please, check whether '@material-ui/lab' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlinx-html-js'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlinx-html-js' was not found. Please, check whether 'kotlinx-html-js' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlin-react-dom'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin-react-dom' was not found. Please, check whether 'kotlin-react-dom' is loaded prior to 'CryptoAC'.");
-    }if (typeof this['ktor-ktor-http-cio-js-legacy'] === 'undefined') {
-      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-http-cio-js-legacy' was not found. Please, check whether 'ktor-ktor-http-cio-js-legacy' is loaded prior to 'CryptoAC'.");
+    }if (typeof this['ktor-ktor-websockets-js-legacy'] === 'undefined') {
+      throw new Error("Error loading module 'CryptoAC'. Its dependency 'ktor-ktor-websockets-js-legacy' was not found. Please, check whether 'ktor-ktor-websockets-js-legacy' is loaded prior to 'CryptoAC'.");
     }if (typeof this['kotlin-react-core'] === 'undefined') {
       throw new Error("Error loading module 'CryptoAC'. Its dependency 'kotlin-react-core' was not found. Please, check whether 'kotlin-react-core' is loaded prior to 'CryptoAC'.");
-    }root.CryptoAC = factory(typeof CryptoAC === 'undefined' ? {} : CryptoAC, kotlin, this['kotlinx-serialization-kotlinx-serialization-core-js-legacy'], this['kotlin-logging-js-legacy'], this['kotlinx-serialization-kotlinx-serialization-json-js-legacy'], this['ktor-ktor-io-js-legacy'], this['kotlin-css'], this['kotlin-styled'], this['@material-ui/core'], this['kotlin-react-legacy'], this['react-icons/fa'], this['react-pro-sidebar'], this['kotlin-react-dom-legacy'], this['ktor-ktor-client-core-js-legacy'], this['ktor-ktor-client-json-js-legacy'], this['ktor-ktor-client-serialization-js-legacy'], this['kotlinx-coroutines-core'], this['ktor-ktor-http-js-legacy'], this['@material-ui/lab'], this['kotlinx-html-js'], this['kotlin-react-dom'], this['ktor-ktor-http-cio-js-legacy'], this['kotlin-react-core']);
+    }root.CryptoAC = factory(typeof CryptoAC === 'undefined' ? {} : CryptoAC, kotlin, this['kotlinx-serialization-kotlinx-serialization-core-js-legacy'], this['ktor-ktor-http-js-legacy'], this['ktor-ktor-client-core-js-legacy'], this['kotlin-logging-js-legacy'], this['kotlinx-serialization-kotlinx-serialization-json-js-legacy'], this['ktor-ktor-io-js-legacy'], this['kotlin-css'], this['kotlin-styled'], this['@material-ui/core'], this['kotlin-react-legacy'], this['react-icons/fa'], this['react-pro-sidebar'], this['kotlin-react-dom-legacy'], this['ktor-ktor-client-content-negotiation-js-legacy'], this['ktor-ktor-serialization-kotlinx-json-js-legacy'], this['kotlinx-coroutines-core'], this['@material-ui/lab'], this['kotlinx-html-js'], this['kotlin-react-dom'], this['ktor-ktor-websockets-js-legacy'], this['kotlin-react-core']);
   }
-}(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy, $module$kotlin_logging_js_legacy, $module$kotlinx_serialization_kotlinx_serialization_json_js_legacy, $module$ktor_ktor_io_js_legacy, $module$kotlin_css, $module$kotlin_styled, $module$_material_ui_core, $module$kotlin_react_legacy, $module$react_icons_fa, $module$react_pro_sidebar, $module$kotlin_react_dom_legacy, $module$ktor_ktor_client_core_js_legacy, $module$ktor_ktor_client_json_js_legacy, $module$ktor_ktor_client_serialization_js_legacy, $module$kotlinx_coroutines_core, $module$ktor_ktor_http_js_legacy, $module$_material_ui_lab, $module$kotlinx_html_js, $module$kotlin_react_dom, $module$ktor_ktor_http_cio_js_legacy, $module$kotlin_react_core) {
+}(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy, $module$ktor_ktor_http_js_legacy, $module$ktor_ktor_client_core_js_legacy, $module$kotlin_logging_js_legacy, $module$kotlinx_serialization_kotlinx_serialization_json_js_legacy, $module$ktor_ktor_io_js_legacy, $module$kotlin_css, $module$kotlin_styled, $module$_material_ui_core, $module$kotlin_react_legacy, $module$react_icons_fa, $module$react_pro_sidebar, $module$kotlin_react_dom_legacy, $module$ktor_ktor_client_content_negotiation_js_legacy, $module$ktor_ktor_serialization_kotlinx_json_js_legacy, $module$kotlinx_coroutines_core, $module$_material_ui_lab, $module$kotlinx_html_js, $module$kotlin_react_dom, $module$ktor_ktor_websockets_js_legacy, $module$kotlin_react_core) {
   'use strict';
   var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
@@ -71,15 +71,26 @@
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var Random = Kotlin.kotlin.random.Random;
   var getCallableRef = Kotlin.getCallableRef;
+  var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
+  var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
+  var HttpMethod = $module$ktor_ktor_http_js_legacy.io.ktor.http.HttpMethod;
+  var FormDataContent = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.forms.FormDataContent;
+  var getKClass = Kotlin.getKClass;
+  var createKType = Kotlin.createKType;
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
+  var OutgoingContent = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.content.OutgoingContent;
+  var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
+  var typeInfoImpl = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect.typeInfoImpl_1lvkm8$;
+  var Throwable = Error;
+  var HttpRequestBuilder_init = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.HttpRequestBuilder;
+  var HttpStatement_init = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.HttpStatement;
   var mu = $module$kotlin_logging_js_legacy.mu;
   var Unit = Kotlin.kotlin.Unit;
   var ensureNotNull = Kotlin.ensureNotNull;
-  var getKClass = Kotlin.getKClass;
   var PolymorphicSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.PolymorphicSerializer;
   var SerializerFactory = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal.SerializerFactory;
-  var createKType = Kotlin.createKType;
   var Json = $module$kotlinx_serialization_kotlinx_serialization_json_js_legacy.kotlinx.serialization.json.Json_x26noe$;
   var serializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.serializer_saj79j$;
   var KSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.KSerializer;
@@ -95,9 +106,9 @@
   var internal = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal;
   var MissingFieldException_init = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.MissingFieldException_init_61zpoe$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
+  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal.NullableSerializer;
   var charsets = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.charsets;
   var encodeToByteArray = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.charsets.encodeToByteArray_fj4osb$;
-  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal.NullableSerializer;
   var toString = Kotlin.toString;
   var contentEquals = Kotlin.arrayEquals;
   var contentHashCode = Kotlin.arrayHashCode;
@@ -146,17 +157,14 @@
   var set_textOverflow = $module$kotlin_css.kotlinx.css.set_textOverflow_67zq6f$;
   var Overflow = $module$kotlin_css.kotlinx.css.Overflow;
   var set_overflow = $module$kotlin_css.kotlinx.css.set_overflow_qhpm6s$;
-  var WebSockets = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.features.websocket.WebSockets;
-  var HttpCookies = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.features.cookies.HttpCookies;
-  var JsonFeature = $module$ktor_ktor_client_json_js_legacy.io.ktor.client.features.json.JsonFeature;
-  var KotlinxSerializer = $module$ktor_ktor_client_serialization_js_legacy.io.ktor.client.features.json.serializer.KotlinxSerializer;
+  var WebSockets = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.plugins.websocket.WebSockets;
+  var HttpCookies = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.plugins.cookies.HttpCookies;
+  var ContentNegotiation = $module$ktor_ktor_client_content_negotiation_js_legacy.io.ktor.client.plugins.ContentNegotiation;
+  var json = $module$ktor_ktor_serialization_kotlinx_json_js_legacy.io.ktor.serialization.kotlinx.json.json_mhw46j$;
   var HttpClient = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.HttpClient_f0veat$;
   var MainScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.MainScope;
-  var HttpResponse = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.HttpResponse;
   var HttpStatusCode = $module$ktor_ktor_http_js_legacy.io.ktor.http.HttpStatusCode;
   var Error_0 = Kotlin.kotlin.Error;
-  var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
-  var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
   var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
   var first = Kotlin.kotlin.collections.first_2p1efm$;
   var RComponent_init = $module$kotlin_react_legacy.react.RComponent_init_ftywkw$;
@@ -170,15 +178,8 @@
   var RDOMBuilder = $module$kotlin_react_dom_legacy.react.dom.RDOMBuilder;
   var attributesMapOf_0 = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_alerag$;
   var A_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.A;
-  var takeFrom = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.takeFrom_jl1sg7$;
-  var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
-  var url = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.url_3rzbk2$;
-  var HttpMethod = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.HttpMethod;
-  var HttpRequestBuilder_init = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.HttpRequestBuilder;
-  var HttpStatement_init = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.HttpStatement;
-  var complete = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.complete_abn2de$;
-  var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
-  var typeInfoImpl = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect.typeInfoImpl_1lvkm8$;
+  var url = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.url_g8iu3v$;
+  var HttpMethod_0 = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.HttpMethod;
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var Image = $module$kotlin_css.kotlinx.css.Image;
   var set_backgroundImage = $module$kotlin_css.kotlinx.css.set_backgroundImage_opvm7l$;
@@ -192,15 +193,11 @@
   var translate = $module$kotlin_css.kotlinx.css.properties.translate_z52cu5$;
   var set_transform = $module$kotlin_css.kotlinx.css.set_transform_z5yzaw$;
   var set_marginRight = $module$kotlin_css.kotlinx.css.set_marginRight_n8chyh$;
-  var HttpMethod_0 = $module$ktor_ktor_http_js_legacy.io.ktor.http.HttpMethod;
-  var ContentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.ContentType;
-  var contentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.contentType_41kwpe$;
-  var toList = Kotlin.kotlin.collections.toList_abgq59$;
-  var formUrlEncode = $module$ktor_ktor_http_js_legacy.io.ktor.http.formUrlEncode_vw30m7$;
+  var ParametersBuilder = $module$ktor_ktor_http_js_legacy.io.ktor.http.ParametersBuilder_za3lpa$;
+  var wrapFunction = Kotlin.wrapFunction;
   var KotlinLoggingLevel = $module$kotlin_logging_js_legacy.mu.KotlinLoggingLevel;
   var render = $module$kotlin_react_dom_legacy.react.dom.render_9jwdg9$;
   var defineInlineFunction = Kotlin.defineInlineFunction;
-  var wrapFunction = Kotlin.wrapFunction;
   var toBoolean = Kotlin.kotlin.text.toBoolean_5cw0du$;
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
   var set_marginBottom = $module$kotlin_css.kotlinx.css.set_marginBottom_n8chyh$;
@@ -232,15 +229,17 @@
   var set_paddingTop = $module$kotlin_css.kotlinx.css.set_paddingTop_n8chyh$;
   var set_paddingBottom = $module$kotlin_css.kotlinx.css.set_paddingBottom_n8chyh$;
   var set_onChangeFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onChangeFunction_pszlq2$;
+  var ContentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.ContentType;
+  var contentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.contentType_41kwpe$;
   var printStackTrace = Kotlin.kotlin.printStackTrace_dbl4o4$;
   var NullPointerException = Kotlin.kotlin.NullPointerException;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
-  var readText = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.readText_rjorc7$;
+  var bodyAsText = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.bodyAsText_89yka0$;
   var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var UnsupportedOperationException = Kotlin.kotlin.UnsupportedOperationException;
   var Exception = Kotlin.kotlin.Exception;
   var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
-  var toList_0 = Kotlin.kotlin.collections.toList_7wnvza$;
+  var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.serializer_ca95z9$;
   var css = $module$kotlin_css.kotlinx.css;
@@ -250,9 +249,10 @@
   var createInvariantKTypeProjection = Kotlin.createInvariantKTypeProjection;
   var get_host = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.get_host_ocert9$;
   var get_port = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.get_port_ocert9$;
-  var webSocketSession = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.features.websocket.webSocketSession_e8a0az$;
-  var Frame$Text = $module$ktor_ktor_http_cio_js_legacy.io.ktor.http.cio.websocket.Frame.Text;
-  var readText_0 = $module$ktor_ktor_http_cio_js_legacy.io.ktor.http.cio.websocket.readText_2pdr7t$;
+  var url_0 = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.url_77nkxq$;
+  var webSocketSession = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.plugins.websocket.webSocketSession_se50ds$;
+  var Frame$Text = $module$ktor_ktor_websockets_js_legacy.io.ktor.websocket.Frame.Text;
+  var readText = $module$ktor_ktor_websockets_js_legacy.io.ktor.websocket.readText_xv7s0w$;
   var VerticalAlign = $module$kotlin_css.kotlinx.css.VerticalAlign;
   var set_verticalAlign = $module$kotlin_css.kotlinx.css.set_verticalAlign_9eaq6d$;
   var set_maxWidth = $module$kotlin_css.kotlinx.css.set_maxWidth_n8chyh$;
@@ -292,7 +292,6 @@
   var formData = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.forms.formData_l3ed5z$;
   var StringBuilder = Kotlin.kotlin.text.StringBuilder;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
-  var url_0 = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.url_g8iu3v$;
   var MultiPartFormDataContent_init = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.forms.MultiPartFormDataContent;
   var HeadersBuilder_init = $module$ktor_ktor_http_js_legacy.io.ktor.http.HeadersBuilder;
   InputType_0.prototype = Object.create(Enum.prototype);
@@ -1614,6 +1613,86 @@
     simpleName: 'Utils',
     interfaces: []
   };
+  function Coroutine$submitFormPatch($receiver_0, formParameters_0, block_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$$receiver = $receiver_0;
+    this.local$formParameters = formParameters_0;
+    this.local$block = block_0;
+  }
+  Coroutine$submitFormPatch.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$submitFormPatch.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$submitFormPatch.prototype.constructor = Coroutine$submitFormPatch;
+  Coroutine$submitFormPatch.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            var $receiver_1 = new HttpRequestBuilder_init();
+            $receiver_1.method = HttpMethod.Companion.Patch;
+            var body = new FormDataContent(this.local$formParameters);
+            if (body == null) {
+              $receiver_1.body = utils.EmptyContent;
+              $receiver_1.bodyType = null;
+            } else if (Kotlin.isType(body, OutgoingContent)) {
+              $receiver_1.body = body;
+              $receiver_1.bodyType = null;
+            } else {
+              $receiver_1.body = body;
+              var tmp$ = reflect.JsType;
+              var tmp$_0 = getKClass(FormDataContent);
+              var tryGetType$result;
+              tryGetType$break: do {
+                try {
+                  tryGetType$result = createKType(getKClass(FormDataContent), [], false);
+                } catch (cause) {
+                  if (Kotlin.isType(cause, Throwable)) {
+                    tryGetType$result = null;
+                    break tryGetType$break;
+                  } else
+                    throw cause;
+                }
+              }
+               while (false);
+              $receiver_1.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
+            }
+
+            this.local$block($receiver_1);
+            this.state_0 = 2;
+            this.result_0 = (new HttpStatement_init($receiver_1, this.local$$receiver)).execute(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.result_0;
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      } catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        } else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function submitFormPatch($receiver_0, formParameters_0, block_0, continuation_0, suspended) {
+    var instance = new Coroutine$submitFormPatch($receiver_0, formParameters_0, block_0, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  }
   function polymorphic$lambda($receiver) {
     return Unit;
   }
@@ -2065,6 +2144,30 @@
   });
   CoreParametersMOCK.prototype.update_8dp87x$ = function (updatedParameters) {
   };
+  CoreParametersMOCK.prototype.equals = function (other) {
+    var tmp$, tmp$_0, tmp$_1;
+    if (this === other)
+      return true;
+    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
+      return false;
+    Kotlin.isType(tmp$_0 = other, CoreParametersMOCK) ? tmp$_0 : throwCCE();
+    if (!((tmp$_1 = this.user) != null ? tmp$_1.equals(other.user) : null))
+      return false;
+    if (this.coreType !== other.coreType)
+      return false;
+    if (this.cryptoType !== other.cryptoType)
+      return false;
+    if (this.versionNumber !== other.versionNumber)
+      return false;
+    return true;
+  };
+  CoreParametersMOCK.prototype.hashCode = function () {
+    var result = this.user.hashCode();
+    result = (31 * result | 0) + this.coreType.hashCode() | 0;
+    result = (31 * result | 0) + this.cryptoType.hashCode() | 0;
+    result = (31 * result | 0) + this.versionNumber | 0;
+    return result;
+  };
   function CoreParametersMOCK$Companion() {
     CoreParametersMOCK$Companion_instance = this;
   }
@@ -2465,36 +2568,6 @@
     ActiveElement$Companion_getInstance();
     Element.call(this);
   }
-  function ActiveElement$Companion() {
-    ActiveElement$Companion_instance = this;
-  }
-  ActiveElement$Companion.prototype.generateToken_qp1mpu$ = function (length, name, asymEncKeys, asymSigKeys) {
-    if (length === void 0)
-      length = 20;
-    var tmp$, tmp$_0, tmp$_1;
-    CryptoACObject$Companion_getInstance().requirePositiveNumber_za3lpa$(length);
-    if (equals(name, Constants_getInstance().ADMIN)) {
-      tmp$_1 = Constants_getInstance().ADMIN;
-    } else {
-      var $receiver = ((tmp$ = asymEncKeys != null ? asymEncKeys.private : null) != null ? tmp$ : 'not given') + ((tmp$_0 = asymSigKeys != null ? asymSigKeys.private : null) != null ? tmp$_0 : 'not given');
-      tmp$_1 = digest('SHA-256', encodeToByteArray(charsets.Charsets.UTF_8.newEncoder(), $receiver, 0, $receiver.length)).substring(0, length);
-    }
-    return tmp$_1;
-  };
-  ActiveElement$Companion.prototype.serializer = function () {
-    return new PolymorphicSerializer(getKClass(ActiveElement));
-  };
-  ActiveElement$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: [SerializerFactory]
-  };
-  var ActiveElement$Companion_instance = null;
-  function ActiveElement$Companion_getInstance() {
-    if (ActiveElement$Companion_instance === null) {
-      new ActiveElement$Companion();
-    }return ActiveElement$Companion_instance;
-  }
   ActiveElement.prototype.equals = function (other) {
     var tmp$, tmp$_0;
     if (this === other)
@@ -2517,6 +2590,23 @@
     result = (31 * result | 0) + ((tmp$_2 = (tmp$_1 = this.asymSigKeys) != null ? tmp$_1.hashCode() : null) != null ? tmp$_2 : 0) | 0;
     return result;
   };
+  function ActiveElement$Companion() {
+    ActiveElement$Companion_instance = this;
+  }
+  ActiveElement$Companion.prototype.serializer = function () {
+    return new PolymorphicSerializer(getKClass(ActiveElement));
+  };
+  ActiveElement$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: [SerializerFactory]
+  };
+  var ActiveElement$Companion_instance = null;
+  function ActiveElement$Companion_getInstance() {
+    if (ActiveElement$Companion_instance === null) {
+      new ActiveElement$Companion();
+    }return ActiveElement$Companion_instance;
+  }
   function ActiveElement_init(seen1, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(ActiveElement.prototype);
     $this = Element_init(seen1, $this);
@@ -2534,7 +2624,7 @@
   function Element$Companion() {
     Element$Companion_instance = this;
   }
-  Element$Companion.prototype.generateToken_za3lpa$ = function (length) {
+  Element$Companion.prototype.generateRandomToken_za3lpa$ = function (length) {
     if (length === void 0)
       length = 20;
     CryptoACObject$Companion_getInstance().requirePositiveNumber_za3lpa$(length);
@@ -2558,6 +2648,17 @@
       destination_0.add_11rb$(transform(item_0));
     }
     return joinToString(destination_0, '');
+  };
+  Element$Companion.prototype.generateRandomTokenForAdmin_bm4lxs$ = function (name, length) {
+    if (length === void 0)
+      length = 20;
+    var tmp$;
+    if (equals(name, Constants_getInstance().ADMIN)) {
+      tmp$ = Constants_getInstance().ADMIN;
+    } else {
+      tmp$ = this.generateRandomToken_za3lpa$(length);
+    }
+    return tmp$;
   };
   Element$Companion.prototype.serializer = function () {
     return new PolymorphicSerializer(getKClass(Element));
@@ -2858,7 +2959,7 @@
     this.status_1ttgnb$_0 = status;
     this.symEncKeyVersionNumber = symEncKeyVersionNumber;
     this.enforcement = enforcement;
-    this.token_4xbdxs$_0 = Element$Companion_getInstance().generateToken_za3lpa$();
+    this.token_4xbdxs$_0 = Element$Companion_getInstance().generateRandomToken_za3lpa$();
   }
   Object.defineProperty(File.prototype, 'name', {
     get: function () {
@@ -2952,7 +3053,7 @@
     if (!equals(value.symEncKeyVersionNumber, 1) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 2))
       output.encodeIntElement_ptg7oe$(this.descriptor, 2, value.symEncKeyVersionNumber);
     output.encodeSerializableElement_r4qlx7$(this.descriptor, 3, EnforcementType$$serializer_getInstance(), value.enforcement);
-    if (!equals(value.token, Element$Companion_getInstance().generateToken_za3lpa$()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 4))
+    if (!equals(value.token, Element$Companion_getInstance().generateRandomToken_za3lpa$()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 4))
       output.encodeStringElement_iij8qq$(this.descriptor, 4, value.token);
     output.endStructure_24f42q$(this.descriptor);
   };
@@ -3030,7 +3131,7 @@
     else
       $this.enforcement = enforcement;
     if ((seen1 & 16) === 0)
-      $this.token_4xbdxs$_0 = Element$Companion_getInstance().generateToken_za3lpa$();
+      $this.token_4xbdxs$_0 = Element$Companion_getInstance().generateRandomToken_za3lpa$();
     else
       $this.token_4xbdxs$_0 = token;
     return $this;
@@ -3057,7 +3158,7 @@
     this.asymSigKeys_luxr5c$_0 = asymSigKeys;
     this.versionNumber = versionNumber;
     CryptoACObject$Companion_getInstance().requirePositiveNumber_za3lpa$(this.versionNumber);
-    this.token_g1ezfu$_0 = ActiveElement$Companion_getInstance().generateToken_qp1mpu$(void 0, this.name, this.asymEncKeys, this.asymSigKeys);
+    this.token_g1ezfu$_0 = Element$Companion_getInstance().generateRandomTokenForAdmin_bm4lxs$(this.name);
   }
   Object.defineProperty(Role.prototype, 'name', {
     get: function () {
@@ -3160,7 +3261,7 @@
       output.encodeSerializableElement_r4qlx7$(this.descriptor, 1, new EnumSerializer('eu.fbk.st.cryptoac.core.elements.ElementStatus', ElementStatus$values()), value.status);
     if (!equals(value.versionNumber, 1) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 2))
       output.encodeIntElement_ptg7oe$(this.descriptor, 2, value.versionNumber);
-    if (!equals(value.token, ActiveElement$Companion_getInstance().generateToken_qp1mpu$(void 0, this.name, this.asymEncKeys, this.asymSigKeys)) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 3))
+    if (!equals(value.token, Element$Companion_getInstance().generateRandomTokenForAdmin_bm4lxs$(this.name)) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 3))
       output.encodeStringElement_iij8qq$(this.descriptor, 3, value.token);
     output.endStructure_24f42q$(this.descriptor);
   };
@@ -3229,7 +3330,7 @@
     else
       $this.versionNumber = versionNumber;
     if ((seen1 & 8) === 0)
-      $this.token_g1ezfu$_0 = ActiveElement$Companion_getInstance().generateToken_qp1mpu$(void 0, $this.name, $this.asymEncKeys, $this.asymSigKeys);
+      $this.token_g1ezfu$_0 = Element$Companion_getInstance().generateRandomTokenForAdmin_bm4lxs$($this.name);
     else
       $this.token_g1ezfu$_0 = token;
     $this.asymEncKeys_19otev$_0 = null;
@@ -3258,13 +3359,7 @@
     this.asymEncKeys_zhhky6$_0 = asymEncKeys;
     this.asymSigKeys_cezwgr$_0 = asymSigKeys;
     this.isAdmin = isAdmin;
-    var tmp$;
-    if (equals(this.name, Constants_getInstance().ADMIN)) {
-      tmp$ = Constants_getInstance().ADMIN;
-    } else {
-      tmp$ = Utils$Companion_getInstance().generateRandomString_za3lpa$();
-    }
-    this.token_vgvmqn$_0 = tmp$;
+    this.token_vgvmqn$_0 = Element$Companion_getInstance().generateRandomTokenForAdmin_bm4lxs$(this.name);
   }
   Object.defineProperty(User.prototype, 'name', {
     get: function () {
@@ -3366,12 +3461,6 @@
     }
   });
   User$$serializer.prototype.serialize_55azsf$ = function (encoder, value) {
-    var tmp$;
-    if (equals(this.name, Constants_getInstance().ADMIN)) {
-      tmp$ = Constants_getInstance().ADMIN;
-    } else {
-      tmp$ = Utils$Companion_getInstance().generateRandomString_za3lpa$();
-    }
     var output = encoder.beginStructure_24f42q$(this.descriptor);
     output.encodeStringElement_iij8qq$(this.descriptor, 0, value.name);
     if (!equals(value.status, ElementStatus$INCOMPLETE_getInstance()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 1))
@@ -3382,7 +3471,7 @@
       output.encodeNullableSerializableElement_qw92s8$(this.descriptor, 3, AsymKeys$$serializer_getInstance(), value.asymSigKeys);
     if (!equals(value.isAdmin, false) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 4))
       output.encodeBooleanElement_qh7jdn$(this.descriptor, 4, value.isAdmin);
-    if (!equals(value.token, tmp$) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 5))
+    if (!equals(value.token, Element$Companion_getInstance().generateRandomTokenForAdmin_bm4lxs$(this.name)) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 5))
       output.encodeStringElement_iij8qq$(this.descriptor, 5, value.token);
     output.endStructure_24f42q$(this.descriptor);
   };
@@ -3446,12 +3535,6 @@
     }return User$$serializer_instance;
   }
   function User_init(seen1, name, status, asymEncKeys, asymSigKeys, isAdmin, token, serializationConstructorMarker) {
-    var tmp$;
-    if (equals($this.name, Constants_getInstance().ADMIN)) {
-      tmp$ = Constants_getInstance().ADMIN;
-    } else {
-      tmp$ = Utils$Companion_getInstance().generateRandomString_za3lpa$();
-    }
     var $this = serializationConstructorMarker || Object.create(User.prototype);
     $this = ActiveElement_init(seen1, $this);
     if ((seen1 & 1) === 0)
@@ -3475,7 +3558,7 @@
     else
       $this.isAdmin = isAdmin;
     if ((seen1 & 32) === 0)
-      $this.token_vgvmqn$_0 = tmp$;
+      $this.token_vgvmqn$_0 = Element$Companion_getInstance().generateRandomTokenForAdmin_bm4lxs$($this.name);
     else
       $this.token_vgvmqn$_0 = token;
     return $this;
@@ -6018,7 +6101,7 @@
   MMInterfaceMySQLParameters.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'MMInterfaceMySQLParameters',
-    interfaces: [MMInterfaceRBACCLOUDParameters]
+    interfaces: [MMInterfaceRBACMQTTParameters, MMInterfaceRBACCLOUDParameters]
   };
   function MMInterfaceParameters() {
   }
@@ -6200,7 +6283,7 @@
     } else if (this.port <= 0 || this.port >= 65535) {
       logger_5.warn_nq59yw$(MMInterfaceRedisParameters$checkParameters$lambda_2(this));
       return false;
-    } else if (!SafeRegex$Companion_getInstance().BASE64.matches_6bul2c$(this.token)) {
+    } else if (!SafeRegex$Companion_getInstance().TEXT.matches_6bul2c$(this.token)) {
       logger_5.warn_nq59yw$(MMInterfaceRedisParameters$checkParameters$lambda_3(this));
       return false;
     } else {
@@ -6814,9 +6897,6 @@
     if (Themes_instance === null) {
       new Themes();
     }return Themes_instance;
-  }
-  function digest(algorithm, bytes) {
-    return 'not me';
   }
   function styledSpan$lambda(it) {
     return new SPAN_init(html.emptyMap, it);
@@ -7467,14 +7547,14 @@
     return 'Initializing the state of the App component';
   }
   function App$init$lambda$lambda($receiver) {
-    $receiver.serializer = new KotlinxSerializer(myJson);
+    json($receiver, myJson);
     return Unit;
   }
   function App$init$lambda_0($receiver) {
     $receiver.expectSuccess = false;
-    $receiver.install_xlxg29$(WebSockets.Feature);
-    $receiver.install_xlxg29$(HttpCookies.Companion);
-    $receiver.install_xlxg29$(JsonFeature.Feature, App$init$lambda$lambda);
+    $receiver.install_dq2y33$(WebSockets.Plugin);
+    $receiver.install_dq2y33$(HttpCookies.Companion);
+    $receiver.install_dq2y33$(ContentNegotiation.Plugin, App$init$lambda$lambda);
     return Unit;
   }
   App.prototype.init_b4e81d$ = function ($receiver) {
@@ -7505,20 +7585,17 @@
   function App$submitLogout$lambda() {
     return 'Submitting CryptoAC logout form';
   }
-  function App$submitLogout$lambda$lambda($receiver) {
-    return Unit;
+  function App$submitLogout$lambda$lambda(closure$status, closure$code) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$code;
+    };
   }
   function App$submitLogout$lambda$lambda_0(closure$status, closure$code) {
     return function () {
       return 'Response status is ' + closure$status + ', code is ' + closure$code;
     };
   }
-  function App$submitLogout$lambda$lambda_1(closure$status, closure$code) {
-    return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$code;
-    };
-  }
-  function App$submitLogout$lambda$lambda_2(closure$e) {
+  function App$submitLogout$lambda$lambda_1(closure$e) {
     return function () {
       return 'Error during login (' + toString(closure$e.message) + '), see console log for details';
     };
@@ -7526,10 +7603,9 @@
   function Coroutine$App$submitLogout$lambda(this$App_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 18;
+    this.exceptionState_0 = 11;
     this.local$this$App = this$App_0;
     this.local$response = void 0;
-    this.local$response_0 = void 0;
   }
   Coroutine$App$submitLogout$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -7543,173 +7619,108 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.exceptionState_0 = 13;
-            var $receiver_0 = this.local$this$App.state.httpClient;
+            this.exceptionState_0 = 6;
+            var $receiver = this.local$this$App.state.httpClient;
             var urlString = baseURL + API_getInstance().LOGOUT;
-            var host_0;
-            var body_0;
-            host_0 = 'localhost';
-            body_0 = utils.EmptyContent;
             var $receiver_1 = new HttpRequestBuilder_init();
-            url($receiver_1, 'http', host_0, 0, '/');
-            $receiver_1.method = HttpMethod.Companion.Delete;
-            $receiver_1.body = body_0;
-            takeFrom($receiver_1.url, urlString);
-            App$submitLogout$lambda$lambda($receiver_1);
-            var $this_0 = new HttpStatement_init($receiver_1, $receiver_0);
-            var tmp$_4, tmp$_5, tmp$_6;
-            tmp$_4 = getKClass(HttpResponse);
-            if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-              this.result_0 = Kotlin.isType(tmp$_5 = $this_0, HttpResponse) ? tmp$_5 : throwCCE();
-              this.state_0 = 8;
-              continue;
-            } else {
-              if (equals(tmp$_4, getKClass(HttpResponse))) {
-                this.state_0 = 6;
-                this.result_0 = $this_0.execute(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
-              } else {
-                this.state_0 = 1;
-                this.result_0 = $this_0.executeUnsafe(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
-              }
-            }
-
+            url($receiver_1, urlString);
+            $receiver_1.method = HttpMethod_0.Companion.Delete;
+            this.state_0 = 1;
+            this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
           case 1:
+            this.result_0;
             this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
+            var tmp$_2;
+            var tmp$_3 = this.local$response.call;
+            var tmp$_4 = reflect.JsType;
+            var tmp$_0_1 = getKClass(OutcomeCode);
+            var tryGetType$result_0;
+            tryGetType$break: do {
               try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
+                tryGetType$result_0 = createKType(getKClass(OutcomeCode), [], false);
+              } catch (cause_0) {
+                if (Kotlin.isType(cause_0, Throwable)) {
+                  tryGetType$result_0 = null;
+                  break tryGetType$break;
+                } else
+                  throw cause_0;
               }
             }
              while (false);
             this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
+            this.result_0 = tmp$_3.body_qi9ur9$(typeInfoImpl(tmp$_4, tmp$_0_1, tryGetType$result_0), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 2:
-            this.result_0 = Kotlin.isType(tmp$_7 = this.result_0, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 13;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
-            continue;
-          case 3:
-            this.state_0 = 7;
-            continue;
-          case 4:
-            this.finallyPath_0 = [13];
-            this.state_0 = 5;
-            continue;
-          case 5:
-            this.exceptionState_0 = 13;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
-            this.result_0 = Kotlin.isType(tmp$_6 = this.result_0, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 7;
-            continue;
-          case 7:
-            this.state_0 = 8;
-            continue;
-          case 8:
-            this.result_0;
-            this.local$response_0 = this.result_0;
-            var tmp$_1;
-            var tmp$_2 = this.local$response_0.call;
-            var typeInfo$result_0_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(OutcomeCode), createKType(getKClass(OutcomeCode), [], false));
-              } catch (__0) {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(OutcomeCode), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 9;
-            this.result_0 = tmp$_2.receive_qi9ur9$(typeInfo$result_0_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 9:
-            this.result_0 = Kotlin.isType(tmp$_1 = this.result_0, OutcomeCode) ? tmp$_1 : throwCCE();
+            this.result_0 = Kotlin.isType(tmp$_2 = this.result_0, OutcomeCode) ? tmp$_2 : throwCCE();
             var code = this.result_0;
-            var status = this.local$response_0.status;
+            var status = this.local$response.status;
             if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_8.info_nq59yw$(App$submitLogout$lambda$lambda_0(status, code));
+              logger_8.info_nq59yw$(App$submitLogout$lambda$lambda(status, code));
               this.local$this$App.changeUserIsLogged_0(false);
-              this.exceptionState_0 = 18;
-              this.finallyPath_0 = [11];
-              this.state_0 = 16;
+              this.exceptionState_0 = 11;
+              this.finallyPath_0 = [4];
+              this.state_0 = 9;
               this.$returnValue = (this.local$this$App.changeUsername_0(null), Unit);
               continue;
             } else {
-              logger_8.warn_nq59yw$(App$submitLogout$lambda$lambda_1(status, code));
-              this.exceptionState_0 = 18;
-              this.finallyPath_0 = [10];
-              this.state_0 = 16;
+              logger_8.warn_nq59yw$(App$submitLogout$lambda$lambda_0(status, code));
+              this.exceptionState_0 = 11;
+              this.finallyPath_0 = [3];
+              this.state_0 = 9;
               this.$returnValue = (this.local$this$App.displayAlert_0(code, CryptoACAlertSeverity$ERROR_getInstance()), Unit);
               continue;
             }
 
-          case 10:
+          case 3:
             return this.$returnValue;
-          case 11:
+          case 4:
             return this.$returnValue;
-          case 12:
-            this.exceptionState_0 = 18;
-            this.finallyPath_0 = [17];
-            this.state_0 = 16;
+          case 5:
+            this.exceptionState_0 = 11;
+            this.finallyPath_0 = [10];
+            this.state_0 = 9;
             continue;
-          case 13:
-            this.finallyPath_0 = [18];
-            this.exceptionState_0 = 16;
+          case 6:
+            this.finallyPath_0 = [11];
+            this.exceptionState_0 = 9;
             var e = this.exception_0;
             if (Kotlin.isType(e, Error_0)) {
-              logger_8.error_nq59yw$(App$submitLogout$lambda$lambda_2(e));
+              logger_8.error_nq59yw$(App$submitLogout$lambda$lambda_1(e));
               console.log(e);
-              this.exceptionState_0 = 18;
-              this.finallyPath_0 = [14];
-              this.state_0 = 16;
+              this.exceptionState_0 = 11;
+              this.finallyPath_0 = [7];
+              this.state_0 = 9;
               this.$returnValue = (this.local$this$App.displayAlert_0(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit);
               continue;
             } else {
               throw e;
             }
 
-          case 14:
+          case 7:
             return this.$returnValue;
-          case 15:
-            this.finallyPath_0 = [17];
-            this.state_0 = 16;
+          case 8:
+            this.finallyPath_0 = [10];
+            this.state_0 = 9;
             continue;
-          case 16:
-            this.exceptionState_0 = 18;
+          case 9:
+            this.exceptionState_0 = 11;
             this.local$this$App.changeBackdropIsOpen_0(false);
             this.state_0 = this.finallyPath_0.shift();
             continue;
-          case 17:
+          case 10:
             return;
-          case 18:
+          case 11:
             throw this.exception_0;
-          default:this.state_0 = 18;
+          default:this.state_0 = 11;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 18) {
+        if (this.state_0 === 11) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -8100,9 +8111,55 @@
   function styledDiv$lambda_0(it) {
     return new DIV_init(html.emptyMap, it);
   }
-  function post$lambda($receiver) {
+  function submitForm$lambda($receiver) {
     return Unit;
   }
+  var submitForm$lambda_0 = wrapFunction(function () {
+    var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
+    var OutgoingContent = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.content.OutgoingContent;
+    var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
+    var getKClass_0 = Kotlin.getKClass;
+    var typeInfoImpl = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect.typeInfoImpl_1lvkm8$;
+    var Throwable = Error;
+    return function (closure$encodeInQuery, closure$formParameters, closure$block) {
+      return function ($receiver) {
+        if (closure$encodeInQuery) {
+          $receiver.method = HttpMethod_0.Companion.Get;
+          $receiver.url.parameters.appendAll_hb0ubp$(closure$formParameters);
+        } else {
+          $receiver.method = HttpMethod_0.Companion.Post;
+          var body = new FormDataContent(closure$formParameters);
+          if (body == null) {
+            $receiver.body = utils.EmptyContent;
+            $receiver.bodyType = null;
+          } else if (Kotlin.isType(body, OutgoingContent)) {
+            $receiver.body = body;
+            $receiver.bodyType = null;
+          } else {
+            $receiver.body = body;
+            var tmp$ = reflect.JsType;
+            var tmp$_0 = getKClass_0(FormDataContent);
+            var tryGetType$result;
+            tryGetType$break: do {
+              try {
+                tryGetType$result = createKType(getKClass(FormDataContent), [], false);
+              } catch (cause) {
+                if (Kotlin.isType(cause, Throwable)) {
+                  tryGetType$result = null;
+                  break tryGetType$break;
+                } else
+                  throw cause;
+              }
+            }
+             while (false);
+            $receiver.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
+          }
+        }
+        closure$block($receiver);
+        return Unit;
+      };
+    };
+  });
   function logger$lambda_9() {
     return Unit;
   }
@@ -8124,7 +8181,7 @@
       $receiver.handleChangeBackdropIsOpen = this$Login_0.props.handleChangeBackdropIsOpen;
       $receiver.handleDisplayCryptoACAlert = this$Login_0.props.handleDisplayAlert;
       $receiver.submitButtonText = 'Login';
-      $receiver.method = HttpMethod_0.Companion.Post;
+      $receiver.method = HttpMethod.Companion.Post;
       $receiver.endpoint = API_getInstance().LOGIN;
       $receiver.handleSubmitEvent = Login$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Login_0);
       $receiver.cryptoACFormFields = listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance(), void 0, void 0, 'darkTextField')));
@@ -8183,11 +8240,9 @@
       return 'Submitting CryptoAC login form, method ' + closure$method + ', endpoint ' + closure$endpoint;
     };
   }
-  function Login$submitLogin$lambda$lambda(closure$values) {
-    return function ($receiver) {
-      contentType($receiver, ContentType.Application.FormUrlEncoded);
-      $receiver.body = formUrlEncode(toList(closure$values));
-      return Unit;
+  function Login$submitLogin$lambda$lambda(closure$status, closure$code) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$code;
     };
   }
   function Login$submitLogin$lambda$lambda_0(closure$status, closure$code) {
@@ -8195,25 +8250,19 @@
       return 'Response status is ' + closure$status + ', code is ' + closure$code;
     };
   }
-  function Login$submitLogin$lambda$lambda_1(closure$status, closure$code) {
-    return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$code;
-    };
-  }
-  function Login$submitLogin$lambda$lambda_2(closure$e) {
+  function Login$submitLogin$lambda$lambda_1(closure$e) {
     return function () {
       return 'Error during login (' + toString(closure$e.message) + '), see console log for details';
     };
   }
-  function Coroutine$Login$submitLogin$lambda(this$Login_0, closure$endpoint_0, closure$values_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$Login$submitLogin$lambda(this$Login_0, closure$values_0, closure$endpoint_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 14;
+    this.exceptionState_0 = 7;
     this.local$this$Login = this$Login_0;
-    this.local$closure$endpoint = closure$endpoint_0;
     this.local$closure$values = closure$values_0;
+    this.local$closure$endpoint = closure$endpoint_0;
     this.local$response = void 0;
-    this.local$response_0 = void 0;
   }
   Coroutine$Login$submitLogin$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -8227,156 +8276,130 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.exceptionState_0 = 11;
-            var $receiver_0 = this.local$this$Login.props.httpClient;
-            var urlString = this.local$closure$endpoint;
-            var block = Login$submitLogin$lambda$lambda(this.local$closure$values);
-            var host_0;
-            var body_0;
-            host_0 = 'localhost';
-            body_0 = utils.EmptyContent;
+            this.exceptionState_0 = 4;
+            var tmp$ = this.local$this$Login.props.httpClient;
+            var $receiver = ParametersBuilder();
+            var tmp$_0;
+            tmp$_0 = this.local$closure$values.entries.iterator();
+            while (tmp$_0.hasNext()) {
+              var element = tmp$_0.next();
+              $receiver.append_puj7f4$(element.key, element.value);
+            }
+
+            var formParameters = $receiver.build();
             var $receiver_1 = new HttpRequestBuilder_init();
-            url($receiver_1, 'http', host_0, 0, '/');
-            $receiver_1.method = HttpMethod.Companion.Post;
-            $receiver_1.body = body_0;
-            takeFrom($receiver_1.url, urlString);
-            block($receiver_1);
-            var $this_0 = new HttpStatement_init($receiver_1, $receiver_0);
-            var tmp$_4, tmp$_5, tmp$_6;
-            tmp$_4 = getKClass(HttpResponse);
-            if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-              this.result_0 = Kotlin.isType(tmp$_5 = $this_0, HttpResponse) ? tmp$_5 : throwCCE();
-              this.state_0 = 8;
-              continue;
+            if (false) {
+              $receiver_1.method = HttpMethod_0.Companion.Get;
+              $receiver_1.url.parameters.appendAll_hb0ubp$(formParameters);
             } else {
-              if (equals(tmp$_4, getKClass(HttpResponse))) {
-                this.state_0 = 6;
-                this.result_0 = $this_0.execute(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
+              $receiver_1.method = HttpMethod_0.Companion.Post;
+              var body_0 = new FormDataContent(formParameters);
+              if (body_0 == null) {
+                $receiver_1.body = utils.EmptyContent;
+                $receiver_1.bodyType = null;
+              } else if (Kotlin.isType(body_0, OutgoingContent)) {
+                $receiver_1.body = body_0;
+                $receiver_1.bodyType = null;
               } else {
-                this.state_0 = 1;
-                this.result_0 = $this_0.executeUnsafe(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
+                $receiver_1.body = body_0;
+                var tmp$_1 = reflect.JsType;
+                var tmp$_0_0 = getKClass(FormDataContent);
+                var tryGetType$result_0;
+                tryGetType$break: do {
+                  try {
+                    tryGetType$result_0 = createKType(getKClass(FormDataContent), [], false);
+                  } catch (cause_0) {
+                    if (Kotlin.isType(cause_0, Throwable)) {
+                      tryGetType$result_0 = null;
+                      break tryGetType$break;
+                    } else
+                      throw cause_0;
+                  }
+                }
+                 while (false);
+                $receiver_1.bodyType = typeInfoImpl(tmp$_1, tmp$_0_0, tryGetType$result_0);
               }
             }
 
+            url($receiver_1, this.local$closure$endpoint);
+            this.state_0 = 1;
+            this.result_0 = (new HttpStatement_init($receiver_1, tmp$)).execute(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
           case 1:
+            this.result_0;
             this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
+            var tmp$_2;
+            var tmp$_3 = this.local$response.call;
+            var tmp$_4 = reflect.JsType;
+            var tmp$_0_1 = getKClass(OutcomeCode);
+            var tryGetType$result_0_0;
+            tryGetType$break: do {
               try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
+                tryGetType$result_0_0 = createKType(getKClass(OutcomeCode), [], false);
+              } catch (cause_0_0) {
+                if (Kotlin.isType(cause_0_0, Throwable)) {
+                  tryGetType$result_0_0 = null;
+                  break tryGetType$break;
+                } else
+                  throw cause_0_0;
               }
             }
              while (false);
             this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
+            this.result_0 = tmp$_3.body_qi9ur9$(typeInfoImpl(tmp$_4, tmp$_0_1, tryGetType$result_0_0), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 2:
-            this.result_0 = Kotlin.isType(tmp$_7 = this.result_0, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 11;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
-            continue;
-          case 3:
-            this.state_0 = 7;
-            continue;
-          case 4:
-            this.finallyPath_0 = [11];
-            this.state_0 = 5;
-            continue;
-          case 5:
-            this.exceptionState_0 = 11;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
-            this.result_0 = Kotlin.isType(tmp$_6 = this.result_0, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 7;
-            continue;
-          case 7:
-            this.state_0 = 8;
-            continue;
-          case 8:
-            this.result_0;
-            this.local$response_0 = this.result_0;
-            var tmp$_1;
-            var tmp$_2 = this.local$response_0.call;
-            var typeInfo$result_0_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(OutcomeCode), createKType(getKClass(OutcomeCode), [], false));
-              } catch (__0) {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(OutcomeCode), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 9;
-            this.result_0 = tmp$_2.receive_qi9ur9$(typeInfo$result_0_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 9:
-            this.result_0 = Kotlin.isType(tmp$_1 = this.result_0, OutcomeCode) ? tmp$_1 : throwCCE();
+            this.result_0 = Kotlin.isType(tmp$_2 = this.result_0, OutcomeCode) ? tmp$_2 : throwCCE();
             var code = this.result_0;
-            var status = this.local$response_0.status;
+            var status = this.local$response.status;
             if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_9.info_nq59yw$(Login$submitLogin$lambda$lambda_0(status, code));
+              logger_9.info_nq59yw$(Login$submitLogin$lambda$lambda(status, code));
               this.local$this$Login.props.handleChangeBackdropIsOpen(false);
               this.local$this$Login.props.handleChangeUserIsLogged(true);
               this.local$this$Login.props.handleChangeUsername(ensureNotNull(this.local$closure$values.get_11rb$(SERVER_getInstance().USERNAME)));
               return this.local$this$Login.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance()), Unit;
             } else {
-              logger_9.warn_nq59yw$(Login$submitLogin$lambda$lambda_1(status, code));
+              logger_9.warn_nq59yw$(Login$submitLogin$lambda$lambda_0(status, code));
               this.local$this$Login.props.handleChangeBackdropIsOpen(false);
               this.local$this$Login.props.handleChangeUserIsLogged(false);
               this.local$this$Login.props.handleChangeUsername(null);
               return this.local$this$Login.props.handleDisplayAlert(code, CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
-          case 10:
-            this.exceptionState_0 = 14;
-            this.state_0 = 13;
+          case 3:
+            this.exceptionState_0 = 7;
+            this.state_0 = 6;
             continue;
-          case 11:
-            this.exceptionState_0 = 14;
+          case 4:
+            this.exceptionState_0 = 7;
             var e = this.exception_0;
-            if (Kotlin.isType(e, Error_0)) {
+            if (Kotlin.isType(e, Throwable)) {
               this.local$this$Login.props.handleChangeBackdropIsOpen(false);
               this.local$this$Login.props.handleChangeUserIsLogged(false);
               this.local$this$Login.props.handleChangeUsername(null);
-              logger_9.error_nq59yw$(Login$submitLogin$lambda$lambda_2(e));
+              logger_9.error_nq59yw$(Login$submitLogin$lambda$lambda_1(e));
               console.log(e);
               return this.local$this$Login.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
               throw e;
             }
 
-          case 12:
-            this.state_0 = 13;
+          case 5:
+            this.state_0 = 6;
             continue;
-          case 13:
+          case 6:
             return;
-          case 14:
+          case 7:
             throw this.exception_0;
-          default:this.state_0 = 14;
+          default:this.state_0 = 7;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 14) {
+        if (this.state_0 === 7) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -8386,9 +8409,9 @@
       }
      while (true);
   };
-  function Login$submitLogin$lambda_0(this$Login_0, closure$endpoint_0, closure$values_0) {
+  function Login$submitLogin$lambda_0(this$Login_0, closure$values_0, closure$endpoint_0) {
     return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$Login$submitLogin$lambda(this$Login_0, closure$endpoint_0, closure$values_0, $receiver_0, this, continuation_0);
+      var instance = new Coroutine$Login$submitLogin$lambda(this$Login_0, closure$values_0, closure$endpoint_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
@@ -8398,7 +8421,7 @@
   Login.prototype.submitLogin_0 = function (method, endpoint, values) {
     logger_9.info_nq59yw$(Login$submitLogin$lambda(method, endpoint));
     this.props.handleChangeBackdropIsOpen(true);
-    launch(MainScope(), void 0, void 0, Login$submitLogin$lambda_0(this, endpoint, values));
+    launch(MainScope(), void 0, void 0, Login$submitLogin$lambda_0(this, values, endpoint));
   };
   Login.$metadata$ = {
     kind: Kind_CLASS,
@@ -8955,7 +8978,7 @@
         var item = tmp$.next();
         var tmp$_0 = destination.add_11rb$;
         var tmp$_1, tmp$_2;
-        if ((tmp$_1 = this$CryptoACForm.props.method) != null ? tmp$_1.equals(HttpMethod_0.Companion.Delete) : null) {
+        if ((tmp$_1 = this$CryptoACForm.props.method) != null ? tmp$_1.equals(HttpMethod.Companion.Delete) : null) {
           tmp$_2 = 'secondary';
         } else {
           tmp$_2 = 'primary';
@@ -9022,7 +9045,7 @@
       $receiver.label = closure$formField.label;
       $receiver.type = closure$formField.type.toString();
       $receiver.variant = 'standard';
-      if ((tmp$_0 = this$CryptoACForm.props.method) != null ? tmp$_0.equals(HttpMethod_0.Companion.Delete) : null) {
+      if ((tmp$_0 = this$CryptoACForm.props.method) != null ? tmp$_0.equals(HttpMethod.Companion.Delete) : null) {
         tmp$_1 = 'secondary';
       } else {
         tmp$_1 = 'primary';
@@ -9132,7 +9155,7 @@
     return function ($receiver) {
       var tmp$, tmp$_0;
       $receiver.type = InputType$submit_getInstance().toString();
-      if ((tmp$ = this$CryptoACForm.props.method) != null ? tmp$.equals(HttpMethod_0.Companion.Delete) : null) {
+      if ((tmp$ = this$CryptoACForm.props.method) != null ? tmp$.equals(HttpMethod.Companion.Delete) : null) {
         tmp$_0 = 'secondary';
       } else {
         tmp$_0 = 'primary';
@@ -10710,15 +10733,6 @@
   function styledDiv$lambda_7(it) {
     return new DIV_init(html.emptyMap, it);
   }
-  function post$lambda_0($receiver) {
-    return Unit;
-  }
-  function patch$lambda($receiver) {
-    return Unit;
-  }
-  function get$lambda($receiver) {
-    return Unit;
-  }
   function logger$lambda_12() {
     return Unit;
   }
@@ -10846,9 +10860,9 @@
       $receiver.handleDisplayCryptoACAlert = this$Dashboard_0.props.handleDisplayAlert;
       $receiver.handleSubmitEvent = Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_1(this$Dashboard_0);
       if (this$Dashboard_0.props.userHasProfile) {
-        tmp$ = HttpMethod_0.Companion.Patch;
+        tmp$ = HttpMethod.Companion.Patch;
       } else {
-        tmp$ = HttpMethod_0.Companion.Post;
+        tmp$ = HttpMethod.Companion.Post;
       }
       $receiver.method = tmp$;
       $receiver.cryptoACFormFields = this$Dashboard_0.state.cryptoACFormFields;
@@ -11001,25 +11015,14 @@
       return 'HTTP Method of edit profile form is neither Post nor Patch (it is ' + closure$method + ')';
     };
   }
-  function Dashboard$submitEditProfileForm$lambda$lambda(closure$parameters) {
-    return function ($receiver) {
-      contentType($receiver, ContentType.Application.Json);
-      var $receiver_0 = myJson;
-      var value = closure$parameters;
-      var tmp$;
-      $receiver.body = $receiver_0.encodeToString_tf03ej$(Kotlin.isType(tmp$ = serializer_0($receiver_0.serializersModule, createKType(getKClass(CoreParameters), [], false)), KSerializer) ? tmp$ : throwCCE(), value);
-      return Unit;
+  function Dashboard$submitEditProfileForm$lambda$lambda(closure$status, closure$code) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$code;
     };
   }
-  function Dashboard$submitEditProfileForm$lambda$lambda_0(closure$parameters) {
-    return function ($receiver) {
-      contentType($receiver, ContentType.Application.Json);
-      var $receiver_0 = myJson;
-      var value = closure$parameters;
-      var tmp$;
-      $receiver.body = $receiver_0.encodeToString_tf03ej$(Kotlin.isType(tmp$ = serializer_0($receiver_0.serializersModule, createKType(getKClass(CoreParameters), [], false)), KSerializer) ? tmp$ : throwCCE(), value);
-      return Unit;
-    };
+  function Dashboard$submitEditProfileForm$lambda$lambda_0($receiver) {
+    $receiver.editProfileFormIsOpen = false;
+    return Unit;
   }
   function Dashboard$submitEditProfileForm$lambda$lambda_1(closure$status, closure$code) {
     return function () {
@@ -11027,30 +11030,19 @@
     };
   }
   function Dashboard$submitEditProfileForm$lambda$lambda_2($receiver) {
-    $receiver.editProfileFormIsOpen = false;
-    return Unit;
-  }
-  function Dashboard$submitEditProfileForm$lambda$lambda_3(closure$status, closure$code) {
-    return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$code;
-    };
-  }
-  function Dashboard$submitEditProfileForm$lambda$lambda_4($receiver) {
     $receiver.editProfileFormIsOpen = true;
     return Unit;
   }
   function Coroutine$Dashboard$submitEditProfileForm$lambda(this$Dashboard_0, closure$method_0, closure$endpoint_0, closure$parameters_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 14;
+    this.exceptionState_0 = 1;
     this.local$this$Dashboard = this$Dashboard_0;
     this.local$closure$method = closure$method_0;
     this.local$closure$endpoint = closure$endpoint_0;
     this.local$closure$parameters = closure$parameters_0;
     this.local$tmp$ = void 0;
-    this.local$response_0 = void 0;
     this.local$response = void 0;
-    this.local$response_1 = void 0;
   }
   Coroutine$Dashboard$submitEditProfileForm$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -11065,227 +11057,146 @@
         switch (this.state_0) {
           case 0:
             this.local$this$Dashboard.props.handleChangeBackdropIsOpen(true);
-            if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Post) : null) {
-              var $receiver_0 = this.local$this$Dashboard.props.httpClient;
-              var urlString = this.local$closure$endpoint;
-              var block = Dashboard$submitEditProfileForm$lambda$lambda(this.local$closure$parameters);
-              var host_0;
-              var body_0;
-              host_0 = 'localhost';
-              body_0 = utils.EmptyContent;
+            if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Post) : null) {
+              var $receiver = this.local$this$Dashboard.props.httpClient;
               var $receiver_1 = new HttpRequestBuilder_init();
-              url($receiver_1, 'http', host_0, 0, '/');
-              $receiver_1.method = HttpMethod.Companion.Post;
-              $receiver_1.body = body_0;
-              takeFrom($receiver_1.url, urlString);
-              block($receiver_1);
-              var $this_0 = new HttpStatement_init($receiver_1, $receiver_0);
-              var tmp$_4, tmp$_5, tmp$_6;
-              tmp$_4 = getKClass(HttpResponse);
-              if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-                this.result_0 = Kotlin.isType(tmp$_5 = $this_0, HttpResponse) ? tmp$_5 : throwCCE();
-                this.state_0 = 17;
-                continue;
+              var closure$endpoint = this.local$closure$endpoint;
+              var closure$parameters = this.local$closure$parameters;
+              url($receiver_1, closure$endpoint);
+              contentType($receiver_1, ContentType.Application.Json);
+              if (closure$parameters == null) {
+                $receiver_1.body = utils.EmptyContent;
+                $receiver_1.bodyType = null;
+              } else if (Kotlin.isType(closure$parameters, OutgoingContent)) {
+                $receiver_1.body = closure$parameters;
+                $receiver_1.bodyType = null;
               } else {
-                if (equals(tmp$_4, getKClass(HttpResponse))) {
-                  this.state_0 = 15;
-                  this.result_0 = $this_0.execute(this);
-                  if (this.result_0 === COROUTINE_SUSPENDED)
-                    return COROUTINE_SUSPENDED;
-                  continue;
-                } else {
-                  this.state_0 = 9;
-                  this.result_0 = $this_0.executeUnsafe(this);
-                  if (this.result_0 === COROUTINE_SUSPENDED)
-                    return COROUTINE_SUSPENDED;
-                  continue;
+                $receiver_1.body = closure$parameters;
+                var tmp$ = reflect.JsType;
+                var tmp$_0 = getKClass(CoreParameters);
+                var tryGetType$result;
+                tryGetType$break: do {
+                  try {
+                    tryGetType$result = createKType(getKClass(CoreParameters), [], false);
+                  } catch (cause) {
+                    if (Kotlin.isType(cause, Throwable)) {
+                      tryGetType$result = null;
+                      break tryGetType$break;
+                    } else
+                      throw cause;
+                  }
                 }
+                 while (false);
+                $receiver_1.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
               }
+              $receiver_1.method = HttpMethod_0.Companion.Post;
+              this.state_0 = 3;
+              this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
             } else {
-              var $receiver_0_0 = this.local$this$Dashboard.props.httpClient;
-              var urlString_0 = this.local$closure$endpoint;
-              var block_0 = Dashboard$submitEditProfileForm$lambda$lambda_0(this.local$closure$parameters);
-              var host_0_0;
-              var body_0_0;
-              host_0_0 = 'localhost';
-              body_0_0 = utils.EmptyContent;
+              var $receiver_0 = this.local$this$Dashboard.props.httpClient;
               var $receiver_1_0 = new HttpRequestBuilder_init();
-              url($receiver_1_0, 'http', host_0_0, 0, '/');
-              $receiver_1_0.method = HttpMethod.Companion.Patch;
-              $receiver_1_0.body = body_0_0;
-              takeFrom($receiver_1_0.url, urlString_0);
-              block_0($receiver_1_0);
-              var $this_0_0 = new HttpStatement_init($receiver_1_0, $receiver_0_0);
-              var tmp$_4_0, tmp$_5_0, tmp$_6_0;
-              tmp$_4_0 = getKClass(HttpResponse);
-              if (equals(tmp$_4_0, getKClass(HttpStatement_init))) {
-                this.result_0 = Kotlin.isType(tmp$_5_0 = $this_0_0, HttpResponse) ? tmp$_5_0 : throwCCE();
-                this.state_0 = 8;
-                continue;
+              var closure$endpoint_0 = this.local$closure$endpoint;
+              var closure$parameters_0 = this.local$closure$parameters;
+              url($receiver_1_0, closure$endpoint_0);
+              contentType($receiver_1_0, ContentType.Application.Json);
+              if (closure$parameters_0 == null) {
+                $receiver_1_0.body = utils.EmptyContent;
+                $receiver_1_0.bodyType = null;
+              } else if (Kotlin.isType(closure$parameters_0, OutgoingContent)) {
+                $receiver_1_0.body = closure$parameters_0;
+                $receiver_1_0.bodyType = null;
               } else {
-                if (equals(tmp$_4_0, getKClass(HttpResponse))) {
-                  this.state_0 = 6;
-                  this.result_0 = $this_0_0.execute(this);
-                  if (this.result_0 === COROUTINE_SUSPENDED)
-                    return COROUTINE_SUSPENDED;
-                  continue;
-                } else {
-                  this.state_0 = 1;
-                  this.result_0 = $this_0_0.executeUnsafe(this);
-                  if (this.result_0 === COROUTINE_SUSPENDED)
-                    return COROUTINE_SUSPENDED;
-                  continue;
+                $receiver_1_0.body = closure$parameters_0;
+                var tmp$_1 = reflect.JsType;
+                var tmp$_0_0 = getKClass(CoreParameters);
+                var tryGetType$result_0;
+                tryGetType$break: do {
+                  try {
+                    tryGetType$result_0 = createKType(getKClass(CoreParameters), [], false);
+                  } catch (cause_0) {
+                    if (Kotlin.isType(cause_0, Throwable)) {
+                      tryGetType$result_0 = null;
+                      break tryGetType$break;
+                    } else
+                      throw cause_0;
+                  }
                 }
+                 while (false);
+                $receiver_1_0.bodyType = typeInfoImpl(tmp$_1, tmp$_0_0, tryGetType$result_0);
               }
+              $receiver_1_0.method = HttpMethod_0.Companion.Patch;
+              this.state_0 = 2;
+              this.result_0 = (new HttpStatement_init($receiver_1_0, $receiver_0)).execute(this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
             }
 
           case 1:
-            this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
+            throw this.exception_0;
           case 2:
-            this.result_0 = Kotlin.isType(tmp$_7 = this.result_0, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 14;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
+            this.result_0;
+            this.local$tmp$ = this.result_0;
+            this.state_0 = 4;
             continue;
           case 3:
-            this.state_0 = 7;
+            this.result_0;
+            this.local$tmp$ = this.result_0;
+            this.state_0 = 4;
             continue;
           case 4:
-            this.finallyPath_0 = [14];
+            this.local$response = this.local$tmp$;
+            var tmp$_2;
+            var tmp$_3 = this.local$response.call;
+            var tmp$_4 = reflect.JsType;
+            var tmp$_0_1 = getKClass(OutcomeCode);
+            var tryGetType$result_0_0;
+            tryGetType$break: do {
+              try {
+                tryGetType$result_0_0 = createKType(getKClass(OutcomeCode), [], false);
+              } catch (cause_0_0) {
+                if (Kotlin.isType(cause_0_0, Throwable)) {
+                  tryGetType$result_0_0 = null;
+                  break tryGetType$break;
+                } else
+                  throw cause_0_0;
+              }
+            }
+             while (false);
             this.state_0 = 5;
+            this.result_0 = tmp$_3.body_qi9ur9$(typeInfoImpl(tmp$_4, tmp$_0_1, tryGetType$result_0_0), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
             continue;
           case 5:
-            this.exceptionState_0 = 14;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
-            this.result_0 = Kotlin.isType(tmp$_6_0 = this.result_0, HttpResponse) ? tmp$_6_0 : throwCCE();
-            this.state_0 = 7;
-            continue;
-          case 7:
-            this.state_0 = 8;
-            continue;
-          case 8:
-            this.result_0;
-            this.local$tmp$ = this.result_0;
-            this.state_0 = 18;
-            continue;
-          case 9:
-            this.local$response_0 = this.result_0;
-            this.exceptionState_0 = 12;
-            var tmp$_7_0;
-            var tmp$_8_0 = this.local$response_0.call;
-            var typeInfo$result_0_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (__0) {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 10;
-            this.result_0 = tmp$_8_0.receive_qi9ur9$(typeInfo$result_0_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 10:
-            this.result_0 = Kotlin.isType(tmp$_7_0 = this.result_0, HttpResponse) ? tmp$_7_0 : throwCCE();
-            this.exceptionState_0 = 14;
-            this.finallyPath_0 = [11];
-            this.state_0 = 13;
-            continue;
-          case 11:
-            this.state_0 = 16;
-            continue;
-          case 12:
-            this.finallyPath_0 = [14];
-            this.state_0 = 13;
-            continue;
-          case 13:
-            this.exceptionState_0 = 14;
-            complete(this.local$response_0);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 14:
-            throw this.exception_0;
-          case 15:
-            this.result_0 = Kotlin.isType(tmp$_6 = this.result_0, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 16;
-            continue;
-          case 16:
-            this.state_0 = 17;
-            continue;
-          case 17:
-            this.result_0;
-            this.local$tmp$ = this.result_0;
-            this.state_0 = 18;
-            continue;
-          case 18:
-            this.local$response_1 = this.local$tmp$;
-            var tmp$_1;
-            var tmp$_2 = this.local$response_1.call;
-            var typeInfo$result_0_1;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0_1 = typeInfoImpl(reflect.JsType, getKClass(OutcomeCode), createKType(getKClass(OutcomeCode), [], false));
-              } catch (__1) {
-                typeInfo$result_0_1 = typeInfoImpl(reflect.JsType, getKClass(OutcomeCode), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 19;
-            this.result_0 = tmp$_2.receive_qi9ur9$(typeInfo$result_0_1, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 19:
-            this.result_0 = Kotlin.isType(tmp$_1 = this.result_0, OutcomeCode) ? tmp$_1 : throwCCE();
+            this.result_0 = Kotlin.isType(tmp$_2 = this.result_0, OutcomeCode) ? tmp$_2 : throwCCE();
             var code = this.result_0;
-            var status = this.local$response_1.status;
+            var status = this.local$response.status;
             this.local$this$Dashboard.props.handleChangeBackdropIsOpen(false);
             if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_12.info_nq59yw$(Dashboard$submitEditProfileForm$lambda$lambda_1(status, code));
+              logger_12.info_nq59yw$(Dashboard$submitEditProfileForm$lambda$lambda(status, code));
               this.local$this$Dashboard.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance());
               this.local$this$Dashboard.props.handleChangeUserIsAdmin(this.local$closure$parameters.user.isAdmin);
               this.local$this$Dashboard.props.handleChangeUserHasProfile(true);
-              return setState(this.local$this$Dashboard, Dashboard$submitEditProfileForm$lambda$lambda_2), Unit;
+              return setState(this.local$this$Dashboard, Dashboard$submitEditProfileForm$lambda$lambda_0), Unit;
             } else {
-              logger_12.warn_nq59yw$(Dashboard$submitEditProfileForm$lambda$lambda_3(status, code));
+              logger_12.warn_nq59yw$(Dashboard$submitEditProfileForm$lambda$lambda_1(status, code));
               this.local$this$Dashboard.props.handleDisplayAlert(code, CryptoACAlertSeverity$ERROR_getInstance());
               this.local$this$Dashboard.props.handleChangeUserHasProfile(false);
               this.local$this$Dashboard.props.handleChangeUserIsAdmin(false);
-              return setState(this.local$this$Dashboard, Dashboard$submitEditProfileForm$lambda$lambda_4), Unit;
+              return setState(this.local$this$Dashboard, Dashboard$submitEditProfileForm$lambda$lambda_2), Unit;
             }
 
-          case 20:
+          case 6:
             return;
-          default:this.state_0 = 14;
+          default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 14) {
+        if (this.state_0 === 1) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -11313,7 +11224,7 @@
     };
   }
   Dashboard.prototype.submitEditProfileForm_0 = function (method, endpoint, values) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
     logger_12.info_nq59yw$(Dashboard$submitEditProfileForm$lambda(method, endpoint));
     try {
       switch (this.props.rmType.name) {
@@ -11353,20 +11264,20 @@
       var cryptoType = CryptoType$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().CRYPTO)));
       switch (this.props.coreType.name) {
         case 'RBAC_CLOUD':
-          tmp$_6 = new CoreParametersCLOUD(user, void 0, cryptoType, void 0, ensureNotNull(rmParameters), Kotlin.isType(tmp$_2 = mmParameters, MMInterfaceRBACCLOUDParameters) ? tmp$_2 : throwCCE(), Kotlin.isType(tmp$_3 = dmParameters, DMInterfaceRBACCLOUDParameters) ? tmp$_3 : throwCCE(), new OPAInterfaceParameters(toInt(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_URL)), PolicyModel$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_POLICY_MODEL)))));
+          tmp$_5 = new CoreParametersCLOUD(user, void 0, cryptoType, void 0, ensureNotNull(rmParameters), Kotlin.isType(tmp$_2 = mmParameters, MMInterfaceRBACCLOUDParameters) ? tmp$_2 : throwCCE(), Kotlin.isType(tmp$_3 = dmParameters, DMInterfaceRBACCLOUDParameters) ? tmp$_3 : throwCCE(), new OPAInterfaceParameters(toInt(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_URL)), PolicyModel$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_POLICY_MODEL)))));
           break;
         case 'RBAC_MQTT':
-          tmp$_6 = new CoreParametersMQTT(user, void 0, cryptoType, void 0, Kotlin.isType(tmp$_4 = mmParameters, MMInterfaceRBACMQTTParameters) ? tmp$_4 : throwCCE(), Kotlin.isType(tmp$_5 = dmParameters, DMInterfaceRBACMQTTParameters) ? tmp$_5 : throwCCE());
+          tmp$_5 = new CoreParametersMQTT(user, void 0, cryptoType, void 0, mmParameters, Kotlin.isType(tmp$_4 = dmParameters, DMInterfaceRBACMQTTParameters) ? tmp$_4 : throwCCE());
           break;
         case 'RBAC_MOCK':
           var message = 'Using MOCK core when not in development mode';
           logger_12.error_nq59yw$(Dashboard$submitEditProfileForm$lambda_0(message));
           throw IllegalStateException_init(message);
-        default:tmp$_6 = Kotlin.noWhenBranchMatched();
+        default:tmp$_5 = Kotlin.noWhenBranchMatched();
           break;
       }
-      var parameters = tmp$_6;
-      if (!(method != null ? method.equals(HttpMethod_0.Companion.Post) : null) && !(method != null ? method.equals(HttpMethod_0.Companion.Patch) : null)) {
+      var parameters = tmp$_5;
+      if (!(method != null ? method.equals(HttpMethod.Companion.Post) : null) && !(method != null ? method.equals(HttpMethod.Companion.Patch) : null)) {
         logger_12.warn_nq59yw$(Dashboard$submitEditProfileForm$lambda_1(method));
         this.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
       }launch(MainScope(), void 0, void 0, Dashboard$submitEditProfileForm$lambda_2(this, method, endpoint, parameters));
@@ -11438,9 +11349,8 @@
   }
   function Coroutine$getProfileFromCryptoAC_0($this, username_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 6;
+    this.exceptionState_0 = 1;
     this.$this = $this;
-    this.local$response = void 0;
     this.local$status = void 0;
     this.local$username = username_0;
   }
@@ -11458,120 +11368,50 @@
           case 0:
             if (this.local$username === void 0)
               this.local$username = this.$this.props.username;
-            var actualEndpoint = baseURL + replace(API_getInstance().PROFILES, '{Core}', this.$this.props.coreType.toString()) + '/' + toString(this.local$username);
+            var actualEndpoint = baseURL + replace(API_getInstance().PROFILES, '{Core}', this.$this.props.coreType.toString()) + toString(this.local$username);
             logger_12.info_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda(this.local$username, actualEndpoint));
-            var $receiver_0 = this.$this.props.httpClient;
-            var host_0;
-            var body_0;
-            host_0 = 'localhost';
-            body_0 = utils.EmptyContent;
+            var $receiver = this.$this.props.httpClient;
             var $receiver_1 = new HttpRequestBuilder_init();
-            url($receiver_1, 'http', host_0, 0, '/');
-            $receiver_1.method = HttpMethod.Companion.Get;
-            $receiver_1.body = body_0;
-            takeFrom($receiver_1.url, actualEndpoint);
-            get$lambda($receiver_1);
-            var $this_0 = new HttpStatement_init($receiver_1, $receiver_0);
-            var tmp$_4, tmp$_5, tmp$_6;
-            tmp$_4 = getKClass(HttpResponse);
-            if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-              this.result_0 = Kotlin.isType(tmp$_5 = $this_0, HttpResponse) ? tmp$_5 : throwCCE();
-              this.state_0 = 9;
-              continue;
-            } else {
-              if (equals(tmp$_4, getKClass(HttpResponse))) {
-                this.state_0 = 7;
-                this.result_0 = $this_0.execute(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
-              } else {
-                this.state_0 = 1;
-                this.result_0 = $this_0.executeUnsafe(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
-              }
-            }
-
-          case 1:
-            this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
+            url($receiver_1, actualEndpoint);
+            $receiver_1.method = HttpMethod_0.Companion.Get;
             this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
+            this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 2:
-            this.result_0 = Kotlin.isType(tmp$_7 = this.result_0, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 6;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
-            continue;
-          case 3:
-            this.state_0 = 8;
-            continue;
-          case 4:
-            this.finallyPath_0 = [6];
-            this.state_0 = 5;
-            continue;
-          case 5:
-            this.exceptionState_0 = 6;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
+          case 1:
             throw this.exception_0;
-          case 7:
-            this.result_0 = Kotlin.isType(tmp$_6 = this.result_0, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 8;
-            continue;
-          case 8:
-            this.state_0 = 9;
-            continue;
-          case 9:
+          case 2:
             this.result_0;
             var httpResponse = this.result_0;
             this.local$status = httpResponse.status;
             if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
               logger_12.info_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda_0(this.local$status));
-              this.state_0 = 11;
-              this.result_0 = readText(httpResponse, void 0, this);
+              this.state_0 = 4;
+              this.result_0 = bodyAsText(httpResponse, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
             } else {
-              this.state_0 = 10;
-              this.result_0 = readText(httpResponse, void 0, this);
+              this.state_0 = 3;
+              this.result_0 = bodyAsText(httpResponse, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
             }
 
-          case 10:
+          case 3:
             var text = this.result_0;
-            var $receiver = myJson;
+            var $receiver_0 = myJson;
             var tmp$;
-            var outcomeCode = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), text);
+            var outcomeCode = $receiver_0.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver_0.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), text);
             logger_12.warn_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda_2(this.local$status, outcomeCode));
             this.$this.props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance());
             setState(this.$this, Dashboard$getProfileFromCryptoAC$lambda_3(this.$this));
             this.$this.getFieldsFromParameters_0(new User(ensureNotNull(this.$this.props.username)), CryptoType$SODIUM_getInstance());
-            this.state_0 = 12;
+            this.state_0 = 5;
             continue;
-          case 11:
+          case 4:
             var profileAsString = this.result_0;
             var $receiver_2 = myJson;
             var tmp$_0;
@@ -11579,15 +11419,15 @@
             if (this.$this.parseProfileAndUpdateFields_0(parameters, true)) {
               setState(this.$this, Dashboard$getProfileFromCryptoAC$lambda_1(this.$this, parameters));
             }
-            this.state_0 = 12;
+            this.state_0 = 5;
             continue;
-          case 12:
+          case 5:
             return;
-          default:this.state_0 = 6;
+          default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 6) {
+        if (this.state_0 === 1) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -11711,7 +11551,7 @@
   }
   function Dashboard$getFieldsFromParameters$lambda_0(closure$fields) {
     return function ($receiver) {
-      $receiver.cryptoACFormFields = toList_0(closure$fields);
+      $receiver.cryptoACFormFields = toList(closure$fields);
       return Unit;
     };
   }
@@ -11724,7 +11564,7 @@
       dmParameters = null;
     if (opaParameters === void 0)
       opaParameters = null;
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11;
     logger_12.info_nq59yw$(Dashboard$getFieldsFromParameters$lambda);
     tmp$ = new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance(), void 0, user.name, 'darkTextField');
     tmp$_0 = new CryptoACFormField(SERVER_getInstance().IS_ADMIN, replace(SERVER_getInstance().IS_ADMIN, '_', ' '), InputType$checkBox_getInstance(), void 0, user.isAdmin.toString(), 'darkTextField');
@@ -11733,22 +11573,22 @@
     tmp$_3 = InputType$select_getInstance();
     var $receiver = CryptoType$values();
     var destination = ArrayList_init_0($receiver.length);
-    var tmp$_7;
-    for (tmp$_7 = 0; tmp$_7 !== $receiver.length; ++tmp$_7) {
-      var item = $receiver[tmp$_7];
+    var tmp$_12;
+    for (tmp$_12 = 0; tmp$_12 !== $receiver.length; ++tmp$_12) {
+      var item = $receiver[tmp$_12];
       destination.add_11rb$(item.toString());
     }
     var fields = mutableListOf([listOf([tmp$, tmp$_0, new CryptoACFormField(tmp$_1, tmp$_2, tmp$_3, destination, cryptoType.toString(), 'darkTextField')])]);
     switch (this.props.rmType.name) {
       case 'CRYPTOAC':
-        var tmp$_8 = RMInterfaceCryptoACParameters$Companion_getInstance();
-        var tmp$_9;
+        var tmp$_13 = RMInterfaceCryptoACParameters$Companion_getInstance();
+        var tmp$_14;
         if (rmParameters != null) {
-          var tmp$_10;
-          tmp$_9 = Kotlin.isType(tmp$_10 = rmParameters, RMInterfaceCryptoACParameters) ? tmp$_10 : throwCCE();
+          var tmp$_15;
+          tmp$_14 = Kotlin.isType(tmp$_15 = rmParameters, RMInterfaceCryptoACParameters) ? tmp$_15 : throwCCE();
         } else
-          tmp$_9 = null;
-        tmp$_4 = tmp$_8.toMap_8hxbyy$(tmp$_9);
+          tmp$_14 = null;
+        tmp$_4 = tmp$_13.toMap_8hxbyy$(tmp$_14);
         break;
       case 'NONE':
         tmp$_4 = emptyList();
@@ -11759,24 +11599,24 @@
     fields.addAll_brywnq$(tmp$_4);
     switch (this.props.mmType.name) {
       case 'MYSQL':
-        var tmp$_11 = MMInterfaceMySQLParameters$Companion_getInstance();
-        var tmp$_12;
+        var tmp$_16 = MMInterfaceMySQLParameters$Companion_getInstance();
+        var tmp$_17;
         if (mmParameters != null) {
-          var tmp$_13;
-          tmp$_12 = Kotlin.isType(tmp$_13 = mmParameters, MMInterfaceMySQLParameters) ? tmp$_13 : throwCCE();
+          var tmp$_18;
+          tmp$_17 = Kotlin.isType(tmp$_18 = mmParameters, MMInterfaceMySQLParameters) ? tmp$_18 : throwCCE();
         } else
-          tmp$_12 = null;
-        tmp$_5 = tmp$_11.toMap_169afz$(tmp$_12);
+          tmp$_17 = null;
+        tmp$_5 = tmp$_16.toMap_169afz$(tmp$_17);
         break;
       case 'REDIS':
-        var tmp$_14 = MMInterfaceRedisParameters$Companion_getInstance();
-        var tmp$_15;
+        var tmp$_19 = MMInterfaceRedisParameters$Companion_getInstance();
+        var tmp$_20;
         if (mmParameters != null) {
-          var tmp$_16;
-          tmp$_15 = Kotlin.isType(tmp$_16 = mmParameters, MMInterfaceRedisParameters) ? tmp$_16 : throwCCE();
+          var tmp$_21;
+          tmp$_20 = Kotlin.isType(tmp$_21 = mmParameters, MMInterfaceRedisParameters) ? tmp$_21 : throwCCE();
         } else
-          tmp$_15 = null;
-        tmp$_5 = tmp$_14.toMap_4poj22$(tmp$_15);
+          tmp$_20 = null;
+        tmp$_5 = tmp$_19.toMap_4poj22$(tmp$_20);
         break;
       default:tmp$_5 = Kotlin.noWhenBranchMatched();
         break;
@@ -11784,31 +11624,43 @@
     fields.addAll_brywnq$(tmp$_5);
     switch (this.props.dmType.name) {
       case 'CRYPTOAC':
-        var tmp$_17 = DMInterfaceCryptoACParameters$Companion_getInstance();
-        var tmp$_18;
+        var tmp$_22 = DMInterfaceCryptoACParameters$Companion_getInstance();
+        var tmp$_23;
         if (dmParameters != null) {
-          var tmp$_19;
-          tmp$_18 = Kotlin.isType(tmp$_19 = dmParameters, DMInterfaceCryptoACParameters) ? tmp$_19 : throwCCE();
+          var tmp$_24;
+          tmp$_23 = Kotlin.isType(tmp$_24 = dmParameters, DMInterfaceCryptoACParameters) ? tmp$_24 : throwCCE();
         } else
-          tmp$_18 = null;
-        tmp$_6 = tmp$_17.toMap_2qkhay$(tmp$_18);
+          tmp$_23 = null;
+        tmp$_6 = tmp$_22.toMap_2qkhay$(tmp$_23);
         break;
       case 'MOSQUITTO':
-        var tmp$_20 = DMInterfaceMosquittoParameters$Companion_getInstance();
-        var tmp$_21;
+        var tmp$_25 = DMInterfaceMosquittoParameters$Companion_getInstance();
+        var tmp$_26;
         if (dmParameters != null) {
-          var tmp$_22;
-          tmp$_21 = Kotlin.isType(tmp$_22 = dmParameters, DMInterfaceMosquittoParameters) ? tmp$_22 : throwCCE();
+          var tmp$_27;
+          tmp$_26 = Kotlin.isType(tmp$_27 = dmParameters, DMInterfaceMosquittoParameters) ? tmp$_27 : throwCCE();
         } else
-          tmp$_21 = null;
-        tmp$_6 = tmp$_20.toMap_4xwjay$(tmp$_21);
+          tmp$_26 = null;
+        tmp$_6 = tmp$_25.toMap_4xwjay$(tmp$_26);
         break;
       default:tmp$_6 = Kotlin.noWhenBranchMatched();
         break;
     }
     fields.addAll_brywnq$(tmp$_6);
     if (this.props.coreType === CoreType$RBAC_CLOUD_getInstance()) {
-      fields.addAll_brywnq$(listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().OPA_URL, replace(SERVER_getInstance().OPA_URL, '_', ' '), InputType$text_getInstance(), void 0, opaParameters != null ? opaParameters.url : null, 'darkTextField'), new CryptoACFormField(SERVER_getInstance().OPA_PORT, replace(SERVER_getInstance().OPA_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(opaParameters != null ? opaParameters.port : null), 'darkTextField')])));
+      tmp$_7 = new CryptoACFormField(SERVER_getInstance().OPA_URL, replace(SERVER_getInstance().OPA_URL, '_', ' '), InputType$text_getInstance(), void 0, opaParameters != null ? opaParameters.url : null, 'darkTextField');
+      tmp$_8 = new CryptoACFormField(SERVER_getInstance().OPA_PORT, replace(SERVER_getInstance().OPA_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(opaParameters != null ? opaParameters.port : null), 'darkTextField');
+      tmp$_9 = SERVER_getInstance().OPA_POLICY_MODEL;
+      tmp$_10 = replace(SERVER_getInstance().OPA_POLICY_MODEL, '_', ' ');
+      tmp$_11 = InputType$select_getInstance();
+      var $receiver_0 = PolicyModel$values();
+      var destination_0 = ArrayList_init_0($receiver_0.length);
+      var tmp$_28;
+      for (tmp$_28 = 0; tmp$_28 !== $receiver_0.length; ++tmp$_28) {
+        var item_0 = $receiver_0[tmp$_28];
+        destination_0.add_11rb$(item_0.toString());
+      }
+      fields.addAll_brywnq$(listOf_0(listOf([tmp$_7, tmp$_8, new CryptoACFormField(tmp$_9, tmp$_10, tmp$_11, destination_0, toString(opaParameters != null ? opaParameters.policyModel : null), 'darkTextField')])));
     }setState(this, Dashboard$getFieldsFromParameters$lambda_0(fields));
   };
   Dashboard.$metadata$ = {
@@ -12883,9 +12735,6 @@
   function rbacCLOUDDashboard(handler) {
     return ensureNotNull(createElement(rbacCLOUDDashboard$lambda(handler)));
   }
-  function get$lambda_0($receiver) {
-    return Unit;
-  }
   function logger$lambda_14() {
     return Unit;
   }
@@ -12951,11 +12800,10 @@
   }
   function Coroutine$getElements_ofj3vx$($this, endpoint_0, errorCode_0, type_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 21;
+    this.exceptionState_0 = 14;
     this.$this = $this;
     this.local$tmp$ = void 0;
     this.local$tmp$_1 = void 0;
-    this.local$response = void 0;
     this.local$endpoint = endpoint_0;
     this.local$errorCode = errorCode_0;
     this.local$type = type_0;
@@ -12976,96 +12824,26 @@
             logger_14.info_nq59yw$(RBACDashboard$getElements$lambda(this.local$type));
             logger_14.info_nq59yw$(RBACDashboard$getElements$lambda_0(this.local$endpoint));
             this.$this.props.handleChangeBackdropIsOpen(true);
-            this.exceptionState_0 = 9;
-            var $receiver_0 = this.$this.props.httpClient;
-            var host_0;
-            var body_0;
-            host_0 = 'localhost';
-            body_0 = utils.EmptyContent;
+            this.exceptionState_0 = 2;
+            var $receiver = this.$this.props.httpClient;
             var $receiver_1 = new HttpRequestBuilder_init();
-            url($receiver_1, 'http', host_0, 0, '/');
-            $receiver_1.method = HttpMethod.Companion.Get;
-            $receiver_1.body = body_0;
-            takeFrom($receiver_1.url, this.local$endpoint);
-            get$lambda_0($receiver_1);
-            var $this_0 = new HttpStatement_init($receiver_1, $receiver_0);
-            var tmp$_4, tmp$_5, tmp$_6;
-            tmp$_4 = getKClass(HttpResponse);
-            if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-              this.result_0 = (tmp$_5 = $this_0) == null || Kotlin.isType(tmp$_5, HttpResponse) ? tmp$_5 : throwCCE();
-              this.state_0 = 8;
-              continue;
-            } else {
-              if (equals(tmp$_4, getKClass(HttpResponse))) {
-                this.state_0 = 6;
-                this.result_0 = $this_0.execute(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
-              } else {
-                this.state_0 = 1;
-                this.result_0 = $this_0.executeUnsafe(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
-              }
-            }
-
-          case 1:
-            this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], true));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
+            url($receiver_1, this.local$endpoint);
+            $receiver_1.method = HttpMethod_0.Companion.Get;
+            this.state_0 = 1;
+            this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 2:
-            this.result_0 = (tmp$_7 = this.result_0) == null || Kotlin.isType(tmp$_7, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 9;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
-            continue;
-          case 3:
-            this.state_0 = 7;
-            continue;
-          case 4:
-            this.finallyPath_0 = [9];
-            this.state_0 = 5;
-            continue;
-          case 5:
-            this.exceptionState_0 = 9;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
-            this.result_0 = (tmp$_6 = this.result_0) == null || Kotlin.isType(tmp$_6, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 7;
-            continue;
-          case 7:
-            this.state_0 = 8;
-            continue;
-          case 8:
+          case 1:
             this.result_0;
             this.local$tmp$ = this.result_0;
-            this.exceptionState_0 = 21;
-            this.finallyPath_0 = [11];
-            this.state_0 = 10;
+            this.exceptionState_0 = 14;
+            this.finallyPath_0 = [4];
+            this.state_0 = 3;
             continue;
-          case 9:
-            this.finallyPath_0 = [21];
-            this.exceptionState_0 = 10;
+          case 2:
+            this.finallyPath_0 = [14];
+            this.exceptionState_0 = 3;
             var e = this.exception_0;
             if (Kotlin.isType(e, Error_0)) {
               if (equals(e.message, 'Fail to fetch')) {
@@ -13079,71 +12857,71 @@
               this.local$tmp$ = null;
             } else
               throw e;
-            this.finallyPath_0 = [11];
-            this.state_0 = 10;
+            this.finallyPath_0 = [4];
+            this.state_0 = 3;
             continue;
-          case 10:
-            this.exceptionState_0 = 21;
+          case 3:
+            this.exceptionState_0 = 14;
             this.$this.props.handleChangeBackdropIsOpen(false);
             this.state_0 = this.finallyPath_0.shift();
             continue;
-          case 11:
+          case 4:
             var httpResponse = this.local$tmp$;
             if (httpResponse != null) {
               if ((tmp$ = httpResponse.status) != null ? tmp$.equals(HttpStatusCode.Companion.OK) : null) {
                 switch (this.local$type.name) {
                   case 'USER':
-                    this.state_0 = 17;
-                    this.result_0 = readText(httpResponse, void 0, this);
+                    this.state_0 = 10;
+                    this.result_0 = bodyAsText(httpResponse, void 0, this);
                     if (this.result_0 === COROUTINE_SUSPENDED)
                       return COROUTINE_SUSPENDED;
                     continue;
                   case 'ROLE':
-                    this.state_0 = 16;
-                    this.result_0 = readText(httpResponse, void 0, this);
+                    this.state_0 = 9;
+                    this.result_0 = bodyAsText(httpResponse, void 0, this);
                     if (this.result_0 === COROUTINE_SUSPENDED)
                       return COROUTINE_SUSPENDED;
                     continue;
                   case 'FILE':
-                    this.state_0 = 15;
-                    this.result_0 = readText(httpResponse, void 0, this);
+                    this.state_0 = 8;
+                    this.result_0 = bodyAsText(httpResponse, void 0, this);
                     if (this.result_0 === COROUTINE_SUSPENDED)
                       return COROUTINE_SUSPENDED;
                     continue;
                   case 'ASSIGNMENT':
-                    this.state_0 = 14;
-                    this.result_0 = readText(httpResponse, void 0, this);
+                    this.state_0 = 7;
+                    this.result_0 = bodyAsText(httpResponse, void 0, this);
                     if (this.result_0 === COROUTINE_SUSPENDED)
                       return COROUTINE_SUSPENDED;
                     continue;
                   case 'PERMISSION':
-                    this.state_0 = 13;
-                    this.result_0 = readText(httpResponse, void 0, this);
+                    this.state_0 = 6;
+                    this.result_0 = bodyAsText(httpResponse, void 0, this);
                     if (this.result_0 === COROUTINE_SUSPENDED)
                       return COROUTINE_SUSPENDED;
                     continue;
                   default:this.local$tmp$_1 = Kotlin.noWhenBranchMatched();
-                    this.state_0 = 18;
+                    this.state_0 = 11;
                     continue;
                 }
               } else {
-                this.state_0 = 12;
-                this.result_0 = readText(httpResponse, void 0, this);
+                this.state_0 = 5;
+                this.result_0 = bodyAsText(httpResponse, void 0, this);
                 if (this.result_0 === COROUTINE_SUSPENDED)
                   return COROUTINE_SUSPENDED;
                 continue;
               }
             } else {
               this.local$tmp$_1 = null;
-              this.state_0 = 20;
+              this.state_0 = 13;
               continue;
             }
 
-          case 12:
+          case 5:
             var text = this.result_0;
-            var $receiver = myJson;
+            var $receiver_0 = myJson;
             var tmp$_0;
-            var outcomeCode = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$_0 : throwCCE(), text);
+            var outcomeCode = $receiver_0.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver_0.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$_0 : throwCCE(), text);
             if (outcomeCode === this.local$errorCode) {
               logger_14.info_nq59yw$(RBACDashboard$getElements$lambda_3(this.local$type));
               this.local$tmp$_1 = emptyList();
@@ -13153,9 +12931,9 @@
               this.local$tmp$_1 = null;
             }
 
-            this.state_0 = 19;
+            this.state_0 = 12;
             continue;
-          case 13:
+          case 6:
             var $receiver_2 = myJson;
             var string = this.result_0;
             var tmp$_1;
@@ -13169,87 +12947,87 @@
             }
 
             this.local$tmp$_1 = destination;
-            this.state_0 = 18;
+            this.state_0 = 11;
             continue;
-          case 14:
+          case 7:
             var $receiver_3 = myJson;
             var string_0 = this.result_0;
             var tmp$_3;
             var assignments = $receiver_3.decodeFromString_awif5v$(Kotlin.isType(tmp$_3 = serializer_0($receiver_3.serializersModule, createKType(getKClass(HashSet), [createInvariantKTypeProjection(createKType(getKClass(RoleTuple), [], false))], false)), KSerializer) ? tmp$_3 : throwCCE(), string_0);
             var destination_0 = ArrayList_init_0(collectionSizeOrDefault(assignments, 10));
-            var tmp$_9;
-            tmp$_9 = assignments.iterator();
-            while (tmp$_9.hasNext()) {
-              var item_0 = tmp$_9.next();
+            var tmp$_4;
+            tmp$_4 = assignments.iterator();
+            while (tmp$_4.hasNext()) {
+              var item_0 = tmp$_4.next();
               destination_0.add_11rb$(item_0.toArray());
             }
 
             this.local$tmp$_1 = destination_0;
-            this.state_0 = 18;
+            this.state_0 = 11;
             continue;
-          case 15:
+          case 8:
             var $receiver_4 = myJson;
             var string_1 = this.result_0;
-            var tmp$_10;
-            var files = $receiver_4.decodeFromString_awif5v$(Kotlin.isType(tmp$_10 = serializer_0($receiver_4.serializersModule, createKType(getKClass(HashSet), [createInvariantKTypeProjection(createKType(getKClass(File), [], false))], false)), KSerializer) ? tmp$_10 : throwCCE(), string_1);
+            var tmp$_5;
+            var files = $receiver_4.decodeFromString_awif5v$(Kotlin.isType(tmp$_5 = serializer_0($receiver_4.serializersModule, createKType(getKClass(HashSet), [createInvariantKTypeProjection(createKType(getKClass(File), [], false))], false)), KSerializer) ? tmp$_5 : throwCCE(), string_1);
             var destination_1 = ArrayList_init_0(collectionSizeOrDefault(files, 10));
-            var tmp$_11;
-            tmp$_11 = files.iterator();
-            while (tmp$_11.hasNext()) {
-              var item_1 = tmp$_11.next();
+            var tmp$_6;
+            tmp$_6 = files.iterator();
+            while (tmp$_6.hasNext()) {
+              var item_1 = tmp$_6.next();
               destination_1.add_11rb$(item_1.toArray());
             }
 
             this.local$tmp$_1 = destination_1;
-            this.state_0 = 18;
+            this.state_0 = 11;
             continue;
-          case 16:
+          case 9:
             var $receiver_5 = myJson;
             var string_2 = this.result_0;
-            var tmp$_12;
-            var roles = $receiver_5.decodeFromString_awif5v$(Kotlin.isType(tmp$_12 = serializer_0($receiver_5.serializersModule, createKType(getKClass(HashSet), [createInvariantKTypeProjection(createKType(getKClass(Role), [], false))], false)), KSerializer) ? tmp$_12 : throwCCE(), string_2);
+            var tmp$_7;
+            var roles = $receiver_5.decodeFromString_awif5v$(Kotlin.isType(tmp$_7 = serializer_0($receiver_5.serializersModule, createKType(getKClass(HashSet), [createInvariantKTypeProjection(createKType(getKClass(Role), [], false))], false)), KSerializer) ? tmp$_7 : throwCCE(), string_2);
             var destination_2 = ArrayList_init_0(collectionSizeOrDefault(roles, 10));
-            var tmp$_13;
-            tmp$_13 = roles.iterator();
-            while (tmp$_13.hasNext()) {
-              var item_2 = tmp$_13.next();
+            var tmp$_8;
+            tmp$_8 = roles.iterator();
+            while (tmp$_8.hasNext()) {
+              var item_2 = tmp$_8.next();
               destination_2.add_11rb$(item_2.toArray());
             }
 
             this.local$tmp$_1 = destination_2;
-            this.state_0 = 18;
+            this.state_0 = 11;
             continue;
-          case 17:
+          case 10:
             var $receiver_6 = myJson;
             var string_3 = this.result_0;
-            var tmp$_14;
-            var users = $receiver_6.decodeFromString_awif5v$(Kotlin.isType(tmp$_14 = serializer_0($receiver_6.serializersModule, createKType(getKClass(HashSet), [createInvariantKTypeProjection(createKType(getKClass(User), [], false))], false)), KSerializer) ? tmp$_14 : throwCCE(), string_3);
+            var tmp$_9;
+            var users = $receiver_6.decodeFromString_awif5v$(Kotlin.isType(tmp$_9 = serializer_0($receiver_6.serializersModule, createKType(getKClass(HashSet), [createInvariantKTypeProjection(createKType(getKClass(User), [], false))], false)), KSerializer) ? tmp$_9 : throwCCE(), string_3);
             var destination_3 = ArrayList_init_0(collectionSizeOrDefault(users, 10));
-            var tmp$_15;
-            tmp$_15 = users.iterator();
-            while (tmp$_15.hasNext()) {
-              var item_3 = tmp$_15.next();
+            var tmp$_10;
+            tmp$_10 = users.iterator();
+            while (tmp$_10.hasNext()) {
+              var item_3 = tmp$_10.next();
               destination_3.add_11rb$(item_3.toArray());
             }
 
             this.local$tmp$_1 = destination_3;
-            this.state_0 = 18;
+            this.state_0 = 11;
             continue;
-          case 18:
-            this.state_0 = 19;
+          case 11:
+            this.state_0 = 12;
             continue;
-          case 19:
-            this.state_0 = 20;
+          case 12:
+            this.state_0 = 13;
             continue;
-          case 20:
+          case 13:
             return this.local$tmp$_1;
-          case 21:
+          case 14:
             throw this.exception_0;
-          default:this.state_0 = 21;
+          default:this.state_0 = 14;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 21) {
+        if (this.state_0 === 14) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -14259,7 +14037,7 @@
   }
   function MQTTDashboard$init$lambda$lambda(closure$path) {
     return function ($receiver) {
-      url($receiver, 'wss', get_host($receiver), get_port($receiver), closure$path);
+      url_0($receiver, 'wss', get_host($receiver), get_port($receiver), closure$path);
       return Unit;
     };
   }
@@ -14412,7 +14190,7 @@
           case 10:
             var path = API_getInstance().CRYPTOAC + replace(API_getInstance().FILES, '{Core}', this.local$this$MQTTDashboard.props.coreType.toString());
             this.state_0 = 11;
-            this.result_0 = webSocketSession(this.local$this$MQTTDashboard.props.httpClient, HttpMethod_0.Companion.Get, window.location.hostname, toInt(window.location.port), path, MQTTDashboard$init$lambda$lambda(path), this);
+            this.result_0 = webSocketSession(this.local$this$MQTTDashboard.props.httpClient, HttpMethod.Companion.Get, window.location.hostname, toInt(window.location.port), path, MQTTDashboard$init$lambda$lambda(path), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -14428,7 +14206,7 @@
               return COROUTINE_SUSPENDED;
             continue;
           case 13:
-            var serializedMQTTMessage = readText_0(ensureNotNull(Kotlin.isType(tmp$ = this.result_0, Frame$Text) ? tmp$ : null));
+            var serializedMQTTMessage = readText(ensureNotNull(Kotlin.isType(tmp$ = this.result_0, Frame$Text) ? tmp$ : null));
             var $receiver = myJson;
             var tmp$_0;
             var mqttMessage = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver.serializersModule, createKType(getKClass(MQTTMessage), [], false)), KSerializer) ? tmp$_0 : throwCCE(), serializedMQTTMessage);
@@ -16546,7 +16324,7 @@
           discardArchitecture.v = true;
         }}
       if (!discardArchitecture.v) {
-        var architecture = Architecture$Companion_getInstance().architectureFromAssignments_dliw48$(toList_0(element_1));
+        var architecture = Architecture$Companion_getInstance().architectureFromAssignments_dliw48$(toList(element_1));
         var scoresArray = this.computeScoresArray_0(element_1);
         var excludeArchitecture = {v: false};
         if (this.props.algorithm === Algorithm$AdHoc_getInstance()) {
@@ -16674,7 +16452,7 @@
           var attackers = element_3.value;
           var tmp$_10;
           tmp$_10 = attackers.iterator();
-          while (tmp$_10.hasNext()) {
+          loop_label_0: while (tmp$_10.hasNext()) {
             var element_4 = tmp$_10.next();
             var name = domain.toString();
             var $receiver_0 = Domains.values();
@@ -17926,19 +17704,97 @@
   function trustAssumptionsLikelihood(handler) {
     return ensureNotNull(createElement(trustAssumptionsLikelihood$lambda(handler)));
   }
-  function post$lambda_1($receiver) {
+  function submitForm$lambda_1($receiver) {
     return Unit;
   }
-  function patch$lambda_0($receiver) {
-    return Unit;
-  }
-  function submitFormWithBinaryData$lambda($receiver) {
-    return Unit;
-  }
-  function delete$lambda_0($receiver) {
-    return Unit;
-  }
-  function get$lambda_1($receiver) {
+  var submitForm$lambda_0_0 = wrapFunction(function () {
+    var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
+    var OutgoingContent = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.content.OutgoingContent;
+    var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
+    var getKClass_0 = Kotlin.getKClass;
+    var typeInfoImpl = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect.typeInfoImpl_1lvkm8$;
+    var Throwable = Error;
+    return function (closure$encodeInQuery, closure$formParameters, closure$block) {
+      return function ($receiver) {
+        if (closure$encodeInQuery) {
+          $receiver.method = HttpMethod_0.Companion.Get;
+          $receiver.url.parameters.appendAll_hb0ubp$(closure$formParameters);
+        } else {
+          $receiver.method = HttpMethod_0.Companion.Post;
+          var body = new FormDataContent(closure$formParameters);
+          if (body == null) {
+            $receiver.body = utils.EmptyContent;
+            $receiver.bodyType = null;
+          } else if (Kotlin.isType(body, OutgoingContent)) {
+            $receiver.body = body;
+            $receiver.bodyType = null;
+          } else {
+            $receiver.body = body;
+            var tmp$ = reflect.JsType;
+            var tmp$_0 = getKClass_0(FormDataContent);
+            var tryGetType$result;
+            tryGetType$break: do {
+              try {
+                tryGetType$result = createKType(getKClass(FormDataContent), [], false);
+              } catch (cause) {
+                if (Kotlin.isType(cause, Throwable)) {
+                  tryGetType$result = null;
+                  break tryGetType$break;
+                } else
+                  throw cause;
+              }
+            }
+             while (false);
+            $receiver.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
+          }
+        }
+        closure$block($receiver);
+        return Unit;
+      };
+    };
+  });
+  var submitFormWithBinaryData$lambda = wrapFunction(function () {
+    var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
+    var OutgoingContent = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.content.OutgoingContent;
+    var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
+    var getKClass_0 = Kotlin.getKClass;
+    var typeInfoImpl = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect.typeInfoImpl_1lvkm8$;
+    var Throwable = Error;
+    return function (closure$formData, closure$block) {
+      return function ($receiver) {
+        $receiver.method = HttpMethod_0.Companion.Post;
+        var body = new MultiPartFormDataContent_init(closure$formData);
+        if (body == null) {
+          $receiver.body = utils.EmptyContent;
+          $receiver.bodyType = null;
+        } else if (Kotlin.isType(body, OutgoingContent)) {
+          $receiver.body = body;
+          $receiver.bodyType = null;
+        } else {
+          $receiver.body = body;
+          var tmp$ = reflect.JsType;
+          var tmp$_0 = getKClass_0(MultiPartFormDataContent_init);
+          var tryGetType$result;
+          tryGetType$break: do {
+            try {
+              tryGetType$result = createKType(getKClass(MultiPartFormDataContent_init), [], false);
+            } catch (cause) {
+              if (Kotlin.isType(cause, Throwable)) {
+                tryGetType$result = null;
+                break tryGetType$break;
+              } else
+                throw cause;
+            }
+          }
+           while (false);
+          $receiver.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
+        }
+        closure$block($receiver);
+        return Unit;
+      };
+    };
+  });
+  function submitFormWithBinaryData$lambda_0($receiver) {
     return Unit;
   }
   function logger$lambda_18() {
@@ -17947,10 +17803,10 @@
   var logger_18;
   function Actions() {
     RComponent_init(this);
-    this.adminCryptoACFormsRBACCLOUD_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_0(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_1(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_2(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_3(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_4(this)), new CryptoACFormData('delete_file', 'Delete File', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_5(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_6(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_7(this), true)]);
-    this.userCryptoACFormsRBACCloud_0 = listOf([new CryptoACFormData('add_file', 'Add File', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$userCryptoACFormsRBACCloud$lambda(this)), new CryptoACFormData('write_file', 'Write File', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Patch, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_0(this)), new CryptoACFormData('read_file', 'Read File', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Get, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_1(this))]);
-    this.adminCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_0(this)), new CryptoACFormData('add_file', 'Add Topic', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_1(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_2(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_3(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_4(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_5(this)), new CryptoACFormData('delete_file', 'Delete Topic', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_6(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_7(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod_0.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_8(this), true)]);
-    this.userCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('write_file', 'Publish to Topic', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Patch, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()), new CryptoACFormField(SERVER_getInstance().FILE_CONTENT, 'Message', InputType$text_getInstance())])), Actions$userCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('read_file', 'Subscribe to Topic', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod_0.Companion.Get, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$userCryptoACFormsRBACMQTT$lambda_0(this))]);
+    this.adminCryptoACFormsRBACCLOUD_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_0(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_1(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_2(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_3(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_4(this)), new CryptoACFormData('delete_file', 'Delete File', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_5(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_6(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_7(this), true)]);
+    this.userCryptoACFormsRBACCloud_0 = listOf([new CryptoACFormData('add_file', 'Add File', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$userCryptoACFormsRBACCloud$lambda(this)), new CryptoACFormData('write_file', 'Write File', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Patch, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_0(this)), new CryptoACFormData('read_file', 'Read File', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Get, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_1(this))]);
+    this.adminCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_0(this)), new CryptoACFormData('add_file', 'Add Topic', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_1(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_2(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_3(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_4(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_5(this)), new CryptoACFormData('delete_file', 'Delete Topic', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_6(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_7(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_8(this), true)]);
+    this.userCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('write_file', 'Publish to Topic', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Patch, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()), new CryptoACFormField(SERVER_getInstance().FILE_CONTENT, 'Message', InputType$text_getInstance())])), Actions$userCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('read_file', 'Subscribe to Topic', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Get, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$userCryptoACFormsRBACMQTT$lambda_0(this))]);
     this.adminCryptoACFormsRBACMOCK_0 = emptyList();
     this.userCryptoACFormsRBACMOCK_0 = emptyList();
   }
@@ -18055,272 +17911,162 @@
   Actions.prototype.render_ss14n$ = function ($receiver) {
     $receiver.invoke_qk0v40$($module$react_pro_sidebar.SidebarContent, Actions$render$lambda(this));
   };
-  function Actions$submitCryptoACFormUrlEncoded$lambda(closure$method, closure$endpoint) {
+  function Actions$submitCryptoACForm$lambda(closure$method, closure$endpoint) {
     return function () {
       return 'Submitting CryptoAC form (method ' + closure$method + ', endpoint ' + closure$endpoint + ') with the following values:';
     };
   }
-  function Actions$submitCryptoACFormUrlEncoded$lambda$lambda(closure$it) {
+  function Actions$submitCryptoACForm$lambda$lambda(closure$it) {
     return function () {
       return '- key: ' + closure$it.key + ', value: ' + closure$it.value;
     };
   }
-  function Actions$submitCryptoACFormUrlEncoded$lambda$lambda_0(closure$values) {
+  function Actions$submitCryptoACForm$lambda$lambda_0(closure$endpoint) {
     return function ($receiver) {
-      contentType($receiver, ContentType.Application.FormUrlEncoded);
-      $receiver.body = formUrlEncode(toList(closure$values));
+      url($receiver, closure$endpoint);
       return Unit;
     };
   }
-  function Actions$submitCryptoACFormUrlEncoded$lambda$lambda_1(closure$values) {
-    return function ($receiver) {
-      contentType($receiver, ContentType.Application.FormUrlEncoded);
-      $receiver.body = formUrlEncode(toList(closure$values));
-      return Unit;
-    };
-  }
-  function Actions$submitCryptoACFormUrlEncoded$lambda$lambda_2(closure$method) {
+  function Actions$submitCryptoACForm$lambda$lambda_1(closure$method) {
     return function () {
       return 'Method ' + closure$method + ' is not supported';
     };
   }
-  function Actions$submitCryptoACFormUrlEncoded$lambda$lambda_3(closure$e) {
+  function Actions$submitCryptoACForm$lambda$lambda_2(closure$e) {
     return function () {
       return 'Error during HTTP request (' + toString(closure$e.message) + '), see console log for details';
     };
   }
-  function Coroutine$Actions$submitCryptoACFormUrlEncoded$lambda(closure$method_0, closure$callback_0, this$Actions_0, closure$endpoint_0, closure$values_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$Actions$submitCryptoACForm$lambda(closure$method_0, closure$callback_0, this$Actions_0, closure$values_0, closure$endpoint_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 22;
+    this.exceptionState_0 = 8;
     this.local$closure$method = closure$method_0;
     this.local$closure$callback = closure$callback_0;
     this.local$this$Actions = this$Actions_0;
-    this.local$closure$endpoint = closure$endpoint_0;
     this.local$closure$values = closure$values_0;
-    this.local$response_0 = void 0;
-    this.local$response = void 0;
+    this.local$closure$endpoint = closure$endpoint_0;
   }
-  Coroutine$Actions$submitCryptoACFormUrlEncoded$lambda.$metadata$ = {
+  Coroutine$Actions$submitCryptoACForm$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$Actions$submitCryptoACFormUrlEncoded$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Actions$submitCryptoACFormUrlEncoded$lambda.prototype.constructor = Coroutine$Actions$submitCryptoACFormUrlEncoded$lambda;
-  Coroutine$Actions$submitCryptoACFormUrlEncoded$lambda.prototype.doResume = function () {
+  Coroutine$Actions$submitCryptoACForm$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Actions$submitCryptoACForm$lambda.prototype.constructor = Coroutine$Actions$submitCryptoACForm$lambda;
+  Coroutine$Actions$submitCryptoACForm$lambda.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
-            this.exceptionState_0 = 19;
-            if ((this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Post) : null) || (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Patch) : null)) {
-              if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Post) : null) {
-                var $receiver_0 = this.local$this$Actions.props.httpClient;
-                var urlString = this.local$closure$endpoint;
-                var block = Actions$submitCryptoACFormUrlEncoded$lambda$lambda_0(this.local$closure$values);
-                var host_0;
-                var body_0;
-                host_0 = 'localhost';
-                body_0 = utils.EmptyContent;
+            this.exceptionState_0 = 5;
+            if ((this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Post) : null) || (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Patch) : null)) {
+              if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Post) : null) {
+                var tmp$ = this.local$this$Actions.props.httpClient;
+                var $receiver = ParametersBuilder();
+                var tmp$_0;
+                tmp$_0 = this.local$closure$values.entries.iterator();
+                while (tmp$_0.hasNext()) {
+                  var element = tmp$_0.next();
+                  $receiver.append_puj7f4$(element.key, element.value);
+                }
+                var formParameters = $receiver.build();
                 var $receiver_1 = new HttpRequestBuilder_init();
-                url($receiver_1, 'http', host_0, 0, '/');
-                $receiver_1.method = HttpMethod.Companion.Post;
-                $receiver_1.body = body_0;
-                takeFrom($receiver_1.url, urlString);
-                block($receiver_1);
-                var $this_0 = new HttpStatement_init($receiver_1, $receiver_0);
-                var tmp$_4, tmp$_5, tmp$_6;
-                tmp$_4 = getKClass(HttpResponse);
-                if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-                  this.result_0 = Kotlin.isType(tmp$_5 = $this_0, HttpResponse) ? tmp$_5 : throwCCE();
-                  this.state_0 = 16;
-                  continue;
+                if (false) {
+                  $receiver_1.method = HttpMethod_0.Companion.Get;
+                  $receiver_1.url.parameters.appendAll_hb0ubp$(formParameters);
                 } else {
-                  if (equals(tmp$_4, getKClass(HttpResponse))) {
-                    this.state_0 = 14;
-                    this.result_0 = $this_0.execute(this);
-                    if (this.result_0 === COROUTINE_SUSPENDED)
-                      return COROUTINE_SUSPENDED;
-                    continue;
+                  $receiver_1.method = HttpMethod_0.Companion.Post;
+                  var body_0 = new FormDataContent(formParameters);
+                  if (body_0 == null) {
+                    $receiver_1.body = utils.EmptyContent;
+                    $receiver_1.bodyType = null;
+                  } else if (Kotlin.isType(body_0, OutgoingContent)) {
+                    $receiver_1.body = body_0;
+                    $receiver_1.bodyType = null;
                   } else {
-                    this.state_0 = 9;
-                    this.result_0 = $this_0.executeUnsafe(this);
-                    if (this.result_0 === COROUTINE_SUSPENDED)
-                      return COROUTINE_SUSPENDED;
-                    continue;
+                    $receiver_1.body = body_0;
+                    var tmp$_1 = reflect.JsType;
+                    var tmp$_0_0 = getKClass(FormDataContent);
+                    var tryGetType$result_0;
+                    tryGetType$break: do {
+                      try {
+                        tryGetType$result_0 = createKType(getKClass(FormDataContent), [], false);
+                      } catch (cause_0) {
+                        if (Kotlin.isType(cause_0, Throwable)) {
+                          tryGetType$result_0 = null;
+                          break tryGetType$break;
+                        } else
+                          throw cause_0;
+                      }
+                    }
+                     while (false);
+                    $receiver_1.bodyType = typeInfoImpl(tmp$_1, tmp$_0_0, tryGetType$result_0);
                   }
                 }
+                url($receiver_1, this.local$closure$endpoint);
+                this.state_0 = 2;
+                this.result_0 = (new HttpStatement_init($receiver_1, tmp$)).execute(this);
+                if (this.result_0 === COROUTINE_SUSPENDED)
+                  return COROUTINE_SUSPENDED;
+                continue;
               } else {
-                var $receiver_0_0 = this.local$this$Actions.props.httpClient;
-                var urlString_0 = this.local$closure$endpoint;
-                var block_0 = Actions$submitCryptoACFormUrlEncoded$lambda$lambda_1(this.local$closure$values);
-                var host_0_0;
-                var body_0_0;
-                host_0_0 = 'localhost';
-                body_0_0 = utils.EmptyContent;
-                var $receiver_1_0 = new HttpRequestBuilder_init();
-                url($receiver_1_0, 'http', host_0_0, 0, '/');
-                $receiver_1_0.method = HttpMethod.Companion.Patch;
-                $receiver_1_0.body = body_0_0;
-                takeFrom($receiver_1_0.url, urlString_0);
-                block_0($receiver_1_0);
-                var $this_0_0 = new HttpStatement_init($receiver_1_0, $receiver_0_0);
-                var tmp$_4_0, tmp$_5_0, tmp$_6_0;
-                tmp$_4_0 = getKClass(HttpResponse);
-                if (equals(tmp$_4_0, getKClass(HttpStatement_init))) {
-                  this.result_0 = Kotlin.isType(tmp$_5_0 = $this_0_0, HttpResponse) ? tmp$_5_0 : throwCCE();
-                  this.state_0 = 8;
-                  continue;
-                } else {
-                  if (equals(tmp$_4_0, getKClass(HttpResponse))) {
-                    this.state_0 = 6;
-                    this.result_0 = $this_0_0.execute(this);
-                    if (this.result_0 === COROUTINE_SUSPENDED)
-                      return COROUTINE_SUSPENDED;
-                    continue;
-                  } else {
-                    this.state_0 = 1;
-                    this.result_0 = $this_0_0.executeUnsafe(this);
-                    if (this.result_0 === COROUTINE_SUSPENDED)
-                      return COROUTINE_SUSPENDED;
-                    continue;
-                  }
+                var tmp$_2 = this.local$this$Actions.props.httpClient;
+                var $receiver_0 = ParametersBuilder();
+                var tmp$_3;
+                tmp$_3 = this.local$closure$values.entries.iterator();
+                while (tmp$_3.hasNext()) {
+                  var element_0 = tmp$_3.next();
+                  $receiver_0.append_puj7f4$(element_0.key, element_0.value);
                 }
+                this.state_0 = 1;
+                this.result_0 = submitFormPatch(tmp$_2, $receiver_0.build(), Actions$submitCryptoACForm$lambda$lambda_0(this.local$closure$endpoint), this);
+                if (this.result_0 === COROUTINE_SUSPENDED)
+                  return COROUTINE_SUSPENDED;
+                continue;
               }
             } else {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACFormUrlEncoded$lambda$lambda_2(this.local$closure$method));
+              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_1(this.local$closure$method));
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
           case 1:
-            this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
+            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
           case 2:
-            this.result_0 = Kotlin.isType(tmp$_7 = this.result_0, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 19;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
-            continue;
+            this.result_0;
+            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
           case 3:
-            this.state_0 = 7;
+            this.state_0 = 4;
             continue;
           case 4:
-            this.finallyPath_0 = [19];
-            this.state_0 = 5;
-            continue;
-          case 5:
-            this.exceptionState_0 = 19;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
-            this.result_0 = Kotlin.isType(tmp$_6_0 = this.result_0, HttpResponse) ? tmp$_6_0 : throwCCE();
+            this.exceptionState_0 = 8;
             this.state_0 = 7;
             continue;
-          case 7:
-            this.state_0 = 8;
-            continue;
-          case 8:
-            this.result_0;
-            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
-          case 9:
-            this.local$response_0 = this.result_0;
-            this.exceptionState_0 = 12;
-            var tmp$_7_0;
-            var tmp$_8_0 = this.local$response_0.call;
-            var typeInfo$result_0_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (__0) {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 10;
-            this.result_0 = tmp$_8_0.receive_qi9ur9$(typeInfo$result_0_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 10:
-            this.result_0 = Kotlin.isType(tmp$_7_0 = this.result_0, HttpResponse) ? tmp$_7_0 : throwCCE();
-            this.exceptionState_0 = 19;
-            this.finallyPath_0 = [11];
-            this.state_0 = 13;
-            continue;
-          case 11:
-            this.state_0 = 15;
-            continue;
-          case 12:
-            this.finallyPath_0 = [19];
-            this.state_0 = 13;
-            continue;
-          case 13:
-            this.exceptionState_0 = 19;
-            complete(this.local$response_0);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 14:
-            this.result_0 = Kotlin.isType(tmp$_6 = this.result_0, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 15;
-            continue;
-          case 15:
-            this.state_0 = 16;
-            continue;
-          case 16:
-            this.result_0;
-            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
-          case 17:
-            this.state_0 = 18;
-            continue;
-          case 18:
-            this.exceptionState_0 = 22;
-            this.state_0 = 21;
-            continue;
-          case 19:
-            this.exceptionState_0 = 22;
+          case 5:
+            this.exceptionState_0 = 8;
             var e = this.exception_0;
             if (Kotlin.isType(e, Exception)) {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACFormUrlEncoded$lambda$lambda_3(e));
+              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_2(e));
               console.log(e);
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
               throw e;
             }
 
-          case 20:
-            this.state_0 = 21;
+          case 6:
+            this.state_0 = 7;
             continue;
-          case 21:
+          case 7:
             return;
-          case 22:
+          case 8:
             throw this.exception_0;
-          default:this.state_0 = 22;
+          default:this.state_0 = 8;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 22) {
+        if (this.state_0 === 8) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -18330,25 +18076,25 @@
       }
      while (true);
   };
-  function Actions$submitCryptoACFormUrlEncoded$lambda_0(closure$method_0, closure$callback_0, this$Actions_0, closure$endpoint_0, closure$values_0) {
+  function Actions$submitCryptoACForm$lambda_0(closure$method_0, closure$callback_0, this$Actions_0, closure$values_0, closure$endpoint_0) {
     return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$Actions$submitCryptoACFormUrlEncoded$lambda(closure$method_0, closure$callback_0, this$Actions_0, closure$endpoint_0, closure$values_0, $receiver_0, this, continuation_0);
+      var instance = new Coroutine$Actions$submitCryptoACForm$lambda(closure$method_0, closure$callback_0, this$Actions_0, closure$values_0, closure$endpoint_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
     };
   }
-  Actions.prototype.submitCryptoACFormUrlEncoded_0 = function (method, endpoint, values, callback) {
-    logger_18.info_nq59yw$(Actions$submitCryptoACFormUrlEncoded$lambda(method, endpoint));
+  Actions.prototype.submitCryptoACForm_0 = function (method, endpoint, values, callback) {
+    logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda(method, endpoint));
     var tmp$;
     tmp$ = values.entries.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      logger_18.info_nq59yw$(Actions$submitCryptoACFormUrlEncoded$lambda$lambda(element));
+      logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda$lambda(element));
     }
     this.props.handleChangeBackdropIsOpen(true);
-    launch(MainScope(), void 0, void 0, Actions$submitCryptoACFormUrlEncoded$lambda_0(method, callback, this, endpoint, values));
+    launch(MainScope(), void 0, void 0, Actions$submitCryptoACForm$lambda_0(method, callback, this, values, endpoint));
   };
   function Actions$submitCryptoACFormWithBinaryData$lambda(closure$method, closure$endpoint, closure$files, closure$values) {
     return function () {
@@ -18360,22 +18106,15 @@
       return '- key: ' + closure$it.key + ', value: ' + closure$it.value;
     };
   }
-  function Actions$submitCryptoACFormWithBinaryData$lambda$lambda$lambda$lambda$lambda(closure$method) {
-    return function ($receiver) {
-      $receiver.method = closure$method;
-      return Unit;
-    };
-  }
   function Coroutine$Actions$submitCryptoACFormWithBinaryData$lambda$lambda$lambda$lambda(closure$callback_0, this$Actions_0, closure$endpoint_0, closure$parts_0, closure$method_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 6;
+    this.exceptionState_0 = 1;
     this.local$closure$callback = closure$callback_0;
     this.local$this$Actions = this$Actions_0;
     this.local$closure$endpoint = closure$endpoint_0;
     this.local$closure$parts = closure$parts_0;
     this.local$closure$method = closure$method_0;
-    this.local$response = void 0;
   }
   Coroutine$Actions$submitCryptoACFormWithBinaryData$lambda$lambda$lambda$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -18392,90 +18131,52 @@
             var tmp$ = this.local$this$Actions.props.httpClient;
             var tmp$_0 = this.local$closure$endpoint;
             var formData_0 = formData(copyToArray(this.local$closure$parts).slice());
-            var block = Actions$submitCryptoACFormWithBinaryData$lambda$lambda$lambda$lambda$lambda(this.local$closure$method);
             var $receiver_1 = new HttpRequestBuilder_init();
-            $receiver_1.method = HttpMethod.Companion.Post;
-            $receiver_1.body = new MultiPartFormDataContent_init(formData_0);
-            url_0($receiver_1, tmp$_0);
-            block($receiver_1);
-            var $this_0 = new HttpStatement_init($receiver_1, tmp$);
-            var tmp$_4, tmp$_5, tmp$_6;
-            tmp$_4 = getKClass(HttpResponse);
-            if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-              this.result_0 = Kotlin.isType(tmp$_5 = $this_0, HttpResponse) ? tmp$_5 : throwCCE();
-              this.state_0 = 9;
-              continue;
+            $receiver_1.method = HttpMethod_0.Companion.Post;
+            var body_0 = new MultiPartFormDataContent_init(formData_0);
+            if (body_0 == null) {
+              $receiver_1.body = utils.EmptyContent;
+              $receiver_1.bodyType = null;
+            } else if (Kotlin.isType(body_0, OutgoingContent)) {
+              $receiver_1.body = body_0;
+              $receiver_1.bodyType = null;
             } else {
-              if (equals(tmp$_4, getKClass(HttpResponse))) {
-                this.state_0 = 7;
-                this.result_0 = $this_0.execute(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
-              } else {
-                this.state_0 = 1;
-                this.result_0 = $this_0.executeUnsafe(this);
-                if (this.result_0 === COROUTINE_SUSPENDED)
-                  return COROUTINE_SUSPENDED;
-                continue;
+              $receiver_1.body = body_0;
+              var tmp$_1 = reflect.JsType;
+              var tmp$_0_0 = getKClass(MultiPartFormDataContent_init);
+              var tryGetType$result_0;
+              tryGetType$break: do {
+                try {
+                  tryGetType$result_0 = createKType(getKClass(MultiPartFormDataContent_init), [], false);
+                } catch (cause_0) {
+                  if (Kotlin.isType(cause_0, Throwable)) {
+                    tryGetType$result_0 = null;
+                    break tryGetType$break;
+                  } else
+                    throw cause_0;
+                }
               }
+               while (false);
+              $receiver_1.bodyType = typeInfoImpl(tmp$_1, tmp$_0_0, tryGetType$result_0);
             }
 
-          case 1:
-            this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
+            url($receiver_1, tmp$_0);
+            $receiver_1.method = this.local$closure$method;
             this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
+            this.result_0 = (new HttpStatement_init($receiver_1, tmp$)).execute(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 2:
-            this.result_0 = Kotlin.isType(tmp$_7 = this.result_0, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 6;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
-            continue;
-          case 3:
-            this.state_0 = 8;
-            continue;
-          case 4:
-            this.finallyPath_0 = [6];
-            this.state_0 = 5;
-            continue;
-          case 5:
-            this.exceptionState_0 = 6;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
+          case 1:
             throw this.exception_0;
-          case 7:
-            this.result_0 = Kotlin.isType(tmp$_6 = this.result_0, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 8;
-            continue;
-          case 8:
-            this.state_0 = 9;
-            continue;
-          case 9:
+          case 2:
             this.result_0;
             return this.local$closure$callback(this.result_0);
-          default:this.state_0 = 6;
+          default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 6) {
+        if (this.state_0 === 1) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -18543,7 +18244,7 @@
         switch (this.state_0) {
           case 0:
             try {
-              if ((this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Post) : null) || (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Patch) : null)) {
+              if ((this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Post) : null) || (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Patch) : null)) {
                 var parts = ArrayList_init();
                 var tmp$;
                 tmp$ = this.local$closure$values.entries.iterator();
@@ -18673,7 +18374,7 @@
         switch (this.state_0) {
           case 0:
             try {
-              if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Get) : null) {
+              if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Get) : null) {
                 var $receiver = this.local$closure$endpoint;
                 var endIndex = this.local$closure$endpoint.length - 1 | 0;
                 var endpointWithParameters = new StringBuilder($receiver.substring(0, endIndex));
@@ -18747,53 +18448,51 @@
     this.props.handleChangeBackdropIsOpen(true);
     launch(MainScope(), void 0, void 0, Actions$submitCryptoACFormInNewTab$lambda_0(method, endpoint, query, values, this));
   };
-  function Actions$submitCryptoACForm$lambda(closure$method, closure$endpoint, closure$query) {
+  function Actions$submitCryptoACForm$lambda_1(closure$method, closure$endpoint, closure$query) {
     return function () {
       return 'Submitting CryptoAC form (method ' + closure$method + ', endpoint ' + closure$endpoint + ', query ' + closure$query + ') with the following values:';
     };
   }
-  function Actions$submitCryptoACForm$lambda$lambda(closure$it) {
+  function Actions$submitCryptoACForm$lambda$lambda_3(closure$it) {
     return function () {
       return '- key: ' + closure$it.key + ', value: ' + closure$it.value;
     };
   }
-  function Actions$submitCryptoACForm$lambda$lambda_0(closure$method) {
+  function Actions$submitCryptoACForm$lambda$lambda_4(closure$method) {
     return function () {
       return 'Method ' + closure$method + ' is not supported';
     };
   }
-  function Actions$submitCryptoACForm$lambda$lambda_1(closure$e) {
+  function Actions$submitCryptoACForm$lambda$lambda_5(closure$e) {
     return function () {
       return 'Error during HTTP request (' + toString(closure$e.message) + '), see console log for details';
     };
   }
-  function Coroutine$Actions$submitCryptoACForm$lambda(closure$method_0, closure$endpoint_0, closure$query_0, closure$values_0, closure$callback_0, this$Actions_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$Actions$submitCryptoACForm$lambda_0(closure$method_0, closure$endpoint_0, closure$query_0, closure$values_0, closure$callback_0, this$Actions_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 23;
+    this.exceptionState_0 = 9;
     this.local$closure$method = closure$method_0;
     this.local$closure$endpoint = closure$endpoint_0;
     this.local$closure$query = closure$query_0;
     this.local$closure$values = closure$values_0;
     this.local$closure$callback = closure$callback_0;
     this.local$this$Actions = this$Actions_0;
-    this.local$response_0 = void 0;
-    this.local$response = void 0;
   }
-  Coroutine$Actions$submitCryptoACForm$lambda.$metadata$ = {
+  Coroutine$Actions$submitCryptoACForm$lambda_0.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$Actions$submitCryptoACForm$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Actions$submitCryptoACForm$lambda.prototype.constructor = Coroutine$Actions$submitCryptoACForm$lambda;
-  Coroutine$Actions$submitCryptoACForm$lambda.prototype.doResume = function () {
+  Coroutine$Actions$submitCryptoACForm$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Actions$submitCryptoACForm$lambda_0.prototype.constructor = Coroutine$Actions$submitCryptoACForm$lambda_0;
+  Coroutine$Actions$submitCryptoACForm$lambda_0.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
-            this.exceptionState_0 = 20;
-            if ((this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Delete) : null) || (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Get) : null)) {
+            this.exceptionState_0 = 6;
+            if ((this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Delete) : null) || (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Get) : null)) {
               var $receiver = this.local$closure$endpoint;
               var endIndex = this.local$closure$endpoint.length - 1 | 0;
               var endpointWithParameters = new StringBuilder($receiver.substring(0, endIndex));
@@ -18813,218 +18512,78 @@
                   endpointWithParameters.append_pdl1vj$('/').append_pdl1vj$(element_0.value);
                 }
               }
-              if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Delete) : null) {
+              if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Delete) : null) {
                 var $receiver_0 = this.local$this$Actions.props.httpClient;
-                var urlString = endpointWithParameters.toString();
-                var host_0;
-                var body_0;
-                host_0 = 'localhost';
-                body_0 = utils.EmptyContent;
                 var $receiver_1 = new HttpRequestBuilder_init();
-                url($receiver_1, 'http', host_0, 0, '/');
-                $receiver_1.method = HttpMethod.Companion.Delete;
-                $receiver_1.body = body_0;
-                takeFrom($receiver_1.url, urlString);
-                delete$lambda_0($receiver_1);
-                var $this_0 = new HttpStatement_init($receiver_1, $receiver_0);
-                var tmp$_4, tmp$_5, tmp$_6;
-                tmp$_4 = getKClass(HttpResponse);
-                if (equals(tmp$_4, getKClass(HttpStatement_init))) {
-                  this.result_0 = Kotlin.isType(tmp$_5 = $this_0, HttpResponse) ? tmp$_5 : throwCCE();
-                  this.state_0 = 17;
+                url($receiver_1, endpointWithParameters.toString());
+                $receiver_1.method = HttpMethod_0.Companion.Delete;
+                this.state_0 = 3;
+                this.result_0 = (new HttpStatement_init($receiver_1, $receiver_0)).execute(this);
+                if (this.result_0 === COROUTINE_SUSPENDED)
+                  return COROUTINE_SUSPENDED;
+                continue;
+              } else {
+                if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Get) : null) {
+                  var $receiver_2 = this.local$this$Actions.props.httpClient;
+                  var $receiver_1_0 = new HttpRequestBuilder_init();
+                  url($receiver_1_0, endpointWithParameters.toString());
+                  $receiver_1_0.method = HttpMethod_0.Companion.Get;
+                  this.state_0 = 1;
+                  this.result_0 = (new HttpStatement_init($receiver_1_0, $receiver_2)).execute(this);
+                  if (this.result_0 === COROUTINE_SUSPENDED)
+                    return COROUTINE_SUSPENDED;
                   continue;
                 } else {
-                  if (equals(tmp$_4, getKClass(HttpResponse))) {
-                    this.state_0 = 15;
-                    this.result_0 = $this_0.execute(this);
-                    if (this.result_0 === COROUTINE_SUSPENDED)
-                      return COROUTINE_SUSPENDED;
-                    continue;
-                  } else {
-                    this.state_0 = 10;
-                    this.result_0 = $this_0.executeUnsafe(this);
-                    if (this.result_0 === COROUTINE_SUSPENDED)
-                      return COROUTINE_SUSPENDED;
-                    continue;
-                  }
-                }
-              } else {
-                if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod_0.Companion.Get) : null) {
-                  var $receiver_0_0 = this.local$this$Actions.props.httpClient;
-                  var urlString_0 = endpointWithParameters.toString();
-                  var host_0_0;
-                  var body_0_0;
-                  host_0_0 = 'localhost';
-                  body_0_0 = utils.EmptyContent;
-                  var $receiver_1_0 = new HttpRequestBuilder_init();
-                  url($receiver_1_0, 'http', host_0_0, 0, '/');
-                  $receiver_1_0.method = HttpMethod.Companion.Get;
-                  $receiver_1_0.body = body_0_0;
-                  takeFrom($receiver_1_0.url, urlString_0);
-                  get$lambda_1($receiver_1_0);
-                  var $this_0_0 = new HttpStatement_init($receiver_1_0, $receiver_0_0);
-                  var tmp$_4_0, tmp$_5_0, tmp$_6_0;
-                  tmp$_4_0 = getKClass(HttpResponse);
-                  if (equals(tmp$_4_0, getKClass(HttpStatement_init))) {
-                    this.result_0 = Kotlin.isType(tmp$_5_0 = $this_0_0, HttpResponse) ? tmp$_5_0 : throwCCE();
-                    this.state_0 = 8;
-                    continue;
-                  } else {
-                    if (equals(tmp$_4_0, getKClass(HttpResponse))) {
-                      this.state_0 = 6;
-                      this.result_0 = $this_0_0.execute(this);
-                      if (this.result_0 === COROUTINE_SUSPENDED)
-                        return COROUTINE_SUSPENDED;
-                      continue;
-                    } else {
-                      this.state_0 = 1;
-                      this.result_0 = $this_0_0.executeUnsafe(this);
-                      if (this.result_0 === COROUTINE_SUSPENDED)
-                        return COROUTINE_SUSPENDED;
-                      continue;
-                    }
-                  }
-                } else {
-                  this.state_0 = 9;
+                  this.state_0 = 2;
                   continue;
                 }
               }
             } else {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_0(this.local$closure$method));
+              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_4(this.local$closure$method));
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
           case 1:
-            this.local$response = this.result_0;
-            this.exceptionState_0 = 4;
-            var tmp$_7;
-            var tmp$_8 = this.local$response.call;
-            var typeInfo$result_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (_) {
-                typeInfo$result_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 2;
-            this.result_0 = tmp$_8.receive_qi9ur9$(typeInfo$result_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
+            this.result_0;
+            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
           case 2:
-            this.result_0 = Kotlin.isType(tmp$_7 = this.result_0, HttpResponse) ? tmp$_7 : throwCCE();
-            this.exceptionState_0 = 20;
-            this.finallyPath_0 = [3];
-            this.state_0 = 5;
+            this.state_0 = 4;
             continue;
           case 3:
-            this.state_0 = 7;
-            continue;
+            this.result_0;
+            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
           case 4:
-            this.finallyPath_0 = [20];
             this.state_0 = 5;
             continue;
           case 5:
-            this.exceptionState_0 = 20;
-            complete(this.local$response);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 6:
-            this.result_0 = Kotlin.isType(tmp$_6_0 = this.result_0, HttpResponse) ? tmp$_6_0 : throwCCE();
-            this.state_0 = 7;
-            continue;
-          case 7:
+            this.exceptionState_0 = 9;
             this.state_0 = 8;
             continue;
-          case 8:
-            this.result_0;
-            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
-          case 9:
-            this.state_0 = 18;
-            continue;
-          case 10:
-            this.local$response_0 = this.result_0;
-            this.exceptionState_0 = 13;
-            var tmp$_7_0;
-            var tmp$_8_0 = this.local$response_0.call;
-            var typeInfo$result_0_0;
-            typeInfo$break: do {
-              try {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), createKType(getKClass(HttpResponse), [], false));
-              } catch (__0) {
-                typeInfo$result_0_0 = typeInfoImpl(reflect.JsType, getKClass(HttpResponse), null);
-                break typeInfo$break;
-              }
-            }
-             while (false);
-            this.state_0 = 11;
-            this.result_0 = tmp$_8_0.receive_qi9ur9$(typeInfo$result_0_0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 11:
-            this.result_0 = Kotlin.isType(tmp$_7_0 = this.result_0, HttpResponse) ? tmp$_7_0 : throwCCE();
-            this.exceptionState_0 = 20;
-            this.finallyPath_0 = [12];
-            this.state_0 = 14;
-            continue;
-          case 12:
-            this.state_0 = 16;
-            continue;
-          case 13:
-            this.finallyPath_0 = [20];
-            this.state_0 = 14;
-            continue;
-          case 14:
-            this.exceptionState_0 = 20;
-            complete(this.local$response_0);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 15:
-            this.result_0 = Kotlin.isType(tmp$_6 = this.result_0, HttpResponse) ? tmp$_6 : throwCCE();
-            this.state_0 = 16;
-            continue;
-          case 16:
-            this.state_0 = 17;
-            continue;
-          case 17:
-            this.result_0;
-            return this.local$closure$callback(this.result_0, this.local$closure$values), Unit;
-          case 18:
-            this.state_0 = 19;
-            continue;
-          case 19:
-            this.exceptionState_0 = 23;
-            this.state_0 = 22;
-            continue;
-          case 20:
-            this.exceptionState_0 = 23;
+          case 6:
+            this.exceptionState_0 = 9;
             var e = this.exception_0;
             if (Kotlin.isType(e, Exception)) {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_1(e));
+              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_5(e));
               console.log(e);
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
               throw e;
             }
 
-          case 21:
-            this.state_0 = 22;
+          case 7:
+            this.state_0 = 8;
             continue;
-          case 22:
+          case 8:
             return Unit;
-          case 23:
+          case 9:
             throw this.exception_0;
-          default:this.state_0 = 23;
+          default:this.state_0 = 9;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 23) {
+        if (this.state_0 === 9) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -19034,25 +18593,25 @@
       }
      while (true);
   };
-  function Actions$submitCryptoACForm$lambda_0(closure$method_0, closure$endpoint_0, closure$query_0, closure$values_0, closure$callback_0, this$Actions_0) {
+  function Actions$submitCryptoACForm$lambda_2(closure$method_0, closure$endpoint_0, closure$query_0, closure$values_0, closure$callback_0, this$Actions_0) {
     return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$Actions$submitCryptoACForm$lambda(closure$method_0, closure$endpoint_0, closure$query_0, closure$values_0, closure$callback_0, this$Actions_0, $receiver_0, this, continuation_0);
+      var instance = new Coroutine$Actions$submitCryptoACForm$lambda_0(closure$method_0, closure$endpoint_0, closure$query_0, closure$values_0, closure$callback_0, this$Actions_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
     };
   }
-  Actions.prototype.submitCryptoACForm_0 = function (method, endpoint, values, query, callback) {
-    logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda(method, endpoint, query));
+  Actions.prototype.submitCryptoACForm_1 = function (method, endpoint, values, query, callback) {
+    logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda_1(method, endpoint, query));
     var tmp$;
     tmp$ = values.entries.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda$lambda(element));
+      logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_3(element));
     }
     this.props.handleChangeBackdropIsOpen(true);
-    launch(MainScope(), void 0, void 0, Actions$submitCryptoACForm$lambda_0(method, endpoint, query, values, callback, this));
+    launch(MainScope(), void 0, void 0, Actions$submitCryptoACForm$lambda_2(method, endpoint, query, values, callback, this));
   };
   function Actions$callbackShowOutcomeCode$lambda$lambda(closure$status) {
     return function () {
@@ -19090,7 +18649,7 @@
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance()), Unit;
             } else {
               this.state_0 = 2;
-              this.result_0 = readText(this.local$closure$response, void 0, this);
+              this.result_0 = bodyAsText(this.local$closure$response, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
@@ -19169,13 +18728,13 @@
             if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
               logger_18.info_nq59yw$(Actions$callbackDownloadUserProfile$lambda$lambda(this.local$status));
               this.state_0 = 3;
-              this.result_0 = readText(this.local$closure$response, void 0, this);
+              this.result_0 = bodyAsText(this.local$closure$response, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
             } else {
               this.state_0 = 2;
-              this.result_0 = readText(this.local$closure$response, void 0, this);
+              this.result_0 = bodyAsText(this.local$closure$response, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
@@ -19266,7 +18825,7 @@
               return this.local$this$Actions.props.handleAddTableInContent(ensureNotNull(this.local$closure$values.get_11rb$(SERVER_getInstance().FILE_NAME))), Unit;
             } else {
               this.state_0 = 2;
-              this.result_0 = readText(this.local$closure$response, void 0, this);
+              this.result_0 = bodyAsText(this.local$closure$response, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
@@ -19318,7 +18877,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda(this$Actions));
       return Unit;
     };
   }
@@ -19330,7 +18889,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_0(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_0(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_0(this$Actions));
       return Unit;
     };
   }
@@ -19342,7 +18901,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_1(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_1(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_1(this$Actions));
       return Unit;
     };
   }
@@ -19354,7 +18913,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_2(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_2(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_2(this$Actions));
       return Unit;
     };
   }
@@ -19366,7 +18925,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_3(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_3(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_3(this$Actions));
       return Unit;
     };
   }
@@ -19378,7 +18937,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_4(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_4(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_4(this$Actions));
       return Unit;
     };
   }
@@ -19390,7 +18949,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_5(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_5(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_5(this$Actions));
       return Unit;
     };
   }
@@ -19402,7 +18961,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_6(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_6(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_6(this$Actions));
       return Unit;
     };
   }
@@ -19414,7 +18973,7 @@
   }
   function Actions$adminCryptoACFormsRBACCLOUD$lambda_7(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_7(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACCLOUD$lambda$lambda_7(this$Actions));
       return Unit;
     };
   }
@@ -19456,7 +19015,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda(this$Actions));
       return Unit;
     };
   }
@@ -19468,7 +19027,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_0(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_0(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_0(this$Actions));
       return Unit;
     };
   }
@@ -19480,7 +19039,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_1(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_1(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_1(this$Actions));
       return Unit;
     };
   }
@@ -19492,7 +19051,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_2(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_2(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_2(this$Actions));
       return Unit;
     };
   }
@@ -19504,7 +19063,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_3(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_3(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_3(this$Actions));
       return Unit;
     };
   }
@@ -19516,7 +19075,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_4(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_4(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_4(this$Actions));
       return Unit;
     };
   }
@@ -19528,7 +19087,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_5(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_5(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_5(this$Actions));
       return Unit;
     };
   }
@@ -19540,7 +19099,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_6(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_6(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_6(this$Actions));
       return Unit;
     };
   }
@@ -19552,7 +19111,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_7(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_7(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_7(this$Actions));
       return Unit;
     };
   }
@@ -19564,7 +19123,7 @@
   }
   function Actions$adminCryptoACFormsRBACMQTT$lambda_8(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_8(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$adminCryptoACFormsRBACMQTT$lambda$lambda_8(this$Actions));
       return Unit;
     };
   }
@@ -19576,7 +19135,7 @@
   }
   function Actions$userCryptoACFormsRBACMQTT$lambda(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACFormUrlEncoded_0(method, endpoint, values, Actions$userCryptoACFormsRBACMQTT$lambda$lambda(this$Actions));
+      this$Actions.submitCryptoACForm_0(method, endpoint, values, Actions$userCryptoACFormsRBACMQTT$lambda$lambda(this$Actions));
       return Unit;
     };
   }
@@ -19588,7 +19147,7 @@
   }
   function Actions$userCryptoACFormsRBACMQTT$lambda_0(this$Actions) {
     return function (method, endpoint, values, f) {
-      this$Actions.submitCryptoACForm_0(method, endpoint, values, false, Actions$userCryptoACFormsRBACMQTT$lambda$lambda_0(this$Actions));
+      this$Actions.submitCryptoACForm_1(method, endpoint, values, false, Actions$userCryptoACFormsRBACMQTT$lambda$lambda_0(this$Actions));
       return Unit;
     };
   }
@@ -20203,6 +19762,8 @@
     get: Utils$Companion_getInstance
   });
   package$cryptoac.Utils = Utils;
+  $$importsForInline$$['ktor-ktor-client-core-js-legacy'] = $module$ktor_ktor_client_core_js_legacy;
+  package$cryptoac.submitFormPatch_is78iq$ = submitFormPatch;
   Object.defineProperty(CoreParameters, 'Companion', {
     get: CoreParameters$Companion_getInstance
   });
@@ -20259,7 +19820,6 @@
   });
   package$core.CryptoACObject_init_lc88fd$ = CryptoACObject_init;
   package$core.CryptoACObject = CryptoACObject;
-  $$importsForInline$$['ktor-ktor-io-js-legacy'] = $module$ktor_ktor_io_js_legacy;
   Object.defineProperty(ActiveElement, 'Companion', {
     get: ActiveElement$Companion_getInstance
   });
@@ -20359,6 +19919,7 @@
   });
   var package$tuples = package$core.tuples || (package$core.tuples = {});
   package$tuples.EnforcementType = EnforcementType;
+  $$importsForInline$$['ktor-ktor-io-js-legacy'] = $module$ktor_ktor_io_js_legacy;
   Object.defineProperty(FileTuple, 'Companion', {
     get: FileTuple$Companion_getInstance
   });
@@ -20567,10 +20128,8 @@
   Object.defineProperty(package$cryptoac, 'Themes', {
     get: Themes_getInstance
   });
-  package$elements.digest_yzgtim$ = digest;
   $$importsForInline$$['kotlin-styled'] = $module$kotlin_styled;
   $$importsForInline$$['kotlin-react-dom-legacy'] = $module$kotlin_react_dom_legacy;
-  $$importsForInline$$['ktor-ktor-client-core-js-legacy'] = $module$ktor_ktor_client_core_js_legacy;
   var package$view = package$cryptoac.view || (package$cryptoac.view = {});
   package$view.App = App;
   Object.defineProperty(UIType, 'Modules', {
@@ -20583,6 +20142,7 @@
     get: UIType$TradeOffBoard_getInstance
   });
   package$view.UIType = UIType;
+  $$importsForInline$$['ktor-ktor-http-js-legacy'] = $module$ktor_ktor_http_js_legacy;
   package$view.Login = Login;
   package$view.login_by9vj2$ = login;
   Object.defineProperty(package$view, 'baseURL', {
@@ -20937,7 +20497,6 @@
   });
   package$tradeoffboard.TrustAssumptionsLikelihood = TrustAssumptionsLikelihood;
   package$tradeoffboard.trustAssumptionsLikelihood_894y3t$ = trustAssumptionsLikelihood;
-  $$importsForInline$$['ktor-ktor-http-js-legacy'] = $module$ktor_ktor_http_js_legacy;
   var package$sidebar = package$view.sidebar || (package$view.sidebar = {});
   package$sidebar.Actions = Actions;
   package$sidebar.actions_975gys$ = actions;

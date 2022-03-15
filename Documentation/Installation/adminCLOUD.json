@@ -5,32 +5,32 @@
    "versionNumber":1,
    "user":{
       "name":"admin",
-      "isAdmin":true,
-      "status":"INCOMPLETE"
+      "status":"INCOMPLETE",
+      "isAdmin":true
    },
    "rmInterfaceParameters":{
       "type":"eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCryptoACParameters",
-      "rmType":"CRYPTOAC",
       "port":8443,
-      "url":"10.1.0.6"
+      "url":"10.1.0.6",
+      "rmType":"CRYPTOAC"
    },
    "mmInterfaceParameters":{
       "type":"eu.fbk.st.cryptoac.implementation.mm.MMInterfaceMySQLParameters",
-      "mmType":"MYSQL",
       "username":"admin",
       "password":"password",
       "port":3306,
-      "url":"10.1.0.5"
+      "url":"10.1.0.5",
+      "mmType":"MYSQL"
    },
    "dmInterfaceParameters":{
       "type":"eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCryptoACParameters",
-      "dmType":"CRYPTOAC",
       "port":8443,
-      "url":"10.1.0.7"
+      "url":"10.1.0.7",
+      "dmType":"CRYPTOAC"
    },
    "opaInterfaceParameters":{
-      "type":"eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters",
       "port":8181,
-      "url":"10.1.0.8"
+      "url":"10.1.0.8",
+      "policyModel":"RBAC"
    }
 }

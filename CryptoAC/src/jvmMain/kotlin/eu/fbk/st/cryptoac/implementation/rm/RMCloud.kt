@@ -23,11 +23,11 @@ import eu.fbk.st.cryptoac.implementation.mm.*
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterface
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters
 import eu.fbk.st.cryptoac.implementation.opa.PA
-import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
@@ -508,8 +508,11 @@ fun Route.configureRouting() {
             // TODO this should be "val parameters = call.receive<ReferenceMonitorCloudConfigureParameters>()",
             //  but a bug in kotlinx serialization library prevents it. Therefore, receive as string and then serialize.
             //  When a new version of the kotlinx serialization library is provided, try again
-            val parametersString = call.receive<String>()
-            val parameters: RMCloudParameters = myJson.decodeFromString(parametersString)
+            //val parametersString = call.receive<String>()
+            //val parameters: RMCloudParameters = myJson.decodeFromString(parametersString)
+
+            val parameters: RMCloudParameters = call.receive()
+
             mm = MMFactory.getMM(parameters.mmMySQLInterfaceParameters)
             dm = DMFactory.getDM(parameters.dmCloudInterfaceParameters)
             opa = OPAInterface(parameters.opaInterfaceParameters)

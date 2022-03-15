@@ -1,8 +1,6 @@
 package eu.fbk.st.cryptoac.core.elements
 
-import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.crypto.AsymKeys
-import io.ktor.utils.io.core.*
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,26 +11,6 @@ import kotlinx.serialization.Serializable
 abstract class ActiveElement : Element() {
     abstract val asymEncKeys: AsymKeys?
     abstract val asymSigKeys: AsymKeys?
-
-    companion object {
-        /**
-         * If the element is the admin, return [ADMIN]. Otherwise,
-         * return as a token the hash of the private keys of the
-         * user, limiting the length to the given strictly positive
-         * [length] or the default value
-         */
-        fun generateToken(length: Int = 20, name: String, asymEncKeys: AsymKeys?, asymSigKeys: AsymKeys?): String {
-            requirePositiveNumber(length)
-            return if (name == ADMIN) {
-                ADMIN
-            } else {
-                digest(
-                    "SHA-256",
-                    ((asymEncKeys?.private ?: "not given") + (asymSigKeys?.private ?: "not given")).toByteArray()
-                ).substring(0, length)
-            }
-        }
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -54,5 +32,3 @@ abstract class ActiveElement : Element() {
         return result
     }
 }
-
-expect fun digest(algorithm: String, bytes: ByteArray): String

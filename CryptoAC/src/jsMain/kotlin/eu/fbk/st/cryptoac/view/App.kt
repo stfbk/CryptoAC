@@ -26,13 +26,14 @@ import eu.fbk.st.cryptoac.view.sidebar.configuration
 import eu.fbk.st.cryptoac.view.sidebar.evaluation
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.features.cookies.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.websocket.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.cookies.*
+import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
@@ -490,11 +491,10 @@ class App : RComponent<Props, AppState>() {
             expectSuccess = false
             install(WebSockets)
             install(HttpCookies)
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(json = myJson)
+            install(ContentNegotiation) {
+                json(json = myJson)
             }
         }
-
         metric = Metric.Goals
         scenario = Scenario.CLOUD
         algorithm = Algorithm.Best
@@ -517,7 +517,7 @@ class App : RComponent<Props, AppState>() {
         MainScope().launch {
             try {
                 val response: HttpResponse = state.httpClient.delete("$baseURL${API.LOGOUT}") { }
-                val code: OutcomeCode = response.receive()
+                val code: OutcomeCode = response.body()
                 val status = response.status
 
                 if (status == HttpStatusCode.OK) {

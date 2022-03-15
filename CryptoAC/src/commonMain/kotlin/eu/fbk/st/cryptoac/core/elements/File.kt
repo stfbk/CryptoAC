@@ -16,7 +16,7 @@ class File(
     val enforcement: EnforcementType,
 ) : Element() {
 
-    override var token = generateToken()
+    override var token = generateRandomToken()
 
     /** Return a String array of the significant fields of this file */
     override fun toArray(): Array<String> = arrayOf(

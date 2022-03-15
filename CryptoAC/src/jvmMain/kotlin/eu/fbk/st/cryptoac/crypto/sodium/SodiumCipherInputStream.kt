@@ -44,7 +44,7 @@ class SodiumCipherInputStream(
     /** Ending offset until which read the [obuffer] */
     private var ofinish = 0
 
-    /** Whether the called called the close method */
+    /** Whether the caller called the close method */
     private var closed = false
 
     /** Either [ENCRYPT_MODE] for encrypting or [DECRYPT_MODE] for decrypting */

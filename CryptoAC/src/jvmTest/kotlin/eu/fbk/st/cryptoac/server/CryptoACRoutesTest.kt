@@ -1247,13 +1247,13 @@ internal class CryptoACRoutesTest {
     fun `add combined or traditional file form or binary works`() {
         /** add file form */
         run {
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
                 
             )
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 
@@ -1282,7 +1282,7 @@ internal class CryptoACRoutesTest {
     fun `add combined or traditional file form or binary not logged-in, with no file name or content, null or wrong enforcement type or or with wrong core parameter fails`() {
         /** add file form not logged-in */
         run {
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
@@ -1290,7 +1290,7 @@ internal class CryptoACRoutesTest {
                 login = false
             )
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
@@ -1301,14 +1301,14 @@ internal class CryptoACRoutesTest {
 
         /** add file form with no file name */
         run {
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = null,
                 enforcementType = EnforcementType.COMBINED.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = null,
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
@@ -1320,14 +1320,14 @@ internal class CryptoACRoutesTest {
 
         /** add file form with null or wrong enforcement type */
         run {
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
@@ -1339,7 +1339,7 @@ internal class CryptoACRoutesTest {
         /** add file form with wrong core parameter */
         run {
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
                 core = "this_is_wrong",
@@ -1347,7 +1347,7 @@ internal class CryptoACRoutesTest {
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 core = "this_is_wrong",
@@ -1355,7 +1355,7 @@ internal class CryptoACRoutesTest {
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
@@ -1363,7 +1363,7 @@ internal class CryptoACRoutesTest {
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
-            CryptoACUtilities.addFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.addFileFormInRBAC_MOCK(
                 fileName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 core = CoreType.RBAC_CLOUD.toString(),
@@ -1539,7 +1539,7 @@ internal class CryptoACRoutesTest {
     fun `write file form or binary works`() {
         /** write file form */
         run {
-            CryptoACUtilities.writeFileFormUrlEncodedInRBAC_MOCK (
+            CryptoACUtilities.writeFileFormInRBAC_MOCK (
                 fileName = "test",
                 fileContent = "content",
                 
@@ -1560,7 +1560,7 @@ internal class CryptoACRoutesTest {
     fun `write combined or traditional file form or binary not logged-in, with no file name or content or with wrong core parameter fails`() {
         /** write file form not logged-in */
         run {
-            CryptoACUtilities.writeFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.writeFileFormInRBAC_MOCK(
                 fileName = "test",
                 fileContent = "content",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
@@ -1571,7 +1571,7 @@ internal class CryptoACRoutesTest {
 
         /** write file form with no file name */
         run {
-            CryptoACUtilities.writeFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.writeFileFormInRBAC_MOCK(
                 fileName = null,
                 fileContent = "content",
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
@@ -1581,7 +1581,7 @@ internal class CryptoACRoutesTest {
 
         /** write file form with no content */
         run {
-            CryptoACUtilities.writeFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.writeFileFormInRBAC_MOCK(
                 fileName = "test",
                 fileContent = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
@@ -1591,7 +1591,7 @@ internal class CryptoACRoutesTest {
 
         /** write file form with wrong core parameter */
         run {
-            CryptoACUtilities.writeFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.writeFileFormInRBAC_MOCK(
                 fileName = "test",
                 fileContent = "content",
                 core = "this_is_wrong",
@@ -1599,7 +1599,7 @@ internal class CryptoACRoutesTest {
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.writeFileFormUrlEncodedInRBAC_MOCK(
+            CryptoACUtilities.writeFileFormInRBAC_MOCK(
                 fileName = "test",
                 fileContent = "content",
                 core = CoreType.RBAC_CLOUD.toString(),

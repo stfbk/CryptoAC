@@ -3,8 +3,8 @@ package eu.fbk.st.cryptoac.server
 import development
 import eu.fbk.st.cryptoac.PolicyModel
 import eu.fbk.st.cryptoac.core.*
-import io.ktor.http.cio.websocket.*
-import io.ktor.sessions.*
+import io.ktor.server.sessions.*
+import io.ktor.websocket.*
 import mu.KotlinLogging
 import kotlin.reflect.full.isSubclassOf
 

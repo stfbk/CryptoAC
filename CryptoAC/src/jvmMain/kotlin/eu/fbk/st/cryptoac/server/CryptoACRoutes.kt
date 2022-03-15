@@ -42,18 +42,17 @@ import eu.fbk.st.cryptoac.server.SessionController.Companion.doesSessionExists
 import eu.fbk.st.cryptoac.server.SessionController.Companion.getOrCreateCore
 import eu.fbk.st.cryptoac.server.SessionController.Companion.getSessionUsername
 import eu.fbk.st.cryptoac.server.SessionController.Companion.setSessionCore
-import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.http.cio.websocket.*
 import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.sessions.*
+import io.ktor.server.application.*
+import io.ktor.server.http.content.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
+import io.ktor.server.websocket.*
 import io.ktor.util.*
 import io.ktor.websocket.*
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
@@ -84,26 +83,8 @@ fun Route.velocityRouting() {
  */
 fun Route.profileRouting() {
 
-
     /** Wrap all routes related to the users' profiles */
     route(PROFILES) {
-
-        /**
-         * Ensure that the user invoking the API
-         * is authenticated and provided a valid
-         * core parameter
-         */
-        intercept(ApplicationCallPipeline.Features) {
-            if (checkPreconditions(
-                    call, 
-                    checkProfile =false, 
-                    checkAdmin = false)
-            ) {
-                proceed()
-            } else {
-                finish()
-            }
-        }
 
         /**
          * The admin can get the profile of all users,
@@ -113,6 +94,10 @@ fun Route.profileRouting() {
 
             // TODO implement button in web interface to
             //  download user's profile as json
+
+            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+                return@get
+            }
 
             val userData = call.attributes[loggedUserDataKey]
             val loggedUser = userData.loggedUser!!
@@ -141,7 +126,7 @@ fun Route.profileRouting() {
             }
 
             if (loggedUser == requestedUsername) {
-                call.respond(myJson.encodeToString(loggedUserParams))
+                call.respond(loggedUserParams)
             } else if (loggedUser == ADMIN && loggedUserParams.user.isAdmin) {
                 val requestedUserParams = ProfileManager.loadProfile(requestedUsername, coreType)
                 if (requestedUserParams == null) {
@@ -154,7 +139,7 @@ fun Route.profileRouting() {
                     )
                 }
                 else {
-                    call.respond(myJson.encodeToString(requestedUserParams))
+                    call.respond(requestedUserParams)
                 }
             }
             else {
@@ -176,6 +161,10 @@ fun Route.profileRouting() {
         delete("{$USERNAME}") {
 
             // TODO implement button in web interface
+
+            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+                return@delete
+            }
 
             val userData = call.attributes[loggedUserDataKey]
             val loggedUser = userData.loggedUser!!
@@ -241,6 +230,10 @@ fun Route.profileRouting() {
          */
         post {
 
+            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+                return@post
+            }
+
             val userData = call.attributes[loggedUserDataKey]
             val loggedUser = userData.loggedUser!!
             val coreType = userData.coreType!!
@@ -258,7 +251,7 @@ fun Route.profileRouting() {
             //  an additional issue is that serializing from JS (i.e., from the web dashboard)
             //  will add quotes around the payload, while serializing from the JVM (i.e., during
             //  tests) won't; investigate
-            val receivedParameters  = call.receive<String>()
+            /*val receivedParameters  = call.receive<String>()
             val coreParametersString = if (
                 receivedParameters.startsWith("\"") ||
                 receivedParameters.startsWith("'")
@@ -267,7 +260,8 @@ fun Route.profileRouting() {
             } else {
                 receivedParameters
             }
-            val coreParameters: CoreParameters = myJson.decodeFromString(coreParametersString)
+            val coreParameters: CoreParameters = myJson.decodeFromString(coreParametersString)*/
+            val coreParameters: CoreParameters = call.receive()
             val requestedUsername = coreParameters.user.name
             val requestedCore = coreParameters.coreType
 
@@ -377,6 +371,10 @@ fun Route.profileRouting() {
          */
         patch {
 
+            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+                return@patch
+            }
+
             val userData = call.attributes[loggedUserDataKey]
             val loggedUser = userData.loggedUser!!
             val coreType = userData.coreType!!
@@ -401,7 +399,7 @@ fun Route.profileRouting() {
             //  an additional issue is that serializing from JS (i.e., from the web dashboard)
             //  will add quotes around the payload, while serializing from the JVM (i.e., during
             //  tests) won't; investigate
-            val receivedParameters  = call.receive<String>()
+            /*val receivedParameters  = call.receive<String>()
             val coreParametersString = if (
                 receivedParameters.startsWith("\"") ||
                 receivedParameters.startsWith("'")
@@ -410,7 +408,8 @@ fun Route.profileRouting() {
             } else {
                 receivedParameters
             }
-            val updatedCoreParameters: CoreParameters = myJson.decodeFromString(coreParametersString)
+            val updatedCoreParameters: CoreParameters = myJson.decodeFromString(coreParametersString)*/
+            val updatedCoreParameters: CoreParameters = call.receive()
             val requestedUsername = updatedCoreParameters.user.name
             val requestedCore = updatedCoreParameters.coreType
 
@@ -475,20 +474,6 @@ fun Route.adminRouting() {
     /** Wrap all routes related to CryptoAC */
     route(CRYPTOAC) {
 
-        /**
-         * Ensure that the user invoking the API
-         * is authenticated, provided a valid
-         * core parameter, has a profile and
-         * is the admin
-         */
-        intercept(ApplicationCallPipeline.Features) {
-            if (checkPreconditions(call)) {
-                proceed()
-            } else {
-                finish()
-            }
-        }
-
         route(USERS) {
 
             /**
@@ -498,6 +483,10 @@ fun Route.adminRouting() {
             get {
                 // TODO implement button in web interface
                 // TODO think of eventual path or query parameters
+
+                if (!checkPreconditions(call)) {
+                    return@get
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -526,6 +515,10 @@ fun Route.adminRouting() {
              * and return the configuration parameters
              */
             post {
+
+                if (!checkPreconditions(call)) {
+                    return@post
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -557,7 +550,7 @@ fun Route.adminRouting() {
                     )
                 }
                 val parameters = addUserResult.parameters
-                call.respond(myJson.encodeToString(parameters))
+                call.respond(parameters!!)
 
             }
 
@@ -566,6 +559,10 @@ fun Route.adminRouting() {
              * access control policy
              */
             delete("{$USERNAME}") {
+
+                if (!checkPreconditions(call)) {
+                    return@delete
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -610,6 +607,10 @@ fun Route.adminRouting() {
                 // TODO implement button in web interface
                 // TODO think of eventual path or query parameters
 
+                if (!checkPreconditions(call)) {
+                    return@get
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -638,6 +639,11 @@ fun Route.adminRouting() {
              * access control policy
              */
             post {
+
+                if (!checkPreconditions(call)) {
+                    return@post
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -675,6 +681,11 @@ fun Route.adminRouting() {
              * access control policy
              */
             delete("{$ROLE_NAME}") {
+
+                if (!checkPreconditions(call)) {
+                    return@delete
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -717,6 +728,11 @@ fun Route.adminRouting() {
              */
             get {
                 // TODO implement button in web interface
+
+                if (!checkPreconditions(call)) {
+                    return@get
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -744,6 +760,11 @@ fun Route.adminRouting() {
              * access control policy
              */
             delete("{$FILE_NAME}") {
+
+                if (!checkPreconditions(call)) {
+                    return@delete
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -785,6 +806,11 @@ fun Route.adminRouting() {
              * in the access control policy
              */
             post {
+
+                if (!checkPreconditions(call)) {
+                    return@post
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -829,6 +855,11 @@ fun Route.adminRouting() {
              * from the access control policy
              */
             delete("{$USERNAME}/{$ROLE_NAME}") {
+
+                if (!checkPreconditions(call)) {
+                    return@delete
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -875,6 +906,11 @@ fun Route.adminRouting() {
              * a file in the access control policy
              */
             post {
+
+                if (!checkPreconditions(call)) {
+                    return@post
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -935,6 +971,11 @@ fun Route.adminRouting() {
              * file from the access control policy
              */
             delete("{$ROLE_NAME}/{$FILE_NAME}/{$PERMISSION}") {
+
+                if (!checkPreconditions(call)) {
+                    return@delete
+                }
+
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
@@ -1000,19 +1041,6 @@ fun Route.userRouting() {
     /** Wrap all routes related to CryptoAC */
     route(CRYPTOAC) {
 
-        /**
-         * Ensure that the user invoking the API
-         * is authenticated, provided a valid
-         * core parameter and has a profile
-         */
-        intercept(ApplicationCallPipeline.Features) {
-            if (checkPreconditions(call, checkAdmin = false)) {
-                proceed()
-            } else {
-                finish()
-            }
-        }
-
         route(FILES) {
 
             /**
@@ -1020,6 +1048,10 @@ fun Route.userRouting() {
              * control policy
              */
             get("{$FILE_NAME}") {
+
+                if (!checkPreconditions(call, checkAdmin = false)) {
+                    return@get
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -1053,7 +1085,14 @@ fun Route.userRouting() {
                 if (cryptoACFile.stream == null) {
                     return@get ok(call)
                 } else {
-                    call.response.header("Content-Disposition", "attachment; filename=\"$fileNameToGet\"")
+                    call.response.header(
+                        HttpHeaders.ContentDisposition,
+                        ContentDisposition.Attachment.withParameter(
+                            ContentDisposition.Parameters.FileName, fileNameToGet
+                        ).toString()
+                    )
+                    //call.response.header("Content-Disposition", "attachment; filename=\"$fileNameToGet\"")
+
                     val contentType = ContentType.fromFileExtension(File(fileNameToGet).extension).firstOrNull()
                         ?: ContentType.Application.OctetStream
                     call.respondOutputStream(contentType, HttpStatusCode.OK) {
@@ -1067,6 +1106,10 @@ fun Route.userRouting() {
              * access control policy
              */
             post {
+
+                if (!checkPreconditions(call, checkAdmin = false)) {
+                    return@post
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -1165,6 +1208,10 @@ fun Route.userRouting() {
              * access control policy
              */
             patch {
+
+                if (!checkPreconditions(call, checkAdmin = false)) {
+                    return@patch
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -1279,7 +1326,7 @@ fun Route.userRouting() {
                 try {
                     for (frame in incoming) {
                         frame as? Frame.Text ?: continue
-                        val receivedText = frame.readText()
+                        val receivedText = frame.readBytes()
                         logger.info { "received message from client: $receivedText" }
                     }
                 } catch (e: Exception) {
@@ -1301,6 +1348,10 @@ fun Route.userRouting() {
             get {
                 // TODO implement button in web interface
                 // TODO think of eventual path or query parameters
+
+                if (!checkPreconditions(call, checkAdmin = false)) {
+                    return@get
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -1345,6 +1396,10 @@ fun Route.userRouting() {
             get {
                 // TODO implement button in web interface
                 // TODO think of eventual path or query parameters
+
+                if (!checkPreconditions(call, checkAdmin = false)) {
+                    return@get
+                }
 
                 val userData = call.attributes[loggedUserDataKey]
                 val loggedUser = userData.loggedUser!!
@@ -1464,6 +1519,9 @@ suspend fun checkPreconditions(
     var preconditionsAreMet = true
     val userData = UserData()
 
+    val apiURI = call.request.uri
+    val apiMethod = call.request.httpMethod.toString()
+
     val loggedUser = getSessionUsername(call.sessions)
     userData.loggedUser = loggedUser
     if (loggedUser == null) {
@@ -1516,11 +1574,12 @@ suspend fun checkPreconditions(
     if (checkAdmin && preconditionsAreMet) {
         val isAdmin = userData.parameters!!.user.isAdmin
         if (!isAdmin) {
-            val apiURI = call.request.uri
-            logger.info { "Not-admin User $loggedUser invoking restricted API $apiURI" }
+
+            val message = "Not-admin User $loggedUser invoking restricted API $apiURI with method $apiMethod"
+            logger.info { message }
             forbidden(
                 call,
-                "Not-admin User $loggedUser invoking restricted API $apiURI",
+                message,
                 OutcomeCode.CODE_037_FORBIDDEN
             )
             preconditionsAreMet = false
@@ -1539,8 +1598,7 @@ data class Connection(
     )
 
 /**
- * Represent data of a user passed from
- * interceptor of routes to routes. We
+ * Represent data of a user passed. We
  * save the name of the [loggedUser],
  * the [coreType] and the [parameters]
  * of the profile of the user
@@ -1551,8 +1609,5 @@ data class UserData(
     var parameters: CoreParameters? = null,
 )
 
-/**
- * Key to save data of a user passed from
- * interceptor of routes to routes
- */
+/** Key to save data of a user */
 val loggedUserDataKey = AttributeKey<UserData>("loggedUserDataKey")
