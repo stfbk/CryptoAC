@@ -108,7 +108,6 @@ kotlin {
                 implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
                 implementation("io.ktor:ktor-server-velocity:$ktorVersion")
 
-
                 implementation(kotlin("stdlib-jdk8"))
                 implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:$libSodiumVersion") {
                     exclude("org.jetbrains.kotlin", "kotlin-test-junit")

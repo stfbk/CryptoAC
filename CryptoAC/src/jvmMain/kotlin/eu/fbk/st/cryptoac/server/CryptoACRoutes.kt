@@ -35,7 +35,7 @@ import eu.fbk.st.cryptoac.crypto.AsymKeys
 import eu.fbk.st.cryptoac.crypto.AsymKeysType
 import eu.fbk.st.cryptoac.encodeBase64
 import eu.fbk.st.cryptoac.inputStream
-import eu.fbk.st.cryptoac.server.SessionController.Companion.addSocketToSection
+import eu.fbk.st.cryptoac.server.SessionController.Companion.addSocketToSession
 import eu.fbk.st.cryptoac.server.SessionController.Companion.createSession
 import eu.fbk.st.cryptoac.server.SessionController.Companion.deinitAllCores
 import eu.fbk.st.cryptoac.server.SessionController.Companion.doesSessionExists
@@ -53,6 +53,7 @@ import io.ktor.server.sessions.*
 import io.ktor.server.websocket.*
 import io.ktor.util.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
@@ -244,23 +245,6 @@ fun Route.profileRouting() {
 
 
             /** Get the core parameters from the request */
-            // TODO should be "val coreParameters = call.receive<CoreParameters>()", but, if we
-            //  leave the serialization process to Ktor, the encoded string will not contain
-            //  the "type" field (e.g., "type":"eu.fbk.st.cryptoac.core.CoreParametersMOCK"),
-            //  which is fundamental for decoding. Therefore, we do with strings; However,
-            //  an additional issue is that serializing from JS (i.e., from the web dashboard)
-            //  will add quotes around the payload, while serializing from the JVM (i.e., during
-            //  tests) won't; investigate
-            /*val receivedParameters  = call.receive<String>()
-            val coreParametersString = if (
-                receivedParameters.startsWith("\"") ||
-                receivedParameters.startsWith("'")
-            ) {
-                receivedParameters.replace("""\"""", "\"").drop(1).dropLast(1)
-            } else {
-                receivedParameters
-            }
-            val coreParameters: CoreParameters = myJson.decodeFromString(coreParametersString)*/
             val coreParameters: CoreParameters = call.receive()
             val requestedUsername = coreParameters.user.name
             val requestedCore = coreParameters.coreType
@@ -392,23 +376,6 @@ fun Route.profileRouting() {
             }
 
             /** Get the core parameters from the request */
-            // TODO should be "val coreParameters = call.receive<CoreParameters>()", but, if we
-            //  leave the serialization process to Ktor, the encoded string will not contain
-            //  the "type" field (e.g., "type":"eu.fbk.st.cryptoac.core.CoreParametersMOCK"),
-            //  which is fundamental for decoding. Therefore, we do with strings; However,
-            //  an additional issue is that serializing from JS (i.e., from the web dashboard)
-            //  will add quotes around the payload, while serializing from the JVM (i.e., during
-            //  tests) won't; investigate
-            /*val receivedParameters  = call.receive<String>()
-            val coreParametersString = if (
-                receivedParameters.startsWith("\"") ||
-                receivedParameters.startsWith("'")
-            ) {
-                receivedParameters.replace("""\"""", "\"").drop(1).dropLast(1)
-            } else {
-                receivedParameters
-            }
-            val updatedCoreParameters: CoreParameters = myJson.decodeFromString(coreParametersString)*/
             val updatedCoreParameters: CoreParameters = call.receive()
             val requestedUsername = updatedCoreParameters.user.name
             val requestedCore = updatedCoreParameters.coreType
@@ -1319,7 +1286,7 @@ fun Route.userRouting() {
                 }
 
                 logger.info { "User $loggedUser is connecting to the web socket for core $coreType" }
-                addSocketToSection(call.sessions, this, coreType)
+                addSocketToSession(call.sessions, this, coreType)
 
                 val thisConnection = Connection(this, loggedUser)
                 connections += thisConnection
@@ -1329,11 +1296,15 @@ fun Route.userRouting() {
                         val receivedText = frame.readBytes()
                         logger.info { "received message from client: $receivedText" }
                     }
-                } catch (e: Exception) {
+                } catch (e: ClosedReceiveChannelException) {
+                    logger.info { "ClosedReceiveChannelException: ${e.localizedMessage}" }
+                    logger.info { e.printStackTrace() }
+                } catch (e: Throwable) {
                     logger.error { "Exception: ${e.localizedMessage}" }
                     logger.error { e.printStackTrace() }
+                    // TODO do not catch all exceptions
                 } finally {
-                    logger.warn { "Removing $thisConnection!" }
+                    logger.warn { "Removing $thisConnection" }
                     connections -= thisConnection
                 }
             }
@@ -1344,7 +1315,7 @@ fun Route.userRouting() {
             /**
              * Get the assignments of the
              * currently logged-in user
-             * */
+             */
             get {
                 // TODO implement button in web interface
                 // TODO think of eventual path or query parameters

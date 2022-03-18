@@ -64,21 +64,12 @@
   var GeneratedSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal.GeneratedSerializer;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
-  var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
-  var CharRange = Kotlin.kotlin.ranges.CharRange;
-  var plus = Kotlin.kotlin.collections.plus_q4559j$;
-  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
-  var IntRange = Kotlin.kotlin.ranges.IntRange;
-  var Random = Kotlin.kotlin.random.Random;
-  var getCallableRef = Kotlin.getCallableRef;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
   var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
   var HttpMethod = $module$ktor_ktor_http_js_legacy.io.ktor.http.HttpMethod;
   var FormDataContent = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.forms.FormDataContent;
   var getKClass = Kotlin.getKClass;
   var createKType = Kotlin.createKType;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
   var OutgoingContent = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.content.OutgoingContent;
   var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
@@ -86,6 +77,7 @@
   var Throwable = Error;
   var HttpRequestBuilder_init = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.HttpRequestBuilder;
   var HttpStatement_init = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.HttpStatement;
+  var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var mu = $module$kotlin_logging_js_legacy.mu;
   var Unit = Kotlin.kotlin.Unit;
   var ensureNotNull = Kotlin.ensureNotNull;
@@ -106,6 +98,14 @@
   var internal = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal;
   var MissingFieldException_init = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.MissingFieldException_init_61zpoe$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
+  var CharRange = Kotlin.kotlin.ranges.CharRange;
+  var plus = Kotlin.kotlin.collections.plus_q4559j$;
+  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
+  var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var Random = Kotlin.kotlin.random.Random;
+  var getCallableRef = Kotlin.getCallableRef;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.internal.NullableSerializer;
   var charsets = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.charsets;
   var encodeToByteArray = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.charsets.encodeToByteArray_fj4osb$;
@@ -120,7 +120,6 @@
   var toBooleanStrict = Kotlin.kotlin.text.toBooleanStrict_pdl1vz$;
   var String_0 = $module$ktor_ktor_io_js_legacy.io.ktor.utils.io.core.String_xge8xe$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var trimMargin = Kotlin.kotlin.text.trimMargin_rjktp$;
   var set_zIndex = $module$kotlin_css.kotlinx.css.set_zIndex_a6g65m$;
   var Position = $module$kotlin_css.kotlinx.css.Position;
   var set_position = $module$kotlin_css.kotlinx.css.set_position_mvtmy5$;
@@ -137,6 +136,7 @@
   var set_padding = $module$kotlin_css.kotlinx.css.set_padding_krvuuu$;
   var LinearDimension = $module$kotlin_css.kotlinx.css.LinearDimension;
   var set_marginTop = $module$kotlin_css.kotlinx.css.set_marginTop_n8chyh$;
+  var trimMargin = Kotlin.kotlin.text.trimMargin_rjktp$;
   var createElement = $module$kotlin_react_legacy.react.createElement_zepujl$;
   var TextAlign = $module$kotlin_css.kotlinx.css.TextAlign;
   var set_textAlign = $module$kotlin_css.kotlinx.css.set_textAlign_q2ys32$;
@@ -146,6 +146,7 @@
   var padding = $module$kotlin_css.kotlinx.css.padding_9vmwvs$;
   var set_fontSize = $module$kotlin_css.kotlinx.css.set_fontSize_n8chyh$;
   var set_color = $module$kotlin_css.kotlinx.css.set_color_ommczd$;
+  var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
   var padding_0 = $module$kotlin_css.kotlinx.css.padding_cx3uck$;
   var TextDecoration = $module$kotlin_css.kotlinx.css.properties.TextDecoration;
   var set_textDecoration = $module$kotlin_css.kotlinx.css.set_textDecoration_pbf7yq$;
@@ -163,10 +164,12 @@
   var json = $module$ktor_ktor_serialization_kotlinx_json_js_legacy.io.ktor.serialization.kotlinx.json.json_mhw46j$;
   var HttpClient = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.HttpClient_f0veat$;
   var MainScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.MainScope;
+  var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
+  var url = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.url_g8iu3v$;
   var HttpStatusCode = $module$ktor_ktor_http_js_legacy.io.ktor.http.HttpStatusCode;
   var Error_0 = Kotlin.kotlin.Error;
-  var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
-  var first = Kotlin.kotlin.collections.first_2p1efm$;
+  var first = Kotlin.kotlin.collections.first_7wnvza$;
+  var bodyAsText = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.bodyAsText_89yka0$;
   var RComponent_init = $module$kotlin_react_legacy.react.RComponent_init_ftywkw$;
   var RComponent = $module$kotlin_react_legacy.react.RComponent;
   var html = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html;
@@ -178,9 +181,12 @@
   var RDOMBuilder = $module$kotlin_react_dom_legacy.react.dom.RDOMBuilder;
   var attributesMapOf_0 = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_alerag$;
   var A_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.A;
-  var url = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.url_g8iu3v$;
-  var HttpMethod_0 = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.HttpMethod;
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
+  var ParametersBuilder = $module$ktor_ktor_http_js_legacy.io.ktor.http.ParametersBuilder_za3lpa$;
+  var wrapFunction = Kotlin.wrapFunction;
+  var HttpMethod_0 = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.HttpMethod;
+  var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.serializer_ca95z9$;
   var Image = $module$kotlin_css.kotlinx.css.Image;
   var set_backgroundImage = $module$kotlin_css.kotlinx.css.set_backgroundImage_opvm7l$;
   var set_backgroundPosition = $module$kotlin_css.kotlinx.css.set_backgroundPosition_krvuuu$;
@@ -193,31 +199,40 @@
   var translate = $module$kotlin_css.kotlinx.css.properties.translate_z52cu5$;
   var set_transform = $module$kotlin_css.kotlinx.css.set_transform_z5yzaw$;
   var set_marginRight = $module$kotlin_css.kotlinx.css.set_marginRight_n8chyh$;
-  var ParametersBuilder = $module$ktor_ktor_http_js_legacy.io.ktor.http.ParametersBuilder_za3lpa$;
-  var wrapFunction = Kotlin.wrapFunction;
   var KotlinLoggingLevel = $module$kotlin_logging_js_legacy.mu.KotlinLoggingLevel;
   var render = $module$kotlin_react_dom_legacy.react.dom.render_9jwdg9$;
   var defineInlineFunction = Kotlin.defineInlineFunction;
-  var toBoolean = Kotlin.kotlin.text.toBoolean_5cw0du$;
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
+  var toBoolean = Kotlin.kotlin.text.toBoolean_5cw0du$;
   var set_marginBottom = $module$kotlin_css.kotlinx.css.set_marginBottom_n8chyh$;
   var set_borderBottom = $module$kotlin_css.kotlinx.css.set_borderBottom_krvuuu$;
-  var set_onSubmitFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onSubmitFunction_pszlq2$;
+  var set_paddingTop = $module$kotlin_css.kotlinx.css.set_paddingTop_n8chyh$;
+  var set_paddingBottom = $module$kotlin_css.kotlinx.css.set_paddingBottom_n8chyh$;
   var InputType = $module$kotlinx_html_js.kotlinx.html.InputType;
   var set_hidden = $module$kotlinx_html_js.kotlinx.html.set_hidden_jqpcbu$;
-  var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
-  var set_alignContent = $module$kotlin_css.kotlinx.css.set_alignContent_olgsez$;
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
-  var isBlank = Kotlin.kotlin.text.isBlank_gw00vp$;
+  var set_onChangeFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onChangeFunction_pszlq2$;
+  var Float = $module$kotlin_css.kotlinx.css.Float;
+  var set_float = $module$kotlin_css.kotlinx.css.set_float_oo7voy$;
+  var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
+  var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
+  var NullPointerException = Kotlin.kotlin.NullPointerException;
+  var UnsupportedOperationException = Kotlin.kotlin.UnsupportedOperationException;
+  var ContentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.ContentType;
+  var contentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.contentType_41kwpe$;
+  var printStackTrace = Kotlin.kotlin.printStackTrace_dbl4o4$;
+  var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var enumEncode = $module$kotlin_react_dom_legacy.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributes.enumEncode_m4whry$;
   var attributesMapOf_1 = $module$kotlin_react_dom_legacy.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_alerag$;
   var INPUT_init = $module$kotlin_react_dom_legacy.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.INPUT;
+  var set_onSubmitFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onSubmitFunction_pszlq2$;
+  var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
+  var set_alignContent = $module$kotlin_css.kotlinx.css.set_alignContent_olgsez$;
+  var isBlank = Kotlin.kotlin.text.isBlank_gw00vp$;
   var FORM_init = $module$kotlin_react_dom_legacy.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.FORM;
   var numberToInt = Kotlin.numberToInt;
   var P_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.P;
+  var first_0 = Kotlin.kotlin.collections.first_2p1efm$;
   var html_0 = $module$kotlin_react_dom.react.dom.html;
-  var Float = $module$kotlin_css.kotlinx.css.Float;
-  var set_float = $module$kotlin_css.kotlinx.css.set_float_oo7voy$;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init;
   var set_paddingLeft = $module$kotlin_css.kotlinx.css.set_paddingLeft_n8chyh$;
   var set_paddingRight = $module$kotlin_css.kotlinx.css.set_paddingRight_n8chyh$;
@@ -226,25 +241,9 @@
   var set_lineHeight = $module$kotlin_css.kotlinx.css.set_lineHeight_ftzj10$;
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_cgipc5$;
   var P_init_0 = $module$kotlin_react_dom_legacy.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.P;
-  var set_paddingTop = $module$kotlin_css.kotlinx.css.set_paddingTop_n8chyh$;
-  var set_paddingBottom = $module$kotlin_css.kotlinx.css.set_paddingBottom_n8chyh$;
-  var set_onChangeFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onChangeFunction_pszlq2$;
-  var ContentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.ContentType;
-  var contentType = $module$ktor_ktor_http_js_legacy.io.ktor.http.contentType_41kwpe$;
-  var printStackTrace = Kotlin.kotlin.printStackTrace_dbl4o4$;
-  var NullPointerException = Kotlin.kotlin.NullPointerException;
-  var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
-  var bodyAsText = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.statement.bodyAsText_89yka0$;
-  var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
-  var UnsupportedOperationException = Kotlin.kotlin.UnsupportedOperationException;
-  var Exception = Kotlin.kotlin.Exception;
-  var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
-  var toList = Kotlin.kotlin.collections.toList_7wnvza$;
-  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
-  var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy.kotlinx.serialization.serializer_ca95z9$;
   var css = $module$kotlin_css.kotlinx.css;
   var set_maxHeight = $module$kotlin_css.kotlinx.css.set_maxHeight_n8chyh$;
-  var first_0 = Kotlin.kotlin.collections.first_us0mfu$;
+  var first_1 = Kotlin.kotlin.collections.first_us0mfu$;
   var HashSet = Kotlin.kotlin.collections.HashSet;
   var createInvariantKTypeProjection = Kotlin.createInvariantKTypeProjection;
   var get_host = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.get_host_ocert9$;
@@ -257,12 +256,12 @@
   var set_verticalAlign = $module$kotlin_css.kotlinx.css.set_verticalAlign_9eaq6d$;
   var set_maxWidth = $module$kotlin_css.kotlinx.css.set_maxWidth_n8chyh$;
   var IMG_init = $module$kotlin_styled.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.IMG;
+  var firstOrNull = Kotlin.kotlin.collections.firstOrNull_2p1efm$;
   var BR_init = $module$kotlin_react_dom_legacy.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.BR;
   var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var emptySet = Kotlin.kotlin.collections.emptySet_287e2$;
   var setOf = Kotlin.kotlin.collections.setOf_mh5how$;
   var drop = Kotlin.kotlin.collections.drop_ba2ldo$;
-  var first_1 = Kotlin.kotlin.collections.first_7wnvza$;
   var plus_1 = Kotlin.kotlin.collections.plus_xfiyik$;
   var plus_2 = Kotlin.kotlin.collections.plus_khz7k3$;
   var set_opacity = $module$kotlin_css.kotlinx.css.set_opacity_if475a$;
@@ -287,6 +286,7 @@
   var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
   var Comparator = Kotlin.kotlin.Comparator;
   var TD_init_0 = $module$kotlin_react_dom_legacy.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.TD;
+  var Exception = Kotlin.kotlin.Exception;
   var FormPart = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.forms.FormPart;
   var http = $module$ktor_ktor_http_js_legacy.io.ktor.http;
   var formData = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.request.forms.formData_l3ed5z$;
@@ -304,8 +304,6 @@
   CoreType.prototype.constructor = CoreType;
   CoreParametersCLOUD.prototype = Object.create(CoreParameters.prototype);
   CoreParametersCLOUD.prototype.constructor = CoreParametersCLOUD;
-  CoreParametersMOCK.prototype = Object.create(CoreParameters.prototype);
-  CoreParametersMOCK.prototype.constructor = CoreParametersMOCK;
   CoreParametersMQTT.prototype = Object.create(CoreParameters.prototype);
   CoreParametersMQTT.prototype.constructor = CoreParametersMQTT;
   Element.prototype = Object.create(CryptoACObject.prototype);
@@ -370,6 +368,8 @@
   CryptoACCheckbox.prototype.constructor = CryptoACCheckbox;
   CryptoACDivider.prototype = Object.create(RComponent.prototype);
   CryptoACDivider.prototype.constructor = CryptoACDivider;
+  CryptoACEditProfileForm.prototype = Object.create(RComponent.prototype);
+  CryptoACEditProfileForm.prototype.constructor = CryptoACEditProfileForm;
   CryptoACForm.prototype = Object.create(RComponent.prototype);
   CryptoACForm.prototype.constructor = CryptoACForm;
   CryptoACPaper.prototype = Object.create(RComponent.prototype);
@@ -398,8 +398,8 @@
   MQTTDashboard.prototype.constructor = MQTTDashboard;
   ModuleItem.prototype = Object.create(RComponent.prototype);
   ModuleItem.prototype.constructor = ModuleItem;
-  Modules.prototype = Object.create(RComponent.prototype);
-  Modules.prototype.constructor = Modules;
+  NewProfile.prototype = Object.create(RComponent.prototype);
+  NewProfile.prototype.constructor = NewProfile;
   ConfigurationItem.prototype = Object.create(RComponent.prototype);
   ConfigurationItem.prototype.constructor = ConfigurationItem;
   EntityIcon.prototype = Object.create(RComponent.prototype);
@@ -836,6 +836,7 @@
     OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_instance = new OutcomeCode('CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM', 58);
     OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_instance = new OutcomeCode('CODE_059_ACCESS_DENIED_TO_DM', 59);
     OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_instance = new OutcomeCode('CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED', 60);
+    OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_instance = new OutcomeCode('CODE_061_WRONG_PARAMETERS_FOR_CORE', 61);
     OutcomeCode$Companion_getInstance();
   }
   var OutcomeCode$CODE_000_SUCCESS_instance;
@@ -1143,6 +1144,11 @@
     OutcomeCode_initFields();
     return OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_instance;
   }
+  var OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_instance;
+  function OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_getInstance() {
+    OutcomeCode_initFields();
+    return OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_instance;
+  }
   OutcomeCode.prototype.getNumber = function () {
     return split(this.toString(), ['_']).get_za3lpa$(1);
   };
@@ -1178,7 +1184,7 @@
     }return OutcomeCode$Companion_instance;
   }
   function OutcomeCode$$serializer() {
-    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 61);
+    this.descriptor_n4u1rd$_0 = new EnumDescriptor('eu.fbk.st.cryptoac.OutcomeCode', 62);
     this.descriptor.addElement_ivxn3r$('CODE_000_SUCCESS');
     this.descriptor.addElement_ivxn3r$('CODE_001_USER_ALREADY_EXISTS');
     this.descriptor.addElement_ivxn3r$('CODE_002_ROLE_ALREADY_EXISTS');
@@ -1240,6 +1246,7 @@
     this.descriptor.addElement_ivxn3r$('CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM');
     this.descriptor.addElement_ivxn3r$('CODE_059_ACCESS_DENIED_TO_DM');
     this.descriptor.addElement_ivxn3r$('CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED');
+    this.descriptor.addElement_ivxn3r$('CODE_061_WRONG_PARAMETERS_FOR_CORE');
     OutcomeCode$$serializer_instance = this;
   }
   Object.defineProperty(OutcomeCode$$serializer.prototype, 'descriptor', {
@@ -1274,7 +1281,7 @@
     interfaces: [Enum]
   };
   function OutcomeCode$values() {
-    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_036_ADMIN_NAME_getInstance(), OutcomeCode$CODE_037_FORBIDDEN_getInstance(), OutcomeCode$CODE_038_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_049_UNEXPECTED_getInstance(), OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance(), OutcomeCode$CODE_054_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance(), OutcomeCode$CODE_056_DELETE_USER_MM_getInstance(), OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance(), OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance()];
+    return [OutcomeCode$CODE_000_SUCCESS_getInstance(), OutcomeCode$CODE_001_USER_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_002_ROLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_003_FILE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_009_FILETUPLE_NOT_FOUND_getInstance(), OutcomeCode$CODE_010_ROLETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_011_PERMISSIONTUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_012_FILETUPLE_ALREADY_EXISTS_getInstance(), OutcomeCode$CODE_013_USER_WAS_DELETED_getInstance(), OutcomeCode$CODE_014_ROLE_WAS_DELETED_getInstance(), OutcomeCode$CODE_015_FILE_WAS_DELETED_getInstance(), OutcomeCode$CODE_016_INVALID_PERMISSION_getInstance(), OutcomeCode$CODE_017_INVALID_VERSION_NUMBER_getInstance(), OutcomeCode$CODE_018_INTERFACE_CONFIGURATION_PARAMETERS_getInstance(), OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), OutcomeCode$CODE_020_INVALID_PARAMETER_getInstance(), OutcomeCode$CODE_021_RM_CONFIGURATION_getInstance(), OutcomeCode$CODE_022_ADMIN_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_023_USER_CANNOT_BE_MODIFIED_getInstance(), OutcomeCode$CODE_024_FILE_DELETE_getInstance(), OutcomeCode$CODE_025_FILE_RENAMING_getInstance(), OutcomeCode$CODE_026_TUPLE_FORMAT_getInstance(), OutcomeCode$CODE_027_AC_ENFORCEMENT_INCONSISTENT_getInstance(), OutcomeCode$CODE_028_OPA_POLICY_CREATION_getInstance(), OutcomeCode$CODE_029_OPA_DOCUMENT_UPDATE_getInstance(), OutcomeCode$CODE_030_OPA_DOCUMENT_DOWNLOAD_getInstance(), OutcomeCode$CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_032_UNLOCK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_033_ROLLBACK_CALLED_IN_INCONSISTENT_STATUS_getInstance(), OutcomeCode$CODE_034_UNLOCK_FAILED_getInstance(), OutcomeCode$CODE_035_ADMIN_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_036_ADMIN_NAME_getInstance(), OutcomeCode$CODE_037_FORBIDDEN_getInstance(), OutcomeCode$CODE_038_UNAUTHORIZED_getInstance(), OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance(), OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), OutcomeCode$CODE_041_UR_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_042_PA_ASSIGNMENTS_NOT_FOUND_OPA_getInstance(), OutcomeCode$CODE_043_RM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_044_DM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_045_MM_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_047_OPA_CONNECTION_TIMEOUT_getInstance(), OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_049_UNEXPECTED_getInstance(), OutcomeCode$CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION_getInstance(), OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance(), OutcomeCode$CODE_052_USER_ALREADY_INITIALIZED_getInstance(), OutcomeCode$CODE_053_USER_IS_INCOMPLETE_getInstance(), OutcomeCode$CODE_054_CREATE_USER_MM_getInstance(), OutcomeCode$CODE_055_ACCESS_DENIED_TO_MM_getInstance(), OutcomeCode$CODE_056_DELETE_USER_MM_getInstance(), OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), OutcomeCode$CODE_058_INCONSISTENT_STATUS_DELETE_TEMPORARY_FILE_IN_DM_getInstance(), OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance(), OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance(), OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_getInstance()];
   }
   OutcomeCode.values = OutcomeCode$values;
   function OutcomeCode$valueOf(name) {
@@ -1401,6 +1408,8 @@
         return OutcomeCode$CODE_059_ACCESS_DENIED_TO_DM_getInstance();
       case 'CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED':
         return OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance();
+      case 'CODE_061_WRONG_PARAMETERS_FOR_CORE':
+        return OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_getInstance();
       default:throwISE('No enum constant eu.fbk.st.cryptoac.OutcomeCode.' + name);
     }
   }
@@ -1537,82 +1546,6 @@
       new SERVER();
     }return SERVER_instance;
   }
-  function SafeRegex() {
-    SafeRegex$Companion_getInstance();
-  }
-  function SafeRegex$Companion() {
-    SafeRegex$Companion_instance = this;
-    this.TEXT = Regex_init('^[-a-zA-Z0-9._/+=]+$');
-    this.URL = Regex_init('^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$');
-    this.URI = Regex_init('^[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$');
-    this.IPV4 = Regex_init('^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$');
-    this.URL_OR_IPV4 = Regex_init('^[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$|^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$');
-    this.BASE64 = Regex_init('^(?:[A-Za-z0-9+/]{4})+(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
-    this.AWS_ACCESS_KEY = Regex_init('^[A-Z0-9]{20}$');
-    this.AWS_SECRET_KEY = Regex_init('^[A-Za-z0-9/+=]{40}$');
-  }
-  SafeRegex$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var SafeRegex$Companion_instance = null;
-  function SafeRegex$Companion_getInstance() {
-    if (SafeRegex$Companion_instance === null) {
-      new SafeRegex$Companion();
-    }return SafeRegex$Companion_instance;
-  }
-  SafeRegex.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SafeRegex',
-    interfaces: []
-  };
-  function Utils() {
-    Utils$Companion_getInstance();
-  }
-  function Utils$Companion() {
-    Utils$Companion_instance = this;
-  }
-  Utils$Companion.prototype.generateRandomString_za3lpa$ = function (length) {
-    if (length === void 0)
-      length = 20;
-    var charPool = plus_0(plus(new CharRange(97, 122), new CharRange(65, 90)), new CharRange(48, 57));
-    var $receiver = new IntRange(1, length);
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(Random.Default.nextInt_vux9f0$(0, charPool.size));
-    }
-    var transform = getCallableRef('get', function ($receiver, p1) {
-      return $receiver.get_za3lpa$(p1);
-    }.bind(null, charPool));
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault(destination, 10));
-    var tmp$_0;
-    tmp$_0 = destination.iterator();
-    while (tmp$_0.hasNext()) {
-      var item_0 = tmp$_0.next();
-      destination_0.add_11rb$(transform(item_0));
-    }
-    return joinToString(destination_0, '');
-  };
-  Utils$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Utils$Companion_instance = null;
-  function Utils$Companion_getInstance() {
-    if (Utils$Companion_instance === null) {
-      new Utils$Companion();
-    }return Utils$Companion_instance;
-  }
-  Utils.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Utils',
-    interfaces: []
-  };
   function Coroutine$submitFormPatch($receiver_0, formParameters_0, block_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
@@ -1693,6 +1626,36 @@
     else
       return instance.doResume(null);
   }
+  function SafeRegex() {
+    SafeRegex$Companion_getInstance();
+  }
+  function SafeRegex$Companion() {
+    SafeRegex$Companion_instance = this;
+    this.TEXT = Regex_init('^[-a-zA-Z0-9._/+=]+$');
+    this.URL = Regex_init('^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$');
+    this.URI = Regex_init('^[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$');
+    this.IPV4 = Regex_init('^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$');
+    this.URL_OR_IPV4 = Regex_init('^[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$|^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$');
+    this.BASE64 = Regex_init('^(?:[A-Za-z0-9+/]{4})+(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
+    this.AWS_ACCESS_KEY = Regex_init('^[A-Z0-9]{20}$');
+    this.AWS_SECRET_KEY = Regex_init('^[A-Za-z0-9/+=]{40}$');
+  }
+  SafeRegex$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var SafeRegex$Companion_instance = null;
+  function SafeRegex$Companion_getInstance() {
+    if (SafeRegex$Companion_instance === null) {
+      new SafeRegex$Companion();
+    }return SafeRegex$Companion_instance;
+  }
+  SafeRegex.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SafeRegex',
+    interfaces: []
+  };
   function polymorphic$lambda($receiver) {
     return Unit;
   }
@@ -1781,7 +1744,6 @@
     };
     CoreType$RBAC_CLOUD_instance = new CoreType('RBAC_CLOUD', 0);
     CoreType$RBAC_MQTT_instance = new CoreType('RBAC_MQTT', 1);
-    CoreType$RBAC_MOCK_instance = new CoreType('RBAC_MOCK', 2);
   }
   var CoreType$RBAC_CLOUD_instance;
   function CoreType$RBAC_CLOUD_getInstance() {
@@ -1793,19 +1755,12 @@
     CoreType_initFields();
     return CoreType$RBAC_MQTT_instance;
   }
-  var CoreType$RBAC_MOCK_instance;
-  function CoreType$RBAC_MOCK_getInstance() {
-    CoreType_initFields();
-    return CoreType$RBAC_MOCK_instance;
-  }
   CoreType.prototype.toPrettyString = function () {
     switch (this.name) {
       case 'RBAC_CLOUD':
         return 'RBAC for the Cloud';
       case 'RBAC_MQTT':
         return 'RBAC for MQTT';
-      case 'RBAC_MOCK':
-        return 'RBAC for testing';
       default:return Kotlin.noWhenBranchMatched();
     }
   };
@@ -1815,7 +1770,7 @@
     interfaces: [Enum]
   };
   function CoreType$values() {
-    return [CoreType$RBAC_CLOUD_getInstance(), CoreType$RBAC_MQTT_getInstance(), CoreType$RBAC_MOCK_getInstance()];
+    return [CoreType$RBAC_CLOUD_getInstance(), CoreType$RBAC_MQTT_getInstance()];
   }
   CoreType.values = CoreType$values;
   function CoreType$valueOf(name) {
@@ -1824,8 +1779,6 @@
         return CoreType$RBAC_CLOUD_getInstance();
       case 'RBAC_MQTT':
         return CoreType$RBAC_MQTT_getInstance();
-      case 'RBAC_MOCK':
-        return CoreType$RBAC_MOCK_getInstance();
       default:throwISE('No enum constant eu.fbk.st.cryptoac.core.CoreType.' + name);
     }
   }
@@ -2105,183 +2058,6 @@
   CoreParametersCLOUD.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'CoreParametersCLOUD',
-    interfaces: [CoreParameters]
-  };
-  function CoreParametersMOCK(user, coreType, cryptoType, versionNumber) {
-    CoreParametersMOCK$Companion_getInstance();
-    if (coreType === void 0)
-      coreType = CoreType$RBAC_MOCK_getInstance();
-    if (versionNumber === void 0)
-      versionNumber = 1;
-    CoreParameters.call(this);
-    this.user_n6hn20$_0 = user;
-    this.coreType_2ok716$_0 = coreType;
-    this.cryptoType_evh1tk$_0 = cryptoType;
-    this.versionNumber_eut9fk$_0 = versionNumber;
-  }
-  Object.defineProperty(CoreParametersMOCK.prototype, 'user', {
-    get: function () {
-      return this.user_n6hn20$_0;
-    },
-    set: function (user) {
-      this.user_n6hn20$_0 = user;
-    }
-  });
-  Object.defineProperty(CoreParametersMOCK.prototype, 'coreType', {
-    get: function () {
-      return this.coreType_2ok716$_0;
-    }
-  });
-  Object.defineProperty(CoreParametersMOCK.prototype, 'cryptoType', {
-    get: function () {
-      return this.cryptoType_evh1tk$_0;
-    }
-  });
-  Object.defineProperty(CoreParametersMOCK.prototype, 'versionNumber', {
-    get: function () {
-      return this.versionNumber_eut9fk$_0;
-    }
-  });
-  CoreParametersMOCK.prototype.update_8dp87x$ = function (updatedParameters) {
-  };
-  CoreParametersMOCK.prototype.equals = function (other) {
-    var tmp$, tmp$_0, tmp$_1;
-    if (this === other)
-      return true;
-    if (other == null || !((tmp$ = Kotlin.getKClassFromExpression(this)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(other)) : null))
-      return false;
-    Kotlin.isType(tmp$_0 = other, CoreParametersMOCK) ? tmp$_0 : throwCCE();
-    if (!((tmp$_1 = this.user) != null ? tmp$_1.equals(other.user) : null))
-      return false;
-    if (this.coreType !== other.coreType)
-      return false;
-    if (this.cryptoType !== other.cryptoType)
-      return false;
-    if (this.versionNumber !== other.versionNumber)
-      return false;
-    return true;
-  };
-  CoreParametersMOCK.prototype.hashCode = function () {
-    var result = this.user.hashCode();
-    result = (31 * result | 0) + this.coreType.hashCode() | 0;
-    result = (31 * result | 0) + this.cryptoType.hashCode() | 0;
-    result = (31 * result | 0) + this.versionNumber | 0;
-    return result;
-  };
-  function CoreParametersMOCK$Companion() {
-    CoreParametersMOCK$Companion_instance = this;
-  }
-  CoreParametersMOCK$Companion.prototype.serializer = function () {
-    return CoreParametersMOCK$$serializer_getInstance();
-  };
-  CoreParametersMOCK$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var CoreParametersMOCK$Companion_instance = null;
-  function CoreParametersMOCK$Companion_getInstance() {
-    if (CoreParametersMOCK$Companion_instance === null) {
-      new CoreParametersMOCK$Companion();
-    }return CoreParametersMOCK$Companion_instance;
-  }
-  function CoreParametersMOCK$$serializer() {
-    this.descriptor_6ybpuc$_0 = new PluginGeneratedSerialDescriptor('eu.fbk.st.cryptoac.core.CoreParametersMOCK', this, 4);
-    this.descriptor.addElement_ivxn3r$('user', false);
-    this.descriptor.addElement_ivxn3r$('coreType', true);
-    this.descriptor.addElement_ivxn3r$('cryptoType', false);
-    this.descriptor.addElement_ivxn3r$('versionNumber', true);
-    CoreParametersMOCK$$serializer_instance = this;
-  }
-  Object.defineProperty(CoreParametersMOCK$$serializer.prototype, 'descriptor', {
-    configurable: true,
-    get: function () {
-      return this.descriptor_6ybpuc$_0;
-    }
-  });
-  CoreParametersMOCK$$serializer.prototype.serialize_55azsf$ = function (encoder, value) {
-    var output = encoder.beginStructure_24f42q$(this.descriptor);
-    output.encodeSerializableElement_r4qlx7$(this.descriptor, 0, User$$serializer_getInstance(), value.user);
-    if (!equals(value.coreType, CoreType$RBAC_MOCK_getInstance()) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 1))
-      output.encodeSerializableElement_r4qlx7$(this.descriptor, 1, new EnumSerializer('eu.fbk.st.cryptoac.core.CoreType', CoreType$values()), value.coreType);
-    output.encodeSerializableElement_r4qlx7$(this.descriptor, 2, CryptoType$$serializer_getInstance(), value.cryptoType);
-    if (!equals(value.versionNumber, 1) || output.shouldEncodeElementDefault_szpzho$(this.descriptor, 3))
-      output.encodeIntElement_ptg7oe$(this.descriptor, 3, value.versionNumber);
-    output.endStructure_24f42q$(this.descriptor);
-  };
-  CoreParametersMOCK$$serializer.prototype.deserialize_bq71mq$ = function (decoder) {
-    var index;
-    var bitMask0 = 0;
-    var local0
-    , local1
-    , local2
-    , local3;
-    var input = decoder.beginStructure_24f42q$(this.descriptor);
-    loopLabel: while (true) {
-      index = input.decodeElementIndex_24f42q$(this.descriptor);
-      switch (index) {
-        case 0:
-          local0 = input.decodeSerializableElement_12e8id$(this.descriptor, 0, User$$serializer_getInstance(), local0);
-          bitMask0 |= 1;
-          break;
-        case 1:
-          local1 = input.decodeSerializableElement_12e8id$(this.descriptor, 1, new EnumSerializer('eu.fbk.st.cryptoac.core.CoreType', CoreType$values()), local1);
-          bitMask0 |= 2;
-          break;
-        case 2:
-          local2 = input.decodeSerializableElement_12e8id$(this.descriptor, 2, CryptoType$$serializer_getInstance(), local2);
-          bitMask0 |= 4;
-          break;
-        case 3:
-          local3 = input.decodeIntElement_szpzho$(this.descriptor, 3);
-          bitMask0 |= 8;
-          break;
-        case -1:
-          break loopLabel;
-        default:throw new UnknownFieldException(index);
-      }
-    }
-    input.endStructure_24f42q$(this.descriptor);
-    return CoreParametersMOCK_init(bitMask0, local0, local1, local2, local3, null);
-  };
-  CoreParametersMOCK$$serializer.prototype.childSerializers = function () {
-    return [User$$serializer_getInstance(), new EnumSerializer('eu.fbk.st.cryptoac.core.CoreType', CoreType$values()), CryptoType$$serializer_getInstance(), internal.IntSerializer];
-  };
-  CoreParametersMOCK$$serializer.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: '$serializer',
-    interfaces: [GeneratedSerializer]
-  };
-  var CoreParametersMOCK$$serializer_instance = null;
-  function CoreParametersMOCK$$serializer_getInstance() {
-    if (CoreParametersMOCK$$serializer_instance === null) {
-      new CoreParametersMOCK$$serializer();
-    }return CoreParametersMOCK$$serializer_instance;
-  }
-  function CoreParametersMOCK_init(seen1, user, coreType, cryptoType, versionNumber, serializationConstructorMarker) {
-    var $this = serializationConstructorMarker || Object.create(CoreParametersMOCK.prototype);
-    $this = CoreParameters_init(seen1, $this);
-    if ((seen1 & 1) === 0)
-      throw MissingFieldException_init('user');
-    else
-      $this.user_n6hn20$_0 = user;
-    if ((seen1 & 2) === 0)
-      $this.coreType_2ok716$_0 = CoreType$RBAC_MOCK_getInstance();
-    else
-      $this.coreType_2ok716$_0 = coreType;
-    if ((seen1 & 4) === 0)
-      throw MissingFieldException_init('cryptoType');
-    else
-      $this.cryptoType_evh1tk$_0 = cryptoType;
-    if ((seen1 & 8) === 0)
-      $this.versionNumber_eut9fk$_0 = 1;
-    else
-      $this.versionNumber_eut9fk$_0 = versionNumber;
-    return $this;
-  }
-  CoreParametersMOCK.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'CoreParametersMOCK',
     interfaces: [CoreParameters]
   };
   function logger$lambda_1() {
@@ -6873,31 +6649,6 @@
     }
   }
   RMType.valueOf_61zpoe$ = RMType$valueOf;
-  function Themes() {
-    Themes_instance = this;
-    this.lightGreyColor = '#f7f7f7';
-    this.concreteColor = '#95a5a6';
-    this.greyColor = '#676767';
-    this.purpleColor = '#8e44ad';
-    this.wetAsphaltColor = '#34495e';
-    this.purpleLinearGradient = 'linear-gradient(to right, rgb(142, 68, 173), rgb(172, 98, 203))';
-    this.lightBlueLinearGradient = 'linear-gradient(to right, rgb(3, 169, 244), rgb(33, 199, 255))';
-    this.amberLinearGradient = 'linear-gradient(to right, rgb(245, 183, 0), rgb(255, 193, 7))';
-    this.plainPaperTitleStyle = JSON.parse(trimMargin('{\n                                         "paddingTop": "5px",\n                                         "paddingBottom": "5px",\n                                         "color": "#3C4858"\n                                     }'));
-    this.largePlainPaperTitleStyle = JSON.parse(trimMargin('{\n                                         "paddingTop": "20px",\n                                         "paddingBottom": "20px",\n                                         "color": "#3C4858"\n                                     }'));
-    this.decoratedPaperTitleStyle = JSON.parse(trimMargin('{\n                                         "marginTop": "2%",\n                                         "borderRadius": "2px",\n                                         "width": "96%",\n                                         "transform": "translate(2%, -20%)",\n                                         "backgroundImage": "linear-gradient(to right, rgb(142, 68, 173), rgb(172, 98, 203))",\n                                         "paddingTop": "5px",\n                                         "paddingBottom": "5px",\n                                         "color": "white"\n                                     }'));
-  }
-  Themes.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Themes',
-    interfaces: []
-  };
-  var Themes_instance = null;
-  function Themes_getInstance() {
-    if (Themes_instance === null) {
-      new Themes();
-    }return Themes_instance;
-  }
   function styledSpan$lambda(it) {
     return new SPAN_init(html.emptyMap, it);
   }
@@ -6914,9 +6665,55 @@
       return new A_init(attributesMapOf_0(['href', closure$href, 'target', closure$target]), it);
     };
   }
-  function delete$lambda($receiver) {
+  function submitForm$lambda($receiver) {
     return Unit;
   }
+  var submitForm$lambda_0 = wrapFunction(function () {
+    var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
+    var OutgoingContent = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.content.OutgoingContent;
+    var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
+    var getKClass_0 = Kotlin.getKClass;
+    var typeInfoImpl = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect.typeInfoImpl_1lvkm8$;
+    var Throwable = Error;
+    return function (closure$encodeInQuery, closure$formParameters, closure$block) {
+      return function ($receiver) {
+        if (closure$encodeInQuery) {
+          $receiver.method = HttpMethod_0.Companion.Get;
+          $receiver.url.parameters.appendAll_hb0ubp$(closure$formParameters);
+        } else {
+          $receiver.method = HttpMethod_0.Companion.Post;
+          var body = new FormDataContent(closure$formParameters);
+          if (body == null) {
+            $receiver.body = utils.EmptyContent;
+            $receiver.bodyType = null;
+          } else if (Kotlin.isType(body, OutgoingContent)) {
+            $receiver.body = body;
+            $receiver.bodyType = null;
+          } else {
+            $receiver.body = body;
+            var tmp$ = reflect.JsType;
+            var tmp$_0 = getKClass_0(FormDataContent);
+            var tryGetType$result;
+            tryGetType$break: do {
+              try {
+                tryGetType$result = createKType(getKClass(FormDataContent), [], false);
+              } catch (cause) {
+                if (Kotlin.isType(cause, Throwable)) {
+                  tryGetType$result = null;
+                  break tryGetType$break;
+                } else
+                  throw cause;
+              }
+            }
+             while (false);
+            $receiver.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
+          }
+        }
+        closure$block($receiver);
+        return Unit;
+      };
+    };
+  });
   function logger$lambda_8() {
     return Unit;
   }
@@ -7006,60 +6803,64 @@
     return Unit;
   }
   function App$render$lambda$lambda$lambda$lambda$lambda_0(this$App) {
-    return function (core) {
-      this$App.changeCoreType_0(core);
+    return function (circularProgressValue) {
+      this$App.changeCircularProgressValue_0(circularProgressValue);
       return Unit;
     };
   }
   function App$render$lambda$lambda$lambda$lambda$lambda_1(this$App) {
-    return function (rmType) {
-      this$App.changeRMType_0(rmType);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_2(this$App) {
-    return function (mmType) {
-      this$App.changeMMType_0(mmType);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_3(this$App) {
-    return function (dmType) {
-      this$App.changeDMType_0(dmType);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda_1(this$App) {
-    return function ($receiver) {
-      $receiver.handleChangeCoreType = App$render$lambda$lambda$lambda$lambda$lambda_0(this$App);
-      $receiver.handleChangeRMType = App$render$lambda$lambda$lambda$lambda$lambda_1(this$App);
-      $receiver.handleChangeMMType = App$render$lambda$lambda$lambda$lambda$lambda_2(this$App);
-      $receiver.handleChangeDMType = App$render$lambda$lambda$lambda$lambda$lambda_3(this$App);
-      $receiver.coreType = this$App.state.coreType;
-      $receiver.rmType = this$App.state.rmType;
-      $receiver.mmType = this$App.state.mmType;
-      $receiver.dmType = this$App.state.dmType;
-      $receiver.availableRMImplementations = this$App.state.availableRMImplementations;
-      $receiver.availableMMImplementations = this$App.state.availableMMImplementations;
-      $receiver.availableDMImplementations = this$App.state.availableDMImplementations;
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_4(this$App) {
-    return function (userHasProfile) {
-      this$App.changeUserHasProfile_0(userHasProfile);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_5(this$App) {
     return function (backdropIsOpen) {
       this$App.changeBackdropIsOpen_0(backdropIsOpen);
       return Unit;
     };
   }
+  function App$render$lambda$lambda$lambda$lambda_1(this$App) {
+    return function ($receiver) {
+      $receiver.handleChangeCircularProgressValue = App$render$lambda$lambda$lambda$lambda$lambda_0(this$App);
+      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda$lambda$lambda$lambda_1(this$App);
+      $receiver.scenario = this$App.state.tradeOffBoardScenario;
+      $receiver.algorithm = this$App.state.tradeOffBoardAlgorithm;
+      $receiver.metric = this$App.state.tradeOffBoardMetric;
+      return Unit;
+    };
+  }
+  function App$render$lambda$lambda$lambda$lambda$lambda_2(this$App) {
+    return function (coreType) {
+      this$App.profileWasCreatedOrModified_0(coreType);
+      return Unit;
+    };
+  }
+  function App$render$lambda$lambda$lambda$lambda$lambda_3(this$App) {
+    return function (backdropIsOpen) {
+      this$App.changeBackdropIsOpen_0(backdropIsOpen);
+      return Unit;
+    };
+  }
+  function App$render$lambda$lambda$lambda$lambda$lambda_4(this$App) {
+    return function (code, severity) {
+      this$App.displayAlert_0(code, severity);
+      return Unit;
+    };
+  }
+  function App$render$lambda$lambda$lambda$lambda_2(this$App) {
+    return function ($receiver) {
+      $receiver.handleProfileWasCreatedOrModified = App$render$lambda$lambda$lambda$lambda$lambda_2(this$App);
+      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda$lambda$lambda$lambda_3(this$App);
+      $receiver.handleDisplayAlert = App$render$lambda$lambda$lambda$lambda$lambda_4(this$App);
+      $receiver.httpClient = this$App.state.httpClient;
+      $receiver.excludedCoreTypes = this$App.state.userProfiles.keys;
+      return Unit;
+    };
+  }
+  function App$render$lambda$lambda$lambda$lambda$lambda_5(this$App) {
+    return function (coreType) {
+      this$App.profileWasCreatedOrModified_0(coreType);
+      return Unit;
+    };
+  }
   function App$render$lambda$lambda$lambda$lambda$lambda_6(this$App) {
-    return function (userIsAdmin) {
-      this$App.changeUserIsAdmin_0(userIsAdmin);
+    return function (backdropIsOpen) {
+      this$App.changeBackdropIsOpen_0(backdropIsOpen);
       return Unit;
     };
   }
@@ -7069,65 +6870,17 @@
       return Unit;
     };
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda_8(this$App) {
-    return function (rmType) {
-      this$App.changeRMType_0(rmType);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_9(this$App) {
-    return function (mmType) {
-      this$App.changeMMType_0(mmType);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_10(this$App) {
-    return function (dmType) {
-      this$App.changeDMType_0(dmType);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda_2(this$App) {
-    return function ($receiver) {
-      $receiver.handleChangeUserHasProfile = App$render$lambda$lambda$lambda$lambda$lambda_4(this$App);
-      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda$lambda$lambda$lambda_5(this$App);
-      $receiver.handleChangeUserIsAdmin = App$render$lambda$lambda$lambda$lambda$lambda_6(this$App);
-      $receiver.handleDisplayAlert = App$render$lambda$lambda$lambda$lambda$lambda_7(this$App);
-      $receiver.handleChangeRMType = App$render$lambda$lambda$lambda$lambda$lambda_8(this$App);
-      $receiver.handleChangeMMType = App$render$lambda$lambda$lambda$lambda$lambda_9(this$App);
-      $receiver.handleChangeDMType = App$render$lambda$lambda$lambda$lambda$lambda_10(this$App);
-      $receiver.userHasProfile = this$App.state.userHasProfile;
-      $receiver.userIsLogged = this$App.state.userIsLogged;
-      $receiver.userIsAdmin = this$App.state.userIsAdmin;
-      $receiver.httpClient = this$App.state.httpClient;
-      $receiver.coreType = this$App.state.coreType;
-      $receiver.rmType = this$App.state.rmType;
-      $receiver.mmType = this$App.state.mmType;
-      $receiver.dmType = this$App.state.dmType;
-      $receiver.username = this$App.state.username;
-      $receiver.tables = this$App.state.tables;
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_11(this$App) {
-    return function (circularProgressValue) {
-      this$App.changeCircularProgressValue_0(circularProgressValue);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_12(this$App) {
-    return function (backdropIsOpen) {
-      this$App.changeBackdropIsOpen_0(backdropIsOpen);
-      return Unit;
-    };
-  }
   function App$render$lambda$lambda$lambda$lambda_3(this$App) {
     return function ($receiver) {
-      $receiver.handleChangeCircularProgressValue = App$render$lambda$lambda$lambda$lambda$lambda_11(this$App);
-      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda$lambda$lambda$lambda_12(this$App);
-      $receiver.scenario = this$App.state.scenario;
-      $receiver.algorithm = this$App.state.algorithm;
-      $receiver.metric = this$App.state.metric;
+      $receiver.handleProfileWasCreatedOrModified = App$render$lambda$lambda$lambda$lambda$lambda_5(this$App);
+      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda$lambda$lambda$lambda_6(this$App);
+      $receiver.handleDisplayAlert = App$render$lambda$lambda$lambda$lambda$lambda_7(this$App);
+      $receiver.coreParameters = ensureNotNull(this$App.state.userProfiles.get_11rb$(this$App.state.coreType));
+      $receiver.userIsLogged = this$App.state.userIsLogged;
+      $receiver.httpClient = this$App.state.httpClient;
+      $receiver.coreType = this$App.state.coreType;
+      $receiver.username = this$App.state.username;
+      $receiver.tables = this$App.state.tables;
       return Unit;
     };
   }
@@ -7147,14 +6900,14 @@
       $receiver.child_30b5ua$($receiver_0.create());
       $receiver.child_30b5ua$(cryptoACDivider(App$render$lambda$lambda$lambda$lambda_0));
       switch (this$App.state.uiType.name) {
-        case 'Modules':
-          tmp$ = modules(App$render$lambda$lambda$lambda$lambda_1(this$App));
-          break;
-        case 'Dashboard':
-          tmp$ = dashboard(App$render$lambda$lambda$lambda$lambda_2(this$App));
-          break;
         case 'TradeOffBoard':
-          tmp$ = tradeOffBoard(App$render$lambda$lambda$lambda$lambda_3(this$App));
+          tmp$ = tradeOffBoard(App$render$lambda$lambda$lambda$lambda_1(this$App));
+          break;
+        case 'NewProfile':
+          tmp$ = newProfile(App$render$lambda$lambda$lambda$lambda_2(this$App));
+          break;
+        case 'CoreType':
+          tmp$ = dashboard(App$render$lambda$lambda$lambda$lambda_3(this$App));
           break;
         default:tmp$ = Kotlin.noWhenBranchMatched();
           break;
@@ -7260,7 +7013,7 @@
   }
   function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_2(this$App) {
     return function (it) {
-      this$App.changeUIType_0(UIType$Modules_getInstance());
+      this$App.changeUIType_0(UIType$NewProfile_getInstance());
       return Unit;
     };
   }
@@ -7278,35 +7031,11 @@
   }
   function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_3(this$App) {
     return function ($receiver) {
-      $receiver.invoke_qk0v40$($module$react_icons_fa.FaBullseye, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_4(this$App));
+      $receiver.invoke_qk0v40$($module$react_icons_fa.FaVials, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_4(this$App));
       return Unit;
     };
   }
   function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_4(this$App) {
-    return function (it) {
-      this$App.changeUIType_0(UIType$Dashboard_getInstance());
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_3(this$App) {
-    return function ($receiver) {
-      $receiver.style = JSON.parse(trimMargin('{' + '"' + 'marginRight' + '"' + ': ' + '"' + (this$App.state.sidebarIsCollapsed ? 'unset' : 'auto') + ' ' + '"' + '}'));
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5(this$App) {
-    return function ($receiver) {
-      $receiver.attrs_37755u$(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_3(this$App));
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5(this$App) {
-    return function ($receiver) {
-      $receiver.invoke_qk0v40$($module$react_icons_fa.FaVials, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5(this$App));
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_6(this$App) {
     return function (it) {
       this$App.changeUIType_0(UIType$TradeOffBoard_getInstance());
       return Unit;
@@ -7314,8 +7043,10 @@
   }
   function App$render$lambda$lambda$lambda$lambda$lambda$lambda_1(this$App) {
     return function ($receiver) {
-      $receiver.defaultSelectedButton = 0;
-      $receiver.buttons = listOf([new CryptoACButtonAndIconData(ensureNotNull(createElement(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1(this$App))), 'Modules', !this$App.state.sidebarIsCollapsed, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_2(this$App)), new CryptoACButtonAndIconData(ensureNotNull(createElement(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_3(this$App))), 'Dashboard', !this$App.state.sidebarIsCollapsed, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_4(this$App)), new CryptoACButtonAndIconData(ensureNotNull(createElement(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5(this$App))), 'TradeOffBoard', !this$App.state.sidebarIsCollapsed, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_6(this$App))]);
+      $receiver.defaultSelectedButton = this$App.state.sidebarButtonIndex;
+      var $receiver_0 = mutableListOf([new CryptoACButtonAndIconData(ensureNotNull(createElement(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1(this$App))), 'New profile', !this$App.state.sidebarIsCollapsed, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_2(this$App)), new CryptoACButtonAndIconData(ensureNotNull(createElement(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_3(this$App))), 'TradeOffBoard', !this$App.state.sidebarIsCollapsed, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_4(this$App))]);
+      $receiver_0.addAll_brywnq$(this$App.state.sidebarButtons);
+      $receiver.buttons = $receiver_0;
       return Unit;
     };
   }
@@ -7349,48 +7080,48 @@
   function App$render$lambda$lambda$lambda$lambda_6($receiver) {
     return Unit;
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda_13(this$App) {
-    return function (newScenario) {
-      this$App.changeScenario_0(newScenario);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda$lambda$lambda$lambda_14(this$App) {
+  function App$render$lambda$lambda$lambda$lambda$lambda_8(this$App) {
     return function (newAlgorithm) {
-      this$App.changeAlgorithm_0(newAlgorithm);
+      this$App.changeTradeOffBoardAlgorithm_0(newAlgorithm);
       return Unit;
     };
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda_15(this$App) {
+  function App$render$lambda$lambda$lambda$lambda$lambda_9(this$App) {
+    return function (newScenario) {
+      this$App.changeTradeOffBoardScenario_0(newScenario);
+      return Unit;
+    };
+  }
+  function App$render$lambda$lambda$lambda$lambda$lambda_10(this$App) {
     return function (newMetric) {
-      this$App.changeMetric_0(newMetric);
+      this$App.changeTradeOffBoardMetric_0(newMetric);
       return Unit;
     };
   }
   function App$render$lambda$lambda$lambda$lambda_7(this$App) {
     return function ($receiver) {
-      $receiver.handleChangeScenario = App$render$lambda$lambda$lambda$lambda$lambda_13(this$App);
-      $receiver.handleChangeAlgorithm = App$render$lambda$lambda$lambda$lambda$lambda_14(this$App);
-      $receiver.handleChangeMetric = App$render$lambda$lambda$lambda$lambda$lambda_15(this$App);
-      $receiver.currentScenario = this$App.state.scenario;
-      $receiver.currentAlgorithm = this$App.state.algorithm;
-      $receiver.currentMetric = this$App.state.metric;
+      $receiver.handleChangeAlgorithm = App$render$lambda$lambda$lambda$lambda$lambda_8(this$App);
+      $receiver.handleChangeScenario = App$render$lambda$lambda$lambda$lambda$lambda_9(this$App);
+      $receiver.handleChangeMetric = App$render$lambda$lambda$lambda$lambda$lambda_10(this$App);
+      $receiver.currentScenario = this$App.state.tradeOffBoardScenario;
+      $receiver.currentAlgorithm = this$App.state.tradeOffBoardAlgorithm;
+      $receiver.currentMetric = this$App.state.tradeOffBoardMetric;
       return Unit;
     };
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda_16(this$App) {
+  function App$render$lambda$lambda$lambda$lambda$lambda_11(this$App) {
     return function (backdropIsOpen) {
       this$App.changeBackdropIsOpen_0(backdropIsOpen);
       return Unit;
     };
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda_17(this$App) {
+  function App$render$lambda$lambda$lambda$lambda$lambda_12(this$App) {
     return function (topic) {
       this$App.addTableInContent_0(topic);
       return Unit;
     };
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda_18(this$App) {
+  function App$render$lambda$lambda$lambda$lambda$lambda_13(this$App) {
     return function (code, severity) {
       this$App.displayAlert_0(code, severity);
       return Unit;
@@ -7398,12 +7129,10 @@
   }
   function App$render$lambda$lambda$lambda$lambda_8(this$App) {
     return function ($receiver) {
-      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda$lambda$lambda$lambda_16(this$App);
-      $receiver.handleAddTableInContent = App$render$lambda$lambda$lambda$lambda$lambda_17(this$App);
-      $receiver.handleDisplayAlert = App$render$lambda$lambda$lambda$lambda$lambda_18(this$App);
-      $receiver.userHasProfile = this$App.state.userHasProfile;
-      $receiver.userIsLogged = this$App.state.userIsLogged;
-      $receiver.userIsAdmin = this$App.state.userIsAdmin;
+      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda$lambda$lambda$lambda_11(this$App);
+      $receiver.handleAddTableInContent = App$render$lambda$lambda$lambda$lambda$lambda_12(this$App);
+      $receiver.handleDisplayAlert = App$render$lambda$lambda$lambda$lambda$lambda_13(this$App);
+      $receiver.userIsAdmin = ensureNotNull(this$App.state.userProfiles.get_11rb$(this$App.state.coreType)).user.isAdmin;
       $receiver.httpClient = this$App.state.httpClient;
       $receiver.coreType = this$App.state.coreType;
       return Unit;
@@ -7412,11 +7141,11 @@
   function App$render$lambda$lambda$lambda$lambda_9($receiver) {
     return Unit;
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_6($receiver) {
+  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5($receiver) {
     set_color($receiver, new Color(Themes_getInstance().wetAsphaltColor));
     return Unit;
   }
-  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_7($receiver) {
+  function App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5($receiver) {
     return Unit;
   }
   function App$render$lambda$lambda$lambda$lambda_10(this$App) {
@@ -7434,8 +7163,8 @@
       set_justifyContent($receiver_1, JustifyContent.center);
       set_textOverflow($receiver_1, TextOverflow.ellipsis);
       set_overflow($receiver_1, Overflow.hidden);
-      $receiver_1.hover_lx8bml$(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_6);
-      $receiver_0_0.invoke_qk0v40$($module$react_icons_fa.FaGithub, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_7);
+      $receiver_1.hover_lx8bml$(App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5);
+      $receiver_0_0.invoke_qk0v40$($module$react_icons_fa.FaGithub, App$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_5);
       if (!this$App_0.state.sidebarIsCollapsed) {
         var $receiver_0_1 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledSpan$lambda);
         var $receiver_2 = $receiver_0_1.css;
@@ -7460,10 +7189,10 @@
           case 'TradeOffBoard':
             tmp$ = configuration(App$render$lambda$lambda$lambda$lambda_7(this$App));
             break;
-          case 'Dashboard':
+          case 'CoreType':
             tmp$ = actions(App$render$lambda$lambda$lambda$lambda_8(this$App));
             break;
-          case 'Modules':
+          case 'NewProfile':
             tmp$ = evaluation(App$render$lambda$lambda$lambda$lambda_9);
             break;
           default:tmp$ = Kotlin.noWhenBranchMatched();
@@ -7476,36 +7205,22 @@
     };
   }
   function App$render$lambda$lambda_1(this$App) {
-    return function (backdropIsOpen) {
-      this$App.changeBackdropIsOpen_0(backdropIsOpen);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda_2(this$App) {
-    return function (userIsLogged) {
-      this$App.changeUserIsLogged_0(userIsLogged);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda_3(this$App) {
-    return function (username) {
-      this$App.changeUsername_0(username);
-      return Unit;
-    };
-  }
-  function App$render$lambda$lambda_4(this$App) {
     return function (code, severity) {
       this$App.displayAlert_0(code, severity);
       return Unit;
     };
   }
+  function App$render$lambda$lambda_2(this$App) {
+    return function (method, endpoint, values) {
+      this$App.submitLogin_0(method, endpoint, values);
+      return Unit;
+    };
+  }
   function App$render$lambda_0(this$App) {
     return function ($receiver) {
+      $receiver.handleDisplayAlert = App$render$lambda$lambda_1(this$App);
+      $receiver.handleSubmitLogin = App$render$lambda$lambda_2(this$App);
       $receiver.httpClient = this$App.state.httpClient;
-      $receiver.handleChangeBackdropIsOpen = App$render$lambda$lambda_1(this$App);
-      $receiver.handleChangeUserIsLogged = App$render$lambda$lambda_2(this$App);
-      $receiver.handleChangeUsername = App$render$lambda$lambda_3(this$App);
-      $receiver.handleDisplayAlert = App$render$lambda$lambda_4(this$App);
       return Unit;
     };
   }
@@ -7559,168 +7274,89 @@
   }
   App.prototype.init_b4e81d$ = function ($receiver) {
     logger_8.info_nq59yw$(App$init$lambda);
+    $receiver.httpClient = HttpClient(App$init$lambda_0);
+    $receiver.sidebarButtons = emptyList();
+    $receiver.sidebarButtonIndex = 0;
     $receiver.coreType = CoreType$RBAC_CLOUD_getInstance();
-    $receiver.uiType = UIType$Modules_getInstance();
+    $receiver.uiType = UIType$NewProfile_getInstance();
     $receiver.sidebarIsCollapsed = false;
     $receiver.backdropIsOpen = false;
-    $receiver.userHasProfile = false;
     $receiver.userIsLogged = false;
-    $receiver.userIsAdmin = false;
     $receiver.alertIsOpen = false;
     $receiver.alertMessage = '';
     $receiver.tables = ArrayList_init();
+    $receiver.userProfiles = HashMap_init();
     $receiver.alertSeverity = CryptoACAlertSeverity$SUCCESS_getInstance();
-    $receiver.httpClient = HttpClient(App$init$lambda_0);
-    $receiver.metric = Metric$Goals_getInstance();
-    $receiver.scenario = Scenario$CLOUD_getInstance();
-    $receiver.algorithm = Algorithm$Best_getInstance();
-    $receiver.rmType = RMType$CRYPTOAC_getInstance();
-    $receiver.mmType = MMType$MYSQL_getInstance();
-    $receiver.dmType = DMType$CRYPTOAC_getInstance();
-    $receiver.availableRMImplementations = this.getRMImplementations_0(CoreType$RBAC_CLOUD_getInstance());
-    $receiver.availableMMImplementations = this.getMMImplementations_0(CoreType$RBAC_CLOUD_getInstance());
-    $receiver.availableDMImplementations = this.getDMImplementations_0(CoreType$RBAC_CLOUD_getInstance());
     $receiver.circularProgressValue = 0;
+    $receiver.tradeOffBoardMetric = Metric$Goals_getInstance();
+    $receiver.tradeOffBoardScenario = Scenario$CLOUD_getInstance();
+    $receiver.tradeOffBoardAlgorithm = Algorithm$Best_getInstance();
   };
-  function App$submitLogout$lambda() {
-    return 'Submitting CryptoAC logout form';
-  }
-  function App$submitLogout$lambda$lambda(closure$status, closure$code) {
+  function App$profileWasCreatedOrModified$lambda(closure$newCoreType) {
     return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$code;
+      return 'A profile for core ' + closure$newCoreType + ' was created or modified ';
     };
   }
-  function App$submitLogout$lambda$lambda_0(closure$status, closure$code) {
+  function App$profileWasCreatedOrModified$lambda$lambda(closure$newCoreType) {
     return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$code;
+      return 'Fetching profile for core ' + closure$newCoreType + ' ';
     };
   }
-  function App$submitLogout$lambda$lambda_1(closure$e) {
-    return function () {
-      return 'Error during login (' + toString(closure$e.message) + '), see console log for details';
+  function App$profileWasCreatedOrModified$lambda$lambda$lambda(closure$it, closure$newCoreType) {
+    return function ($receiver) {
+      var $receiver_0 = $receiver.userProfiles;
+      var key = closure$newCoreType;
+      var value = closure$it;
+      $receiver_0.put_xwzc9p$(key, value);
+      return Unit;
     };
   }
-  function Coroutine$App$submitLogout$lambda(this$App_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$App$profileWasCreatedOrModified$lambda(closure$newCoreType_0, this$App_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 11;
+    this.exceptionState_0 = 1;
+    this.local$closure$newCoreType = closure$newCoreType_0;
     this.local$this$App = this$App_0;
-    this.local$response = void 0;
   }
-  Coroutine$App$submitLogout$lambda.$metadata$ = {
+  Coroutine$App$profileWasCreatedOrModified$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$App$submitLogout$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$App$submitLogout$lambda.prototype.constructor = Coroutine$App$submitLogout$lambda;
-  Coroutine$App$submitLogout$lambda.prototype.doResume = function () {
+  Coroutine$App$profileWasCreatedOrModified$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$App$profileWasCreatedOrModified$lambda.prototype.constructor = Coroutine$App$profileWasCreatedOrModified$lambda;
+  Coroutine$App$profileWasCreatedOrModified$lambda.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
-            this.exceptionState_0 = 6;
-            var $receiver = this.local$this$App.state.httpClient;
-            var urlString = baseURL + API_getInstance().LOGOUT;
-            var $receiver_1 = new HttpRequestBuilder_init();
-            url($receiver_1, urlString);
-            $receiver_1.method = HttpMethod_0.Companion.Delete;
-            this.state_0 = 1;
-            this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
+            var tmp$;
+            logger_8.info_nq59yw$(App$profileWasCreatedOrModified$lambda$lambda(this.local$closure$newCoreType));
+            this.state_0 = 2;
+            this.result_0 = this.local$this$App.getProfileFromCryptoAC_0(void 0, this.local$closure$newCoreType, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 1:
-            this.result_0;
-            this.local$response = this.result_0;
-            var tmp$_2;
-            var tmp$_3 = this.local$response.call;
-            var tmp$_4 = reflect.JsType;
-            var tmp$_0_1 = getKClass(OutcomeCode);
-            var tryGetType$result_0;
-            tryGetType$break: do {
-              try {
-                tryGetType$result_0 = createKType(getKClass(OutcomeCode), [], false);
-              } catch (cause_0) {
-                if (Kotlin.isType(cause_0, Throwable)) {
-                  tryGetType$result_0 = null;
-                  break tryGetType$break;
-                } else
-                  throw cause_0;
-              }
-            }
-             while (false);
-            this.state_0 = 2;
-            this.result_0 = tmp$_3.body_qi9ur9$(typeInfoImpl(tmp$_4, tmp$_0_1, tryGetType$result_0), this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 2:
-            this.result_0 = Kotlin.isType(tmp$_2 = this.result_0, OutcomeCode) ? tmp$_2 : throwCCE();
-            var code = this.result_0;
-            var status = this.local$response.status;
-            if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_8.info_nq59yw$(App$submitLogout$lambda$lambda(status, code));
-              this.local$this$App.changeUserIsLogged_0(false);
-              this.exceptionState_0 = 11;
-              this.finallyPath_0 = [4];
-              this.state_0 = 9;
-              this.$returnValue = (this.local$this$App.changeUsername_0(null), Unit);
-              continue;
-            } else {
-              logger_8.warn_nq59yw$(App$submitLogout$lambda$lambda_0(status, code));
-              this.exceptionState_0 = 11;
-              this.finallyPath_0 = [3];
-              this.state_0 = 9;
-              this.$returnValue = (this.local$this$App.displayAlert_0(code, CryptoACAlertSeverity$ERROR_getInstance()), Unit);
-              continue;
-            }
-
-          case 3:
-            return this.$returnValue;
-          case 4:
-            return this.$returnValue;
-          case 5:
-            this.exceptionState_0 = 11;
-            this.finallyPath_0 = [10];
-            this.state_0 = 9;
-            continue;
-          case 6:
-            this.finallyPath_0 = [11];
-            this.exceptionState_0 = 9;
-            var e = this.exception_0;
-            if (Kotlin.isType(e, Error_0)) {
-              logger_8.error_nq59yw$(App$submitLogout$lambda$lambda_1(e));
-              console.log(e);
-              this.exceptionState_0 = 11;
-              this.finallyPath_0 = [7];
-              this.state_0 = 9;
-              this.$returnValue = (this.local$this$App.displayAlert_0(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit);
-              continue;
-            } else {
-              throw e;
-            }
-
-          case 7:
-            return this.$returnValue;
-          case 8:
-            this.finallyPath_0 = [10];
-            this.state_0 = 9;
-            continue;
-          case 9:
-            this.exceptionState_0 = 11;
-            this.local$this$App.changeBackdropIsOpen_0(false);
-            this.state_0 = this.finallyPath_0.shift();
-            continue;
-          case 10:
-            return;
-          case 11:
             throw this.exception_0;
-          default:this.state_0 = 11;
+          case 2:
+            var tmp$_0;
+            if ((tmp$ = this.result_0) != null) {
+              var closure$newCoreType = this.local$closure$newCoreType;
+              var this$App = this.local$this$App;
+              setState(this$App, App$profileWasCreatedOrModified$lambda$lambda$lambda(tmp$, closure$newCoreType));
+              this$App.changeCoreType_0(closure$newCoreType);
+              this$App.computeSidebarButtonsAndIndex_0(this$App.state.userProfiles);
+              this$App.changeUIType_0(UIType$CoreType_getInstance());
+              tmp$_0 = Unit;
+            } else
+              tmp$_0 = null;
+            return tmp$_0;
+          default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 11) {
+        if (this.state_0 === 1) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -7730,554 +7366,74 @@
       }
      while (true);
   };
-  function App$submitLogout$lambda_0(this$App_0) {
+  function App$profileWasCreatedOrModified$lambda_0(closure$newCoreType_0, this$App_0) {
     return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$App$submitLogout$lambda(this$App_0, $receiver_0, this, continuation_0);
+      var instance = new Coroutine$App$profileWasCreatedOrModified$lambda(closure$newCoreType_0, this$App_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
     };
   }
-  App.prototype.submitLogout_0 = function () {
-    logger_8.info_nq59yw$(App$submitLogout$lambda);
-    this.changeBackdropIsOpen_0(true);
-    launch(MainScope(), void 0, void 0, App$submitLogout$lambda_0(this));
+  App.prototype.profileWasCreatedOrModified_0 = function (newCoreType) {
+    logger_8.info_nq59yw$(App$profileWasCreatedOrModified$lambda(newCoreType));
+    launch(MainScope(), void 0, void 0, App$profileWasCreatedOrModified$lambda_0(newCoreType, this));
   };
-  function App$displayAlert$lambda(closure$code, closure$severity) {
-    return function () {
-      return 'Displaying the alert with code ' + closure$code + ' and severity ' + closure$severity;
-    };
-  }
-  function App$displayAlert$lambda_0(closure$code, closure$severity) {
-    return function ($receiver) {
-      $receiver.alertIsOpen = true;
-      $receiver.alertMessage = closure$code.getMessage() + (' (Code ' + closure$code.getNumber() + ')');
-      $receiver.alertSeverity = closure$severity;
-      return Unit;
-    };
-  }
-  App.prototype.displayAlert_0 = function (code, severity) {
-    logger_8.info_nq59yw$(App$displayAlert$lambda(code, severity));
-    setState(this, App$displayAlert$lambda_0(code, severity));
-  };
-  function App$addTableInContent$lambda(closure$tableName) {
-    return function () {
-      return 'Adding table ' + closure$tableName + ' to content';
-    };
-  }
-  function App$addTableInContent$lambda_0(closure$tableName) {
-    return function ($receiver) {
-      $receiver.tables.add_11rb$(closure$tableName);
-      return Unit;
-    };
-  }
-  App.prototype.addTableInContent_0 = function (tableName) {
-    logger_8.info_nq59yw$(App$addTableInContent$lambda(tableName));
-    setState(this, App$addTableInContent$lambda_0(tableName));
-  };
-  function App$changeUIType$lambda(closure$newUIType) {
-    return function () {
-      return "Asking to change the 'uiType' state to " + closure$newUIType;
-    };
-  }
-  function App$changeUIType$lambda$lambda(closure$newUIType) {
-    return function () {
-      return "Setting the 'uiType' state to " + closure$newUIType;
-    };
-  }
-  function App$changeUIType$lambda_0(closure$newUIType) {
-    return function ($receiver) {
-      logger_8.info_nq59yw$(App$changeUIType$lambda$lambda(closure$newUIType));
-      $receiver.uiType = closure$newUIType;
-      return Unit;
-    };
-  }
-  App.prototype.changeUIType_0 = function (newUIType) {
-    logger_8.info_nq59yw$(App$changeUIType$lambda(newUIType));
-    setState(this, App$changeUIType$lambda_0(newUIType));
-    return true;
-  };
-  function App$changeBackdropIsOpen$lambda(closure$newBackdropIsOpen) {
-    return function () {
-      return "Setting the 'backdropIsOpen' state to " + closure$newBackdropIsOpen;
-    };
-  }
-  function App$changeBackdropIsOpen$lambda_0(closure$newBackdropIsOpen) {
-    return function ($receiver) {
-      $receiver.backdropIsOpen = closure$newBackdropIsOpen;
-      return Unit;
-    };
-  }
-  App.prototype.changeBackdropIsOpen_0 = function (newBackdropIsOpen) {
-    logger_8.info_nq59yw$(App$changeBackdropIsOpen$lambda(newBackdropIsOpen));
-    if (!newBackdropIsOpen) {
-      this.changeCircularProgressValue_0(0);
-    }setState(this, App$changeBackdropIsOpen$lambda_0(newBackdropIsOpen));
-  };
-  function App$changeCircularProgressValue$lambda(closure$newCircularProgressValue) {
-    return function () {
-      return "Setting the 'circularProgressValue' state to " + closure$newCircularProgressValue;
-    };
-  }
-  function App$changeCircularProgressValue$lambda_0(closure$newCircularProgressValue) {
-    return function ($receiver) {
-      $receiver.circularProgressValue = closure$newCircularProgressValue;
-      return Unit;
-    };
-  }
-  App.prototype.changeCircularProgressValue_0 = function (newCircularProgressValue) {
-    logger_8.info_nq59yw$(App$changeCircularProgressValue$lambda(newCircularProgressValue));
-    setState(this, App$changeCircularProgressValue$lambda_0(newCircularProgressValue));
-  };
-  function App$changeUserIsLogged$lambda(closure$newUserIsLogged) {
-    return function () {
-      return "Setting the 'userIsLogged' state to " + closure$newUserIsLogged;
-    };
-  }
-  function App$changeUserIsLogged$lambda_0(closure$newUserIsLogged) {
-    return function ($receiver) {
-      $receiver.userIsLogged = closure$newUserIsLogged;
-      return Unit;
-    };
-  }
-  App.prototype.changeUserIsLogged_0 = function (newUserIsLogged) {
-    logger_8.info_nq59yw$(App$changeUserIsLogged$lambda(newUserIsLogged));
-    setState(this, App$changeUserIsLogged$lambda_0(newUserIsLogged));
-  };
-  function App$changeUserHasProfile$lambda(closure$newUserHasProfile) {
-    return function () {
-      return "Changing the 'newHasProfile' state to " + closure$newUserHasProfile;
-    };
-  }
-  function App$changeUserHasProfile$lambda_0(closure$newUserHasProfile) {
-    return function ($receiver) {
-      $receiver.userHasProfile = closure$newUserHasProfile;
-      return Unit;
-    };
-  }
-  App.prototype.changeUserHasProfile_0 = function (newUserHasProfile) {
-    logger_8.info_nq59yw$(App$changeUserHasProfile$lambda(newUserHasProfile));
-    setState(this, App$changeUserHasProfile$lambda_0(newUserHasProfile));
-  };
-  function App$changeUsername$lambda(closure$newUsername) {
-    return function () {
-      return "Changing the 'username' state to " + toString(closure$newUsername);
-    };
-  }
-  function App$changeUsername$lambda_0(closure$newUsername) {
-    return function ($receiver) {
-      $receiver.username = closure$newUsername;
-      return Unit;
-    };
-  }
-  App.prototype.changeUsername_0 = function (newUsername) {
-    logger_8.info_nq59yw$(App$changeUsername$lambda(newUsername));
-    setState(this, App$changeUsername$lambda_0(newUsername));
-  };
-  function App$changeUserIsAdmin$lambda(closure$newUserIsAdmin) {
-    return function () {
-      return "Changing the 'userIsAdmin' state to " + closure$newUserIsAdmin;
-    };
-  }
-  function App$changeUserIsAdmin$lambda_0(closure$newUserIsAdmin) {
-    return function ($receiver) {
-      $receiver.userIsAdmin = closure$newUserIsAdmin;
-      return Unit;
-    };
-  }
-  App.prototype.changeUserIsAdmin_0 = function (newUserIsAdmin) {
-    logger_8.info_nq59yw$(App$changeUserIsAdmin$lambda(newUserIsAdmin));
-    setState(this, App$changeUserIsAdmin$lambda_0(newUserIsAdmin));
-  };
-  function App$changeCoreType$lambda(closure$newCoreType) {
-    return function () {
-      return "Changing the 'coreType' state to " + closure$newCoreType;
-    };
-  }
-  function App$changeCoreType$lambda_0(closure$newCoreType, this$App) {
-    return function ($receiver) {
-      $receiver.coreType = closure$newCoreType;
-      $receiver.userHasProfile = false;
-      $receiver.userIsAdmin = false;
-      $receiver.availableRMImplementations = this$App.getRMImplementations_0(closure$newCoreType);
-      $receiver.availableMMImplementations = this$App.getMMImplementations_0(closure$newCoreType);
-      $receiver.availableDMImplementations = this$App.getDMImplementations_0(closure$newCoreType);
-      if (!$receiver.availableRMImplementations.contains_11rb$($receiver.rmType.toString())) {
-        $receiver.rmType = RMType$valueOf(first($receiver.availableRMImplementations));
-      }if (!$receiver.availableMMImplementations.contains_11rb$($receiver.mmType.toString())) {
-        $receiver.mmType = MMType$valueOf(first($receiver.availableMMImplementations));
-      }if (!$receiver.availableDMImplementations.contains_11rb$($receiver.dmType.toString())) {
-        $receiver.dmType = DMType$valueOf(first($receiver.availableDMImplementations));
-      }return Unit;
-    };
-  }
-  App.prototype.changeCoreType_0 = function (newCoreType) {
-    logger_8.info_nq59yw$(App$changeCoreType$lambda(newCoreType));
-    setState(this, App$changeCoreType$lambda_0(newCoreType, this));
-  };
-  function App$changeAlgorithm$lambda(closure$newAlgorithm) {
-    return function () {
-      return "Changing the 'algorithm' state to " + closure$newAlgorithm;
-    };
-  }
-  function App$changeAlgorithm$lambda_0(closure$newAlgorithm) {
-    return function ($receiver) {
-      $receiver.algorithm = closure$newAlgorithm;
-      return Unit;
-    };
-  }
-  App.prototype.changeAlgorithm_0 = function (newAlgorithm) {
-    logger_8.info_nq59yw$(App$changeAlgorithm$lambda(newAlgorithm));
-    setState(this, App$changeAlgorithm$lambda_0(newAlgorithm));
-  };
-  function App$changeMetric$lambda(closure$newMetric) {
-    return function () {
-      return "Changing the 'metric' state to " + closure$newMetric;
-    };
-  }
-  function App$changeMetric$lambda_0(closure$newMetric) {
-    return function ($receiver) {
-      $receiver.metric = closure$newMetric;
-      return Unit;
-    };
-  }
-  App.prototype.changeMetric_0 = function (newMetric) {
-    logger_8.info_nq59yw$(App$changeMetric$lambda(newMetric));
-    setState(this, App$changeMetric$lambda_0(newMetric));
-  };
-  function App$changeScenario$lambda(closure$newScenario) {
-    return function () {
-      return "Changing the 'scenario' state to " + closure$newScenario;
-    };
-  }
-  function App$changeScenario$lambda_0(closure$newScenario) {
-    return function ($receiver) {
-      $receiver.scenario = closure$newScenario;
-      return Unit;
-    };
-  }
-  App.prototype.changeScenario_0 = function (newScenario) {
-    logger_8.info_nq59yw$(App$changeScenario$lambda(newScenario));
-    setState(this, App$changeScenario$lambda_0(newScenario));
-  };
-  function App$changeRMType$lambda(closure$newRMType) {
-    return function () {
-      return "Setting the 'rmType' state to " + closure$newRMType;
-    };
-  }
-  function App$changeRMType$lambda_0(closure$newRMType) {
-    return function ($receiver) {
-      $receiver.rmType = closure$newRMType;
-      return Unit;
-    };
-  }
-  App.prototype.changeRMType_0 = function (newRMType) {
-    logger_8.info_nq59yw$(App$changeRMType$lambda(newRMType));
-    setState(this, App$changeRMType$lambda_0(newRMType));
-  };
-  function App$changeMMType$lambda(closure$newMMType) {
-    return function () {
-      return "Setting the 'mmType' state to " + closure$newMMType;
-    };
-  }
-  function App$changeMMType$lambda_0(closure$newMMType) {
-    return function ($receiver) {
-      $receiver.mmType = closure$newMMType;
-      return Unit;
-    };
-  }
-  App.prototype.changeMMType_0 = function (newMMType) {
-    logger_8.info_nq59yw$(App$changeMMType$lambda(newMMType));
-    setState(this, App$changeMMType$lambda_0(newMMType));
-  };
-  function App$changeDMType$lambda(closure$newDMType) {
-    return function () {
-      return "Setting the 'dmType' state to " + closure$newDMType;
-    };
-  }
-  function App$changeDMType$lambda_0(closure$newDMType) {
-    return function ($receiver) {
-      $receiver.dmType = closure$newDMType;
-      return Unit;
-    };
-  }
-  App.prototype.changeDMType_0 = function (newDMType) {
-    logger_8.info_nq59yw$(App$changeDMType$lambda(newDMType));
-    setState(this, App$changeDMType$lambda_0(newDMType));
-  };
-  function App$toggleSidebarIsCollapsed$lambda(closure$collapsed) {
-    return function () {
-      return "Setting the 'sidebarIsCollapsed' state to " + closure$collapsed;
-    };
-  }
-  function App$toggleSidebarIsCollapsed$lambda_0(closure$collapsed) {
-    return function ($receiver) {
-      $receiver.sidebarIsCollapsed = closure$collapsed;
-      return Unit;
-    };
-  }
-  App.prototype.toggleSidebarIsCollapsed_0 = function () {
-    var collapsed = !this.state.sidebarIsCollapsed;
-    logger_8.info_nq59yw$(App$toggleSidebarIsCollapsed$lambda(collapsed));
-    setState(this, App$toggleSidebarIsCollapsed$lambda_0(collapsed));
-  };
-  App.prototype.getDMImplementations_0 = function (coreType) {
-    switch (coreType.name) {
-      case 'RBAC_CLOUD':
-        return listOf_0(DMType$CRYPTOAC_getInstance().toString());
-      case 'RBAC_MQTT':
-        return listOf_0(DMType$MOSQUITTO_getInstance().toString());
-      case 'RBAC_MOCK':
-        return emptyList();
-      default:return Kotlin.noWhenBranchMatched();
-    }
-  };
-  App.prototype.getMMImplementations_0 = function (coreType) {
-    switch (coreType.name) {
-      case 'RBAC_CLOUD':
-        return listOf([MMType$MYSQL_getInstance().toString(), MMType$REDIS_getInstance().toString()]);
-      case 'RBAC_MQTT':
-        return listOf([MMType$MYSQL_getInstance().toString(), MMType$REDIS_getInstance().toString()]);
-      case 'RBAC_MOCK':
-        return emptyList();
-      default:return Kotlin.noWhenBranchMatched();
-    }
-  };
-  App.prototype.getRMImplementations_0 = function (coreType) {
-    switch (coreType.name) {
-      case 'RBAC_CLOUD':
-        return listOf_0(RMType$CRYPTOAC_getInstance().toString());
-      case 'RBAC_MQTT':
-        return listOf_0(RMType$NONE_getInstance().toString());
-      case 'RBAC_MOCK':
-        return emptyList();
-      default:return Kotlin.noWhenBranchMatched();
-    }
-  };
-  App.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'App',
-    interfaces: [RComponent]
-  };
-  function UIType(name, ordinal) {
-    Enum.call(this);
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function UIType_initFields() {
-    UIType_initFields = function () {
-    };
-    UIType$Modules_instance = new UIType('Modules', 0);
-    UIType$Dashboard_instance = new UIType('Dashboard', 1);
-    UIType$TradeOffBoard_instance = new UIType('TradeOffBoard', 2);
-  }
-  var UIType$Modules_instance;
-  function UIType$Modules_getInstance() {
-    UIType_initFields();
-    return UIType$Modules_instance;
-  }
-  var UIType$Dashboard_instance;
-  function UIType$Dashboard_getInstance() {
-    UIType_initFields();
-    return UIType$Dashboard_instance;
-  }
-  var UIType$TradeOffBoard_instance;
-  function UIType$TradeOffBoard_getInstance() {
-    UIType_initFields();
-    return UIType$TradeOffBoard_instance;
-  }
-  UIType.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'UIType',
-    interfaces: [Enum]
-  };
-  function UIType$values() {
-    return [UIType$Modules_getInstance(), UIType$Dashboard_getInstance(), UIType$TradeOffBoard_getInstance()];
-  }
-  UIType.values = UIType$values;
-  function UIType$valueOf(name) {
-    switch (name) {
-      case 'Modules':
-        return UIType$Modules_getInstance();
-      case 'Dashboard':
-        return UIType$Dashboard_getInstance();
-      case 'TradeOffBoard':
-        return UIType$TradeOffBoard_getInstance();
-      default:throwISE('No enum constant eu.fbk.st.cryptoac.view.UIType.' + name);
-    }
-  }
-  UIType.valueOf_61zpoe$ = UIType$valueOf;
-  function styledDiv$lambda_0(it) {
-    return new DIV_init(html.emptyMap, it);
-  }
-  function submitForm$lambda($receiver) {
+  function App$resetAppState$lambda($receiver) {
+    $receiver.userProfiles = HashMap_init();
+    $receiver.tables = ArrayList_init();
     return Unit;
   }
-  var submitForm$lambda_0 = wrapFunction(function () {
-    var utils = $module$ktor_ktor_client_core_js_legacy.io.ktor.client.utils;
-    var OutgoingContent = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-http-js-legacy'].io.ktor.http.content.OutgoingContent;
-    var reflect = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect;
-    var getKClass_0 = Kotlin.getKClass;
-    var typeInfoImpl = $module$ktor_ktor_client_core_js_legacy.$$importsForInline$$['ktor-ktor-utils-js-legacy'].io.ktor.util.reflect.typeInfoImpl_1lvkm8$;
-    var Throwable = Error;
-    return function (closure$encodeInQuery, closure$formParameters, closure$block) {
-      return function ($receiver) {
-        if (closure$encodeInQuery) {
-          $receiver.method = HttpMethod_0.Companion.Get;
-          $receiver.url.parameters.appendAll_hb0ubp$(closure$formParameters);
-        } else {
-          $receiver.method = HttpMethod_0.Companion.Post;
-          var body = new FormDataContent(closure$formParameters);
-          if (body == null) {
-            $receiver.body = utils.EmptyContent;
-            $receiver.bodyType = null;
-          } else if (Kotlin.isType(body, OutgoingContent)) {
-            $receiver.body = body;
-            $receiver.bodyType = null;
-          } else {
-            $receiver.body = body;
-            var tmp$ = reflect.JsType;
-            var tmp$_0 = getKClass_0(FormDataContent);
-            var tryGetType$result;
-            tryGetType$break: do {
-              try {
-                tryGetType$result = createKType(getKClass(FormDataContent), [], false);
-              } catch (cause) {
-                if (Kotlin.isType(cause, Throwable)) {
-                  tryGetType$result = null;
-                  break tryGetType$break;
-                } else
-                  throw cause;
-              }
-            }
-             while (false);
-            $receiver.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
-          }
-        }
-        closure$block($receiver);
-        return Unit;
-      };
-    };
-  });
-  function logger$lambda_9() {
-    return Unit;
-  }
-  var logger_9;
-  function Login() {
-    RComponent_init(this);
-  }
-  function Login$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Login) {
-    return function (method, endpoint, values, f) {
-      this$Login.submitLogin_0(method, endpoint, values);
-      return Unit;
-    };
-  }
-  function Login$render$lambda$lambda$lambda$lambda$lambda$lambda(this$Login, this$) {
-    return function ($receiver) {
-      var $receiver_0 = this$;
-      var this$Login_0 = this$Login;
-      $receiver_0.attrs;
-      $receiver.handleChangeBackdropIsOpen = this$Login_0.props.handleChangeBackdropIsOpen;
-      $receiver.handleDisplayCryptoACAlert = this$Login_0.props.handleDisplayAlert;
-      $receiver.submitButtonText = 'Login';
-      $receiver.method = HttpMethod.Companion.Post;
-      $receiver.endpoint = API_getInstance().LOGIN;
-      $receiver.handleSubmitEvent = Login$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Login_0);
-      $receiver.cryptoACFormFields = listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance(), void 0, void 0, 'darkTextField')));
-      return Unit;
-    };
-  }
-  function Login$render$lambda$lambda$lambda$lambda(this$Login) {
-    return function ($receiver) {
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_0);
-      var this$Login_0 = this$Login;
-      var $receiver_1 = $receiver_0.css;
-      set_marginLeft($receiver_1, get_pct(15));
-      set_marginRight($receiver_1, get_pct(15));
-      $receiver_0.child_30b5ua$(cryptoACForm(Login$render$lambda$lambda$lambda$lambda$lambda$lambda(this$Login_0, $receiver_0)));
-      $receiver.child_30b5ua$($receiver_0.create());
-      return Unit;
-    };
-  }
-  function Login$render$lambda$lambda$lambda(this$Login) {
-    return function ($receiver) {
-      $receiver.titleStyle = Themes_getInstance().largePlainPaperTitleStyle;
-      $receiver.titleText = 'Login to CryptoAC';
-      $receiver.titleVariant = 'h5';
-      $receiver.setDivider = true;
-      $receiver.dividerWidth = get_pct(80);
-      $receiver.child = ensureNotNull(createElement(Login$render$lambda$lambda$lambda$lambda(this$Login)));
-      return Unit;
-    };
-  }
-  Login.prototype.render_ss14n$ = function ($receiver) {
-    var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_0);
-    var $receiver_1 = $receiver_0.css;
-    set_height($receiver_1, get_pct(100));
-    set_width($receiver_1, get_pct(100));
-    set_backgroundImage($receiver_1, new Image('url(fbk_background.jpg)'));
-    set_backgroundPosition($receiver_1, 'center');
-    set_backgroundRepeat($receiver_1, BackgroundRepeat.noRepeat);
-    set_backgroundSize($receiver_1, 'cover');
-    var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_0);
-    var $receiver_2 = $receiver_0_0.css;
-    set_position($receiver_2, Position.fixed);
-    set_top($receiver_2, get_pct(50));
-    set_left($receiver_2, get_pct(50));
-    var $receiver_3 = new Transforms();
-    translate($receiver_3, get_pct(-50), get_pct(-50));
-    set_transform($receiver_2, $receiver_3);
-    set_textAlign($receiver_2, TextAlign.center);
-    set_width($receiver_2, get_pct(35));
-    set_height($receiver_2, get_pct(30));
-    $receiver_0_0.child_30b5ua$(cryptoACPaper(Login$render$lambda$lambda$lambda(this)));
-    $receiver_0.child_30b5ua$($receiver_0_0.create());
-    $receiver.child_30b5ua$($receiver_0.create());
+  App.prototype.resetAppState_0 = function () {
+    this.changeBackdropIsOpen_0(false);
+    this.changeUserIsLogged_0(false);
+    this.changeUsername_0(null);
+    this.changeUIType_0(UIType$NewProfile_getInstance());
+    setState(this, App$resetAppState$lambda);
   };
-  function Login$submitLogin$lambda(closure$method, closure$endpoint) {
+  function App$submitLogin$lambda(closure$method, closure$endpoint) {
     return function () {
       return 'Submitting CryptoAC login form, method ' + closure$method + ', endpoint ' + closure$endpoint;
     };
   }
-  function Login$submitLogin$lambda$lambda(closure$status, closure$code) {
+  function App$submitLogin$lambda$lambda(closure$status, closure$code) {
     return function () {
       return 'Response status is ' + closure$status + ', code is ' + closure$code;
     };
   }
-  function Login$submitLogin$lambda$lambda_0(closure$status, closure$code) {
+  function App$submitLogin$lambda$lambda_0(closure$status, closure$code) {
     return function () {
       return 'Response status is ' + closure$status + ', code is ' + closure$code;
     };
   }
-  function Login$submitLogin$lambda$lambda_1(closure$e) {
+  function App$submitLogin$lambda$lambda_1(closure$e) {
     return function () {
       return 'Error during login (' + toString(closure$e.message) + '), see console log for details';
     };
   }
-  function Coroutine$Login$submitLogin$lambda(this$Login_0, closure$values_0, closure$endpoint_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$App$submitLogin$lambda(this$App_0, closure$values_0, closure$endpoint_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
     this.exceptionState_0 = 7;
-    this.local$this$Login = this$Login_0;
+    this.local$this$App = this$App_0;
     this.local$closure$values = closure$values_0;
     this.local$closure$endpoint = closure$endpoint_0;
     this.local$response = void 0;
   }
-  Coroutine$Login$submitLogin$lambda.$metadata$ = {
+  Coroutine$App$submitLogin$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$Login$submitLogin$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Login$submitLogin$lambda.prototype.constructor = Coroutine$Login$submitLogin$lambda;
-  Coroutine$Login$submitLogin$lambda.prototype.doResume = function () {
+  Coroutine$App$submitLogin$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$App$submitLogin$lambda.prototype.constructor = Coroutine$App$submitLogin$lambda;
+  Coroutine$App$submitLogin$lambda.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
             this.exceptionState_0 = 4;
-            var tmp$ = this.local$this$Login.props.httpClient;
+            var tmp$ = this.local$this$App.state.httpClient;
             var $receiver = ParametersBuilder();
             var tmp$_0;
             tmp$_0 = this.local$closure$values.entries.iterator();
@@ -8357,17 +7513,15 @@
             var code = this.result_0;
             var status = this.local$response.status;
             if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_9.info_nq59yw$(Login$submitLogin$lambda$lambda(status, code));
-              this.local$this$Login.props.handleChangeBackdropIsOpen(false);
-              this.local$this$Login.props.handleChangeUserIsLogged(true);
-              this.local$this$Login.props.handleChangeUsername(ensureNotNull(this.local$closure$values.get_11rb$(SERVER_getInstance().USERNAME)));
-              return this.local$this$Login.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance()), Unit;
+              logger_8.info_nq59yw$(App$submitLogin$lambda$lambda(status, code));
+              this.local$this$App.changeBackdropIsOpen_0(false);
+              this.local$this$App.changeUsername_0(ensureNotNull(this.local$closure$values.get_11rb$(SERVER_getInstance().USERNAME)));
+              this.local$this$App.changeUserIsLogged_0(true);
+              return this.local$this$App.displayAlert_0(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance()), Unit;
             } else {
-              logger_9.warn_nq59yw$(Login$submitLogin$lambda$lambda_0(status, code));
-              this.local$this$Login.props.handleChangeBackdropIsOpen(false);
-              this.local$this$Login.props.handleChangeUserIsLogged(false);
-              this.local$this$Login.props.handleChangeUsername(null);
-              return this.local$this$Login.props.handleDisplayAlert(code, CryptoACAlertSeverity$ERROR_getInstance()), Unit;
+              logger_8.warn_nq59yw$(App$submitLogin$lambda$lambda_0(status, code));
+              this.local$this$App.resetAppState_0();
+              return this.local$this$App.displayAlert_0(code, CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
           case 3:
@@ -8378,12 +7532,10 @@
             this.exceptionState_0 = 7;
             var e = this.exception_0;
             if (Kotlin.isType(e, Throwable)) {
-              this.local$this$Login.props.handleChangeBackdropIsOpen(false);
-              this.local$this$Login.props.handleChangeUserIsLogged(false);
-              this.local$this$Login.props.handleChangeUsername(null);
-              logger_9.error_nq59yw$(Login$submitLogin$lambda$lambda_1(e));
+              this.local$this$App.resetAppState_0();
+              logger_8.error_nq59yw$(App$submitLogin$lambda$lambda_1(e));
               console.log(e);
-              return this.local$this$Login.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+              return this.local$this$App.displayAlert_0(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             } else {
               throw e;
             }
@@ -8409,19 +7561,783 @@
       }
      while (true);
   };
-  function Login$submitLogin$lambda_0(this$Login_0, closure$values_0, closure$endpoint_0) {
+  function App$submitLogin$lambda_0(this$App_0, closure$values_0, closure$endpoint_0) {
     return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$Login$submitLogin$lambda(this$Login_0, closure$values_0, closure$endpoint_0, $receiver_0, this, continuation_0);
+      var instance = new Coroutine$App$submitLogin$lambda(this$App_0, closure$values_0, closure$endpoint_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
     };
   }
-  Login.prototype.submitLogin_0 = function (method, endpoint, values) {
-    logger_9.info_nq59yw$(Login$submitLogin$lambda(method, endpoint));
-    this.props.handleChangeBackdropIsOpen(true);
-    launch(MainScope(), void 0, void 0, Login$submitLogin$lambda_0(this, values, endpoint));
+  App.prototype.submitLogin_0 = function (method, endpoint, values) {
+    logger_8.info_nq59yw$(App$submitLogin$lambda(method, endpoint));
+    this.changeBackdropIsOpen_0(true);
+    launch(MainScope(), void 0, void 0, App$submitLogin$lambda_0(this, values, endpoint));
+  };
+  function App$submitLogout$lambda() {
+    return 'Submitting CryptoAC logout form';
+  }
+  function App$submitLogout$lambda$lambda(closure$status, closure$code) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$code;
+    };
+  }
+  function App$submitLogout$lambda$lambda_0(closure$status, closure$code) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$code;
+    };
+  }
+  function App$submitLogout$lambda$lambda_1(closure$e) {
+    return function () {
+      return 'Error during logout (' + toString(closure$e.message) + '), see console log for details';
+    };
+  }
+  function Coroutine$App$submitLogout$lambda(this$App_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 11;
+    this.local$this$App = this$App_0;
+    this.local$response = void 0;
+  }
+  Coroutine$App$submitLogout$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$App$submitLogout$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$App$submitLogout$lambda.prototype.constructor = Coroutine$App$submitLogout$lambda;
+  Coroutine$App$submitLogout$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.exceptionState_0 = 6;
+            var $receiver = this.local$this$App.state.httpClient;
+            var $receiver_1 = new HttpRequestBuilder_init();
+            url($receiver_1, baseURL + API_getInstance().LOGOUT);
+            $receiver_1.method = HttpMethod_0.Companion.Delete;
+            this.state_0 = 1;
+            this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            this.result_0;
+            this.local$response = this.result_0;
+            var tmp$_2;
+            var tmp$_3 = this.local$response.call;
+            var tmp$_4 = reflect.JsType;
+            var tmp$_0_1 = getKClass(OutcomeCode);
+            var tryGetType$result_0;
+            tryGetType$break: do {
+              try {
+                tryGetType$result_0 = createKType(getKClass(OutcomeCode), [], false);
+              } catch (cause_0) {
+                if (Kotlin.isType(cause_0, Throwable)) {
+                  tryGetType$result_0 = null;
+                  break tryGetType$break;
+                } else
+                  throw cause_0;
+              }
+            }
+             while (false);
+            this.state_0 = 2;
+            this.result_0 = tmp$_3.body_qi9ur9$(typeInfoImpl(tmp$_4, tmp$_0_1, tryGetType$result_0), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 2:
+            this.result_0 = Kotlin.isType(tmp$_2 = this.result_0, OutcomeCode) ? tmp$_2 : throwCCE();
+            var code = this.result_0;
+            var status = this.local$response.status;
+            if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
+              this.exceptionState_0 = 11;
+              this.finallyPath_0 = [4];
+              this.state_0 = 9;
+              this.$returnValue = (logger_8.info_nq59yw$(App$submitLogout$lambda$lambda(status, code)), Unit);
+              continue;
+            } else {
+              logger_8.warn_nq59yw$(App$submitLogout$lambda$lambda_0(status, code));
+              this.exceptionState_0 = 11;
+              this.finallyPath_0 = [3];
+              this.state_0 = 9;
+              this.$returnValue = (this.local$this$App.displayAlert_0(code, CryptoACAlertSeverity$ERROR_getInstance()), Unit);
+              continue;
+            }
+
+          case 3:
+            return this.$returnValue;
+          case 4:
+            return this.$returnValue;
+          case 5:
+            this.exceptionState_0 = 11;
+            this.finallyPath_0 = [10];
+            this.state_0 = 9;
+            continue;
+          case 6:
+            this.finallyPath_0 = [11];
+            this.exceptionState_0 = 9;
+            var e = this.exception_0;
+            if (Kotlin.isType(e, Error_0)) {
+              logger_8.error_nq59yw$(App$submitLogout$lambda$lambda_1(e));
+              console.log(e);
+              this.exceptionState_0 = 11;
+              this.finallyPath_0 = [7];
+              this.state_0 = 9;
+              this.$returnValue = (this.local$this$App.displayAlert_0(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit);
+              continue;
+            } else {
+              throw e;
+            }
+
+          case 7:
+            return this.$returnValue;
+          case 8:
+            this.finallyPath_0 = [10];
+            this.state_0 = 9;
+            continue;
+          case 9:
+            this.exceptionState_0 = 11;
+            this.local$this$App.resetAppState_0();
+            this.state_0 = this.finallyPath_0.shift();
+            continue;
+          case 10:
+            return;
+          case 11:
+            throw this.exception_0;
+          default:this.state_0 = 11;
+            throw new Error('State Machine Unreachable execution');
+        }
+      } catch (e) {
+        if (this.state_0 === 11) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        } else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function App$submitLogout$lambda_0(this$App_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$App$submitLogout$lambda(this$App_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  App.prototype.submitLogout_0 = function () {
+    logger_8.info_nq59yw$(App$submitLogout$lambda);
+    this.changeBackdropIsOpen_0(true);
+    launch(MainScope(), void 0, void 0, App$submitLogout$lambda_0(this));
+  };
+  function App$displayAlert$lambda(closure$code, closure$severity) {
+    return function () {
+      return 'Displaying the alert with code ' + closure$code + ' and severity ' + closure$severity;
+    };
+  }
+  function App$displayAlert$lambda_0(closure$code, closure$severity) {
+    return function ($receiver) {
+      $receiver.alertIsOpen = true;
+      $receiver.alertMessage = closure$code.getMessage() + (' (Code ' + closure$code.getNumber() + ')');
+      $receiver.alertSeverity = closure$severity;
+      return Unit;
+    };
+  }
+  App.prototype.displayAlert_0 = function (code, severity) {
+    logger_8.info_nq59yw$(App$displayAlert$lambda(code, severity));
+    setState(this, App$displayAlert$lambda_0(code, severity));
+  };
+  function App$addTableInContent$lambda(closure$tableName) {
+    return function () {
+      return 'Adding table ' + closure$tableName + ' to content';
+    };
+  }
+  function App$addTableInContent$lambda_0(closure$tableName) {
+    return function ($receiver) {
+      $receiver.tables.add_11rb$(closure$tableName);
+      return Unit;
+    };
+  }
+  App.prototype.addTableInContent_0 = function (tableName) {
+    logger_8.info_nq59yw$(App$addTableInContent$lambda(tableName));
+    setState(this, App$addTableInContent$lambda_0(tableName));
+  };
+  function App$changeUIType$lambda(closure$newUIType) {
+    return function () {
+      return "Setting the 'uiType' state to " + closure$newUIType;
+    };
+  }
+  function App$changeUIType$lambda_0(closure$newUIType) {
+    return function ($receiver) {
+      $receiver.uiType = closure$newUIType;
+      return Unit;
+    };
+  }
+  App.prototype.changeUIType_0 = function (newUIType) {
+    logger_8.info_nq59yw$(App$changeUIType$lambda(newUIType));
+    setState(this, App$changeUIType$lambda_0(newUIType));
+  };
+  function App$changeCoreType$lambda(closure$newCoreType) {
+    return function () {
+      return "Setting the 'coreType' state to " + closure$newCoreType;
+    };
+  }
+  function App$changeCoreType$lambda_0(closure$newCoreType) {
+    return function ($receiver) {
+      $receiver.coreType = closure$newCoreType;
+      return Unit;
+    };
+  }
+  App.prototype.changeCoreType_0 = function (newCoreType) {
+    logger_8.info_nq59yw$(App$changeCoreType$lambda(newCoreType));
+    setState(this, App$changeCoreType$lambda_0(newCoreType));
+  };
+  function App$changeBackdropIsOpen$lambda(closure$newBackdropIsOpen) {
+    return function () {
+      return "Setting the 'backdropIsOpen' state to " + closure$newBackdropIsOpen;
+    };
+  }
+  function App$changeBackdropIsOpen$lambda_0(closure$newBackdropIsOpen) {
+    return function ($receiver) {
+      $receiver.backdropIsOpen = closure$newBackdropIsOpen;
+      return Unit;
+    };
+  }
+  App.prototype.changeBackdropIsOpen_0 = function (newBackdropIsOpen) {
+    logger_8.info_nq59yw$(App$changeBackdropIsOpen$lambda(newBackdropIsOpen));
+    if (!newBackdropIsOpen) {
+      this.changeCircularProgressValue_0(0);
+    }setState(this, App$changeBackdropIsOpen$lambda_0(newBackdropIsOpen));
+  };
+  function App$changeCircularProgressValue$lambda(closure$newCircularProgressValue) {
+    return function () {
+      return "Setting the 'circularProgressValue' state to " + closure$newCircularProgressValue;
+    };
+  }
+  function App$changeCircularProgressValue$lambda_0(closure$newCircularProgressValue) {
+    return function ($receiver) {
+      $receiver.circularProgressValue = closure$newCircularProgressValue;
+      return Unit;
+    };
+  }
+  App.prototype.changeCircularProgressValue_0 = function (newCircularProgressValue) {
+    logger_8.info_nq59yw$(App$changeCircularProgressValue$lambda(newCircularProgressValue));
+    setState(this, App$changeCircularProgressValue$lambda_0(newCircularProgressValue));
+  };
+  function App$changeUserIsLogged$lambda(closure$newUserIsLogged) {
+    return function () {
+      return "Setting the 'userIsLogged' state to " + closure$newUserIsLogged;
+    };
+  }
+  function App$changeUserIsLogged$lambda_0(closure$newUserIsLogged) {
+    return function ($receiver) {
+      $receiver.userIsLogged = closure$newUserIsLogged;
+      return Unit;
+    };
+  }
+  function App$changeUserIsLogged$lambda$lambda$lambda(closure$coreType) {
+    return function () {
+      return 'Checking if profile for core ' + closure$coreType + ' exists';
+    };
+  }
+  function App$changeUserIsLogged$lambda$lambda$lambda$lambda() {
+    return "The profile exists, adding it to the user's profiles";
+  }
+  function App$changeUserIsLogged$lambda$lambda(closure$newUserProfiles) {
+    return function ($receiver) {
+      $receiver.userProfiles = closure$newUserProfiles;
+      return Unit;
+    };
+  }
+  function Coroutine$App$changeUserIsLogged$lambda(this$App_0, closure$newUserProfiles_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$App = this$App_0;
+    this.local$closure$newUserProfiles = closure$newUserProfiles_0;
+    this.local$$receiver = void 0;
+    this.local$tmp$ = void 0;
+    this.local$element = void 0;
+    this.local$closure$newUserProfiles_0 = void 0;
+  }
+  Coroutine$App$changeUserIsLogged$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$App$changeUserIsLogged$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$App$changeUserIsLogged$lambda.prototype.constructor = Coroutine$App$changeUserIsLogged$lambda;
+  Coroutine$App$changeUserIsLogged$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.local$$receiver = CoreType$values();
+            this.local$tmp$ = 0;
+            this.state_0 = 2;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            if (this.local$tmp$ === this.local$$receiver.length) {
+              this.state_0 = 5;
+              continue;
+            }
+            this.local$element = this.local$$receiver[this.local$tmp$];
+            var this$App = this.local$this$App;
+            this.local$closure$newUserProfiles_0 = this.local$closure$newUserProfiles;
+            var tmp$;
+            logger_8.info_nq59yw$(App$changeUserIsLogged$lambda$lambda$lambda(this.local$element));
+            this.state_0 = 3;
+            this.result_0 = this$App.getProfileFromCryptoAC_0(void 0, this.local$element, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            if ((tmp$ = this.result_0) != null) {
+              logger_8.info_nq59yw$(App$changeUserIsLogged$lambda$lambda$lambda$lambda);
+              this.local$closure$newUserProfiles_0.put_xwzc9p$(this.local$element, tmp$);
+            }
+            this.state_0 = 4;
+            continue;
+          case 4:
+            ++this.local$tmp$;
+            this.state_0 = 2;
+            continue;
+          case 5:
+            if (!this.local$closure$newUserProfiles.isEmpty()) {
+              setState(this.local$this$App, App$changeUserIsLogged$lambda$lambda(this.local$closure$newUserProfiles));
+              this.local$this$App.changeCoreType_0(first(this.local$closure$newUserProfiles.keys));
+              this.local$this$App.computeSidebarButtonsAndIndex_0(this.local$closure$newUserProfiles);
+              return this.local$this$App.changeUIType_0(UIType$CoreType_getInstance()), Unit;
+            } else {
+              this.state_0 = 6;
+              continue;
+            }
+
+          case 6:
+            return Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      } catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        } else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function App$changeUserIsLogged$lambda_1(this$App_0, closure$newUserProfiles_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$App$changeUserIsLogged$lambda(this$App_0, closure$newUserProfiles_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function App$changeUserIsLogged$lambda_2($receiver) {
+    $receiver.userProfiles = HashMap_init();
+    $receiver.sidebarButtons = emptyList();
+    return Unit;
+  }
+  App.prototype.changeUserIsLogged_0 = function (newUserIsLogged) {
+    logger_8.info_nq59yw$(App$changeUserIsLogged$lambda(newUserIsLogged));
+    setState(this, App$changeUserIsLogged$lambda_0(newUserIsLogged));
+    if (newUserIsLogged) {
+      var newUserProfiles = HashMap_init();
+      launch(MainScope(), void 0, void 0, App$changeUserIsLogged$lambda_1(this, newUserProfiles));
+    } else {
+      setState(this, App$changeUserIsLogged$lambda_2);
+    }
+  };
+  function App$computeSidebarButtonsAndIndex$lambda() {
+    return 'Computing sidebar buttons and index';
+  }
+  function App$computeSidebarButtonsAndIndex$lambda$lambda$lambda$lambda(this$App) {
+    return function ($receiver) {
+      $receiver.style = JSON.parse(trimMargin('{' + '"' + 'marginRight' + '"' + ': ' + '"' + (this$App.state.sidebarIsCollapsed ? 'unset' : 'auto') + ' ' + '"' + '}'));
+      return Unit;
+    };
+  }
+  function App$computeSidebarButtonsAndIndex$lambda$lambda$lambda(this$App) {
+    return function ($receiver) {
+      $receiver.attrs_37755u$(App$computeSidebarButtonsAndIndex$lambda$lambda$lambda$lambda(this$App));
+      return Unit;
+    };
+  }
+  function App$computeSidebarButtonsAndIndex$lambda$lambda(this$App) {
+    return function ($receiver) {
+      $receiver.invoke_qk0v40$($module$react_icons_fa.FaBoxes, App$computeSidebarButtonsAndIndex$lambda$lambda$lambda(this$App));
+      return Unit;
+    };
+  }
+  function App$computeSidebarButtonsAndIndex$lambda$lambda_0(closure$newCoreType, this$App) {
+    return function (it) {
+      this$App.changeCoreType_0(closure$newCoreType);
+      this$App.changeUIType_0(UIType$CoreType_getInstance());
+      return Unit;
+    };
+  }
+  function App$computeSidebarButtonsAndIndex$lambda_0(closure$listOfButtons) {
+    return function () {
+      return 'Number of buttons computed is ' + closure$listOfButtons.size;
+    };
+  }
+  function App$computeSidebarButtonsAndIndex$lambda_1(closure$indexButton) {
+    return function () {
+      return 'Sidebar index is ' + closure$indexButton.v;
+    };
+  }
+  function App$computeSidebarButtonsAndIndex$lambda_2(closure$listOfButtons, closure$indexButton) {
+    return function ($receiver) {
+      $receiver.sidebarButtons = closure$listOfButtons;
+      $receiver.sidebarButtonIndex = closure$indexButton.v;
+      return Unit;
+    };
+  }
+  App.prototype.computeSidebarButtonsAndIndex_0 = function (profiles) {
+    logger_8.info_nq59yw$(App$computeSidebarButtonsAndIndex$lambda);
+    var listOfButtons = ArrayList_init();
+    var loopCount = {v: 2};
+    var indexButton = {v: loopCount.v};
+    var tmp$;
+    tmp$ = profiles.entries.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var newCoreType = element.key;
+      if (newCoreType === this.state.coreType) {
+        indexButton.v = loopCount.v;
+      }loopCount.v = loopCount.v + 1 | 0;
+      listOfButtons.add_11rb$(new CryptoACButtonAndIconData(ensureNotNull(createElement(App$computeSidebarButtonsAndIndex$lambda$lambda(this))), element.key.toPrettyString(), !this.state.sidebarIsCollapsed, App$computeSidebarButtonsAndIndex$lambda$lambda_0(newCoreType, this)));
+    }
+    logger_8.info_nq59yw$(App$computeSidebarButtonsAndIndex$lambda_0(listOfButtons));
+    logger_8.info_nq59yw$(App$computeSidebarButtonsAndIndex$lambda_1(indexButton));
+    setState(this, App$computeSidebarButtonsAndIndex$lambda_2(listOfButtons, indexButton));
+  };
+  function App$changeUsername$lambda(closure$newUsername) {
+    return function () {
+      return "Setting the 'username' state to " + toString(closure$newUsername);
+    };
+  }
+  function App$changeUsername$lambda_0(closure$newUsername) {
+    return function ($receiver) {
+      $receiver.username = closure$newUsername;
+      return Unit;
+    };
+  }
+  App.prototype.changeUsername_0 = function (newUsername) {
+    logger_8.info_nq59yw$(App$changeUsername$lambda(newUsername));
+    setState(this, App$changeUsername$lambda_0(newUsername));
+  };
+  function App$changeTradeOffBoardAlgorithm$lambda(closure$newTradeOffBoardAlgorithm) {
+    return function () {
+      return "Setting the 'algorithm' state to " + closure$newTradeOffBoardAlgorithm;
+    };
+  }
+  function App$changeTradeOffBoardAlgorithm$lambda_0(closure$newTradeOffBoardAlgorithm) {
+    return function ($receiver) {
+      $receiver.tradeOffBoardAlgorithm = closure$newTradeOffBoardAlgorithm;
+      return Unit;
+    };
+  }
+  App.prototype.changeTradeOffBoardAlgorithm_0 = function (newTradeOffBoardAlgorithm) {
+    logger_8.info_nq59yw$(App$changeTradeOffBoardAlgorithm$lambda(newTradeOffBoardAlgorithm));
+    setState(this, App$changeTradeOffBoardAlgorithm$lambda_0(newTradeOffBoardAlgorithm));
+  };
+  function App$changeTradeOffBoardMetric$lambda(closure$newTradeOffBoardMetric) {
+    return function () {
+      return "Setting the 'metric' state to " + closure$newTradeOffBoardMetric;
+    };
+  }
+  function App$changeTradeOffBoardMetric$lambda_0(closure$newTradeOffBoardMetric) {
+    return function ($receiver) {
+      $receiver.tradeOffBoardMetric = closure$newTradeOffBoardMetric;
+      return Unit;
+    };
+  }
+  App.prototype.changeTradeOffBoardMetric_0 = function (newTradeOffBoardMetric) {
+    logger_8.info_nq59yw$(App$changeTradeOffBoardMetric$lambda(newTradeOffBoardMetric));
+    setState(this, App$changeTradeOffBoardMetric$lambda_0(newTradeOffBoardMetric));
+  };
+  function App$changeTradeOffBoardScenario$lambda(closure$newTradeOffBoardScenario) {
+    return function () {
+      return "Setting the 'scenario' state to " + closure$newTradeOffBoardScenario;
+    };
+  }
+  function App$changeTradeOffBoardScenario$lambda_0(closure$newTradeOffBoardScenario) {
+    return function ($receiver) {
+      $receiver.tradeOffBoardScenario = closure$newTradeOffBoardScenario;
+      return Unit;
+    };
+  }
+  App.prototype.changeTradeOffBoardScenario_0 = function (newTradeOffBoardScenario) {
+    logger_8.info_nq59yw$(App$changeTradeOffBoardScenario$lambda(newTradeOffBoardScenario));
+    setState(this, App$changeTradeOffBoardScenario$lambda_0(newTradeOffBoardScenario));
+  };
+  function App$toggleSidebarIsCollapsed$lambda(closure$collapsed) {
+    return function () {
+      return "Setting the 'sidebarIsCollapsed' state to " + closure$collapsed;
+    };
+  }
+  function App$toggleSidebarIsCollapsed$lambda_0(closure$collapsed) {
+    return function ($receiver) {
+      $receiver.sidebarIsCollapsed = closure$collapsed;
+      return Unit;
+    };
+  }
+  App.prototype.toggleSidebarIsCollapsed_0 = function () {
+    var collapsed = !this.state.sidebarIsCollapsed;
+    logger_8.info_nq59yw$(App$toggleSidebarIsCollapsed$lambda(collapsed));
+    setState(this, App$toggleSidebarIsCollapsed$lambda_0(collapsed));
+  };
+  function App$getProfileFromCryptoAC$lambda(closure$username, closure$coreType) {
+    return function () {
+      return 'Getting the profile for user ' + toString(closure$username) + ' and core ' + toString(closure$coreType);
+    };
+  }
+  function App$getProfileFromCryptoAC$lambda_0(closure$status) {
+    return function () {
+      return 'Response status is ' + closure$status;
+    };
+  }
+  function App$getProfileFromCryptoAC$lambda_1(closure$status, closure$outcomeCode) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$outcomeCode;
+    };
+  }
+  function Coroutine$getProfileFromCryptoAC_0($this, username_0, coreType_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+    this.local$tmp$ = void 0;
+    this.local$status = void 0;
+    this.local$username = username_0;
+    this.local$coreType = coreType_0;
+  }
+  Coroutine$getProfileFromCryptoAC_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$getProfileFromCryptoAC_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$getProfileFromCryptoAC_0.prototype.constructor = Coroutine$getProfileFromCryptoAC_0;
+  Coroutine$getProfileFromCryptoAC_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            if (this.local$username === void 0)
+              this.local$username = this.$this.state.username;
+            if (this.local$coreType === void 0)
+              this.local$coreType = this.$this.state.coreType;
+            var actualEndpoint = baseURL + replace(API_getInstance().PROFILES, '{Core}', toString(this.local$coreType)) + toString(this.local$username);
+            logger_8.info_nq59yw$(App$getProfileFromCryptoAC$lambda(this.local$username, this.local$coreType));
+            var $receiver = this.$this.state.httpClient;
+            var $receiver_1 = new HttpRequestBuilder_init();
+            url($receiver_1, actualEndpoint);
+            $receiver_1.method = HttpMethod_0.Companion.Get;
+            this.state_0 = 2;
+            this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.result_0;
+            var httpResponse = this.result_0;
+            this.local$status = httpResponse.status;
+            if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
+              logger_8.info_nq59yw$(App$getProfileFromCryptoAC$lambda_0(this.local$status));
+              this.state_0 = 4;
+              this.result_0 = bodyAsText(httpResponse, void 0, this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
+            } else {
+              this.state_0 = 3;
+              this.result_0 = bodyAsText(httpResponse, void 0, this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
+            }
+
+          case 3:
+            var text = this.result_0;
+            var $receiver_0 = myJson;
+            var tmp$;
+            var outcomeCode = $receiver_0.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver_0.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), text);
+            logger_8.warn_nq59yw$(App$getProfileFromCryptoAC$lambda_1(this.local$status, outcomeCode));
+            if (outcomeCode !== OutcomeCode$CODE_039_PROFILE_NOT_FOUND_getInstance()) {
+              this.$this.displayAlert_0(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance());
+            }
+            this.local$tmp$ = null;
+            this.state_0 = 5;
+            continue;
+          case 4:
+            var profileAsString = this.result_0;
+            var $receiver_2 = myJson;
+            var tmp$_0;
+            this.local$tmp$ = $receiver_2.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver_2.serializersModule, createKType(getKClass(CoreParameters), [], false)), KSerializer) ? tmp$_0 : throwCCE(), profileAsString);
+            this.state_0 = 5;
+            continue;
+          case 5:
+            return this.local$tmp$;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      } catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        } else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  App.prototype.getProfileFromCryptoAC_0 = function (username_0, coreType_0, continuation_0, suspended) {
+    var instance = new Coroutine$getProfileFromCryptoAC_0(this, username_0, coreType_0, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  App.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'App',
+    interfaces: [RComponent]
+  };
+  function UIType(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function UIType_initFields() {
+    UIType_initFields = function () {
+    };
+    UIType$NewProfile_instance = new UIType('NewProfile', 0);
+    UIType$TradeOffBoard_instance = new UIType('TradeOffBoard', 1);
+    UIType$CoreType_instance = new UIType('CoreType', 2);
+  }
+  var UIType$NewProfile_instance;
+  function UIType$NewProfile_getInstance() {
+    UIType_initFields();
+    return UIType$NewProfile_instance;
+  }
+  var UIType$TradeOffBoard_instance;
+  function UIType$TradeOffBoard_getInstance() {
+    UIType_initFields();
+    return UIType$TradeOffBoard_instance;
+  }
+  var UIType$CoreType_instance;
+  function UIType$CoreType_getInstance() {
+    UIType_initFields();
+    return UIType$CoreType_instance;
+  }
+  UIType.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UIType',
+    interfaces: [Enum]
+  };
+  function UIType$values() {
+    return [UIType$NewProfile_getInstance(), UIType$TradeOffBoard_getInstance(), UIType$CoreType_getInstance()];
+  }
+  UIType.values = UIType$values;
+  function UIType$valueOf(name) {
+    switch (name) {
+      case 'NewProfile':
+        return UIType$NewProfile_getInstance();
+      case 'TradeOffBoard':
+        return UIType$TradeOffBoard_getInstance();
+      case 'CoreType':
+        return UIType$CoreType_getInstance();
+      default:throwISE('No enum constant eu.fbk.st.cryptoac.view.UIType.' + name);
+    }
+  }
+  UIType.valueOf_61zpoe$ = UIType$valueOf;
+  function styledDiv$lambda_0(it) {
+    return new DIV_init(html.emptyMap, it);
+  }
+  function Login() {
+    RComponent_init(this);
+  }
+  function Login$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Login) {
+    return function (method, endpoint, values, f) {
+      this$Login.props.handleSubmitLogin(method, endpoint, values);
+      return Unit;
+    };
+  }
+  function Login$render$lambda$lambda$lambda$lambda$lambda$lambda(this$Login, this$) {
+    return function ($receiver) {
+      var $receiver_0 = this$;
+      var this$Login_0 = this$Login;
+      $receiver_0.attrs;
+      $receiver.handleDisplayAlert = this$Login_0.props.handleDisplayAlert;
+      $receiver.submitButtonText = 'Login';
+      $receiver.method = HttpMethod.Companion.Post;
+      $receiver.endpoint = API_getInstance().LOGIN;
+      $receiver.handleSubmitEvent = Login$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Login_0);
+      $receiver.cryptoACFormFields = listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance(), void 0, void 0, 'darkTextField')));
+      return Unit;
+    };
+  }
+  function Login$render$lambda$lambda$lambda$lambda(this$Login) {
+    return function ($receiver) {
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_0);
+      var this$Login_0 = this$Login;
+      var $receiver_1 = $receiver_0.css;
+      set_marginLeft($receiver_1, get_pct(15));
+      set_marginRight($receiver_1, get_pct(15));
+      $receiver_0.child_30b5ua$(cryptoACForm(Login$render$lambda$lambda$lambda$lambda$lambda$lambda(this$Login_0, $receiver_0)));
+      $receiver.child_30b5ua$($receiver_0.create());
+      return Unit;
+    };
+  }
+  function Login$render$lambda$lambda$lambda(this$Login) {
+    return function ($receiver) {
+      $receiver.titleStyle = Themes_getInstance().largePlainPaperTitleStyle;
+      $receiver.titleText = 'Login to CryptoAC';
+      $receiver.titleVariant = 'h5';
+      $receiver.setDivider = true;
+      $receiver.dividerWidth = get_pct(80);
+      $receiver.child = ensureNotNull(createElement(Login$render$lambda$lambda$lambda$lambda(this$Login)));
+      return Unit;
+    };
+  }
+  Login.prototype.render_ss14n$ = function ($receiver) {
+    var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_0);
+    var $receiver_1 = $receiver_0.css;
+    set_height($receiver_1, get_pct(100));
+    set_width($receiver_1, get_pct(100));
+    set_backgroundImage($receiver_1, new Image('url(fbk_background.jpg)'));
+    set_backgroundPosition($receiver_1, 'center');
+    set_backgroundRepeat($receiver_1, BackgroundRepeat.noRepeat);
+    set_backgroundSize($receiver_1, 'cover');
+    var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_0);
+    var $receiver_2 = $receiver_0_0.css;
+    set_position($receiver_2, Position.fixed);
+    set_top($receiver_2, get_pct(50));
+    set_left($receiver_2, get_pct(50));
+    var $receiver_3 = new Transforms();
+    translate($receiver_3, get_pct(-50), get_pct(-50));
+    set_transform($receiver_2, $receiver_3);
+    set_textAlign($receiver_2, TextAlign.center);
+    set_width($receiver_2, get_pct(35));
+    set_height($receiver_2, get_pct(30));
+    $receiver_0_0.child_30b5ua$(cryptoACPaper(Login$render$lambda$lambda$lambda(this)));
+    $receiver_0.child_30b5ua$($receiver_0_0.create());
+    $receiver.child_30b5ua$($receiver_0.create());
   };
   Login.$metadata$ = {
     kind: Kind_CLASS,
@@ -8484,6 +8400,27 @@
       return any$result;
     };
   }));
+  function Themes() {
+    Themes_instance = this;
+    this.lightGreyColor = '#f7f7f7';
+    this.concreteColor = '#95a5a6';
+    this.greyColor = '#676767';
+    this.wetAsphaltColor = '#34495e';
+    this.purpleLinearGradient = 'linear-gradient(to right, rgb(142, 68, 173), rgb(172, 98, 203))';
+    this.plainPaperTitleStyle = JSON.parse(trimMargin('{\n                                         "paddingTop": "5px",\n                                         "paddingBottom": "5px",\n                                         "color": "#3C4858"\n                                     }'));
+    this.largePlainPaperTitleStyle = JSON.parse(trimMargin('{\n                                         "paddingTop": "20px",\n                                         "paddingBottom": "20px",\n                                         "color": "#3C4858"\n                                     }'));
+  }
+  Themes.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Themes',
+    interfaces: []
+  };
+  var Themes_instance = null;
+  function Themes_getInstance() {
+    if (Themes_instance === null) {
+      new Themes();
+    }return Themes_instance;
+  }
   function CryptoACAlertSeverity(name, ordinal) {
     Enum.call(this);
     this.name$ = name;
@@ -8708,10 +8645,10 @@
       return new DIV_init_0(attributesMapOf('class', closure$classes), it);
     };
   }
-  function logger$lambda_10() {
+  function logger$lambda_9() {
     return Unit;
   }
-  var logger_10;
+  var logger_9;
   function CryptoACButtonAndIconGroup() {
     RComponent_init(this);
   }
@@ -8724,17 +8661,11 @@
   }
   function CryptoACButtonAndIconGroup$render$lambda$lambda$lambda(closure$it, closure$index, this$CryptoACButtonAndIconGroup) {
     return function ($receiver) {
-      var tmp$;
       $receiver.icon = closure$it.icon;
       $receiver.text = closure$it.text;
       $receiver.showText = closure$it.showText;
       $receiver.onClick = CryptoACButtonAndIconGroup$render$lambda$lambda$lambda$lambda(closure$index, this$CryptoACButtonAndIconGroup, closure$it);
-      if (equals(this$CryptoACButtonAndIconGroup.state.selectedButton, undefined)) {
-        tmp$ = this$CryptoACButtonAndIconGroup.props.defaultSelectedButton === closure$index;
-      } else {
-        tmp$ = this$CryptoACButtonAndIconGroup.state.selectedButton === closure$index;
-      }
-      $receiver.highlighted = tmp$;
+      $receiver.highlighted = this$CryptoACButtonAndIconGroup.state.selectedButton === closure$index;
       return Unit;
     };
   }
@@ -8751,6 +8682,18 @@
     }
     $receiver.child_30b5ua$($receiver_0.create());
   };
+  function CryptoACButtonAndIconGroup$init$lambda(this$CryptoACButtonAndIconGroup) {
+    return function (newProps, state) {
+      if (state.justMounted || newProps.defaultSelectedButton !== this$CryptoACButtonAndIconGroup.props.defaultSelectedButton || newProps.buttons.size !== this$CryptoACButtonAndIconGroup.props.buttons.size) {
+        state.selectedButton = newProps.defaultSelectedButton;
+      }state.justMounted = false;
+      return Unit;
+    };
+  }
+  CryptoACButtonAndIconGroup.prototype.init_b4e81d$ = function ($receiver) {
+    $receiver.justMounted = true;
+    get_js(getKClass(CryptoACButtonAndIconGroup)).getDerivedStateFromProps = CryptoACButtonAndIconGroup$init$lambda(this);
+  };
   function CryptoACButtonAndIconGroup$changeSelectedButton$lambda(closure$newSelectedButton) {
     return function () {
       return "Setting the 'selectedButton' state to " + closure$newSelectedButton;
@@ -8763,7 +8706,7 @@
     };
   }
   CryptoACButtonAndIconGroup.prototype.changeSelectedButton_0 = function (newSelectedButton) {
-    logger_10.info_nq59yw$(CryptoACButtonAndIconGroup$changeSelectedButton$lambda(newSelectedButton));
+    logger_9.info_nq59yw$(CryptoACButtonAndIconGroup$changeSelectedButton$lambda(newSelectedButton));
     setState(this, CryptoACButtonAndIconGroup$changeSelectedButton$lambda_0(newSelectedButton));
   };
   CryptoACButtonAndIconGroup.$metadata$ = {
@@ -8916,6 +8859,898 @@
     };
   }
   function styledDiv$lambda_2(it) {
+    return new DIV_init(html.emptyMap, it);
+  }
+  function logger$lambda_10() {
+    return Unit;
+  }
+  var logger_10;
+  function CryptoACEditProfileForm() {
+    RComponent_init(this);
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda($receiver) {
+    $receiver.variant = 'h6';
+    $receiver.component = 'div';
+    return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda(event) {
+    var tmp$;
+    if (Kotlin.isType(event.target, HTMLInputElement)) {
+      (Kotlin.isType(tmp$ = event.target, HTMLInputElement) ? tmp$ : throwCCE()).value = '';
+    }return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda($receiver) {
+    $receiver.color = 'primary';
+    $receiver.component = 'label';
+    $receiver.onClick = CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda;
+    return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda_0($receiver) {
+    return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda_0($receiver) {
+    $receiver.invoke_qk0v40$($module$react_icons_fa.FaCloudUploadAlt, CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda_0);
+    return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda() {
+    return 'Received upload configuration file event';
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$CryptoACEditProfileForm) {
+    return function (event) {
+      var tmp$, tmp$_0;
+      logger_10.info_nq59yw$(CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda);
+      tmp$_0 = ensureNotNull(ensureNotNull((Kotlin.isType(tmp$ = event.target, HTMLInputElement) ? tmp$ : throwCCE()).files)[0]);
+      this$CryptoACEditProfileForm.parseProfileFile_0(tmp$_0);
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda_0(this$CryptoACEditProfileForm) {
+    return function ($receiver) {
+      $receiver.attrs_37755u$(CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda);
+      $receiver.child_30b5ua$(ensureNotNull(createElement(CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda_0)));
+      var $receiver_0 = RDOMBuilder.Companion.invoke_f6ihu2$(input$lambda(null, null, null, null, null));
+      var this$CryptoACEditProfileForm_0 = this$CryptoACEditProfileForm;
+      var $receiver_1 = $receiver_0.attrs;
+      $receiver_1.type = InputType.file;
+      $receiver_1.accept = '.json';
+      set_hidden($receiver_1, true);
+      set_onChangeFunction($receiver_1, CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$CryptoACEditProfileForm_0));
+      $receiver.child_30b5ua$($receiver_0.create());
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0($receiver) {
+    return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1($receiver) {
+    return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0(this$CryptoACEditProfileForm) {
+    return function ($receiver) {
+      if (!this$CryptoACEditProfileForm.state.editProfileFormIsOpen) {
+        $receiver.invoke_qk0v40$($module$react_icons_fa.FaChevronDown, CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0);
+      } else {
+        $receiver.invoke_qk0v40$($module$react_icons_fa.FaChevronUp, CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1);
+      }
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_2($receiver) {
+    $receiver.editProfileFormIsOpen = !$receiver.editProfileFormIsOpen;
+    return Unit;
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm) {
+    return function (it) {
+      setState(this$CryptoACEditProfileForm, CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_2);
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm) {
+    return function ($receiver) {
+      $receiver.color = 'primary';
+      $receiver.component = 'label';
+      $receiver.size = 'small';
+      $receiver.children = ensureNotNull(createElement(CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0(this$CryptoACEditProfileForm)));
+      $receiver.onClick = CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm);
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm) {
+    return function ($receiver) {
+      $receiver.attrs_37755u$(CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm));
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda(this$CryptoACEditProfileForm) {
+    return function ($receiver) {
+      var tmp$;
+      $receiver.attrs_37755u$(CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda);
+      if (this$CryptoACEditProfileForm.props.isCreatingNewProfile) {
+        tmp$ = 'Create';
+      } else {
+        tmp$ = 'Edit';
+      }
+      $receiver.unaryPlus_pdl1vz$(tmp$ + ' or Upload Profile');
+      $receiver.invoke_qk0v40$($module$_material_ui_core.IconButton, CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda_0(this$CryptoACEditProfileForm));
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+      var this$CryptoACEditProfileForm_0 = this$CryptoACEditProfileForm;
+      var $receiver_1 = $receiver_0.css;
+      set_display($receiver_1, Display.inline);
+      set_float($receiver_1, Float.right);
+      set_marginTop($receiver_1, get_px(7));
+      set_marginRight($receiver_1, get_px(10));
+      $receiver_0.invoke_qk0v40$($module$_material_ui_core.IconButton, CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm_0));
+      $receiver.child_30b5ua$($receiver_0.create());
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda_2(this$CryptoACEditProfileForm) {
+    return function (method, endpoint, values, f) {
+      this$CryptoACEditProfileForm.submitEditProfileForm_0(method, endpoint, values);
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm, this$) {
+    return function ($receiver) {
+      var $receiver_0 = this$;
+      var this$CryptoACEditProfileForm_0 = this$CryptoACEditProfileForm;
+      $receiver_0.attrs;
+      var tmp$;
+      $receiver.handleDisplayAlert = this$CryptoACEditProfileForm_0.props.handleDisplayAlert;
+      $receiver.handleSubmitEvent = CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda$lambda$lambda_2(this$CryptoACEditProfileForm_0);
+      if (this$CryptoACEditProfileForm_0.props.isCreatingNewProfile) {
+        tmp$ = HttpMethod.Companion.Post;
+      } else {
+        tmp$ = HttpMethod.Companion.Patch;
+      }
+      $receiver.method = tmp$;
+      $receiver.cryptoACFormFields = this$CryptoACEditProfileForm_0.state.cryptoACFormFields;
+      $receiver.submitButtonText = 'Edit Profile';
+      $receiver.coreType = this$CryptoACEditProfileForm_0.props.coreType;
+      $receiver.endpoint = API_getInstance().PROFILES;
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$render$lambda$lambda(this$CryptoACEditProfileForm) {
+    return function ($receiver) {
+      $receiver.invoke_qk0v40$($module$_material_ui_core.Typography, CryptoACEditProfileForm$render$lambda$lambda$lambda(this$CryptoACEditProfileForm));
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+      var this$CryptoACEditProfileForm_0 = this$CryptoACEditProfileForm;
+      var $receiver_1 = $receiver_0.css;
+      set_marginTop($receiver_1, get_px(10));
+      set_marginBottom($receiver_1, get_px(10));
+      set_marginRight($receiver_1, get_px(10));
+      set_marginLeft($receiver_1, get_px(30));
+      if (!this$CryptoACEditProfileForm_0.state.editProfileFormIsOpen) {
+        set_display($receiver_1, Display.none);
+      }$receiver_0.child_30b5ua$(cryptoACForm(CryptoACEditProfileForm$render$lambda$lambda$lambda$lambda_1(this$CryptoACEditProfileForm_0, $receiver_0)));
+      $receiver.child_30b5ua$($receiver_0.create());
+      return Unit;
+    };
+  }
+  CryptoACEditProfileForm.prototype.render_ss14n$ = function ($receiver) {
+    var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+    var $receiver_1 = $receiver_0.css;
+    set_textAlign($receiver_1, TextAlign.center);
+    set_paddingTop($receiver_1, get_px(10));
+    set_paddingBottom($receiver_1, get_px(10));
+    $receiver_0.invoke_qk0v40$($module$_material_ui_core.Paper, CryptoACEditProfileForm$render$lambda$lambda(this));
+    $receiver.child_30b5ua$($receiver_0.create());
+  };
+  function CryptoACEditProfileForm$init$lambda() {
+    return 'Initializing the state of the CryptoACEditProfileFormState component';
+  }
+  function CryptoACEditProfileForm$init$lambda$lambda() {
+    return 'CryptoACEditProfileForm is getting updated';
+  }
+  function CryptoACEditProfileForm$init$lambda$lambda_0() {
+    return 'Parameters were given, use them to update the fields';
+  }
+  function CryptoACEditProfileForm$init$lambda$lambda_1() {
+    return 'Parameters were not given, rely on properties';
+  }
+  function CryptoACEditProfileForm$init$lambda_0(this$CryptoACEditProfileForm) {
+    return function (newProps, state) {
+      var tmp$;
+      if (state.justMounted || !this$CryptoACEditProfileForm.areEquals_0(this$CryptoACEditProfileForm.props, newProps)) {
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$init$lambda$lambda);
+        if (newProps.coreParameters != null) {
+          logger_10.info_nq59yw$(CryptoACEditProfileForm$init$lambda$lambda_0);
+          if ((tmp$ = this$CryptoACEditProfileForm.updateFieldsFromParameters_0(ensureNotNull(newProps.coreParameters), newProps.isCreatingNewProfile, newProps)) != null) {
+            state.cryptoACFormFields = tmp$;
+          }} else {
+          logger_10.info_nq59yw$(CryptoACEditProfileForm$init$lambda$lambda_1);
+          state.cryptoACFormFields = this$CryptoACEditProfileForm.getFieldsFromParameters_0(newProps);
+        }
+      }state.justMounted = false;
+      return Unit;
+    };
+  }
+  CryptoACEditProfileForm.prototype.init_b4e81d$ = function ($receiver) {
+    logger_10.info_nq59yw$(CryptoACEditProfileForm$init$lambda);
+    $receiver.editProfileFormIsOpen = true;
+    $receiver.cryptoACFormFields = emptyList();
+    $receiver.justMounted = true;
+    get_js(getKClass(CryptoACEditProfileForm)).getDerivedStateFromProps = CryptoACEditProfileForm$init$lambda_0(this);
+  };
+  CryptoACEditProfileForm.prototype.areEquals_0 = function (props, newProps) {
+    var tmp$;
+    if (props === newProps)
+      return true;
+    if (!((tmp$ = Kotlin.getKClassFromExpression(props)) != null ? tmp$.equals(Kotlin.getKClassFromExpression(newProps)) : null))
+      return false;
+    if (props.isCreatingNewProfile !== newProps.isCreatingNewProfile)
+      return false;
+    if (!equals(props.coreParameters, newProps.coreParameters))
+      return false;
+    if (props.coreType !== newProps.coreType)
+      return false;
+    if (!equals(props.username, newProps.username))
+      return false;
+    if (props.rmType !== newProps.rmType)
+      return false;
+    if (props.mmType !== newProps.mmType)
+      return false;
+    if (props.dmType !== newProps.dmType)
+      return false;
+    return true;
+  };
+  function CryptoACEditProfileForm$parseProfileFile$lambda$lambda$lambda(closure$it) {
+    return function ($receiver) {
+      $receiver.cryptoACFormFields = closure$it;
+      return Unit;
+    };
+  }
+  function CryptoACEditProfileForm$parseProfileFile$lambda(closure$reader, this$CryptoACEditProfileForm) {
+    return function (f) {
+      var tmp$;
+      var fileContent = closure$reader.result.toString();
+      var $receiver = myJson;
+      var tmp$_0;
+      var parameters = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver.serializersModule, createKType(getKClass(CoreParameters), [], false)), KSerializer) ? tmp$_0 : throwCCE(), fileContent);
+      var tmp$_1;
+      if ((tmp$ = this$CryptoACEditProfileForm.updateFieldsFromParameters_0(parameters, this$CryptoACEditProfileForm.props.isCreatingNewProfile)) != null) {
+        setState(this$CryptoACEditProfileForm, CryptoACEditProfileForm$parseProfileFile$lambda$lambda$lambda(tmp$));
+        tmp$_1 = Unit;
+      } else
+        tmp$_1 = null;
+      return tmp$_1;
+    };
+  }
+  function CryptoACEditProfileForm$parseProfileFile$lambda_0() {
+    return 'The user did not provide a .json file for the profile';
+  }
+  CryptoACEditProfileForm.prototype.parseProfileFile_0 = function (file) {
+    if (endsWith(file.name, '.json')) {
+      var reader = new FileReader();
+      reader.readAsText(file, 'UTF-8');
+      reader.onload = CryptoACEditProfileForm$parseProfileFile$lambda(reader, this);
+    } else {
+      logger_10.warn_nq59yw$(CryptoACEditProfileForm$parseProfileFile$lambda_0);
+      this.props.handleDisplayAlert(OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
+    }
+  };
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda(closure$coreType) {
+    return function () {
+      return 'Updating the fields of the edit profile form (core type is ' + closure$coreType + ')';
+    };
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_0() {
+    return 'Version number of profile file is 1';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_1(closure$rmParameters, closure$propsToUse) {
+    return function () {
+      return 'RM parameters type is ' + closure$rmParameters.rmType + ' ' + ('(RM type in props is ' + closure$propsToUse.rmType);
+    };
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_2() {
+    return 'Forcing update of RM type';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_3() {
+    return 'No RM parameters were given';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_4(closure$mmParameters, closure$propsToUse) {
+    return function () {
+      return 'MM parameters type is ' + closure$mmParameters.mmType + ' ' + ('(MM type in props is ' + closure$propsToUse.mmType);
+    };
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_5() {
+    return 'Forcing update of MM type';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_6() {
+    return 'No MM parameters were given';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_7(closure$dmParameters, closure$propsToUse) {
+    return function () {
+      return 'DM parameters type is ' + closure$dmParameters.dmType + ' ' + ('(DM type in props is ' + closure$propsToUse.dmType);
+    };
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_8() {
+    return 'Forcing update of DM type';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_9() {
+    return 'No DM parameters were given';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_10(closure$opaParameters) {
+    return function () {
+      var tmp$;
+      if (closure$opaParameters == null) {
+        tmp$ = ' not ';
+      } else {
+        tmp$ = ' ';
+      }
+      return 'OPA parameters were' + tmp$ + 'provided';
+    };
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_11() {
+    return 'NullPointerException, malformed .json profile file';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_12(closure$e) {
+    return function () {
+      return closure$e;
+    };
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_13() {
+    return 'UnsupportedOperationException, .json profile file have different types than requested';
+  }
+  function CryptoACEditProfileForm$updateFieldsFromParameters$lambda_14(closure$e) {
+    return function () {
+      return closure$e;
+    };
+  }
+  CryptoACEditProfileForm.prototype.updateFieldsFromParameters_0 = function (parameters, forceTypesUpdate, propsToUse) {
+    if (propsToUse === void 0)
+      propsToUse = this.props;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
+    try {
+      var versionNumber = parameters.versionNumber;
+      var coreType = parameters.coreType;
+      var cryptoType = parameters.cryptoType;
+      var user = parameters.user;
+      logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda(coreType));
+      if (coreType !== propsToUse.coreType) {
+        throw UnsupportedOperationException_init('Core type of parameters (' + coreType + ') is different ' + ('from core type of properties (' + propsToUse.coreType));
+      }if (versionNumber === 1)
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_0);
+      else {
+        throw UnsupportedOperationException_init('Version number ' + versionNumber + ' is not supported');
+      }
+      if (Kotlin.isType(parameters, CoreParametersCLOUD))
+        tmp$ = parameters.rmInterfaceParameters;
+      else
+        tmp$ = null;
+      var rmParameters = tmp$;
+      if (rmParameters != null) {
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_1(rmParameters, propsToUse));
+        if (rmParameters.rmType !== propsToUse.rmType) {
+          if (forceTypesUpdate) {
+            logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_2);
+            if ((tmp$_0 = propsToUse.handleChangeRMType) != null) {
+              tmp$_0(rmParameters.rmType);
+            }propsToUse.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+          } else {
+            throw UnsupportedOperationException_init('RM type of file (' + rmParameters.rmType + ') is different from currently selected core type (' + propsToUse.rmType);
+          }
+        }} else {
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_3);
+      }
+      if (Kotlin.isType(parameters, CoreParametersCLOUD))
+        tmp$_1 = parameters.mmInterfaceParameters;
+      else if (Kotlin.isType(parameters, CoreParametersMQTT))
+        tmp$_1 = parameters.mmInterfaceParameters;
+      else
+        tmp$_1 = null;
+      var mmParameters = tmp$_1;
+      if (mmParameters != null) {
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_4(mmParameters, propsToUse));
+        if (mmParameters.mmType !== propsToUse.mmType) {
+          if (forceTypesUpdate) {
+            logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_5);
+            if ((tmp$_2 = propsToUse.handleChangeMMType) != null) {
+              tmp$_2(mmParameters.mmType);
+            }propsToUse.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+          } else {
+            throw UnsupportedOperationException_init('MM type of file (' + mmParameters.mmType + ') is different from currently selected core type (' + propsToUse.mmType);
+          }
+        }} else {
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_6);
+      }
+      if (Kotlin.isType(parameters, CoreParametersCLOUD))
+        tmp$_3 = parameters.dmInterfaceParameters;
+      else if (Kotlin.isType(parameters, CoreParametersMQTT))
+        tmp$_3 = parameters.dmInterfaceParameters;
+      else
+        tmp$_3 = null;
+      var dmParameters = tmp$_3;
+      if (dmParameters != null) {
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_7(dmParameters, propsToUse));
+        if (dmParameters.dmType !== propsToUse.dmType) {
+          if (forceTypesUpdate) {
+            logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_8);
+            if ((tmp$_4 = propsToUse.handleChangeDMType) != null) {
+              tmp$_4(dmParameters.dmType);
+            }propsToUse.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
+          } else {
+            throw UnsupportedOperationException_init('DM type of file (' + dmParameters.dmType + ') is different from currently selected core type (' + propsToUse.dmType);
+          }
+        }} else {
+        logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_9);
+      }
+      if (Kotlin.isType(parameters, CoreParametersCLOUD))
+        tmp$_5 = parameters.opaInterfaceParameters;
+      else
+        tmp$_5 = null;
+      var opaParameters = tmp$_5;
+      logger_10.info_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_10(opaParameters));
+      tmp$_6 = this.getFieldsFromParameters_0(propsToUse, user, cryptoType, rmParameters, mmParameters, dmParameters, opaParameters);
+    } catch (e) {
+      if (Kotlin.isType(e, NullPointerException)) {
+        logger_10.warn_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_11);
+        logger_10.warn_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_12(e));
+        propsToUse.handleDisplayAlert(OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+        tmp$_6 = null;
+      } else if (Kotlin.isType(e, UnsupportedOperationException)) {
+        logger_10.warn_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_13);
+        logger_10.warn_nq59yw$(CryptoACEditProfileForm$updateFieldsFromParameters$lambda_14(e));
+        propsToUse.handleDisplayAlert(OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
+        tmp$_6 = null;
+      } else
+        throw e;
+    }
+    return tmp$_6;
+  };
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda(closure$method, closure$endpoint) {
+    return function () {
+      return 'Submitting CryptoAC edit profile form, method ' + closure$method + ', endpoint ' + closure$endpoint;
+    };
+  }
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda_0(closure$method) {
+    return function () {
+      return 'HTTP Method of edit profile form is neither Post nor Patch (it is ' + closure$method + ')';
+    };
+  }
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda(closure$status, closure$code) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$code;
+    };
+  }
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda_0($receiver) {
+    $receiver.editProfileFormIsOpen = false;
+    return Unit;
+  }
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda_1(closure$status, closure$code) {
+    return function () {
+      return 'Response status is ' + closure$status + ', code is ' + closure$code;
+    };
+  }
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda_2($receiver) {
+    $receiver.editProfileFormIsOpen = true;
+    return Unit;
+  }
+  function Coroutine$CryptoACEditProfileForm$submitEditProfileForm$lambda(this$CryptoACEditProfileForm_0, closure$method_0, closure$endpoint_0, closure$parameters_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$CryptoACEditProfileForm = this$CryptoACEditProfileForm_0;
+    this.local$closure$method = closure$method_0;
+    this.local$closure$endpoint = closure$endpoint_0;
+    this.local$closure$parameters = closure$parameters_0;
+    this.local$tmp$ = void 0;
+    this.local$response = void 0;
+  }
+  Coroutine$CryptoACEditProfileForm$submitEditProfileForm$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$CryptoACEditProfileForm$submitEditProfileForm$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$CryptoACEditProfileForm$submitEditProfileForm$lambda.prototype.constructor = Coroutine$CryptoACEditProfileForm$submitEditProfileForm$lambda;
+  Coroutine$CryptoACEditProfileForm$submitEditProfileForm$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.local$this$CryptoACEditProfileForm.props.handleChangeBackdropIsOpen(true);
+            if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Post) : null) {
+              var $receiver = this.local$this$CryptoACEditProfileForm.props.httpClient;
+              var $receiver_1 = new HttpRequestBuilder_init();
+              var closure$endpoint = this.local$closure$endpoint;
+              var closure$parameters = this.local$closure$parameters;
+              url($receiver_1, closure$endpoint);
+              contentType($receiver_1, ContentType.Application.Json);
+              if (closure$parameters == null) {
+                $receiver_1.body = utils.EmptyContent;
+                $receiver_1.bodyType = null;
+              } else if (Kotlin.isType(closure$parameters, OutgoingContent)) {
+                $receiver_1.body = closure$parameters;
+                $receiver_1.bodyType = null;
+              } else {
+                $receiver_1.body = closure$parameters;
+                var tmp$ = reflect.JsType;
+                var tmp$_0 = getKClass(CoreParameters);
+                var tryGetType$result;
+                tryGetType$break: do {
+                  try {
+                    tryGetType$result = createKType(getKClass(CoreParameters), [], false);
+                  } catch (cause) {
+                    if (Kotlin.isType(cause, Throwable)) {
+                      tryGetType$result = null;
+                      break tryGetType$break;
+                    } else
+                      throw cause;
+                  }
+                }
+                 while (false);
+                $receiver_1.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
+              }
+              $receiver_1.method = HttpMethod_0.Companion.Post;
+              this.state_0 = 3;
+              this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
+            } else {
+              var $receiver_0 = this.local$this$CryptoACEditProfileForm.props.httpClient;
+              var $receiver_1_0 = new HttpRequestBuilder_init();
+              var closure$endpoint_0 = this.local$closure$endpoint;
+              var closure$parameters_0 = this.local$closure$parameters;
+              url($receiver_1_0, closure$endpoint_0);
+              contentType($receiver_1_0, ContentType.Application.Json);
+              if (closure$parameters_0 == null) {
+                $receiver_1_0.body = utils.EmptyContent;
+                $receiver_1_0.bodyType = null;
+              } else if (Kotlin.isType(closure$parameters_0, OutgoingContent)) {
+                $receiver_1_0.body = closure$parameters_0;
+                $receiver_1_0.bodyType = null;
+              } else {
+                $receiver_1_0.body = closure$parameters_0;
+                var tmp$_1 = reflect.JsType;
+                var tmp$_0_0 = getKClass(CoreParameters);
+                var tryGetType$result_0;
+                tryGetType$break: do {
+                  try {
+                    tryGetType$result_0 = createKType(getKClass(CoreParameters), [], false);
+                  } catch (cause_0) {
+                    if (Kotlin.isType(cause_0, Throwable)) {
+                      tryGetType$result_0 = null;
+                      break tryGetType$break;
+                    } else
+                      throw cause_0;
+                  }
+                }
+                 while (false);
+                $receiver_1_0.bodyType = typeInfoImpl(tmp$_1, tmp$_0_0, tryGetType$result_0);
+              }
+              $receiver_1_0.method = HttpMethod_0.Companion.Patch;
+              this.state_0 = 2;
+              this.result_0 = (new HttpStatement_init($receiver_1_0, $receiver_0)).execute(this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
+            }
+
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.result_0;
+            this.local$tmp$ = this.result_0;
+            this.state_0 = 4;
+            continue;
+          case 3:
+            this.result_0;
+            this.local$tmp$ = this.result_0;
+            this.state_0 = 4;
+            continue;
+          case 4:
+            this.local$response = this.local$tmp$;
+            var tmp$_2;
+            var tmp$_3 = this.local$response.call;
+            var tmp$_4 = reflect.JsType;
+            var tmp$_0_1 = getKClass(OutcomeCode);
+            var tryGetType$result_0_0;
+            tryGetType$break: do {
+              try {
+                tryGetType$result_0_0 = createKType(getKClass(OutcomeCode), [], false);
+              } catch (cause_0_0) {
+                if (Kotlin.isType(cause_0_0, Throwable)) {
+                  tryGetType$result_0_0 = null;
+                  break tryGetType$break;
+                } else
+                  throw cause_0_0;
+              }
+            }
+             while (false);
+            this.state_0 = 5;
+            this.result_0 = tmp$_3.body_qi9ur9$(typeInfoImpl(tmp$_4, tmp$_0_1, tryGetType$result_0_0), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 5:
+            this.result_0 = Kotlin.isType(tmp$_2 = this.result_0, OutcomeCode) ? tmp$_2 : throwCCE();
+            var code = this.result_0;
+            var status = this.local$response.status;
+            this.local$this$CryptoACEditProfileForm.props.handleChangeBackdropIsOpen(false);
+            if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
+              logger_10.info_nq59yw$(CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda(status, code));
+              this.local$this$CryptoACEditProfileForm.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance());
+              this.local$this$CryptoACEditProfileForm.props.handleProfileWasCreatedOrModified(this.local$this$CryptoACEditProfileForm.props.coreType);
+              return setState(this.local$this$CryptoACEditProfileForm, CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda_0), Unit;
+            } else {
+              logger_10.warn_nq59yw$(CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda_1(status, code));
+              this.local$this$CryptoACEditProfileForm.props.handleDisplayAlert(code, CryptoACAlertSeverity$ERROR_getInstance());
+              return setState(this.local$this$CryptoACEditProfileForm, CryptoACEditProfileForm$submitEditProfileForm$lambda$lambda_2), Unit;
+            }
+
+          case 6:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      } catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        } else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda_1(this$CryptoACEditProfileForm_0, closure$method_0, closure$endpoint_0, closure$parameters_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$CryptoACEditProfileForm$submitEditProfileForm$lambda(this$CryptoACEditProfileForm_0, closure$method_0, closure$endpoint_0, closure$parameters_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda_2() {
+    return 'NullPointerException: probably not all fields of the edit profile form were filled';
+  }
+  function CryptoACEditProfileForm$submitEditProfileForm$lambda_3(closure$e) {
+    return function () {
+      return 'Error during edit profile (' + toString(closure$e.message) + '), see console log for details';
+    };
+  }
+  CryptoACEditProfileForm.prototype.submitEditProfileForm_0 = function (method, endpoint, values) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
+    logger_10.info_nq59yw$(CryptoACEditProfileForm$submitEditProfileForm$lambda(method, endpoint));
+    try {
+      switch (this.props.rmType.name) {
+        case 'CRYPTOAC':
+          tmp$ = RMInterfaceCryptoACParameters$Companion_getInstance().fromMap_xlh5cu$(values);
+          break;
+        case 'NONE':
+          tmp$ = null;
+          break;
+        default:tmp$ = Kotlin.noWhenBranchMatched();
+          break;
+      }
+      var rmParameters = tmp$;
+      switch (this.props.mmType.name) {
+        case 'MYSQL':
+          tmp$_0 = MMInterfaceMySQLParameters$Companion_getInstance().fromMap_xlh5cu$(values);
+          break;
+        case 'REDIS':
+          tmp$_0 = MMInterfaceRedisParameters$Companion_getInstance().fromMap_xlh5cu$(values);
+          break;
+        default:tmp$_0 = Kotlin.noWhenBranchMatched();
+          break;
+      }
+      var mmParameters = tmp$_0;
+      switch (this.props.dmType.name) {
+        case 'CRYPTOAC':
+          tmp$_1 = DMInterfaceCryptoACParameters$Companion_getInstance().fromMap_xlh5cu$(values);
+          break;
+        case 'MOSQUITTO':
+          tmp$_1 = DMInterfaceMosquittoParameters$Companion_getInstance().fromMap_xlh5cu$(values);
+          break;
+        default:tmp$_1 = Kotlin.noWhenBranchMatched();
+          break;
+      }
+      var dmParameters = tmp$_1;
+      var user = new User(ensureNotNull(values.get_11rb$(SERVER_getInstance().USERNAME)), void 0, void 0, void 0, toBoolean(values.get_11rb$(SERVER_getInstance().IS_ADMIN)));
+      var cryptoType = CryptoType$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().CRYPTO)));
+      switch (this.props.coreType.name) {
+        case 'RBAC_CLOUD':
+          tmp$_5 = new CoreParametersCLOUD(user, void 0, cryptoType, void 0, ensureNotNull(rmParameters), Kotlin.isType(tmp$_2 = mmParameters, MMInterfaceRBACCLOUDParameters) ? tmp$_2 : throwCCE(), Kotlin.isType(tmp$_3 = dmParameters, DMInterfaceRBACCLOUDParameters) ? tmp$_3 : throwCCE(), new OPAInterfaceParameters(toInt(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_URL)), PolicyModel$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_POLICY_MODEL)))));
+          break;
+        case 'RBAC_MQTT':
+          tmp$_5 = new CoreParametersMQTT(user, void 0, cryptoType, void 0, mmParameters, Kotlin.isType(tmp$_4 = dmParameters, DMInterfaceRBACMQTTParameters) ? tmp$_4 : throwCCE());
+          break;
+        default:tmp$_5 = Kotlin.noWhenBranchMatched();
+          break;
+      }
+      var parameters = tmp$_5;
+      if (!(method != null ? method.equals(HttpMethod.Companion.Post) : null) && !(method != null ? method.equals(HttpMethod.Companion.Patch) : null)) {
+        logger_10.warn_nq59yw$(CryptoACEditProfileForm$submitEditProfileForm$lambda_0(method));
+        this.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+      }launch(MainScope(), void 0, void 0, CryptoACEditProfileForm$submitEditProfileForm$lambda_1(this, method, endpoint, parameters));
+    } catch (e) {
+      if (Kotlin.isType(e, NullPointerException)) {
+        printStackTrace(e);
+        logger_10.warn_nq59yw$(CryptoACEditProfileForm$submitEditProfileForm$lambda_2);
+        this.props.handleDisplayAlert(OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
+      } else if (Kotlin.isType(e, Error_0)) {
+        logger_10.error_nq59yw$(CryptoACEditProfileForm$submitEditProfileForm$lambda_3(e));
+        console.log(e);
+        this.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
+      } else
+        throw e;
+    }
+  };
+  function CryptoACEditProfileForm$getFieldsFromParameters$lambda(closure$propsToUse) {
+    return function () {
+      return 'Getting profile fields from parameters (core type is ' + closure$propsToUse.coreType + ')';
+    };
+  }
+  function CryptoACEditProfileForm$getFieldsFromParameters$lambda_0(closure$rmType) {
+    return function () {
+      return 'RM type to use is ' + closure$rmType;
+    };
+  }
+  function CryptoACEditProfileForm$getFieldsFromParameters$lambda_1(closure$mmType) {
+    return function () {
+      return 'MM type to use is ' + closure$mmType;
+    };
+  }
+  function CryptoACEditProfileForm$getFieldsFromParameters$lambda_2(closure$dmType) {
+    return function () {
+      return 'DM type to use is ' + closure$dmType;
+    };
+  }
+  function CryptoACEditProfileForm$getFieldsFromParameters$lambda_3() {
+    return 'Core type is ' + CoreType$RBAC_CLOUD_getInstance() + ', thus add OPA fields';
+  }
+  CryptoACEditProfileForm.prototype.getFieldsFromParameters_0 = function (propsToUse, user, cryptoType, rmParameters, mmParameters, dmParameters, opaParameters) {
+    if (propsToUse === void 0)
+      propsToUse = this.props;
+    if (user === void 0)
+      user = null;
+    if (cryptoType === void 0)
+      cryptoType = CryptoType$SODIUM_getInstance();
+    if (rmParameters === void 0)
+      rmParameters = null;
+    if (mmParameters === void 0)
+      mmParameters = null;
+    if (dmParameters === void 0)
+      dmParameters = null;
+    if (opaParameters === void 0)
+      opaParameters = null;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11, tmp$_12, tmp$_13, tmp$_14, tmp$_15;
+    logger_10.info_nq59yw$(CryptoACEditProfileForm$getFieldsFromParameters$lambda(propsToUse));
+    tmp$ = new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance(), void 0, user != null ? user.name : null, 'darkTextField');
+    tmp$_0 = new CryptoACFormField(SERVER_getInstance().IS_ADMIN, replace(SERVER_getInstance().IS_ADMIN, '_', ' '), InputType$checkBox_getInstance(), void 0, toString(user != null ? user.isAdmin : null), 'darkTextField');
+    tmp$_1 = SERVER_getInstance().CRYPTO;
+    tmp$_2 = SERVER_getInstance().CRYPTO;
+    tmp$_3 = InputType$select_getInstance();
+    var $receiver = CryptoType$values();
+    var destination = ArrayList_init_0($receiver.length);
+    var tmp$_16;
+    for (tmp$_16 = 0; tmp$_16 !== $receiver.length; ++tmp$_16) {
+      var item = $receiver[tmp$_16];
+      destination.add_11rb$(item.toString());
+    }
+    var fields = mutableListOf([listOf([tmp$, tmp$_0, new CryptoACFormField(tmp$_1, tmp$_2, tmp$_3, destination, cryptoType.toString(), 'darkTextField')])]);
+    var rmType = (tmp$_4 = rmParameters != null ? rmParameters.rmType : null) != null ? tmp$_4 : propsToUse.rmType;
+    logger_10.info_nq59yw$(CryptoACEditProfileForm$getFieldsFromParameters$lambda_0(rmType));
+    switch (rmType.name) {
+      case 'CRYPTOAC':
+        var tmp$_17 = RMInterfaceCryptoACParameters$Companion_getInstance();
+        var tmp$_18;
+        if (rmParameters != null) {
+          var tmp$_19;
+          tmp$_18 = Kotlin.isType(tmp$_19 = rmParameters, RMInterfaceCryptoACParameters) ? tmp$_19 : throwCCE();
+        } else
+          tmp$_18 = null;
+        tmp$_5 = tmp$_17.toMap_8hxbyy$(tmp$_18);
+        break;
+      case 'NONE':
+        tmp$_5 = emptyList();
+        break;
+      default:tmp$_5 = Kotlin.noWhenBranchMatched();
+        break;
+    }
+    fields.addAll_brywnq$(tmp$_5);
+    var mmType = (tmp$_6 = mmParameters != null ? mmParameters.mmType : null) != null ? tmp$_6 : propsToUse.mmType;
+    logger_10.info_nq59yw$(CryptoACEditProfileForm$getFieldsFromParameters$lambda_1(mmType));
+    switch (mmType.name) {
+      case 'MYSQL':
+        var tmp$_20 = MMInterfaceMySQLParameters$Companion_getInstance();
+        var tmp$_21;
+        if (mmParameters != null) {
+          var tmp$_22;
+          tmp$_21 = Kotlin.isType(tmp$_22 = mmParameters, MMInterfaceMySQLParameters) ? tmp$_22 : throwCCE();
+        } else
+          tmp$_21 = null;
+        tmp$_7 = tmp$_20.toMap_169afz$(tmp$_21);
+        break;
+      case 'REDIS':
+        var tmp$_23 = MMInterfaceRedisParameters$Companion_getInstance();
+        var tmp$_24;
+        if (mmParameters != null) {
+          var tmp$_25;
+          tmp$_24 = Kotlin.isType(tmp$_25 = mmParameters, MMInterfaceRedisParameters) ? tmp$_25 : throwCCE();
+        } else
+          tmp$_24 = null;
+        tmp$_7 = tmp$_23.toMap_4poj22$(tmp$_24);
+        break;
+      default:tmp$_7 = Kotlin.noWhenBranchMatched();
+        break;
+    }
+    fields.addAll_brywnq$(tmp$_7);
+    var dmType = (tmp$_8 = dmParameters != null ? dmParameters.dmType : null) != null ? tmp$_8 : propsToUse.dmType;
+    logger_10.info_nq59yw$(CryptoACEditProfileForm$getFieldsFromParameters$lambda_2(dmType));
+    switch (dmType.name) {
+      case 'CRYPTOAC':
+        var tmp$_26 = DMInterfaceCryptoACParameters$Companion_getInstance();
+        var tmp$_27;
+        if (dmParameters != null) {
+          var tmp$_28;
+          tmp$_27 = Kotlin.isType(tmp$_28 = dmParameters, DMInterfaceCryptoACParameters) ? tmp$_28 : throwCCE();
+        } else
+          tmp$_27 = null;
+        tmp$_9 = tmp$_26.toMap_2qkhay$(tmp$_27);
+        break;
+      case 'MOSQUITTO':
+        var tmp$_29 = DMInterfaceMosquittoParameters$Companion_getInstance();
+        var tmp$_30;
+        if (dmParameters != null) {
+          var tmp$_31;
+          tmp$_30 = Kotlin.isType(tmp$_31 = dmParameters, DMInterfaceMosquittoParameters) ? tmp$_31 : throwCCE();
+        } else
+          tmp$_30 = null;
+        tmp$_9 = tmp$_29.toMap_4xwjay$(tmp$_30);
+        break;
+      default:tmp$_9 = Kotlin.noWhenBranchMatched();
+        break;
+    }
+    fields.addAll_brywnq$(tmp$_9);
+    if (propsToUse.coreType === CoreType$RBAC_CLOUD_getInstance()) {
+      logger_10.info_nq59yw$(CryptoACEditProfileForm$getFieldsFromParameters$lambda_3);
+      tmp$_10 = new CryptoACFormField(SERVER_getInstance().OPA_URL, replace(SERVER_getInstance().OPA_URL, '_', ' '), InputType$text_getInstance(), void 0, opaParameters != null ? opaParameters.url : null, 'darkTextField');
+      tmp$_11 = new CryptoACFormField(SERVER_getInstance().OPA_PORT, replace(SERVER_getInstance().OPA_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(opaParameters != null ? opaParameters.port : null), 'darkTextField');
+      tmp$_12 = SERVER_getInstance().OPA_POLICY_MODEL;
+      tmp$_13 = replace(SERVER_getInstance().OPA_POLICY_MODEL, '_', ' ');
+      tmp$_14 = InputType$select_getInstance();
+      var $receiver_0 = PolicyModel$values();
+      var destination_0 = ArrayList_init_0($receiver_0.length);
+      var tmp$_32;
+      for (tmp$_32 = 0; tmp$_32 !== $receiver_0.length; ++tmp$_32) {
+        var item_0 = $receiver_0[tmp$_32];
+        destination_0.add_11rb$(item_0.toString());
+      }
+      fields.addAll_brywnq$(listOf_0(listOf([tmp$_10, tmp$_11, new CryptoACFormField(tmp$_12, tmp$_13, tmp$_14, destination_0, ((tmp$_15 = opaParameters != null ? opaParameters.policyModel : null) != null ? tmp$_15 : PolicyModel$RBAC_getInstance()).toString(), 'darkTextField')])));
+    }return toList(fields);
+  };
+  CryptoACEditProfileForm.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CryptoACEditProfileForm',
+    interfaces: [RComponent]
+  };
+  function cryptoACEditProfileForm$lambda$lambda(closure$handler) {
+    return function ($receiver) {
+      $receiver.attrs_37755u$(closure$handler);
+      return Unit;
+    };
+  }
+  function cryptoACEditProfileForm$lambda(closure$handler) {
+    return function ($receiver) {
+      $receiver.child_up9nw1$(getKClass(CryptoACEditProfileForm), cryptoACEditProfileForm$lambda$lambda(closure$handler));
+      return Unit;
+    };
+  }
+  function cryptoACEditProfileForm(handler) {
+    return ensureNotNull(createElement(cryptoACEditProfileForm$lambda(handler)));
+  }
+  function input$lambda_0(closure$type, closure$formEncType, closure$formMethod, closure$name, closure$classes) {
+    return function (it) {
+      return new INPUT_init(attributesMapOf_1(['type', closure$type != null ? enumEncode(closure$type) : null, 'formenctype', closure$formEncType != null ? enumEncode(closure$formEncType) : null, 'formmethod', closure$formMethod != null ? enumEncode(closure$formMethod) : null, 'name', closure$name, 'class', closure$classes]), it);
+    };
+  }
+  function styledDiv$lambda_3(it) {
     return new DIV_init(html.emptyMap, it);
   }
   function form$lambda(closure$action, closure$encType, closure$method, closure$classes) {
@@ -9087,7 +9922,7 @@
     return function ($receiver) {
       $receiver.attrs_37755u$(CryptoACForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_3);
       $receiver.child_30b5ua$(ensureNotNull(createElement(CryptoACForm$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_4)));
-      var $receiver_0 = RDOMBuilder.Companion.invoke_f6ihu2$(input$lambda(null, null, null, null, null));
+      var $receiver_0 = RDOMBuilder.Companion.invoke_f6ihu2$(input$lambda_0(null, null, null, null, null));
       var closure$formField_0 = closure$formField;
       var $receiver_1 = $receiver_0.attrs;
       $receiver_1.name = closure$formField_0.name;
@@ -9105,7 +9940,7 @@
           $receiver.child_30b5ua$(cryptoACRadioGroup(CryptoACForm$render$lambda$lambda$lambda$lambda$lambda$lambda_0(closure$formField, this$CryptoACForm)));
           break;
         case 'select':
-          var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+          var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
           var closure$formField_0 = closure$formField;
           var $receiver_1 = $receiver_0.css;
           set_marginBottom($receiver_1, get_px(10));
@@ -9117,7 +9952,7 @@
         case 'text':
         case 'password':
         case 'number':
-          var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+          var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
           var closure$formField_1 = closure$formField;
           var this$CryptoACForm_0 = this$CryptoACForm;
           var $receiver_2 = $receiver_0_0.css;
@@ -9128,7 +9963,7 @@
           $receiver.child_30b5ua$($receiver_0_0.create());
           break;
         case 'checkBox':
-          var $receiver_0_1 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+          var $receiver_0_1 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
           var closure$formField_2 = closure$formField;
           var $receiver_3 = $receiver_0_1.css;
           set_marginBottom($receiver_3, get_px(10));
@@ -9171,7 +10006,7 @@
   function CryptoACForm$render$lambda$lambda$lambda$lambda$lambda_0(this$CryptoACForm) {
     return function ($receiver) {
       $receiver.attrs_37755u$(CryptoACForm$render$lambda$lambda$lambda$lambda$lambda$lambda_2(this$CryptoACForm));
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
       var this$CryptoACForm_0 = this$CryptoACForm;
       set_marginRight($receiver_0.css, get_px(5));
       $receiver_0.unaryPlus_pdl1vz$(this$CryptoACForm_0.props.submitButtonText.toUpperCase());
@@ -9183,7 +10018,7 @@
   function CryptoACForm$render$lambda$lambda$lambda_1(this$CryptoACForm) {
     return function ($receiver) {
       $receiver.attrs_37755u$(CryptoACForm$render$lambda$lambda$lambda$lambda_0);
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_2);
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
       var this$CryptoACForm_0 = this$CryptoACForm;
       var $receiver_1 = $receiver_0.css;
       set_textAlign($receiver_1, TextAlign.center);
@@ -9344,7 +10179,7 @@
       launch(MainScope(), void 0, void 0, CryptoACForm$handleCryptoACFormSubmit$lambda_1(this, submitAndHandleCallback, values, files));
     } else {
       logger_11.warn_nq59yw$(CryptoACForm$handleCryptoACFormSubmit$lambda_2(collectedValues, expectedValues));
-      this.props.handleDisplayCryptoACAlert(OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
+      this.props.handleDisplayAlert(OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
     }
   };
   CryptoACForm.prototype.getValuesFromInputFields_0 = function (form) {
@@ -9551,7 +10386,7 @@
   function cryptoACPaper(handler) {
     return ensureNotNull(createElement(cryptoACPaper$lambda(handler)));
   }
-  function styledDiv$lambda_3(it) {
+  function styledDiv$lambda_4(it) {
     return new DIV_init(html.emptyMap, it);
   }
   function CryptoACRadioGroup() {
@@ -9622,7 +10457,7 @@
   function CryptoACRadioGroup$render$lambda(this$CryptoACRadioGroup) {
     return function ($receiver) {
       $receiver.attrs_37755u$(CryptoACRadioGroup$render$lambda$lambda(this$CryptoACRadioGroup));
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_3);
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_4);
       var this$CryptoACRadioGroup_0 = this$CryptoACRadioGroup;
       var $receiver_1 = $receiver_0.css;
       set_display($receiver_1, Display.block);
@@ -9712,7 +10547,7 @@
   function styledP$lambda(it) {
     return new P_init(html.emptyMap, it);
   }
-  function styledDiv$lambda_4(it) {
+  function styledDiv$lambda_5(it) {
     return new DIV_init(html.emptyMap, it);
   }
   function CryptoACScore() {
@@ -9743,7 +10578,7 @@
     };
   }
   CryptoACScore.prototype.render_ss14n$ = function ($receiver) {
-    var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_4);
+    var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_5);
     set_padding($receiver_0.css, '0px 20px 10px 20px');
     var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledP$lambda);
     set_marginBottom($receiver_0_0.css, get_px(5));
@@ -9883,7 +10718,7 @@
   };
   function CryptoACSelect$init$lambda(props, state) {
     if (state.justMounted || !state.changedByUser) {
-      state.value = equals(props.defaultValue, undefined) ? first(props.options) : props.defaultValue;
+      state.value = equals(props.defaultValue, undefined) ? first_0(props.options) : props.defaultValue;
     }state.changedByUser = false;
     state.justMounted = false;
     return Unit;
@@ -9913,7 +10748,7 @@
   function cryptoACSelect(handler) {
     return ensureNotNull(createElement(cryptoACSelect$lambda(handler)));
   }
-  function styledDiv$lambda_5(it) {
+  function styledDiv$lambda_6(it) {
     return new DIV_init(html.emptyMap, it);
   }
   function div$lambda_1(closure$classes) {
@@ -9983,7 +10818,7 @@
     var $receiver_0 = RDOMBuilder.Companion.invoke_f6ihu2$(div$lambda_1(null));
     if (!equals(this.props.label, undefined)) {
       $receiver_0.invoke_qk0v40$(html_0.ReactHTML.p, CryptoACSlider$render$lambda$lambda(this));
-    }var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_5);
+    }var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_6);
     set_padding($receiver_0_0.css, '20px');
     $receiver_0_0.invoke_qk0v40$($module$_material_ui_core.Slider, CryptoACSlider$render$lambda$lambda$lambda(this));
     $receiver_0.child_30b5ua$($receiver_0_0.create());
@@ -10165,7 +11000,7 @@
   function cryptoACTextField(handler) {
     return ensureNotNull(createElement(cryptoACTextField$lambda(handler)));
   }
-  function styledDiv$lambda_6(it) {
+  function styledDiv$lambda_7(it) {
     return new DIV_init(html.emptyMap, it);
   }
   function p$lambda(closure$classes) {
@@ -10328,25 +11163,25 @@
   function CryptoACTable$render$lambda$lambda(this$CryptoACTable) {
     return function ($receiver) {
       $receiver.invoke_qk0v40$($module$_material_ui_core.Typography, CryptoACTable$render$lambda$lambda$lambda(this$CryptoACTable));
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_6);
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
       var this$CryptoACTable_0 = this$CryptoACTable;
       var $receiver_1 = $receiver_0.css;
       set_marginLeft($receiver_1, LinearDimension.Companion.auto);
       set_marginRight($receiver_1, get_px(0));
       if (!equals(this$CryptoACTable_0.props.onClose, undefined)) {
-        var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_6);
+        var $receiver_0_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
         var $receiver_2 = $receiver_0_0.css;
         set_marginLeft($receiver_2, get_px(5));
         set_float($receiver_2, Float.left);
         $receiver_0_0.invoke_qk0v40$($module$_material_ui_core.Tooltip, CryptoACTable$render$lambda$lambda$lambda$lambda$lambda(this$CryptoACTable_0));
         $receiver_0.child_30b5ua$($receiver_0_0.create());
-      }var $receiver_0_1 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_6);
+      }var $receiver_0_1 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
       var $receiver_3 = $receiver_0_1.css;
       set_marginLeft($receiver_3, get_px(5));
       set_float($receiver_3, Float.left);
       $receiver_0_1.invoke_qk0v40$($module$_material_ui_core.Tooltip, CryptoACTable$render$lambda$lambda$lambda$lambda$lambda_0(this$CryptoACTable_0));
       $receiver_0.child_30b5ua$($receiver_0_1.create());
-      var $receiver_0_2 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_6);
+      var $receiver_0_2 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
       var $receiver_4 = $receiver_0_2.css;
       set_marginLeft($receiver_4, get_px(5));
       set_float($receiver_4, Float.left);
@@ -10442,7 +11277,7 @@
   function CryptoACTable$render$lambda$lambda$lambda_0(this$CryptoACTable) {
     return function ($receiver) {
       if (this$CryptoACTable.props.elements.isEmpty()) {
-        var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_6);
+        var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
         var $receiver_1 = $receiver_0.css;
         set_background($receiver_1, 'url(blackhole.svg) no-repeat center center');
         set_backgroundSize($receiver_1, '150px');
@@ -10507,7 +11342,7 @@
   function CryptoACTable$render$lambda(this$CryptoACTable) {
     return function ($receiver) {
       $receiver.invoke_qk0v40$($module$_material_ui_core.Toolbar, CryptoACTable$render$lambda$lambda(this$CryptoACTable));
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_6);
+      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
       var this$CryptoACTable_0 = this$CryptoACTable;
       var $receiver_1 = $receiver_0.css;
       set_height($receiver_1, get_px(330));
@@ -10725,177 +11560,44 @@
   CryptoACTableRow.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.field, other.field) && Kotlin.equals(this.headerName, other.headerName) && Kotlin.equals(this.description, other.description) && Kotlin.equals(this.type, other.type) && Kotlin.equals(this.flex, other.flex) && Kotlin.equals(this.resizable, other.resizable)))));
   };
-  function input$lambda_0(closure$type, closure$formEncType, closure$formMethod, closure$name, closure$classes) {
-    return function (it) {
-      return new INPUT_init(attributesMapOf_1(['type', closure$type != null ? enumEncode(closure$type) : null, 'formenctype', closure$formEncType != null ? enumEncode(closure$formEncType) : null, 'formmethod', closure$formMethod != null ? enumEncode(closure$formMethod) : null, 'name', closure$name, 'class', closure$classes]), it);
-    };
-  }
-  function styledDiv$lambda_7(it) {
-    return new DIV_init(html.emptyMap, it);
-  }
-  function logger$lambda_12() {
-    return Unit;
-  }
-  var logger_12;
   function Dashboard() {
     RComponent_init(this);
   }
-  function Dashboard$render$lambda$lambda$lambda$lambda($receiver) {
-    $receiver.variant = 'h6';
-    $receiver.id = 'editProfile';
-    $receiver.component = 'div';
-    return Unit;
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda($receiver) {
-    $receiver.color = 'primary';
-    $receiver.component = 'label';
-    return Unit;
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda($receiver) {
-    return Unit;
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda_0($receiver) {
-    $receiver.invoke_qk0v40$($module$react_icons_fa.FaCloudUploadAlt, Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda);
-    return Unit;
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda() {
-    return 'Received upload configuration file event';
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Dashboard) {
-    return function (event) {
-      var tmp$, tmp$_0;
-      logger_12.info_nq59yw$(Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda);
-      tmp$_0 = ensureNotNull(ensureNotNull((Kotlin.isType(tmp$ = event.target, HTMLInputElement) ? tmp$ : throwCCE()).files)[0]);
-      this$Dashboard.parseProfileFile_0(tmp$_0);
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda_0(this$Dashboard) {
-    return function ($receiver) {
-      $receiver.attrs_37755u$(Dashboard$render$lambda$lambda$lambda$lambda$lambda);
-      $receiver.child_30b5ua$(ensureNotNull(createElement(Dashboard$render$lambda$lambda$lambda$lambda$lambda_0)));
-      var $receiver_0 = RDOMBuilder.Companion.invoke_f6ihu2$(input$lambda_0(null, null, null, null, null));
-      var this$Dashboard_0 = this$Dashboard;
-      var $receiver_1 = $receiver_0.attrs;
-      $receiver_1.type = InputType.file;
-      $receiver_1.accept = '.json';
-      set_hidden($receiver_1, true);
-      set_onChangeFunction($receiver_1, Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Dashboard_0));
-      $receiver.child_30b5ua$($receiver_0.create());
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0($receiver) {
-    return Unit;
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1($receiver) {
-    return Unit;
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0(this$Dashboard) {
-    return function ($receiver) {
-      if (!this$Dashboard.state.editProfileFormIsOpen) {
-        $receiver.invoke_qk0v40$($module$react_icons_fa.FaChevronDown, Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0);
-      } else {
-        $receiver.invoke_qk0v40$($module$react_icons_fa.FaChevronUp, Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1);
-      }
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_2($receiver) {
-    $receiver.editProfileFormIsOpen = !$receiver.editProfileFormIsOpen;
-    return Unit;
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1(this$Dashboard) {
-    return function (it) {
-      setState(this$Dashboard, Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda_2);
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_0(this$Dashboard) {
-    return function ($receiver) {
-      $receiver.color = 'primary';
-      $receiver.component = 'label';
-      $receiver.size = 'small';
-      $receiver.children = ensureNotNull(createElement(Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_0(this$Dashboard)));
-      $receiver.onClick = Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda_1(this$Dashboard);
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda_1(this$Dashboard) {
-    return function ($receiver) {
-      $receiver.attrs_37755u$(Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_0(this$Dashboard));
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda(this$Dashboard) {
-    return function ($receiver) {
-      $receiver.attrs_37755u$(Dashboard$render$lambda$lambda$lambda$lambda);
-      $receiver.unaryPlus_pdl1vz$('Edit or Upload Profile');
-      $receiver.invoke_qk0v40$($module$_material_ui_core.IconButton, Dashboard$render$lambda$lambda$lambda$lambda_0(this$Dashboard));
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
-      var this$Dashboard_0 = this$Dashboard;
-      var $receiver_1 = $receiver_0.css;
-      set_display($receiver_1, Display.inline);
-      set_float($receiver_1, Float.right);
-      set_marginTop($receiver_1, get_px(7));
-      set_marginRight($receiver_1, get_px(10));
-      $receiver_0.invoke_qk0v40$($module$_material_ui_core.IconButton, Dashboard$render$lambda$lambda$lambda$lambda$lambda_1(this$Dashboard_0));
-      $receiver.child_30b5ua$($receiver_0.create());
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_1(this$Dashboard) {
-    return function (method, endpoint, values, f) {
-      this$Dashboard.submitEditProfileForm_0(method, endpoint, values);
-      return Unit;
-    };
-  }
-  function Dashboard$render$lambda$lambda$lambda$lambda_1(this$Dashboard, this$) {
-    return function ($receiver) {
-      var $receiver_0 = this$;
-      var this$Dashboard_0 = this$Dashboard;
-      $receiver_0.attrs;
-      var tmp$;
-      $receiver.handleChangeBackdropIsOpen = this$Dashboard_0.props.handleChangeBackdropIsOpen;
-      $receiver.handleDisplayCryptoACAlert = this$Dashboard_0.props.handleDisplayAlert;
-      $receiver.handleSubmitEvent = Dashboard$render$lambda$lambda$lambda$lambda$lambda$lambda_1(this$Dashboard_0);
-      if (this$Dashboard_0.props.userHasProfile) {
-        tmp$ = HttpMethod.Companion.Patch;
-      } else {
-        tmp$ = HttpMethod.Companion.Post;
-      }
-      $receiver.method = tmp$;
-      $receiver.cryptoACFormFields = this$Dashboard_0.state.cryptoACFormFields;
-      $receiver.submitButtonText = 'Edit Profile';
-      $receiver.coreType = this$Dashboard_0.props.coreType;
-      $receiver.endpoint = API_getInstance().PROFILES;
-      return Unit;
-    };
-  }
   function Dashboard$render$lambda$lambda(this$Dashboard) {
-    return function ($receiver) {
-      $receiver.invoke_qk0v40$($module$_material_ui_core.Typography, Dashboard$render$lambda$lambda$lambda(this$Dashboard));
-      var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
-      var this$Dashboard_0 = this$Dashboard;
-      var $receiver_1 = $receiver_0.css;
-      set_marginTop($receiver_1, get_px(10));
-      set_marginBottom($receiver_1, get_px(10));
-      set_marginRight($receiver_1, get_px(10));
-      set_marginLeft($receiver_1, get_px(30));
-      if (!this$Dashboard_0.state.editProfileFormIsOpen) {
-        set_display($receiver_1, Display.none);
-      }$receiver_0.child_30b5ua$(cryptoACForm(Dashboard$render$lambda$lambda$lambda$lambda_1(this$Dashboard_0, $receiver_0)));
-      $receiver.child_30b5ua$($receiver_0.create());
+    return function (coreType) {
+      this$Dashboard.props.handleProfileWasCreatedOrModified(coreType);
       return Unit;
     };
   }
-  function Dashboard$render$lambda(this$Dashboard) {
+  function Dashboard$render$lambda(this$Dashboard, closure$parameters) {
     return function ($receiver) {
+      var tmp$, tmp$_0;
+      $receiver.handleProfileWasCreatedOrModified = Dashboard$render$lambda$lambda(this$Dashboard);
       $receiver.handleChangeBackdropIsOpen = this$Dashboard.props.handleChangeBackdropIsOpen;
       $receiver.handleDisplayAlert = this$Dashboard.props.handleDisplayAlert;
-      $receiver.userIsAdmin = this$Dashboard.props.userIsAdmin;
+      $receiver.coreParameters = closure$parameters;
       $receiver.httpClient = this$Dashboard.props.httpClient;
-      $receiver.coreType = this$Dashboard.props.coreType;
+      $receiver.isCreatingNewProfile = false;
+      $receiver.handleChangeCoreType = null;
+      $receiver.handleChangeRMType = null;
+      $receiver.handleChangeMMType = null;
+      $receiver.handleChangeDMType = null;
+      $receiver.username = this$Dashboard.props.username;
+      $receiver.coreType = closure$parameters.coreType;
+      switch (closure$parameters.coreType.name) {
+        case 'RBAC_CLOUD':
+          Kotlin.isType(tmp$ = closure$parameters, CoreParametersCLOUD) ? tmp$ : throwCCE();
+          $receiver.rmType = closure$parameters.rmInterfaceParameters.rmType;
+          $receiver.mmType = closure$parameters.mmInterfaceParameters.mmType;
+          $receiver.dmType = closure$parameters.dmInterfaceParameters.dmType;
+          break;
+        case 'RBAC_MQTT':
+          Kotlin.isType(tmp$_0 = closure$parameters, CoreParametersMQTT) ? tmp$_0 : throwCCE();
+          $receiver.rmType = RMType$NONE_getInstance();
+          $receiver.mmType = closure$parameters.mmInterfaceParameters.mmType;
+          $receiver.dmType = closure$parameters.dmInterfaceParameters.dmType;
+          break;
+      }
       return Unit;
     };
   }
@@ -10903,7 +11605,17 @@
     return function ($receiver) {
       $receiver.handleChangeBackdropIsOpen = this$Dashboard.props.handleChangeBackdropIsOpen;
       $receiver.handleDisplayAlert = this$Dashboard.props.handleDisplayAlert;
-      $receiver.userIsAdmin = this$Dashboard.props.userIsAdmin;
+      $receiver.userIsAdmin = this$Dashboard.props.coreParameters.user.isAdmin;
+      $receiver.httpClient = this$Dashboard.props.httpClient;
+      $receiver.coreType = this$Dashboard.props.coreType;
+      return Unit;
+    };
+  }
+  function Dashboard$render$lambda_1(this$Dashboard) {
+    return function ($receiver) {
+      $receiver.handleChangeBackdropIsOpen = this$Dashboard.props.handleChangeBackdropIsOpen;
+      $receiver.handleDisplayAlert = this$Dashboard.props.handleDisplayAlert;
+      $receiver.userIsAdmin = this$Dashboard.props.coreParameters.user.isAdmin;
       $receiver.httpClient = this$Dashboard.props.httpClient;
       $receiver.coreType = this$Dashboard.props.coreType;
       $receiver.topics = this$Dashboard.props.tables;
@@ -10911,757 +11623,16 @@
     };
   }
   Dashboard.prototype.render_ss14n$ = function ($receiver) {
-    var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_7);
-    var $receiver_1 = $receiver_0.css;
-    set_textAlign($receiver_1, TextAlign.center);
-    set_paddingTop($receiver_1, get_px(10));
-    set_paddingBottom($receiver_1, get_px(10));
-    $receiver_0.invoke_qk0v40$($module$_material_ui_core.Paper, Dashboard$render$lambda$lambda(this));
-    $receiver.child_30b5ua$($receiver_0.create());
-    if (this.props.userHasProfile) {
-      switch (this.props.coreType.name) {
-        case 'RBAC_CLOUD':
-          $receiver.child_30b5ua$(rbacCLOUDDashboard(Dashboard$render$lambda(this)));
-          break;
-        case 'RBAC_MQTT':
-          $receiver.child_30b5ua$(rbacMQTTDashboard(Dashboard$render$lambda_0(this)));
-          break;
-        case 'RBAC_MOCK':
-          throw new NotImplementedError_init();
-      }
-    }};
-  function Dashboard$init$lambda() {
-    return 'Initializing the state of the Dashboard component';
-  }
-  function Dashboard$init$lambda$lambda() {
-    return 'Trying to see the dashboard but user is not logged in';
-  }
-  function Coroutine$Dashboard$init$lambda(this$Dashboard_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$Dashboard = this$Dashboard_0;
-  }
-  Coroutine$Dashboard$init$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$Dashboard$init$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Dashboard$init$lambda.prototype.constructor = Coroutine$Dashboard$init$lambda;
-  Coroutine$Dashboard$init$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            if (this.local$this$Dashboard.props.userIsLogged) {
-              this.state_0 = 2;
-              this.result_0 = this.local$this$Dashboard.getProfileFromCryptoAC_0(void 0, this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            } else {
-              logger_12.warn_nq59yw$(Dashboard$init$lambda$lambda);
-              return this.local$this$Dashboard.props.handleDisplayAlert(OutcomeCode$CODE_051_LOGIN_REQUIRED_getInstance(), CryptoACAlertSeverity$INFO_getInstance()), Unit;
-            }
-
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return Unit;
-          case 3:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      } catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        } else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function Dashboard$init$lambda_0(this$Dashboard_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$Dashboard$init$lambda(this$Dashboard_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  Dashboard.prototype.init_b4e81d$ = function ($receiver) {
-    logger_12.info_nq59yw$(Dashboard$init$lambda);
-    $receiver.editProfileFormIsOpen = true;
-    $receiver.cryptoACFormFields = emptyList();
-    launch(MainScope(), void 0, void 0, Dashboard$init$lambda_0(this));
-  };
-  function Dashboard$submitEditProfileForm$lambda(closure$method, closure$endpoint) {
-    return function () {
-      return 'Submitting CryptoAC edit profile form, method ' + closure$method + ', endpoint ' + closure$endpoint;
-    };
-  }
-  function Dashboard$submitEditProfileForm$lambda_0(closure$message) {
-    return function () {
-      return closure$message;
-    };
-  }
-  function Dashboard$submitEditProfileForm$lambda_1(closure$method) {
-    return function () {
-      return 'HTTP Method of edit profile form is neither Post nor Patch (it is ' + closure$method + ')';
-    };
-  }
-  function Dashboard$submitEditProfileForm$lambda$lambda(closure$status, closure$code) {
-    return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$code;
-    };
-  }
-  function Dashboard$submitEditProfileForm$lambda$lambda_0($receiver) {
-    $receiver.editProfileFormIsOpen = false;
-    return Unit;
-  }
-  function Dashboard$submitEditProfileForm$lambda$lambda_1(closure$status, closure$code) {
-    return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$code;
-    };
-  }
-  function Dashboard$submitEditProfileForm$lambda$lambda_2($receiver) {
-    $receiver.editProfileFormIsOpen = true;
-    return Unit;
-  }
-  function Coroutine$Dashboard$submitEditProfileForm$lambda(this$Dashboard_0, closure$method_0, closure$endpoint_0, closure$parameters_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$Dashboard = this$Dashboard_0;
-    this.local$closure$method = closure$method_0;
-    this.local$closure$endpoint = closure$endpoint_0;
-    this.local$closure$parameters = closure$parameters_0;
-    this.local$tmp$ = void 0;
-    this.local$response = void 0;
-  }
-  Coroutine$Dashboard$submitEditProfileForm$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$Dashboard$submitEditProfileForm$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Dashboard$submitEditProfileForm$lambda.prototype.constructor = Coroutine$Dashboard$submitEditProfileForm$lambda;
-  Coroutine$Dashboard$submitEditProfileForm$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.local$this$Dashboard.props.handleChangeBackdropIsOpen(true);
-            if (this.local$closure$method != null ? this.local$closure$method.equals(HttpMethod.Companion.Post) : null) {
-              var $receiver = this.local$this$Dashboard.props.httpClient;
-              var $receiver_1 = new HttpRequestBuilder_init();
-              var closure$endpoint = this.local$closure$endpoint;
-              var closure$parameters = this.local$closure$parameters;
-              url($receiver_1, closure$endpoint);
-              contentType($receiver_1, ContentType.Application.Json);
-              if (closure$parameters == null) {
-                $receiver_1.body = utils.EmptyContent;
-                $receiver_1.bodyType = null;
-              } else if (Kotlin.isType(closure$parameters, OutgoingContent)) {
-                $receiver_1.body = closure$parameters;
-                $receiver_1.bodyType = null;
-              } else {
-                $receiver_1.body = closure$parameters;
-                var tmp$ = reflect.JsType;
-                var tmp$_0 = getKClass(CoreParameters);
-                var tryGetType$result;
-                tryGetType$break: do {
-                  try {
-                    tryGetType$result = createKType(getKClass(CoreParameters), [], false);
-                  } catch (cause) {
-                    if (Kotlin.isType(cause, Throwable)) {
-                      tryGetType$result = null;
-                      break tryGetType$break;
-                    } else
-                      throw cause;
-                  }
-                }
-                 while (false);
-                $receiver_1.bodyType = typeInfoImpl(tmp$, tmp$_0, tryGetType$result);
-              }
-              $receiver_1.method = HttpMethod_0.Companion.Post;
-              this.state_0 = 3;
-              this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            } else {
-              var $receiver_0 = this.local$this$Dashboard.props.httpClient;
-              var $receiver_1_0 = new HttpRequestBuilder_init();
-              var closure$endpoint_0 = this.local$closure$endpoint;
-              var closure$parameters_0 = this.local$closure$parameters;
-              url($receiver_1_0, closure$endpoint_0);
-              contentType($receiver_1_0, ContentType.Application.Json);
-              if (closure$parameters_0 == null) {
-                $receiver_1_0.body = utils.EmptyContent;
-                $receiver_1_0.bodyType = null;
-              } else if (Kotlin.isType(closure$parameters_0, OutgoingContent)) {
-                $receiver_1_0.body = closure$parameters_0;
-                $receiver_1_0.bodyType = null;
-              } else {
-                $receiver_1_0.body = closure$parameters_0;
-                var tmp$_1 = reflect.JsType;
-                var tmp$_0_0 = getKClass(CoreParameters);
-                var tryGetType$result_0;
-                tryGetType$break: do {
-                  try {
-                    tryGetType$result_0 = createKType(getKClass(CoreParameters), [], false);
-                  } catch (cause_0) {
-                    if (Kotlin.isType(cause_0, Throwable)) {
-                      tryGetType$result_0 = null;
-                      break tryGetType$break;
-                    } else
-                      throw cause_0;
-                  }
-                }
-                 while (false);
-                $receiver_1_0.bodyType = typeInfoImpl(tmp$_1, tmp$_0_0, tryGetType$result_0);
-              }
-              $receiver_1_0.method = HttpMethod_0.Companion.Patch;
-              this.state_0 = 2;
-              this.result_0 = (new HttpStatement_init($receiver_1_0, $receiver_0)).execute(this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            }
-
-          case 1:
-            throw this.exception_0;
-          case 2:
-            this.result_0;
-            this.local$tmp$ = this.result_0;
-            this.state_0 = 4;
-            continue;
-          case 3:
-            this.result_0;
-            this.local$tmp$ = this.result_0;
-            this.state_0 = 4;
-            continue;
-          case 4:
-            this.local$response = this.local$tmp$;
-            var tmp$_2;
-            var tmp$_3 = this.local$response.call;
-            var tmp$_4 = reflect.JsType;
-            var tmp$_0_1 = getKClass(OutcomeCode);
-            var tryGetType$result_0_0;
-            tryGetType$break: do {
-              try {
-                tryGetType$result_0_0 = createKType(getKClass(OutcomeCode), [], false);
-              } catch (cause_0_0) {
-                if (Kotlin.isType(cause_0_0, Throwable)) {
-                  tryGetType$result_0_0 = null;
-                  break tryGetType$break;
-                } else
-                  throw cause_0_0;
-              }
-            }
-             while (false);
-            this.state_0 = 5;
-            this.result_0 = tmp$_3.body_qi9ur9$(typeInfoImpl(tmp$_4, tmp$_0_1, tryGetType$result_0_0), this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 5:
-            this.result_0 = Kotlin.isType(tmp$_2 = this.result_0, OutcomeCode) ? tmp$_2 : throwCCE();
-            var code = this.result_0;
-            var status = this.local$response.status;
-            this.local$this$Dashboard.props.handleChangeBackdropIsOpen(false);
-            if (status != null ? status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_12.info_nq59yw$(Dashboard$submitEditProfileForm$lambda$lambda(status, code));
-              this.local$this$Dashboard.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance());
-              this.local$this$Dashboard.props.handleChangeUserIsAdmin(this.local$closure$parameters.user.isAdmin);
-              this.local$this$Dashboard.props.handleChangeUserHasProfile(true);
-              return setState(this.local$this$Dashboard, Dashboard$submitEditProfileForm$lambda$lambda_0), Unit;
-            } else {
-              logger_12.warn_nq59yw$(Dashboard$submitEditProfileForm$lambda$lambda_1(status, code));
-              this.local$this$Dashboard.props.handleDisplayAlert(code, CryptoACAlertSeverity$ERROR_getInstance());
-              this.local$this$Dashboard.props.handleChangeUserHasProfile(false);
-              this.local$this$Dashboard.props.handleChangeUserIsAdmin(false);
-              return setState(this.local$this$Dashboard, Dashboard$submitEditProfileForm$lambda$lambda_2), Unit;
-            }
-
-          case 6:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      } catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        } else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function Dashboard$submitEditProfileForm$lambda_2(this$Dashboard_0, closure$method_0, closure$endpoint_0, closure$parameters_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$Dashboard$submitEditProfileForm$lambda(this$Dashboard_0, closure$method_0, closure$endpoint_0, closure$parameters_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function Dashboard$submitEditProfileForm$lambda_3() {
-    return 'NullPointerException: probably not all fields of the edit profile form were filled';
-  }
-  function Dashboard$submitEditProfileForm$lambda_4(closure$e) {
-    return function () {
-      return 'Error during edit profile (' + toString(closure$e.message) + '), see console log for details';
-    };
-  }
-  Dashboard.prototype.submitEditProfileForm_0 = function (method, endpoint, values) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
-    logger_12.info_nq59yw$(Dashboard$submitEditProfileForm$lambda(method, endpoint));
-    try {
-      switch (this.props.rmType.name) {
-        case 'CRYPTOAC':
-          tmp$ = RMInterfaceCryptoACParameters$Companion_getInstance().fromMap_xlh5cu$(values);
-          break;
-        case 'NONE':
-          tmp$ = null;
-          break;
-        default:tmp$ = Kotlin.noWhenBranchMatched();
-          break;
-      }
-      var rmParameters = tmp$;
-      switch (this.props.mmType.name) {
-        case 'MYSQL':
-          tmp$_0 = MMInterfaceMySQLParameters$Companion_getInstance().fromMap_xlh5cu$(values);
-          break;
-        case 'REDIS':
-          tmp$_0 = MMInterfaceRedisParameters$Companion_getInstance().fromMap_xlh5cu$(values);
-          break;
-        default:tmp$_0 = Kotlin.noWhenBranchMatched();
-          break;
-      }
-      var mmParameters = tmp$_0;
-      switch (this.props.dmType.name) {
-        case 'CRYPTOAC':
-          tmp$_1 = DMInterfaceCryptoACParameters$Companion_getInstance().fromMap_xlh5cu$(values);
-          break;
-        case 'MOSQUITTO':
-          tmp$_1 = DMInterfaceMosquittoParameters$Companion_getInstance().fromMap_xlh5cu$(values);
-          break;
-        default:tmp$_1 = Kotlin.noWhenBranchMatched();
-          break;
-      }
-      var dmParameters = tmp$_1;
-      var user = new User(ensureNotNull(values.get_11rb$(SERVER_getInstance().USERNAME)), void 0, void 0, void 0, toBoolean(values.get_11rb$(SERVER_getInstance().IS_ADMIN)));
-      var cryptoType = CryptoType$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().CRYPTO)));
-      switch (this.props.coreType.name) {
-        case 'RBAC_CLOUD':
-          tmp$_5 = new CoreParametersCLOUD(user, void 0, cryptoType, void 0, ensureNotNull(rmParameters), Kotlin.isType(tmp$_2 = mmParameters, MMInterfaceRBACCLOUDParameters) ? tmp$_2 : throwCCE(), Kotlin.isType(tmp$_3 = dmParameters, DMInterfaceRBACCLOUDParameters) ? tmp$_3 : throwCCE(), new OPAInterfaceParameters(toInt(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_PORT))), ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_URL)), PolicyModel$valueOf(ensureNotNull(values.get_11rb$(SERVER_getInstance().OPA_POLICY_MODEL)))));
-          break;
-        case 'RBAC_MQTT':
-          tmp$_5 = new CoreParametersMQTT(user, void 0, cryptoType, void 0, mmParameters, Kotlin.isType(tmp$_4 = dmParameters, DMInterfaceRBACMQTTParameters) ? tmp$_4 : throwCCE());
-          break;
-        case 'RBAC_MOCK':
-          var message = 'Using MOCK core when not in development mode';
-          logger_12.error_nq59yw$(Dashboard$submitEditProfileForm$lambda_0(message));
-          throw IllegalStateException_init(message);
-        default:tmp$_5 = Kotlin.noWhenBranchMatched();
-          break;
-      }
-      var parameters = tmp$_5;
-      if (!(method != null ? method.equals(HttpMethod.Companion.Post) : null) && !(method != null ? method.equals(HttpMethod.Companion.Patch) : null)) {
-        logger_12.warn_nq59yw$(Dashboard$submitEditProfileForm$lambda_1(method));
-        this.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
-      }launch(MainScope(), void 0, void 0, Dashboard$submitEditProfileForm$lambda_2(this, method, endpoint, parameters));
-    } catch (e) {
-      if (Kotlin.isType(e, NullPointerException)) {
-        printStackTrace(e);
-        logger_12.warn_nq59yw$(Dashboard$submitEditProfileForm$lambda_3);
-        this.props.handleDisplayAlert(OutcomeCode$CODE_019_MISSING_PARAMETERS_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
-      } else if (Kotlin.isType(e, Error_0)) {
-        logger_12.error_nq59yw$(Dashboard$submitEditProfileForm$lambda_4(e));
-        console.log(e);
-        this.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
-      } else
-        throw e;
-    }
-  };
-  function Dashboard$parseProfileFile$lambda(closure$reader, this$Dashboard) {
-    return function (f) {
-      var fileContent = closure$reader.result.toString();
-      var $receiver = myJson;
-      var tmp$;
-      var parameters = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver.serializersModule, createKType(getKClass(CoreParameters), [], false)), KSerializer) ? tmp$ : throwCCE(), fileContent);
-      return this$Dashboard.parseProfileAndUpdateFields_0(parameters, true);
-    };
-  }
-  function Dashboard$parseProfileFile$lambda_0() {
-    return 'The user did not provide a .json file for the profile';
-  }
-  Dashboard.prototype.parseProfileFile_0 = function (file) {
-    if (endsWith(file.name, '.json')) {
-      var reader = new FileReader();
-      reader.readAsText(file, 'UTF-8');
-      reader.onload = Dashboard$parseProfileFile$lambda(reader, this);
-    } else {
-      logger_12.warn_nq59yw$(Dashboard$parseProfileFile$lambda_0);
-      this.props.handleDisplayAlert(OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$WARNING_getInstance());
-    }
-  };
-  function Dashboard$getProfileFromCryptoAC$lambda(closure$username, closure$actualEndpoint) {
-    return function () {
-      return 'Getting the profile for user ' + toString(closure$username) + ' at endpoint ' + closure$actualEndpoint;
-    };
-  }
-  function Dashboard$getProfileFromCryptoAC$lambda_0(closure$status) {
-    return function () {
-      return 'Response status is ' + closure$status;
-    };
-  }
-  function Dashboard$getProfileFromCryptoAC$lambda_1(this$Dashboard, closure$parameters) {
-    return function ($receiver) {
-      this$Dashboard.props.handleChangeUserHasProfile(true);
-      this$Dashboard.props.handleChangeUserIsAdmin(closure$parameters.user.isAdmin);
-      $receiver.editProfileFormIsOpen = false;
-      return Unit;
-    };
-  }
-  function Dashboard$getProfileFromCryptoAC$lambda_2(closure$status, closure$outcomeCode) {
-    return function () {
-      return 'Response status is ' + closure$status + ', code is ' + closure$outcomeCode;
-    };
-  }
-  function Dashboard$getProfileFromCryptoAC$lambda_3(this$Dashboard) {
-    return function ($receiver) {
-      this$Dashboard.props.handleChangeUserHasProfile(false);
-      this$Dashboard.props.handleChangeUserIsAdmin(false);
-      $receiver.editProfileFormIsOpen = true;
-      return Unit;
-    };
-  }
-  function Coroutine$getProfileFromCryptoAC_0($this, username_0, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 1;
-    this.$this = $this;
-    this.local$status = void 0;
-    this.local$username = username_0;
-  }
-  Coroutine$getProfileFromCryptoAC_0.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$getProfileFromCryptoAC_0.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$getProfileFromCryptoAC_0.prototype.constructor = Coroutine$getProfileFromCryptoAC_0;
-  Coroutine$getProfileFromCryptoAC_0.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            if (this.local$username === void 0)
-              this.local$username = this.$this.props.username;
-            var actualEndpoint = baseURL + replace(API_getInstance().PROFILES, '{Core}', this.$this.props.coreType.toString()) + toString(this.local$username);
-            logger_12.info_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda(this.local$username, actualEndpoint));
-            var $receiver = this.$this.props.httpClient;
-            var $receiver_1 = new HttpRequestBuilder_init();
-            url($receiver_1, actualEndpoint);
-            $receiver_1.method = HttpMethod_0.Companion.Get;
-            this.state_0 = 2;
-            this.result_0 = (new HttpStatement_init($receiver_1, $receiver)).execute(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            this.result_0;
-            var httpResponse = this.result_0;
-            this.local$status = httpResponse.status;
-            if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_12.info_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda_0(this.local$status));
-              this.state_0 = 4;
-              this.result_0 = bodyAsText(httpResponse, void 0, this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            } else {
-              this.state_0 = 3;
-              this.result_0 = bodyAsText(httpResponse, void 0, this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            }
-
-          case 3:
-            var text = this.result_0;
-            var $receiver_0 = myJson;
-            var tmp$;
-            var outcomeCode = $receiver_0.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver_0.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), text);
-            logger_12.warn_nq59yw$(Dashboard$getProfileFromCryptoAC$lambda_2(this.local$status, outcomeCode));
-            this.$this.props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance());
-            setState(this.$this, Dashboard$getProfileFromCryptoAC$lambda_3(this.$this));
-            this.$this.getFieldsFromParameters_0(new User(ensureNotNull(this.$this.props.username)), CryptoType$SODIUM_getInstance());
-            this.state_0 = 5;
-            continue;
-          case 4:
-            var profileAsString = this.result_0;
-            var $receiver_2 = myJson;
-            var tmp$_0;
-            var parameters = $receiver_2.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver_2.serializersModule, createKType(getKClass(CoreParameters), [], false)), KSerializer) ? tmp$_0 : throwCCE(), profileAsString);
-            if (this.$this.parseProfileAndUpdateFields_0(parameters, true)) {
-              setState(this.$this, Dashboard$getProfileFromCryptoAC$lambda_1(this.$this, parameters));
-            }
-            this.state_0 = 5;
-            continue;
-          case 5:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      } catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        } else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  Dashboard.prototype.getProfileFromCryptoAC_0 = function (username_0, continuation_0, suspended) {
-    var instance = new Coroutine$getProfileFromCryptoAC_0(this, username_0, continuation_0);
-    if (suspended)
-      return instance;
-    else
-      return instance.doResume(null);
-  };
-  function Dashboard$parseProfileAndUpdateFields$lambda() {
-    return 'Version number of profile file is 1';
-  }
-  function Dashboard$parseProfileAndUpdateFields$lambda_0($receiver) {
-    $receiver.editProfileFormIsOpen = true;
-    return Unit;
-  }
-  function Dashboard$parseProfileAndUpdateFields$lambda_1() {
-    return 'Malformed .json profile file';
-  }
-  function Dashboard$parseProfileAndUpdateFields$lambda_2(closure$e) {
-    return function () {
-      return closure$e;
-    };
-  }
-  function Dashboard$parseProfileAndUpdateFields$lambda_3(closure$e) {
-    return function () {
-      return 'Error during upload file (' + toString(closure$e.message) + '), see console log for details';
-    };
-  }
-  Dashboard.prototype.parseProfileAndUpdateFields_0 = function (parameters, forceTypesUpdate) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
-    var everythingIsFine = true;
-    try {
-      var versionNumber = parameters.versionNumber;
-      var coreType = parameters.coreType;
-      var cryptoType = parameters.cryptoType;
-      var user = parameters.user;
-      if (coreType !== this.props.coreType) {
-        throw UnsupportedOperationException_init('Core type of file (' + coreType + ') is different from currently selected core type (' + this.props.coreType);
-      }if (versionNumber === 1)
-        logger_12.debug_nq59yw$(Dashboard$parseProfileAndUpdateFields$lambda);
-      else {
-        throw UnsupportedOperationException_init('Version number ' + versionNumber + ' is not supported');
-      }
-      if (Kotlin.isType(parameters, CoreParametersCLOUD))
-        tmp$ = parameters.rmInterfaceParameters;
-      else
-        tmp$ = null;
-      var rmParameters = tmp$;
-      if (rmParameters != null) {
-        if (rmParameters.rmType !== this.props.rmType) {
-          if (forceTypesUpdate) {
-            this.props.handleChangeRMType(rmParameters.rmType);
-            this.props.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
-          } else {
-            throw UnsupportedOperationException_init('RM type of file (' + rmParameters.rmType + ') is different from currently selected core type (' + this.props.rmType);
-          }
-        }}if (Kotlin.isType(parameters, CoreParametersCLOUD))
-        tmp$_0 = parameters.mmInterfaceParameters;
-      else if (Kotlin.isType(parameters, CoreParametersMQTT))
-        tmp$_0 = parameters.mmInterfaceParameters;
-      else
-        tmp$_0 = null;
-      var mmParameters = tmp$_0;
-      if (mmParameters != null) {
-        if (mmParameters.mmType !== this.props.mmType) {
-          if (forceTypesUpdate) {
-            this.props.handleChangeMMType(mmParameters.mmType);
-            this.props.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
-          } else {
-            throw UnsupportedOperationException_init('MM type of file (' + mmParameters.mmType + ') is different from currently selected core type (' + this.props.mmType);
-          }
-        }}if (Kotlin.isType(parameters, CoreParametersCLOUD))
-        tmp$_1 = parameters.dmInterfaceParameters;
-      else if (Kotlin.isType(parameters, CoreParametersMQTT))
-        tmp$_1 = parameters.dmInterfaceParameters;
-      else
-        tmp$_1 = null;
-      var dmParameters = tmp$_1;
-      if (dmParameters != null) {
-        if (dmParameters.dmType !== this.props.dmType) {
-          if (forceTypesUpdate) {
-            this.props.handleChangeDMType(dmParameters.dmType);
-            this.props.handleDisplayAlert(OutcomeCode$CODE_057_INTERFACE_TYPE_UPDATED_getInstance(), CryptoACAlertSeverity$INFO_getInstance());
-          } else {
-            throw UnsupportedOperationException_init('DM type of file (' + dmParameters.dmType + ') is different from currently selected core type (' + this.props.dmType);
-          }
-        }}if (Kotlin.isType(parameters, CoreParametersCLOUD))
-        tmp$_2 = parameters.opaInterfaceParameters;
-      else
-        tmp$_2 = null;
-      var opaParameters = tmp$_2;
-      setState(this, Dashboard$parseProfileAndUpdateFields$lambda_0);
-      this.getFieldsFromParameters_0(user, cryptoType, rmParameters, mmParameters, dmParameters, opaParameters);
-    } catch (e) {
-      if (Kotlin.isType(e, Exception)) {
-        everythingIsFine = false;
-        if (Kotlin.isType(e, NullPointerException) || Kotlin.isType(e, UnsupportedOperationException) || e.name == 'JsonDecodingException') {
-          logger_12.warn_nq59yw$(Dashboard$parseProfileAndUpdateFields$lambda_1);
-          logger_12.warn_nq59yw$(Dashboard$parseProfileAndUpdateFields$lambda_2(e));
-          this.props.handleDisplayAlert(OutcomeCode$CODE_040_MALFORMED_PROFILE_FILE_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
-        } else {
-          logger_12.error_nq59yw$(Dashboard$parseProfileAndUpdateFields$lambda_3(e));
-          console.log(e);
-          this.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
-        }
-      } else
-        throw e;
-    }
-    return everythingIsFine;
-  };
-  function Dashboard$getFieldsFromParameters$lambda() {
-    return 'Getting profile fields from parameters';
-  }
-  function Dashboard$getFieldsFromParameters$lambda_0(closure$fields) {
-    return function ($receiver) {
-      $receiver.cryptoACFormFields = toList(closure$fields);
-      return Unit;
-    };
-  }
-  Dashboard.prototype.getFieldsFromParameters_0 = function (user, cryptoType, rmParameters, mmParameters, dmParameters, opaParameters) {
-    if (rmParameters === void 0)
-      rmParameters = null;
-    if (mmParameters === void 0)
-      mmParameters = null;
-    if (dmParameters === void 0)
-      dmParameters = null;
-    if (opaParameters === void 0)
-      opaParameters = null;
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11;
-    logger_12.info_nq59yw$(Dashboard$getFieldsFromParameters$lambda);
-    tmp$ = new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance(), void 0, user.name, 'darkTextField');
-    tmp$_0 = new CryptoACFormField(SERVER_getInstance().IS_ADMIN, replace(SERVER_getInstance().IS_ADMIN, '_', ' '), InputType$checkBox_getInstance(), void 0, user.isAdmin.toString(), 'darkTextField');
-    tmp$_1 = SERVER_getInstance().CRYPTO;
-    tmp$_2 = SERVER_getInstance().CRYPTO;
-    tmp$_3 = InputType$select_getInstance();
-    var $receiver = CryptoType$values();
-    var destination = ArrayList_init_0($receiver.length);
-    var tmp$_12;
-    for (tmp$_12 = 0; tmp$_12 !== $receiver.length; ++tmp$_12) {
-      var item = $receiver[tmp$_12];
-      destination.add_11rb$(item.toString());
-    }
-    var fields = mutableListOf([listOf([tmp$, tmp$_0, new CryptoACFormField(tmp$_1, tmp$_2, tmp$_3, destination, cryptoType.toString(), 'darkTextField')])]);
-    switch (this.props.rmType.name) {
-      case 'CRYPTOAC':
-        var tmp$_13 = RMInterfaceCryptoACParameters$Companion_getInstance();
-        var tmp$_14;
-        if (rmParameters != null) {
-          var tmp$_15;
-          tmp$_14 = Kotlin.isType(tmp$_15 = rmParameters, RMInterfaceCryptoACParameters) ? tmp$_15 : throwCCE();
-        } else
-          tmp$_14 = null;
-        tmp$_4 = tmp$_13.toMap_8hxbyy$(tmp$_14);
+    var parameters = this.props.coreParameters;
+    $receiver.child_30b5ua$(cryptoACEditProfileForm(Dashboard$render$lambda(this, parameters)));
+    switch (this.props.coreType.name) {
+      case 'RBAC_CLOUD':
+        $receiver.child_30b5ua$(rbacCLOUDDashboard(Dashboard$render$lambda_0(this)));
         break;
-      case 'NONE':
-        tmp$_4 = emptyList();
-        break;
-      default:tmp$_4 = Kotlin.noWhenBranchMatched();
+      case 'RBAC_MQTT':
+        $receiver.child_30b5ua$(rbacMQTTDashboard(Dashboard$render$lambda_1(this)));
         break;
     }
-    fields.addAll_brywnq$(tmp$_4);
-    switch (this.props.mmType.name) {
-      case 'MYSQL':
-        var tmp$_16 = MMInterfaceMySQLParameters$Companion_getInstance();
-        var tmp$_17;
-        if (mmParameters != null) {
-          var tmp$_18;
-          tmp$_17 = Kotlin.isType(tmp$_18 = mmParameters, MMInterfaceMySQLParameters) ? tmp$_18 : throwCCE();
-        } else
-          tmp$_17 = null;
-        tmp$_5 = tmp$_16.toMap_169afz$(tmp$_17);
-        break;
-      case 'REDIS':
-        var tmp$_19 = MMInterfaceRedisParameters$Companion_getInstance();
-        var tmp$_20;
-        if (mmParameters != null) {
-          var tmp$_21;
-          tmp$_20 = Kotlin.isType(tmp$_21 = mmParameters, MMInterfaceRedisParameters) ? tmp$_21 : throwCCE();
-        } else
-          tmp$_20 = null;
-        tmp$_5 = tmp$_19.toMap_4poj22$(tmp$_20);
-        break;
-      default:tmp$_5 = Kotlin.noWhenBranchMatched();
-        break;
-    }
-    fields.addAll_brywnq$(tmp$_5);
-    switch (this.props.dmType.name) {
-      case 'CRYPTOAC':
-        var tmp$_22 = DMInterfaceCryptoACParameters$Companion_getInstance();
-        var tmp$_23;
-        if (dmParameters != null) {
-          var tmp$_24;
-          tmp$_23 = Kotlin.isType(tmp$_24 = dmParameters, DMInterfaceCryptoACParameters) ? tmp$_24 : throwCCE();
-        } else
-          tmp$_23 = null;
-        tmp$_6 = tmp$_22.toMap_2qkhay$(tmp$_23);
-        break;
-      case 'MOSQUITTO':
-        var tmp$_25 = DMInterfaceMosquittoParameters$Companion_getInstance();
-        var tmp$_26;
-        if (dmParameters != null) {
-          var tmp$_27;
-          tmp$_26 = Kotlin.isType(tmp$_27 = dmParameters, DMInterfaceMosquittoParameters) ? tmp$_27 : throwCCE();
-        } else
-          tmp$_26 = null;
-        tmp$_6 = tmp$_25.toMap_4xwjay$(tmp$_26);
-        break;
-      default:tmp$_6 = Kotlin.noWhenBranchMatched();
-        break;
-    }
-    fields.addAll_brywnq$(tmp$_6);
-    if (this.props.coreType === CoreType$RBAC_CLOUD_getInstance()) {
-      tmp$_7 = new CryptoACFormField(SERVER_getInstance().OPA_URL, replace(SERVER_getInstance().OPA_URL, '_', ' '), InputType$text_getInstance(), void 0, opaParameters != null ? opaParameters.url : null, 'darkTextField');
-      tmp$_8 = new CryptoACFormField(SERVER_getInstance().OPA_PORT, replace(SERVER_getInstance().OPA_PORT, '_', ' '), InputType$number_getInstance(), void 0, toString(opaParameters != null ? opaParameters.port : null), 'darkTextField');
-      tmp$_9 = SERVER_getInstance().OPA_POLICY_MODEL;
-      tmp$_10 = replace(SERVER_getInstance().OPA_POLICY_MODEL, '_', ' ');
-      tmp$_11 = InputType$select_getInstance();
-      var $receiver_0 = PolicyModel$values();
-      var destination_0 = ArrayList_init_0($receiver_0.length);
-      var tmp$_28;
-      for (tmp$_28 = 0; tmp$_28 !== $receiver_0.length; ++tmp$_28) {
-        var item_0 = $receiver_0[tmp$_28];
-        destination_0.add_11rb$(item_0.toString());
-      }
-      fields.addAll_brywnq$(listOf_0(listOf([tmp$_7, tmp$_8, new CryptoACFormField(tmp$_9, tmp$_10, tmp$_11, destination_0, toString(opaParameters != null ? opaParameters.policyModel : null), 'darkTextField')])));
-    }setState(this, Dashboard$getFieldsFromParameters$lambda_0(fields));
   };
   Dashboard.$metadata$ = {
     kind: Kind_CLASS,
@@ -11686,10 +11657,10 @@
   function styledDiv$lambda_8(it) {
     return new DIV_init(html.emptyMap, it);
   }
-  function logger$lambda_13() {
+  function logger$lambda_12() {
     return Unit;
   }
-  var logger_13;
+  var logger_12;
   function CloudDashboard() {
     RBACDashboard.call(this);
   }
@@ -11801,7 +11772,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$username = first_0(this.local$closure$it);
+            this.local$username = first_1(this.local$closure$it);
             this.state_0 = 2;
             this.result_0 = this.local$this$CloudDashboard.getAssignments_rkkr90$(this.local$username, void 0, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -11985,7 +11956,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$roleName = first_0(this.local$closure$it);
+            this.local$roleName = first_1(this.local$closure$it);
             this.state_0 = 2;
             this.result_0 = this.local$this$CloudDashboard.getAssignments_rkkr90$(void 0, this.local$roleName, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -12179,7 +12150,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$fileName = first_0(this.local$closure$it);
+            this.local$fileName = first_1(this.local$closure$it);
             this.state_0 = 2;
             this.result_0 = this.local$this$CloudDashboard.getPermissions_rkkr90$(void 0, this.local$fileName, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -12706,7 +12677,7 @@
     };
   }
   CloudDashboard.prototype.init_b4e81d$ = function ($receiver) {
-    logger_13.info_nq59yw$(CloudDashboard$init$lambda);
+    logger_12.info_nq59yw$(CloudDashboard$init$lambda);
     $receiver.users = emptyList();
     $receiver.roles = emptyList();
     $receiver.files = emptyList();
@@ -12735,24 +12706,24 @@
   function rbacCLOUDDashboard(handler) {
     return ensureNotNull(createElement(rbacCLOUDDashboard$lambda(handler)));
   }
-  function logger$lambda_14() {
+  function logger$lambda_13() {
     return Unit;
   }
-  var logger_14;
+  var logger_13;
   function RBACDashboard() {
     RComponent_init(this);
   }
   RBACDashboard.prototype.getUsers = function (continuation) {
     var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().USERS, '{Core}', this.props.coreType.toString());
-    return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), ElementType$USER_getInstance(), continuation);
+    return this.getElements_pk7lmf$_0(actualEndpoint, OutcomeCode$CODE_004_USER_NOT_FOUND_getInstance(), ElementType$USER_getInstance(), continuation);
   };
   RBACDashboard.prototype.getRoles = function (continuation) {
     var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().ROLES, '{Core}', this.props.coreType.toString());
-    return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), ElementType$ROLE_getInstance(), continuation);
+    return this.getElements_pk7lmf$_0(actualEndpoint, OutcomeCode$CODE_005_ROLE_NOT_FOUND_getInstance(), ElementType$ROLE_getInstance(), continuation);
   };
   RBACDashboard.prototype.getFiles = function (continuation) {
     var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().FILES, '{Core}', this.props.coreType.toString());
-    return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), ElementType$FILE_getInstance(), continuation);
+    return this.getElements_pk7lmf$_0(actualEndpoint, OutcomeCode$CODE_006_FILE_NOT_FOUND_getInstance(), ElementType$FILE_getInstance(), continuation);
   };
   RBACDashboard.prototype.getAssignments_rkkr90$ = function (username, roleName, continuation) {
     if (username === void 0)
@@ -12760,7 +12731,7 @@
     if (roleName === void 0)
       roleName = null;
     var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().ASSIGNMENTS, '{Core}', this.props.coreType.toString()) + '?' + (username != null ? SERVER_getInstance().USERNAME + '=' + toString(username) : '' + (roleName != null ? SERVER_getInstance().ROLE_NAME + '=' + toString(roleName) : ''));
-    return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), ElementType$ASSIGNMENT_getInstance(), continuation);
+    return this.getElements_pk7lmf$_0(actualEndpoint, OutcomeCode$CODE_007_ROLETUPLE_NOT_FOUND_getInstance(), ElementType$ASSIGNMENT_getInstance(), continuation);
   };
   RBACDashboard.prototype.getPermissions_rkkr90$ = function (roleName, fileName, continuation) {
     if (roleName === void 0)
@@ -12768,7 +12739,7 @@
     if (fileName === void 0)
       fileName = null;
     var actualEndpoint = baseURL + API_getInstance().CRYPTOAC + replace(API_getInstance().PERMISSIONS, '{Core}', this.props.coreType.toString()) + '?' + (roleName != null ? SERVER_getInstance().ROLE_NAME + '=' + toString(roleName) : '' + (fileName != null ? SERVER_getInstance().FILE_NAME + '=' + toString(fileName) : ''));
-    return this.getElements_ofj3vx$(actualEndpoint, OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), ElementType$PERMISSION_getInstance(), continuation);
+    return this.getElements_pk7lmf$_0(actualEndpoint, OutcomeCode$CODE_008_PERMISSIONTUPLE_NOT_FOUND_getInstance(), ElementType$PERMISSION_getInstance(), continuation);
   };
   function RBACDashboard$getElements$lambda(closure$type) {
     return function () {
@@ -12798,7 +12769,7 @@
       return 'Error while getting elements of type ' + closure$type + ': ' + closure$outcomeCode;
     };
   }
-  function Coroutine$getElements_ofj3vx$($this, endpoint_0, errorCode_0, type_0, continuation_0) {
+  function Coroutine$getElements_pk7lmf$_0($this, endpoint_0, errorCode_0, type_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 14;
     this.$this = $this;
@@ -12808,21 +12779,21 @@
     this.local$errorCode = errorCode_0;
     this.local$type = type_0;
   }
-  Coroutine$getElements_ofj3vx$.$metadata$ = {
+  Coroutine$getElements_pk7lmf$_0.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$getElements_ofj3vx$.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$getElements_ofj3vx$.prototype.constructor = Coroutine$getElements_ofj3vx$;
-  Coroutine$getElements_ofj3vx$.prototype.doResume = function () {
+  Coroutine$getElements_pk7lmf$_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$getElements_pk7lmf$_0.prototype.constructor = Coroutine$getElements_pk7lmf$_0;
+  Coroutine$getElements_pk7lmf$_0.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
             var tmp$;
-            logger_14.info_nq59yw$(RBACDashboard$getElements$lambda(this.local$type));
-            logger_14.info_nq59yw$(RBACDashboard$getElements$lambda_0(this.local$endpoint));
+            logger_13.info_nq59yw$(RBACDashboard$getElements$lambda(this.local$type));
+            logger_13.info_nq59yw$(RBACDashboard$getElements$lambda_0(this.local$endpoint));
             this.$this.props.handleChangeBackdropIsOpen(true);
             this.exceptionState_0 = 2;
             var $receiver = this.$this.props.httpClient;
@@ -12847,10 +12818,10 @@
             var e = this.exception_0;
             if (Kotlin.isType(e, Error_0)) {
               if (equals(e.message, 'Fail to fetch')) {
-                logger_14.error_nq59yw$(RBACDashboard$getElements$lambda_1);
+                logger_13.error_nq59yw$(RBACDashboard$getElements$lambda_1);
                 this.$this.props.handleDisplayAlert(OutcomeCode$CODE_046_CRYPTOAC_CONNECTION_TIMEOUT_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               } else {
-                logger_14.error_nq59yw$(RBACDashboard$getElements$lambda_2(e));
+                logger_13.error_nq59yw$(RBACDashboard$getElements$lambda_2(e));
                 console.log(e);
                 this.$this.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               }
@@ -12923,10 +12894,10 @@
             var tmp$_0;
             var outcomeCode = $receiver_0.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver_0.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$_0 : throwCCE(), text);
             if (outcomeCode === this.local$errorCode) {
-              logger_14.info_nq59yw$(RBACDashboard$getElements$lambda_3(this.local$type));
+              logger_13.info_nq59yw$(RBACDashboard$getElements$lambda_3(this.local$type));
               this.local$tmp$_1 = emptyList();
             } else {
-              logger_14.warn_nq59yw$(RBACDashboard$getElements$lambda_4(this.local$type, outcomeCode));
+              logger_13.warn_nq59yw$(RBACDashboard$getElements$lambda_4(this.local$type, outcomeCode));
               this.$this.props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance());
               this.local$tmp$_1 = null;
             }
@@ -13037,8 +13008,8 @@
       }
      while (true);
   };
-  RBACDashboard.prototype.getElements_ofj3vx$ = function (endpoint_0, errorCode_0, type_0, continuation_0, suspended) {
-    var instance = new Coroutine$getElements_ofj3vx$(this, endpoint_0, errorCode_0, type_0, continuation_0);
+  RBACDashboard.prototype.getElements_pk7lmf$_0 = function (endpoint_0, errorCode_0, type_0, continuation_0, suspended) {
+    var instance = new Coroutine$getElements_pk7lmf$_0(this, endpoint_0, errorCode_0, type_0, continuation_0);
     if (suspended)
       return instance;
     else
@@ -13083,10 +13054,10 @@
   function styledDiv$lambda_9(it) {
     return new DIV_init(html.emptyMap, it);
   }
-  function logger$lambda_15() {
+  function logger$lambda_14() {
     return Unit;
   }
-  var logger_15;
+  var logger_14;
   function MQTTDashboard() {
     RBACDashboard.call(this);
   }
@@ -13198,7 +13169,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$username = first_0(this.local$closure$it);
+            this.local$username = first_1(this.local$closure$it);
             this.state_0 = 2;
             this.result_0 = this.local$this$MQTTDashboard.getAssignments_rkkr90$(this.local$username, void 0, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -13382,7 +13353,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$roleName = first_0(this.local$closure$it);
+            this.local$roleName = first_1(this.local$closure$it);
             this.state_0 = 2;
             this.result_0 = this.local$this$MQTTDashboard.getAssignments_rkkr90$(void 0, this.local$roleName, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -13576,7 +13547,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$fileName = first_0(this.local$closure$it);
+            this.local$fileName = first_1(this.local$closure$it);
             this.state_0 = 2;
             this.result_0 = this.local$this$MQTTDashboard.getPermissions_rkkr90$(void 0, this.local$fileName, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -14087,10 +14058,13 @@
       return Unit;
     };
   }
+  function MQTTDashboard$init$lambda$lambda_3() {
+    return 'Web socket was closed';
+  }
   function Coroutine$MQTTDashboard$init$lambda(this$MQTTDashboard_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
-    this.exceptionState_0 = 1;
+    this.exceptionState_0 = 16;
     this.local$this$MQTTDashboard = this$MQTTDashboard_0;
     this.local$fetchedUsers = void 0;
     this.local$fetchedRoles = void 0;
@@ -14115,31 +14089,16 @@
             this.local$fetchedRoles = {v: emptyList()};
             this.local$fetchedFiles = {v: emptyList()};
             this.local$fetchedPermissions = {v: emptyList()};
-            this.state_0 = 2;
+            this.state_0 = 1;
             this.result_0 = this.local$this$MQTTDashboard.getAssignments_rkkr90$(void 0, void 0, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 1:
-            throw this.exception_0;
-          case 2:
             this.local$fetchedAssignments = this.result_0;
             if (this.local$fetchedAssignments != null) {
-              this.state_0 = 3;
+              this.state_0 = 2;
               this.result_0 = this.local$this$MQTTDashboard.getPermissions_rkkr90$(void 0, void 0, this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            } else {
-              this.state_0 = 10;
-              continue;
-            }
-
-          case 3:
-            this.local$fetchedPermissions.v = this.result_0;
-            if (this.local$fetchedPermissions.v != null && this.local$this$MQTTDashboard.props.userIsAdmin) {
-              this.state_0 = 4;
-              this.result_0 = this.local$this$MQTTDashboard.getUsers(this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
@@ -14148,11 +14107,11 @@
               continue;
             }
 
-          case 4:
-            this.local$fetchedUsers.v = this.result_0;
-            if (this.local$fetchedUsers.v != null) {
-              this.state_0 = 5;
-              this.result_0 = this.local$this$MQTTDashboard.getRoles(this);
+          case 2:
+            this.local$fetchedPermissions.v = this.result_0;
+            if (this.local$fetchedPermissions.v != null && this.local$this$MQTTDashboard.props.userIsAdmin) {
+              this.state_0 = 3;
+              this.result_0 = this.local$this$MQTTDashboard.getUsers(this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
@@ -14161,11 +14120,11 @@
               continue;
             }
 
-          case 5:
-            this.local$fetchedRoles.v = this.result_0;
-            if (this.local$fetchedRoles.v != null) {
-              this.state_0 = 6;
-              this.result_0 = this.local$this$MQTTDashboard.getFiles(this);
+          case 3:
+            this.local$fetchedUsers.v = this.result_0;
+            if (this.local$fetchedUsers.v != null) {
+              this.state_0 = 4;
+              this.result_0 = this.local$this$MQTTDashboard.getRoles(this);
               if (this.result_0 === COROUTINE_SUSPENDED)
                 return COROUTINE_SUSPENDED;
               continue;
@@ -14174,8 +14133,24 @@
               continue;
             }
 
-          case 6:
+          case 4:
+            this.local$fetchedRoles.v = this.result_0;
+            if (this.local$fetchedRoles.v != null) {
+              this.state_0 = 5;
+              this.result_0 = this.local$this$MQTTDashboard.getFiles(this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
+            } else {
+              this.state_0 = 6;
+              continue;
+            }
+
+          case 5:
             this.local$fetchedFiles.v = this.result_0;
+            this.state_0 = 6;
+            continue;
+          case 6:
             this.state_0 = 7;
             continue;
           case 7:
@@ -14185,42 +14160,56 @@
             this.state_0 = 9;
             continue;
           case 9:
-            this.state_0 = 10;
-            continue;
-          case 10:
             var path = API_getInstance().CRYPTOAC + replace(API_getInstance().FILES, '{Core}', this.local$this$MQTTDashboard.props.coreType.toString());
-            this.state_0 = 11;
+            this.state_0 = 10;
             this.result_0 = webSocketSession(this.local$this$MQTTDashboard.props.httpClient, HttpMethod.Companion.Get, window.location.hostname, toInt(window.location.port), path, MQTTDashboard$init$lambda$lambda(path), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 11:
+          case 10:
             var tempWSS = this.result_0;
             setState(this.local$this$MQTTDashboard, MQTTDashboard$init$lambda$lambda_0(this.local$this$MQTTDashboard, this.local$fetchedUsers, this.local$fetchedRoles, this.local$fetchedFiles, this.local$fetchedAssignments, this.local$fetchedPermissions, tempWSS));
-            this.state_0 = 12;
+            this.exceptionState_0 = 13;
+            this.state_0 = 11;
             continue;
-          case 12:
-            this.state_0 = 13;
+          case 11:
+            this.state_0 = 12;
             this.result_0 = this.local$this$MQTTDashboard.state.wss.incoming.receive(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 13:
+          case 12:
             var serializedMQTTMessage = readText(ensureNotNull(Kotlin.isType(tmp$ = this.result_0, Frame$Text) ? tmp$ : null));
             var $receiver = myJson;
             var tmp$_0;
             var mqttMessage = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$_0 = serializer_0($receiver.serializersModule, createKType(getKClass(MQTTMessage), [], false)), KSerializer) ? tmp$_0 : throwCCE(), serializedMQTTMessage);
             var message = mqttMessage.message;
             var topic = mqttMessage.topic;
-            logger_15.warn_nq59yw$(MQTTDashboard$init$lambda$lambda_1(message, topic));
+            logger_14.warn_nq59yw$(MQTTDashboard$init$lambda$lambda_1(message, topic));
             setState(this.local$this$MQTTDashboard, MQTTDashboard$init$lambda$lambda_2(topic, message));
-            this.state_0 = 12;
+            this.state_0 = 11;
             continue;
-          default:this.state_0 = 1;
+          case 13:
+            this.exceptionState_0 = 16;
+            var e = this.exception_0;
+            if (Kotlin.isType(e, NullPointerException)) {
+              return logger_14.warn_nq59yw$(MQTTDashboard$init$lambda$lambda_3), Unit;
+            } else {
+              throw e;
+            }
+
+          case 14:
+            this.state_0 = 15;
+            continue;
+          case 15:
+            return Unit;
+          case 16:
+            throw this.exception_0;
+          default:this.state_0 = 16;
             throw new Error('State Machine Unreachable execution');
         }
       } catch (e) {
-        if (this.state_0 === 1) {
+        if (this.state_0 === 16) {
           this.exceptionState_0 = this.state_0;
           throw e;
         } else {
@@ -14240,7 +14229,7 @@
     };
   }
   MQTTDashboard.prototype.init_b4e81d$ = function ($receiver) {
-    logger_15.info_nq59yw$(MQTTDashboard$init$lambda);
+    logger_14.info_nq59yw$(MQTTDashboard$init$lambda);
     $receiver.users = emptyList();
     $receiver.roles = emptyList();
     $receiver.files = emptyList();
@@ -14505,197 +14494,399 @@
       return new BR_init(attributesMapOf('class', closure$classes), it);
     };
   }
-  function logger$lambda_16() {
+  function logger$lambda_15() {
     return Unit;
   }
-  var logger_16;
-  function Modules() {
+  var logger_15;
+  function NewProfile() {
     RComponent_init(this);
   }
-  function Modules$render$lambda$lambda$lambda$lambda$lambda($receiver) {
+  function NewProfile$render$lambda$lambda$lambda$lambda$lambda($receiver) {
     $receiver.item = true;
     $receiver.xs = 12;
     $receiver.sm = 12;
     return Unit;
   }
-  function Modules$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$NewProfile) {
     return function (event) {
-      var tmp$;
-      this$Modules.props.handleChangeCoreType(CoreType$valueOf((Kotlin.isType(tmp$ = event.target, HTMLInputElement) ? tmp$ : throwCCE()).value));
+      var tmp$, tmp$_0;
+      tmp$_0 = CoreType$valueOf((Kotlin.isType(tmp$ = event.target, HTMLInputElement) ? tmp$ : throwCCE()).value);
+      this$NewProfile.changeCoreType_0(tmp$_0);
       return true;
     };
   }
-  function Modules$render$lambda$lambda$lambda$lambda$lambda$lambda(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda$lambda$lambda(this$NewProfile) {
     return function ($receiver) {
       $receiver.name = 'CoreType';
       $receiver.disabled = false;
       $receiver.row = true;
-      $receiver.defaultValue = this$Modules.props.coreType.toString();
-      $receiver.onChange = Modules$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$Modules);
-      $receiver.options = listOf([new CryptoACRadioOption(CoreType$RBAC_CLOUD_getInstance().toPrettyString(), CoreType$RBAC_CLOUD_getInstance().toString(), 'primary'), new CryptoACRadioOption(CoreType$RBAC_MQTT_getInstance().toPrettyString(), CoreType$RBAC_MQTT_getInstance().toString(), 'primary')]);
+      $receiver.options = this$NewProfile.state.listOfCores;
+      $receiver.defaultValue = this$NewProfile.state.coreType.toString();
+      $receiver.onChange = NewProfile$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$NewProfile);
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda$lambda(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda(this$NewProfile) {
     return function ($receiver) {
-      $receiver.attrs_37755u$(Modules$render$lambda$lambda$lambda$lambda$lambda);
+      $receiver.attrs_37755u$(NewProfile$render$lambda$lambda$lambda$lambda$lambda);
       var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_10);
-      var this$Modules_0 = this$Modules;
+      var this$NewProfile_0 = this$NewProfile;
       set_display($receiver_0.css, Display.inlineFlex);
-      $receiver_0.child_30b5ua$(cryptoACRadioGroup(Modules$render$lambda$lambda$lambda$lambda$lambda$lambda(this$Modules_0)));
+      $receiver_0.child_30b5ua$(cryptoACRadioGroup(NewProfile$render$lambda$lambda$lambda$lambda$lambda$lambda(this$NewProfile_0)));
       $receiver.child_30b5ua$($receiver_0.create());
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda(this$NewProfile) {
     return function ($receiver) {
-      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, Modules$render$lambda$lambda$lambda$lambda(this$Modules));
+      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, NewProfile$render$lambda$lambda$lambda$lambda(this$NewProfile));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda(this$Modules) {
+  function NewProfile$render$lambda$lambda(this$NewProfile) {
     return function ($receiver) {
       $receiver.titleStyle = Themes_getInstance().plainPaperTitleStyle;
       $receiver.titleText = 'Select the Core Type';
       $receiver.titleVariant = 'subtitle1';
       $receiver.setDivider = true;
       $receiver.dividerWidth = get_pct(95);
-      $receiver.child = ensureNotNull(createElement(Modules$render$lambda$lambda$lambda(this$Modules)));
+      $receiver.child = ensureNotNull(createElement(NewProfile$render$lambda$lambda$lambda(this$NewProfile)));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda_0($receiver) {
+  function NewProfile$render$lambda$lambda$lambda_0(this$NewProfile) {
+    return function (coreType) {
+      this$NewProfile.props.handleProfileWasCreatedOrModified(coreType);
+      return Unit;
+    };
+  }
+  function NewProfile$render$lambda$lambda$lambda_1(this$NewProfile) {
+    return function (newCoreType) {
+      this$NewProfile.changeCoreType_0(newCoreType);
+      return Unit;
+    };
+  }
+  function NewProfile$render$lambda$lambda$lambda_2(this$NewProfile) {
+    return function (newRMType) {
+      this$NewProfile.changeRMType_0(newRMType);
+      return Unit;
+    };
+  }
+  function NewProfile$render$lambda$lambda$lambda_3(this$NewProfile) {
+    return function (newMMType) {
+      this$NewProfile.changeMMType_0(newMMType);
+      return Unit;
+    };
+  }
+  function NewProfile$render$lambda$lambda$lambda_4(this$NewProfile) {
+    return function (newDMType) {
+      this$NewProfile.changeDMType_0(newDMType);
+      return Unit;
+    };
+  }
+  function NewProfile$render$lambda$lambda_0(this$NewProfile) {
+    return function ($receiver) {
+      $receiver.handleProfileWasCreatedOrModified = NewProfile$render$lambda$lambda$lambda_0(this$NewProfile);
+      $receiver.handleChangeCoreType = NewProfile$render$lambda$lambda$lambda_1(this$NewProfile);
+      $receiver.handleChangeRMType = NewProfile$render$lambda$lambda$lambda_2(this$NewProfile);
+      $receiver.handleChangeMMType = NewProfile$render$lambda$lambda$lambda_3(this$NewProfile);
+      $receiver.handleChangeDMType = NewProfile$render$lambda$lambda$lambda_4(this$NewProfile);
+      $receiver.handleChangeBackdropIsOpen = this$NewProfile.props.handleChangeBackdropIsOpen;
+      $receiver.handleDisplayAlert = this$NewProfile.props.handleDisplayAlert;
+      $receiver.httpClient = this$NewProfile.props.httpClient;
+      $receiver.coreType = this$NewProfile.state.coreType;
+      $receiver.rmType = this$NewProfile.state.rmType;
+      $receiver.mmType = this$NewProfile.state.mmType;
+      $receiver.dmType = this$NewProfile.state.dmType;
+      $receiver.isCreatingNewProfile = true;
+      $receiver.coreParameters = null;
+      $receiver.username = null;
+      return Unit;
+    };
+  }
+  function NewProfile$render$lambda$lambda$lambda_5($receiver) {
     $receiver.container = true;
     $receiver.spacing = 1;
     return Unit;
   }
-  function Modules$render$lambda$lambda$lambda$lambda_0($receiver) {
+  function NewProfile$render$lambda$lambda$lambda$lambda_0($receiver) {
     $receiver.item = true;
     $receiver.sm = 12;
     $receiver.md = 6;
     return Unit;
   }
-  function Modules$render$lambda$lambda$lambda$lambda$lambda_0(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda$lambda_0(this$NewProfile) {
     return function (newChoice) {
-      this$Modules.props.handleChangeRMType(RMType$valueOf(newChoice));
+      this$NewProfile.changeRMType_0(RMType$valueOf(newChoice));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda$lambda_1(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda_1(this$NewProfile) {
     return function ($receiver) {
       $receiver.name = SERVER_getInstance().RM;
       $receiver.title = 'Select the Reference Monitor';
-      $receiver.defaultValue = this$Modules.props.rmType.toString();
-      $receiver.options = this$Modules.props.availableRMImplementations;
-      $receiver.handleChangeChoice = Modules$render$lambda$lambda$lambda$lambda$lambda_0(this$Modules);
+      $receiver.defaultValue = this$NewProfile.state.rmType.toString();
+      $receiver.options = this$NewProfile.state.availableRMImplementations;
+      $receiver.handleChangeChoice = NewProfile$render$lambda$lambda$lambda$lambda$lambda_0(this$NewProfile);
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda_1(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda_6(this$NewProfile) {
     return function ($receiver) {
-      $receiver.attrs_37755u$(Modules$render$lambda$lambda$lambda$lambda_0);
-      $receiver.child_30b5ua$(moduleItem(Modules$render$lambda$lambda$lambda$lambda_1(this$Modules)));
+      $receiver.attrs_37755u$(NewProfile$render$lambda$lambda$lambda$lambda_0);
+      $receiver.child_30b5ua$(moduleItem(NewProfile$render$lambda$lambda$lambda$lambda_1(this$NewProfile)));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda$lambda_2($receiver) {
+  function NewProfile$render$lambda$lambda$lambda$lambda_2($receiver) {
     $receiver.item = true;
     $receiver.sm = 12;
     $receiver.md = 6;
     return Unit;
   }
-  function Modules$render$lambda$lambda$lambda$lambda$lambda_1(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda$lambda_1(this$NewProfile) {
     return function (newChoice) {
-      this$Modules.props.handleChangeMMType(MMType$valueOf(newChoice));
+      this$NewProfile.changeMMType_0(MMType$valueOf(newChoice));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda$lambda_3(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda_3(this$NewProfile) {
     return function ($receiver) {
       $receiver.name = SERVER_getInstance().MM;
       $receiver.title = 'Select the Metadata Manager';
-      $receiver.defaultValue = this$Modules.props.mmType.toString();
-      $receiver.options = this$Modules.props.availableMMImplementations;
-      $receiver.handleChangeChoice = Modules$render$lambda$lambda$lambda$lambda$lambda_1(this$Modules);
+      $receiver.defaultValue = this$NewProfile.state.mmType.toString();
+      $receiver.options = this$NewProfile.state.availableMMImplementations;
+      $receiver.handleChangeChoice = NewProfile$render$lambda$lambda$lambda$lambda$lambda_1(this$NewProfile);
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda_2(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda_7(this$NewProfile) {
     return function ($receiver) {
-      $receiver.attrs_37755u$(Modules$render$lambda$lambda$lambda$lambda_2);
-      $receiver.child_30b5ua$(moduleItem(Modules$render$lambda$lambda$lambda$lambda_3(this$Modules)));
+      $receiver.attrs_37755u$(NewProfile$render$lambda$lambda$lambda$lambda_2);
+      $receiver.child_30b5ua$(moduleItem(NewProfile$render$lambda$lambda$lambda$lambda_3(this$NewProfile)));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda$lambda_4($receiver) {
+  function NewProfile$render$lambda$lambda$lambda$lambda_4($receiver) {
     $receiver.item = true;
     $receiver.sm = 12;
     $receiver.md = 6;
     return Unit;
   }
-  function Modules$render$lambda$lambda$lambda$lambda$lambda_2(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda$lambda_2(this$NewProfile) {
     return function (newChoice) {
-      this$Modules.props.handleChangeDMType(DMType$valueOf(newChoice));
+      this$NewProfile.changeDMType_0(DMType$valueOf(newChoice));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda$lambda_5(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda$lambda_5(this$NewProfile) {
     return function ($receiver) {
       $receiver.name = SERVER_getInstance().DM;
       $receiver.title = 'Select the Data Manager';
-      $receiver.defaultValue = this$Modules.props.dmType.toString();
-      $receiver.options = this$Modules.props.availableDMImplementations;
-      $receiver.handleChangeChoice = Modules$render$lambda$lambda$lambda$lambda$lambda_2(this$Modules);
+      $receiver.defaultValue = this$NewProfile.state.dmType.toString();
+      $receiver.options = this$NewProfile.state.availableDMImplementations;
+      $receiver.handleChangeChoice = NewProfile$render$lambda$lambda$lambda$lambda$lambda_2(this$NewProfile);
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda$lambda_3(this$Modules) {
+  function NewProfile$render$lambda$lambda$lambda_8(this$NewProfile) {
     return function ($receiver) {
-      $receiver.attrs_37755u$(Modules$render$lambda$lambda$lambda$lambda_4);
-      $receiver.child_30b5ua$(moduleItem(Modules$render$lambda$lambda$lambda$lambda_5(this$Modules)));
+      $receiver.attrs_37755u$(NewProfile$render$lambda$lambda$lambda$lambda_4);
+      $receiver.child_30b5ua$(moduleItem(NewProfile$render$lambda$lambda$lambda$lambda_5(this$NewProfile)));
       return Unit;
     };
   }
-  function Modules$render$lambda$lambda_0(this$Modules) {
+  function NewProfile$render$lambda$lambda_1(this$NewProfile) {
     return function ($receiver) {
-      $receiver.attrs_37755u$(Modules$render$lambda$lambda$lambda_0);
-      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, Modules$render$lambda$lambda$lambda_1(this$Modules));
-      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, Modules$render$lambda$lambda$lambda_2(this$Modules));
-      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, Modules$render$lambda$lambda$lambda_3(this$Modules));
+      $receiver.attrs_37755u$(NewProfile$render$lambda$lambda$lambda_5);
+      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, NewProfile$render$lambda$lambda$lambda_6(this$NewProfile));
+      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, NewProfile$render$lambda$lambda$lambda_7(this$NewProfile));
+      $receiver.invoke_qk0v40$($module$_material_ui_core.Grid, NewProfile$render$lambda$lambda$lambda_8(this$NewProfile));
       return Unit;
     };
   }
-  Modules.prototype.render_ss14n$ = function ($receiver) {
+  NewProfile.prototype.render_ss14n$ = function ($receiver) {
     var $receiver_0 = StyledDOMBuilder.Companion.invoke_f6ihu2$(styledDiv$lambda_10);
     var $receiver_1 = $receiver_0.css;
     set_textAlign($receiver_1, TextAlign.center);
     set_paddingTop($receiver_1, get_px(10));
     set_paddingBottom($receiver_1, get_px(10));
-    $receiver_0.child_30b5ua$(cryptoACPaper(Modules$render$lambda$lambda(this)));
-    var $receiver_0_0 = RDOMBuilder.Companion.invoke_f6ihu2$(br$lambda(null));
-    $receiver_0.child_30b5ua$($receiver_0_0.create());
-    $receiver_0.invoke_qk0v40$($module$_material_ui_core.Grid, Modules$render$lambda$lambda_0(this));
-    $receiver.child_30b5ua$($receiver_0.create());
+    $receiver_0.child_30b5ua$(cryptoACPaper(NewProfile$render$lambda$lambda(this)));
+    if (!this.state.listOfCores.isEmpty()) {
+      var $receiver_0_0 = RDOMBuilder.Companion.invoke_f6ihu2$(br$lambda(null));
+      $receiver_0.child_30b5ua$($receiver_0_0.create());
+      $receiver_0.child_30b5ua$(cryptoACEditProfileForm(NewProfile$render$lambda$lambda_0(this)));
+      var $receiver_0_1 = RDOMBuilder.Companion.invoke_f6ihu2$(br$lambda(null));
+      $receiver_0.child_30b5ua$($receiver_0_1.create());
+      $receiver_0.invoke_qk0v40$($module$_material_ui_core.Grid, NewProfile$render$lambda$lambda_1(this));
+    }$receiver.child_30b5ua$($receiver_0.create());
   };
-  Modules.$metadata$ = {
+  function NewProfile$init$lambda() {
+    return 'Initializing the state of the NewProfile component';
+  }
+  function NewProfile$init$lambda_0(this$NewProfile) {
+    return function (props, state) {
+      var tmp$;
+      if (state.justMounted || !state.changedByUser) {
+        state.listOfCores = ArrayList_init();
+        var $receiver = CoreType$values();
+        var tmp$_0;
+        for (tmp$_0 = 0; tmp$_0 !== $receiver.length; ++tmp$_0) {
+          var element = $receiver[tmp$_0];
+          if (!props.excludedCoreTypes.contains_11rb$(element)) {
+            state.listOfCores.add_11rb$(new CryptoACRadioOption(element.toPrettyString(), element.toString(), 'primary'));
+          }}
+        var $receiver_0 = state.listOfCores;
+        var firstOrNull$result;
+        firstOrNull$break: do {
+          var tmp$_1;
+          tmp$_1 = $receiver_0.iterator();
+          while (tmp$_1.hasNext()) {
+            var element_0 = tmp$_1.next();
+            if (equals(element_0.name, state.coreType.toString())) {
+              firstOrNull$result = element_0;
+              break firstOrNull$break;
+            }}
+          firstOrNull$result = null;
+        }
+         while (false);
+        if (firstOrNull$result == null) {
+          if ((tmp$ = firstOrNull(state.listOfCores)) != null) {
+            this$NewProfile.changeCoreType_0(CoreType$valueOf(tmp$.name));
+          }}}state.changedByUser = false;
+      state.justMounted = false;
+      return Unit;
+    };
+  }
+  NewProfile.prototype.init_b4e81d$ = function ($receiver) {
+    logger_15.info_nq59yw$(NewProfile$init$lambda);
+    $receiver.justMounted = true;
+    $receiver.changedByUser = false;
+    $receiver.listOfCores = ArrayList_init();
+    $receiver.rmType = RMType$CRYPTOAC_getInstance();
+    $receiver.mmType = MMType$MYSQL_getInstance();
+    $receiver.dmType = DMType$CRYPTOAC_getInstance();
+    $receiver.coreType = CoreType$RBAC_CLOUD_getInstance();
+    $receiver.availableRMImplementations = this.getRMImplementations_0(CoreType$RBAC_CLOUD_getInstance());
+    $receiver.availableMMImplementations = this.getMMImplementations_0(CoreType$RBAC_CLOUD_getInstance());
+    $receiver.availableDMImplementations = this.getDMImplementations_0(CoreType$RBAC_CLOUD_getInstance());
+    get_js(getKClass(NewProfile)).getDerivedStateFromProps = NewProfile$init$lambda_0(this);
+  };
+  function NewProfile$changeRMType$lambda(closure$newRMType) {
+    return function () {
+      return "Setting the 'rmType' state to " + closure$newRMType;
+    };
+  }
+  function NewProfile$changeRMType$lambda_0(closure$newRMType) {
+    return function ($receiver) {
+      $receiver.rmType = closure$newRMType;
+      return Unit;
+    };
+  }
+  NewProfile.prototype.changeRMType_0 = function (newRMType) {
+    logger_15.info_nq59yw$(NewProfile$changeRMType$lambda(newRMType));
+    setState(this, NewProfile$changeRMType$lambda_0(newRMType));
+  };
+  function NewProfile$changeMMType$lambda(closure$newMMType) {
+    return function () {
+      return "Setting the 'mmType' state to " + closure$newMMType;
+    };
+  }
+  function NewProfile$changeMMType$lambda_0(closure$newMMType) {
+    return function ($receiver) {
+      $receiver.mmType = closure$newMMType;
+      return Unit;
+    };
+  }
+  NewProfile.prototype.changeMMType_0 = function (newMMType) {
+    logger_15.info_nq59yw$(NewProfile$changeMMType$lambda(newMMType));
+    setState(this, NewProfile$changeMMType$lambda_0(newMMType));
+  };
+  function NewProfile$changeDMType$lambda(closure$newDMType) {
+    return function () {
+      return "Setting the 'dmType' state to " + closure$newDMType;
+    };
+  }
+  function NewProfile$changeDMType$lambda_0(closure$newDMType) {
+    return function ($receiver) {
+      $receiver.dmType = closure$newDMType;
+      return Unit;
+    };
+  }
+  NewProfile.prototype.changeDMType_0 = function (newDMType) {
+    logger_15.info_nq59yw$(NewProfile$changeDMType$lambda(newDMType));
+    setState(this, NewProfile$changeDMType$lambda_0(newDMType));
+  };
+  NewProfile.prototype.getDMImplementations_0 = function (coreType) {
+    switch (coreType.name) {
+      case 'RBAC_CLOUD':
+        return listOf_0(DMType$CRYPTOAC_getInstance().toString());
+      case 'RBAC_MQTT':
+        return listOf_0(DMType$MOSQUITTO_getInstance().toString());
+      default:return Kotlin.noWhenBranchMatched();
+    }
+  };
+  NewProfile.prototype.getMMImplementations_0 = function (coreType) {
+    switch (coreType.name) {
+      case 'RBAC_CLOUD':
+        return listOf([MMType$MYSQL_getInstance().toString(), MMType$REDIS_getInstance().toString()]);
+      case 'RBAC_MQTT':
+        return listOf([MMType$MYSQL_getInstance().toString(), MMType$REDIS_getInstance().toString()]);
+      default:return Kotlin.noWhenBranchMatched();
+    }
+  };
+  NewProfile.prototype.getRMImplementations_0 = function (coreType) {
+    switch (coreType.name) {
+      case 'RBAC_CLOUD':
+        return listOf_0(RMType$CRYPTOAC_getInstance().toString());
+      case 'RBAC_MQTT':
+        return listOf_0(RMType$NONE_getInstance().toString());
+      default:return Kotlin.noWhenBranchMatched();
+    }
+  };
+  function NewProfile$changeCoreType$lambda(closure$newCoreType) {
+    return function () {
+      return "Changing the 'coreType' state to " + closure$newCoreType;
+    };
+  }
+  function NewProfile$changeCoreType$lambda_0(closure$newCoreType, this$NewProfile) {
+    return function ($receiver) {
+      $receiver.coreType = closure$newCoreType;
+      $receiver.availableRMImplementations = this$NewProfile.getRMImplementations_0(closure$newCoreType);
+      $receiver.availableMMImplementations = this$NewProfile.getMMImplementations_0(closure$newCoreType);
+      $receiver.availableDMImplementations = this$NewProfile.getDMImplementations_0(closure$newCoreType);
+      if (!$receiver.availableRMImplementations.contains_11rb$($receiver.rmType.toString())) {
+        $receiver.rmType = RMType$valueOf(first_0($receiver.availableRMImplementations));
+      }if (!$receiver.availableMMImplementations.contains_11rb$($receiver.mmType.toString())) {
+        $receiver.mmType = MMType$valueOf(first_0($receiver.availableMMImplementations));
+      }if (!$receiver.availableDMImplementations.contains_11rb$($receiver.dmType.toString())) {
+        $receiver.dmType = DMType$valueOf(first_0($receiver.availableDMImplementations));
+      }return Unit;
+    };
+  }
+  NewProfile.prototype.changeCoreType_0 = function (newCoreType) {
+    logger_15.info_nq59yw$(NewProfile$changeCoreType$lambda(newCoreType));
+    setState(this, NewProfile$changeCoreType$lambda_0(newCoreType, this));
+  };
+  NewProfile.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Modules',
+    simpleName: 'NewProfile',
     interfaces: [RComponent]
   };
-  function modules$lambda$lambda(closure$handler) {
+  function newProfile$lambda$lambda(closure$handler) {
     return function ($receiver) {
       $receiver.attrs_37755u$(closure$handler);
       return Unit;
     };
   }
-  function modules$lambda(closure$handler) {
+  function newProfile$lambda(closure$handler) {
     return function ($receiver) {
-      $receiver.child_up9nw1$(getKClass(Modules), modules$lambda$lambda(closure$handler));
+      $receiver.child_up9nw1$(getKClass(NewProfile), newProfile$lambda$lambda(closure$handler));
       return Unit;
     };
   }
-  function modules(handler) {
-    return ensureNotNull(createElement(modules$lambda(handler)));
+  function newProfile(handler) {
+    return ensureNotNull(createElement(newProfile$lambda(handler)));
   }
   function getImageFromModuleImplementation$lambda(closure$message) {
     return function () {
@@ -14715,7 +14906,7 @@
       case 'NONE':
         return 'none.png';
       default:var message = 'Given choice ' + '"' + choice + '"' + ' not corresponding to any module implementation';
-        logger_16.error_nq59yw$(getImageFromModuleImplementation$lambda(message));
+        logger_15.error_nq59yw$(getImageFromModuleImplementation$lambda(message));
         throw IllegalStateException_init(message);
     }
   }
@@ -14828,7 +15019,7 @@
       tmp$_1 = acc.iterator();
       while (tmp$_1.hasNext()) {
         var item = tmp$_1.next();
-        destination.add_11rb$(plus_1(item, first_1(left)));
+        destination.add_11rb$(plus_1(item, first(left)));
       }
       tmp$ = powerSet_0(tmp$_0, plus_2(acc, destination));
     }
@@ -15329,10 +15520,10 @@
       };
     };
   });
-  function logger$lambda_17() {
+  function logger$lambda_16() {
     return Unit;
   }
-  var logger_17;
+  var logger_16;
   function TradeOffBoard() {
     RComponent_init(this);
   }
@@ -15559,7 +15750,7 @@
       $receiver.defaultValue = Likelihood$High_getInstance();
       $receiver.last = (closure$attackers.size === 1 && !closure$iterator.hasNext());
       $receiver.domain = closure$domain;
-      $receiver.attacker = first(closure$attackers).attacker;
+      $receiver.attacker = first_0(closure$attackers).attacker;
       $receiver.handleChangeLikelihood = TradeOffBoard$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda$lambda(this$TradeOffBoard);
       return Unit;
     };
@@ -15949,7 +16140,7 @@
       $receiver_0_0.child_30b5ua$($receiver_0_1.create());
       var $receiver_0_5 = RDOMBuilder.Companion.invoke_f6ihu2$(tbody$lambda(null));
       var architecturesToShow = this$TradeOffBoard_1.state.architectures;
-      logger_17.info_nq59yw$(TradeOffBoard$render$lambda$lambda$lambda$lambda$lambda$lambda_1(architecturesToShow));
+      logger_16.info_nq59yw$(TradeOffBoard$render$lambda$lambda$lambda$lambda$lambda$lambda_1(architecturesToShow));
       var tmp$_0, tmp$_0_0;
       var index = 0;
       tmp$_0 = architecturesToShow.iterator();
@@ -16044,7 +16235,7 @@
     };
   }
   TradeOffBoard.prototype.changeNumberOfInstances_0 = function (entity, newNumberOfInstances) {
-    logger_17.info_nq59yw$(TradeOffBoard$changeNumberOfInstances$lambda(entity, newNumberOfInstances));
+    logger_16.info_nq59yw$(TradeOffBoard$changeNumberOfInstances$lambda(entity, newNumberOfInstances));
     setState(this, TradeOffBoard$changeNumberOfInstances$lambda_0(newNumberOfInstances, entity));
   };
   function TradeOffBoard$changePenaltyValue$lambda(closure$requirement, closure$penalty) {
@@ -16084,7 +16275,7 @@
     };
   }
   TradeOffBoard.prototype.changePenaltyValue_0 = function (requirement, penalty) {
-    logger_17.info_nq59yw$(TradeOffBoard$changePenaltyValue$lambda(requirement, penalty));
+    logger_16.info_nq59yw$(TradeOffBoard$changePenaltyValue$lambda(requirement, penalty));
     setState(this, TradeOffBoard$changePenaltyValue$lambda_0(penalty, this, requirement));
   };
   function TradeOffBoard$changeThresholdValue$lambda(closure$requirement, closure$value) {
@@ -16124,7 +16315,7 @@
     };
   }
   TradeOffBoard.prototype.changeThresholdValue_0 = function (requirement, value) {
-    logger_17.info_nq59yw$(TradeOffBoard$changeThresholdValue$lambda(requirement, value));
+    logger_16.info_nq59yw$(TradeOffBoard$changeThresholdValue$lambda(requirement, value));
     setState(this, TradeOffBoard$changeThresholdValue$lambda_0(value, this, requirement));
   };
   function TradeOffBoard$changeThresholdType$lambda(closure$requirement, closure$threshold) {
@@ -16164,7 +16355,7 @@
     };
   }
   TradeOffBoard.prototype.changeThresholdType_0 = function (requirement, threshold) {
-    logger_17.info_nq59yw$(TradeOffBoard$changeThresholdType$lambda(requirement, threshold));
+    logger_16.info_nq59yw$(TradeOffBoard$changeThresholdType$lambda(requirement, threshold));
     setState(this, TradeOffBoard$changeThresholdType$lambda_0(threshold, this, requirement));
   };
   function TradeOffBoard$changeWeightValue$lambda(closure$requirement, closure$weight) {
@@ -16204,7 +16395,7 @@
     };
   }
   TradeOffBoard.prototype.changeWeightValue_0 = function (requirement, weight) {
-    logger_17.info_nq59yw$(TradeOffBoard$changeWeightValue$lambda(requirement, weight));
+    logger_16.info_nq59yw$(TradeOffBoard$changeWeightValue$lambda(requirement, weight));
     setState(this, TradeOffBoard$changeWeightValue$lambda_0(weight, this, requirement));
   };
   function TradeOffBoard$changeLikelihood$lambda(closure$domain, closure$attacker, closure$newLikelihood) {
@@ -16233,7 +16424,7 @@
     };
   }
   TradeOffBoard.prototype.changeLikelihood_0 = function (domain, attacker, newLikelihood) {
-    logger_17.info_nq59yw$(TradeOffBoard$changeLikelihood$lambda(domain, attacker, newLikelihood));
+    logger_16.info_nq59yw$(TradeOffBoard$changeLikelihood$lambda(domain, attacker, newLikelihood));
     setState(this, TradeOffBoard$changeLikelihood$lambda_0(newLikelihood, domain, attacker));
   };
   function TradeOffBoard$toggleAssignment$lambda(closure$entity, closure$domain, closure$accepted) {
@@ -16252,7 +16443,7 @@
     };
   }
   TradeOffBoard.prototype.toggleAssignment_0 = function (entity, domain, accepted) {
-    logger_17.info_nq59yw$(TradeOffBoard$toggleAssignment$lambda(entity, domain, accepted));
+    logger_16.info_nq59yw$(TradeOffBoard$toggleAssignment$lambda(entity, domain, accepted));
     setState(this, TradeOffBoard$toggleAssignment$lambda_0(accepted, domain, entity));
   };
   function TradeOffBoard$computePossibleArchitectures$lambda() {
@@ -16273,7 +16464,7 @@
     var tmp$;
     if (equals(this.state, undefined)) {
       return emptyList();
-    }logger_17.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda);
+    }logger_16.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda);
     var possibleAssignments = ArrayList_init();
     var tmp$_0;
     tmp$_0 = this.state.assignments.entries.iterator();
@@ -16288,10 +16479,10 @@
       }
     }
     this.props.handleChangeCircularProgressValue(50);
-    logger_17.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda_0);
+    logger_16.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda_0);
     var assignmentsPowerSet = powerSet(possibleAssignments);
     this.props.handleChangeCircularProgressValue(90);
-    logger_17.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda_1);
+    logger_16.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda_1);
     var architectures = ArrayList_init();
     var tmp$_2;
     tmp$_2 = assignmentsPowerSet.iterator();
@@ -16383,7 +16574,7 @@
         }if (!excludeArchitecture.v) {
           architectures.add_11rb$(architecture);
         }}}
-    logger_17.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda_2(architectures));
+    logger_16.info_nq59yw$(TradeOffBoard$computePossibleArchitectures$lambda_2(architectures));
     if (architectures.size !== 0) {
       tmp$ = this.orderArchitectures_0(architectures);
     } else {
@@ -16589,13 +16780,13 @@
   }
   TradeOffBoard.prototype.orderArchitectures_0 = function (possibleArchitectures) {
     var tmp$;
-    logger_17.info_nq59yw$(TradeOffBoard$orderArchitectures$lambda(possibleArchitectures));
+    logger_16.info_nq59yw$(TradeOffBoard$orderArchitectures$lambda(possibleArchitectures));
     switch (this.props.algorithm.name) {
       case 'AdHoc':
         tmp$ = toMutableList(sortedWith(possibleArchitectures, new Comparator(compareByDescending$lambda(TradeOffBoard$orderArchitectures$lambda_0))));
         break;
       case 'Best':
-        var currentOptimal = {v: first(possibleArchitectures)};
+        var currentOptimal = {v: first_0(possibleArchitectures)};
         var tmp$_0;
         tmp$_0 = possibleArchitectures.iterator();
         while (tmp$_0.hasNext()) {
@@ -16611,7 +16802,7 @@
             iterator.remove();
           }}
 
-        logger_17.info_nq59yw$(TradeOffBoard$orderArchitectures$lambda_1(possibleArchitectures));
+        logger_16.info_nq59yw$(TradeOffBoard$orderArchitectures$lambda_1(possibleArchitectures));
         tmp$ = possibleArchitectures;
         break;
       default:tmp$ = Kotlin.noWhenBranchMatched();
@@ -16637,7 +16828,7 @@
     return 'Initializing the state of the TradeOffBoard component';
   }
   TradeOffBoard.prototype.init_b4e81d$ = function ($receiver) {
-    logger_17.info_nq59yw$(TradeOffBoard$init$lambda);
+    logger_16.info_nq59yw$(TradeOffBoard$init$lambda);
     $receiver.domains = toMutableList_0(Domains$values());
     $receiver.entities = toMutableList_0(Entities$values());
     var $receiver_0 = PerformanceRequirements$values();
@@ -17797,23 +17988,16 @@
   function submitFormWithBinaryData$lambda_0($receiver) {
     return Unit;
   }
-  function logger$lambda_18() {
+  function logger$lambda_17() {
     return Unit;
   }
-  var logger_18;
+  var logger_17;
   function Actions() {
     RComponent_init(this);
     this.adminCryptoACFormsRBACCLOUD_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_0(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_1(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_2(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_3(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_4(this)), new CryptoACFormData('delete_file', 'Delete File', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACCLOUD$lambda_5(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_6(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Delete, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACCLOUD$lambda_7(this), true)]);
     this.userCryptoACFormsRBACCloud_0 = listOf([new CryptoACFormData('add_file', 'Add File', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Post, CoreType$RBAC_CLOUD_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$userCryptoACFormsRBACCloud$lambda(this)), new CryptoACFormData('write_file', 'Write File', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Patch, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$file_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_0(this)), new CryptoACFormData('read_file', 'Read File', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Get, CoreType$RBAC_CLOUD_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, replace(SERVER_getInstance().FILE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$userCryptoACFormsRBACCloud$lambda_1(this))]);
     this.adminCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('add_user', 'Add User', $module$react_icons_fa.FaUserPlus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('add_role', 'Add Role', $module$react_icons_fa.FaUserSecret, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_0(this)), new CryptoACFormData('add_file', 'Add Topic', $module$react_icons_fa.FaFileMedical, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, SERVER_getInstance().FILE_NAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ENFORCEMENT, SERVER_getInstance().ENFORCEMENT, InputType$radio_getInstance(), listOf([EnforcementType$COMBINED_getInstance().toString(), EnforcementType$TRADITIONAL_getInstance().toString()]), EnforcementType$COMBINED_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_1(this)), new CryptoACFormData('assign_user_to_role', 'Assign User to Role', $module$react_icons_fa.FaUserFriends, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_2(this)), new CryptoACFormData('assign_permission_to_role', 'Assign Permission to Role', $module$react_icons_fa.FaUserShield, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Post, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READ_getInstance().toString(), PermissionType$READWRITE_getInstance().toString()]), PermissionType$READ_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_3(this), true), new CryptoACFormData('delete_user', 'Delete User', $module$react_icons_fa.FaUserMinus, API_getInstance().CRYPTOAC + API_getInstance().USERS, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_4(this)), new CryptoACFormData('delete_role', 'Delete Role', $module$react_icons_fa.FaUserNinja, API_getInstance().CRYPTOAC + API_getInstance().ROLES, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_5(this)), new CryptoACFormData('delete_file', 'Delete Topic', $module$react_icons_fa.FaFileExcel, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$adminCryptoACFormsRBACMQTT$lambda_6(this)), new CryptoACFormData('revoke_user_from_role', 'Revoke User from Role', $module$react_icons_fa.FaUserTimes, API_getInstance().CRYPTOAC + API_getInstance().ASSIGNMENTS, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().USERNAME, SERVER_getInstance().USERNAME, InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_7(this)), new CryptoACFormData('revoke_permission_from_role', 'Revoke Permission from Role', $module$react_icons_fa.FaUserLock, API_getInstance().CRYPTOAC + API_getInstance().PERMISSIONS, HttpMethod.Companion.Delete, CoreType$RBAC_MQTT_getInstance(), listOf([listOf_0(new CryptoACFormField(SERVER_getInstance().ROLE_NAME, replace(SERVER_getInstance().ROLE_NAME, '_', ' '), InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance())), listOf_0(new CryptoACFormField(SERVER_getInstance().PERMISSION, SERVER_getInstance().PERMISSION, InputType$radio_getInstance(), listOf([PermissionType$READWRITE_getInstance().toString(), PermissionType$WRITE_getInstance().toString()]), PermissionType$READWRITE_getInstance().toString()))]), Actions$adminCryptoACFormsRBACMQTT$lambda_8(this), true)]);
     this.userCryptoACFormsRBACMQTT_0 = listOf([new CryptoACFormData('write_file', 'Publish to Topic', $module$react_icons_fa.FaFileSignature, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Patch, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf([new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()), new CryptoACFormField(SERVER_getInstance().FILE_CONTENT, 'Message', InputType$text_getInstance())])), Actions$userCryptoACFormsRBACMQTT$lambda(this)), new CryptoACFormData('read_file', 'Subscribe to Topic', $module$react_icons_fa.FaFileDownload, API_getInstance().CRYPTOAC + API_getInstance().FILES, HttpMethod.Companion.Get, CoreType$RBAC_MQTT_getInstance(), listOf_0(listOf_0(new CryptoACFormField(SERVER_getInstance().FILE_NAME, 'Topic Name', InputType$text_getInstance()))), Actions$userCryptoACFormsRBACMQTT$lambda_0(this))]);
-    this.adminCryptoACFormsRBACMOCK_0 = emptyList();
-    this.userCryptoACFormsRBACMOCK_0 = emptyList();
-  }
-  function Actions$render$lambda$lambda(closure$message) {
-    return function () {
-      return closure$message;
-    };
   }
   function Actions$render$lambda$lambda$lambda$lambda$lambda$lambda$lambda($receiver) {
     return Unit;
@@ -17839,8 +18023,7 @@
       this$.method = closure$cryptoACFormData.method;
       this$.cryptoACFormFields = closure$cryptoACFormData.cryptoACFormFields;
       this$.handleSubmitEvent = closure$cryptoACFormData.submit;
-      this$.handleChangeBackdropIsOpen = this$Actions.props.handleChangeBackdropIsOpen;
-      this$.handleDisplayCryptoACAlert = this$Actions.props.handleDisplayAlert;
+      this$.handleDisplayAlert = this$Actions.props.handleDisplayAlert;
       return Unit;
     };
   }
@@ -17873,39 +18056,38 @@
   function Actions$render$lambda(this$Actions) {
     return function ($receiver) {
       var tmp$;
-      if (this$Actions.props.userIsLogged && this$Actions.props.userHasProfile) {
-        switch (this$Actions.props.coreType.name) {
-          case 'RBAC_CLOUD':
-            tmp$ = this$Actions.props.userIsAdmin ? plus_0(this$Actions.adminCryptoACFormsRBACCLOUD_0, this$Actions.userCryptoACFormsRBACCloud_0) : this$Actions.userCryptoACFormsRBACCloud_0;
-            break;
-          case 'RBAC_MQTT':
-            tmp$ = this$Actions.props.userIsAdmin ? plus_0(this$Actions.adminCryptoACFormsRBACMQTT_0, this$Actions.userCryptoACFormsRBACMQTT_0) : this$Actions.userCryptoACFormsRBACMQTT_0;
-            break;
-          case 'RBAC_MOCK':
-            if (development) {
-              tmp$ = this$Actions.props.userIsAdmin ? plus_0(this$Actions.adminCryptoACFormsRBACMOCK_0, this$Actions.userCryptoACFormsRBACMOCK_0) : this$Actions.userCryptoACFormsRBACMOCK_0;
-            } else {
-              var message = 'Using MOCK core when not in development mode';
-              logger_18.error_nq59yw$(Actions$render$lambda$lambda(message));
-              throw IllegalStateException_init(message);
-            }
+      switch (this$Actions.props.coreType.name) {
+        case 'RBAC_CLOUD':
+          if (this$Actions.props.userIsAdmin) {
+            tmp$ = plus_0(this$Actions.adminCryptoACFormsRBACCLOUD_0, this$Actions.userCryptoACFormsRBACCloud_0);
+          } else {
+            tmp$ = this$Actions.userCryptoACFormsRBACCloud_0;
+          }
 
-            break;
-          default:tmp$ = Kotlin.noWhenBranchMatched();
-            break;
-        }
-        var cryptoACForm = tmp$;
-        var tmp$_0;
-        tmp$_0 = cryptoACForm.iterator();
-        while (tmp$_0.hasNext()) {
-          var element = tmp$_0.next();
-          var this$Actions_0 = this$Actions;
-          $receiver.key = element.key;
-          $receiver.invoke_qk0v40$($module$react_pro_sidebar.Menu, Actions$render$lambda$lambda$lambda(element, this$Actions_0));
-          if (element.divider) {
-            $receiver.child_30b5ua$(cryptoACDivider(Actions$render$lambda$lambda$lambda_0));
-          }}
-      }return Unit;
+          break;
+        case 'RBAC_MQTT':
+          if (this$Actions.props.userIsAdmin) {
+            tmp$ = plus_0(this$Actions.adminCryptoACFormsRBACMQTT_0, this$Actions.userCryptoACFormsRBACMQTT_0);
+          } else {
+            tmp$ = this$Actions.userCryptoACFormsRBACMQTT_0;
+          }
+
+          break;
+        default:tmp$ = Kotlin.noWhenBranchMatched();
+          break;
+      }
+      var cryptoACForm = tmp$;
+      var tmp$_0;
+      tmp$_0 = cryptoACForm.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        var this$Actions_0 = this$Actions;
+        $receiver.key = element.key;
+        $receiver.invoke_qk0v40$($module$react_pro_sidebar.Menu, Actions$render$lambda$lambda$lambda(element, this$Actions_0));
+        if (element.divider) {
+          $receiver.child_30b5ua$(cryptoACDivider(Actions$render$lambda$lambda$lambda_0));
+        }}
+      return Unit;
     };
   }
   Actions.prototype.render_ss14n$ = function ($receiver) {
@@ -18027,7 +18209,7 @@
               }
             } else {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_1(this.local$closure$method));
+              logger_17.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_1(this.local$closure$method));
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
@@ -18048,7 +18230,7 @@
             var e = this.exception_0;
             if (Kotlin.isType(e, Exception)) {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_2(e));
+              logger_17.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_2(e));
               console.log(e);
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
@@ -18086,12 +18268,12 @@
     };
   }
   Actions.prototype.submitCryptoACForm_0 = function (method, endpoint, values, callback) {
-    logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda(method, endpoint));
+    logger_17.info_nq59yw$(Actions$submitCryptoACForm$lambda(method, endpoint));
     var tmp$;
     tmp$ = values.entries.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda$lambda(element));
+      logger_17.info_nq59yw$(Actions$submitCryptoACForm$lambda$lambda(element));
     }
     this.props.handleChangeBackdropIsOpen(true);
     launch(MainScope(), void 0, void 0, Actions$submitCryptoACForm$lambda_0(method, callback, this, values, endpoint));
@@ -18270,13 +18452,13 @@
                 return Unit;
               } else {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-                logger_18.error_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda_0(this.local$closure$method));
+                logger_17.error_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda_0(this.local$closure$method));
                 return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
               }
             } catch (e) {
               if (Kotlin.isType(e, Error_0)) {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-                logger_18.error_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda_1(e));
+                logger_17.error_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda_1(e));
                 console.log(e);
                 return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               } else
@@ -18309,12 +18491,12 @@
     };
   }
   Actions.prototype.submitCryptoACFormWithBinaryData_0 = function (method, endpoint, values, files, callback) {
-    logger_18.info_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda(method, endpoint, files, values));
+    logger_17.info_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda(method, endpoint, files, values));
     var tmp$;
     tmp$ = values.entries.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      logger_18.info_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda(element));
+      logger_17.info_nq59yw$(Actions$submitCryptoACFormWithBinaryData$lambda$lambda(element));
     }
     this.props.handleChangeBackdropIsOpen(true);
     launch(MainScope(), void 0, void 0, Actions$submitCryptoACFormWithBinaryData$lambda_0(method, values, files, callback, this, endpoint));
@@ -18335,7 +18517,7 @@
   function Actions$submitCryptoACFormInNewTab$lambda$lambda_0(closure$win, this$Actions) {
     return function (it) {
       if (equals(ensureNotNull(closure$win).document, undefined)) {
-        logger_18.info_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda$lambda);
+        logger_17.info_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda$lambda);
         this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance());
       }closure$win.close();
       return Unit;
@@ -18399,13 +18581,13 @@
                 return win != null && (win.onload = Actions$submitCryptoACFormInNewTab$lambda$lambda_0(win, this.local$this$Actions)), Unit;
               } else {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-                logger_18.error_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda_1(this.local$closure$method));
+                logger_17.error_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda_1(this.local$closure$method));
                 return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
               }
             } catch (e) {
               if (Kotlin.isType(e, Error_0)) {
                 this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-                logger_18.error_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda_2(e));
+                logger_17.error_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda_2(e));
                 console.log(e);
                 return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
               } else
@@ -18438,12 +18620,12 @@
     };
   }
   Actions.prototype.submitCryptoACFormInNewTab_0 = function (method, endpoint, values, query) {
-    logger_18.info_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda(method, endpoint, query));
+    logger_17.info_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda(method, endpoint, query));
     var tmp$;
     tmp$ = values.entries.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      logger_18.info_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda(element));
+      logger_17.info_nq59yw$(Actions$submitCryptoACFormInNewTab$lambda$lambda(element));
     }
     this.props.handleChangeBackdropIsOpen(true);
     launch(MainScope(), void 0, void 0, Actions$submitCryptoACFormInNewTab$lambda_0(method, endpoint, query, values, this));
@@ -18540,7 +18722,7 @@
               }
             } else {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_4(this.local$closure$method));
+              logger_17.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_4(this.local$closure$method));
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_048_HTTP_METHOD_NOT_SUPPORTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance()), Unit;
             }
 
@@ -18565,7 +18747,7 @@
             var e = this.exception_0;
             if (Kotlin.isType(e, Exception)) {
               this.local$this$Actions.props.handleChangeBackdropIsOpen(false);
-              logger_18.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_5(e));
+              logger_17.error_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_5(e));
               console.log(e);
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_049_UNEXPECTED_getInstance(), CryptoACAlertSeverity$ERROR_getInstance());
             } else {
@@ -18603,12 +18785,12 @@
     };
   }
   Actions.prototype.submitCryptoACForm_1 = function (method, endpoint, values, query, callback) {
-    logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda_1(method, endpoint, query));
+    logger_17.info_nq59yw$(Actions$submitCryptoACForm$lambda_1(method, endpoint, query));
     var tmp$;
     tmp$ = values.entries.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      logger_18.info_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_3(element));
+      logger_17.info_nq59yw$(Actions$submitCryptoACForm$lambda$lambda_3(element));
     }
     this.props.handleChangeBackdropIsOpen(true);
     launch(MainScope(), void 0, void 0, Actions$submitCryptoACForm$lambda_2(method, endpoint, query, values, callback, this));
@@ -18645,7 +18827,7 @@
           case 0:
             this.local$status = this.local$closure$response.status;
             if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_18.info_nq59yw$(Actions$callbackShowOutcomeCode$lambda$lambda(this.local$status));
+              logger_17.info_nq59yw$(Actions$callbackShowOutcomeCode$lambda$lambda(this.local$status));
               return this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance()), Unit;
             } else {
               this.state_0 = 2;
@@ -18662,7 +18844,7 @@
             var string = this.result_0;
             var tmp$;
             var outcomeCode = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), string);
-            logger_18.warn_nq59yw$(Actions$callbackShowOutcomeCode$lambda$lambda_0(this.local$status, outcomeCode));
+            logger_17.warn_nq59yw$(Actions$callbackShowOutcomeCode$lambda$lambda_0(this.local$status, outcomeCode));
             return this.local$this$Actions.props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance()), Unit;
           case 3:
             return;
@@ -18726,7 +18908,7 @@
           case 0:
             this.local$status = this.local$closure$response.status;
             if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_18.info_nq59yw$(Actions$callbackDownloadUserProfile$lambda$lambda(this.local$status));
+              logger_17.info_nq59yw$(Actions$callbackDownloadUserProfile$lambda$lambda(this.local$status));
               this.state_0 = 3;
               this.result_0 = bodyAsText(this.local$closure$response, void 0, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
@@ -18747,7 +18929,7 @@
             var string = this.result_0;
             var tmp$;
             var outcomeCode = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), string);
-            logger_18.warn_nq59yw$(Actions$callbackDownloadUserProfile$lambda$lambda_0(this.local$status, outcomeCode));
+            logger_17.warn_nq59yw$(Actions$callbackDownloadUserProfile$lambda$lambda_0(this.local$status, outcomeCode));
             return this.local$this$Actions.props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance());
           case 3:
             var text = this.result_0;
@@ -18820,7 +19002,7 @@
           case 0:
             this.local$status = this.local$closure$response.status;
             if (this.local$status != null ? this.local$status.equals(HttpStatusCode.Companion.OK) : null) {
-              logger_18.info_nq59yw$(Actions$callbackSubscribeToTopic$lambda$lambda(this.local$status));
+              logger_17.info_nq59yw$(Actions$callbackSubscribeToTopic$lambda$lambda(this.local$status));
               this.local$this$Actions.props.handleDisplayAlert(OutcomeCode$CODE_000_SUCCESS_getInstance(), CryptoACAlertSeverity$SUCCESS_getInstance());
               return this.local$this$Actions.props.handleAddTableInContent(ensureNotNull(this.local$closure$values.get_11rb$(SERVER_getInstance().FILE_NAME))), Unit;
             } else {
@@ -18838,7 +19020,7 @@
             var string = this.result_0;
             var tmp$;
             var outcomeCode = $receiver.decodeFromString_awif5v$(Kotlin.isType(tmp$ = serializer_0($receiver.serializersModule, createKType(getKClass(OutcomeCode), [], false)), KSerializer) ? tmp$ : throwCCE(), string);
-            logger_18.warn_nq59yw$(Actions$callbackSubscribeToTopic$lambda$lambda_0(this.local$status, outcomeCode));
+            logger_17.warn_nq59yw$(Actions$callbackSubscribeToTopic$lambda$lambda_0(this.local$status, outcomeCode));
             return this.local$this$Actions.props.handleDisplayAlert(outcomeCode, CryptoACAlertSeverity$ERROR_getInstance()), Unit;
           case 3:
             return;
@@ -19731,6 +19913,9 @@
   Object.defineProperty(OutcomeCode, 'CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED', {
     get: OutcomeCode$CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED_getInstance
   });
+  Object.defineProperty(OutcomeCode, 'CODE_061_WRONG_PARAMETERS_FOR_CORE', {
+    get: OutcomeCode$CODE_061_WRONG_PARAMETERS_FOR_CORE_getInstance
+  });
   Object.defineProperty(OutcomeCode, 'Companion', {
     get: OutcomeCode$Companion_getInstance
   });
@@ -19754,16 +19939,12 @@
   Object.defineProperty(package$cryptoac, 'SERVER', {
     get: SERVER_getInstance
   });
+  $$importsForInline$$['ktor-ktor-client-core-js-legacy'] = $module$ktor_ktor_client_core_js_legacy;
+  package$cryptoac.submitFormPatch_is78iq$ = submitFormPatch;
   Object.defineProperty(SafeRegex, 'Companion', {
     get: SafeRegex$Companion_getInstance
   });
   package$cryptoac.SafeRegex = SafeRegex;
-  Object.defineProperty(Utils, 'Companion', {
-    get: Utils$Companion_getInstance
-  });
-  package$cryptoac.Utils = Utils;
-  $$importsForInline$$['ktor-ktor-client-core-js-legacy'] = $module$ktor_ktor_client_core_js_legacy;
-  package$cryptoac.submitFormPatch_is78iq$ = submitFormPatch;
   Object.defineProperty(CoreParameters, 'Companion', {
     get: CoreParameters$Companion_getInstance
   });
@@ -19775,9 +19956,6 @@
   });
   Object.defineProperty(CoreType, 'RBAC_MQTT', {
     get: CoreType$RBAC_MQTT_getInstance
-  });
-  Object.defineProperty(CoreType, 'RBAC_MOCK', {
-    get: CoreType$RBAC_MOCK_getInstance
   });
   package$core.CoreType = CoreType;
   $$importsForInline$$['kotlinx-serialization-kotlinx-serialization-core-js-legacy'] = $module$kotlinx_serialization_kotlinx_serialization_core_js_legacy;
@@ -19799,14 +19977,6 @@
   });
   package$core.CoreParametersCLOUD_init_dch7vr$ = CoreParametersCLOUD_init;
   package$core.CoreParametersCLOUD = CoreParametersCLOUD;
-  Object.defineProperty(CoreParametersMOCK, 'Companion', {
-    get: CoreParametersMOCK$Companion_getInstance
-  });
-  Object.defineProperty(CoreParametersMOCK, '$serializer', {
-    get: CoreParametersMOCK$$serializer_getInstance
-  });
-  package$core.CoreParametersMOCK_init_1h01jw$ = CoreParametersMOCK_init;
-  package$core.CoreParametersMOCK = CoreParametersMOCK;
   Object.defineProperty(CoreParametersMQTT, 'Companion', {
     get: CoreParametersMQTT$Companion_getInstance
   });
@@ -20125,24 +20295,21 @@
     get: RMType$NONE_getInstance
   });
   package$rm.RMType = RMType;
-  Object.defineProperty(package$cryptoac, 'Themes', {
-    get: Themes_getInstance
-  });
   $$importsForInline$$['kotlin-styled'] = $module$kotlin_styled;
   $$importsForInline$$['kotlin-react-dom-legacy'] = $module$kotlin_react_dom_legacy;
+  $$importsForInline$$['ktor-ktor-http-js-legacy'] = $module$ktor_ktor_http_js_legacy;
   var package$view = package$cryptoac.view || (package$cryptoac.view = {});
   package$view.App = App;
-  Object.defineProperty(UIType, 'Modules', {
-    get: UIType$Modules_getInstance
-  });
-  Object.defineProperty(UIType, 'Dashboard', {
-    get: UIType$Dashboard_getInstance
+  Object.defineProperty(UIType, 'NewProfile', {
+    get: UIType$NewProfile_getInstance
   });
   Object.defineProperty(UIType, 'TradeOffBoard', {
     get: UIType$TradeOffBoard_getInstance
   });
+  Object.defineProperty(UIType, 'CoreType', {
+    get: UIType$CoreType_getInstance
+  });
   package$view.UIType = UIType;
-  $$importsForInline$$['ktor-ktor-http-js-legacy'] = $module$ktor_ktor_http_js_legacy;
   package$view.Login = Login;
   package$view.login_by9vj2$ = login;
   Object.defineProperty(package$view, 'baseURL', {
@@ -20151,6 +20318,9 @@
     }
   });
   package$view.main = main;
+  Object.defineProperty(package$view, 'Themes', {
+    get: Themes_getInstance
+  });
   Object.defineProperty(CryptoACAlertSeverity, 'SUCCESS', {
     get: CryptoACAlertSeverity$SUCCESS_getInstance
   });
@@ -20182,8 +20352,10 @@
   package$custom.cryptoACCheckbox_t7vnd2$ = cryptoACCheckbox;
   package$custom.CryptoACDivider = CryptoACDivider;
   package$custom.cryptoACDivider_v9xll6$ = cryptoACDivider;
+  package$custom.CryptoACEditProfileForm = CryptoACEditProfileForm;
+  package$custom.cryptoACEditProfileForm_69f6wc$ = cryptoACEditProfileForm;
   package$custom.CryptoACForm = CryptoACForm;
-  package$custom.cryptoACForm_ryu66h$ = cryptoACForm;
+  package$custom.cryptoACForm_t3tl2d$ = cryptoACForm;
   package$custom.CryptoACFormData = CryptoACFormData;
   package$custom.CryptoACPaper = CryptoACPaper;
   package$custom.cryptoACPaper_kg650j$ = cryptoACPaper;
@@ -20245,12 +20417,12 @@
   package$dashboard.RBACDashboard = RBACDashboard;
   package$dashboard.MQTTDashboard = MQTTDashboard;
   package$dashboard.rbacMQTTDashboard_fp9qee$ = rbacMQTTDashboard;
-  var package$modules = package$content.modules || (package$content.modules = {});
-  package$modules.ModuleItem = ModuleItem;
-  package$modules.moduleItem_o4448a$ = moduleItem;
-  package$modules.Modules = Modules;
-  package$modules.modules_awzo2k$ = modules;
-  package$modules.getImageFromModuleImplementation_61zpoe$ = getImageFromModuleImplementation;
+  var package$newProfile = package$content.newProfile || (package$content.newProfile = {});
+  package$newProfile.ModuleItem = ModuleItem;
+  package$newProfile.moduleItem_tjtbyg$ = moduleItem;
+  package$newProfile.NewProfile = NewProfile;
+  package$newProfile.newProfile_5kms2$ = newProfile;
+  package$newProfile.getImageFromModuleImplementation_61zpoe$ = getImageFromModuleImplementation;
   Object.defineProperty(Architecture, 'Companion', {
     get: Architecture$Companion_getInstance
   });
@@ -20509,7 +20681,6 @@
   OutcomeCode$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   PolicyModel$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   CoreParametersCLOUD$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
-  CoreParametersMOCK$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   CoreParametersMQTT$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   File$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
   Role$$serializer.prototype.typeParametersSerializers = GeneratedSerializer.prototype.typeParametersSerializers;
@@ -20582,9 +20753,6 @@
   var clazz_9 = getKClass(CoreParametersCLOUD);
   var tmp$_9;
   builder_7.subclass_g8f9ns$(clazz_9, Kotlin.isType(tmp$_9 = serializer(createKType(getKClass(CoreParametersCLOUD), [], false)), KSerializer) ? tmp$_9 : throwCCE());
-  var clazz_10 = getKClass(CoreParametersMOCK);
-  var tmp$_10;
-  builder_7.subclass_g8f9ns$(clazz_10, Kotlin.isType(tmp$_10 = serializer(createKType(getKClass(CoreParametersMOCK), [], false)), KSerializer) ? tmp$_10 : throwCCE());
   builder_7.buildTo_gz4556$(builder);
   module_0 = builder.build();
   myJson = Json(void 0, myJson$lambda);
@@ -20597,10 +20765,10 @@
   logger_6 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_6);
   logger_7 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_7);
   logger_8 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_8);
-  logger_9 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_9);
   baseURL = window.location.protocol + '//' + window.location.host;
-  logger_10 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_10);
+  logger_9 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_9);
   divider = '4%&\xA3$5';
+  logger_10 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_10);
   logger_11 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_11);
   userColumns = [new CryptoACTableColumn('name', 'Name', 'The name of the user'), new CryptoACTableColumn('status', 'Status', 'The current status of the user (INCOMPLETE, OPERATIONAL or DELETED)'), new CryptoACTableColumn('isAdmin', 'Admin', 'Whether the user has administrative privileges', 'boolean'), new CryptoACTableColumn('token', 'Token', 'The token of the user')];
   roleColumns = [new CryptoACTableColumn('name', 'Name', 'The name of the role'), new CryptoACTableColumn('status', 'Status', 'The current status of the role (OPERATIONAL or DELETED)'), new CryptoACTableColumn('token', 'Token', 'The token of the role')];
@@ -20613,10 +20781,9 @@
   logger_14 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_14);
   logger_15 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_15);
   logger_16 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_16);
-  logger_17 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_17);
   performanceRequirementsImpact = hashMapOf([to(PerformanceRequirements$Redundancy_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Scalability_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Reliability_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Maintenance_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$DoS_Resilience_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$On_premise_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$CSP_Vendor_Lock_in_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$CSP_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Latency_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Throughput_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Computational_Power_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$Storage_capacity_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$ESP_Vendor_Lock_in_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)])), to(PerformanceRequirements$ESP_Savings_getInstance(), hashMapOf([to(new Assignment(Domains$Client_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$Client_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$OnPremise_getInstance(), Entities$RM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$MM_getInstance()), -1), to(new Assignment(Domains$OnPremise_getInstance(), Entities$DM_getInstance()), -1), to(new Assignment(Domains$ESP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$RM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$MM_getInstance()), 0), to(new Assignment(Domains$ESP_getInstance(), Entities$DM_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$CryptoAC_getInstance()), 0), to(new Assignment(Domains$CSP_getInstance(), Entities$RM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$MM_getInstance()), 1), to(new Assignment(Domains$CSP_getInstance(), Entities$DM_getInstance()), 1)]))]);
   securityRequirementsImpact = hashMapOf([to(SecurityRequirements$Confidentiality_getInstance(), hashMapOf([to(EntitiesWithChannels$CryptoAC_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())])), to(SecurityRequirements$Integrity_getInstance(), hashMapOf([to(EntitiesWithChannels$CryptoAC_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())])), to(SecurityRequirements$Availability_getInstance(), hashMapOf([to(EntitiesWithChannels$CryptoAC_getInstance(), Impact$High_getInstance()), to(EntitiesWithChannels$RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_RM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$CryptoAC_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_MM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$RM_DM_getInstance(), Impact$None_getInstance()), to(EntitiesWithChannels$MM_DM_getInstance(), Impact$None_getInstance())]))]);
-  logger_18 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_18);
+  logger_17 = mu.KotlinLogging.logger_o14v8n$(logger$lambda_17);
   main();
   Kotlin.defineModule('CryptoAC', _);
   return _;

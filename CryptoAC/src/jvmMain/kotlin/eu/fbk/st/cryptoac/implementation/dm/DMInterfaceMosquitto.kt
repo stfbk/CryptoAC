@@ -204,8 +204,10 @@ class DMInterfaceMosquitto(private val interfaceParameters: DMInterfaceMosquitto
      */
     override fun deinit() {
         try {
-            client.unsubscribe("#")
-            client.disconnect()
+            if (client.isConnected) {
+                client.unsubscribe("#")
+                client.disconnect()
+            }
         } catch (e: MqttException) {
             logger.warn { "Exception while de-initializing MQTT client (${e.message})" }
             logger.warn { e }

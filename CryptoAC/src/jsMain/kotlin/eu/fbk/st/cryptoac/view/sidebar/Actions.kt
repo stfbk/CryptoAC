@@ -1,6 +1,5 @@
 package eu.fbk.st.cryptoac.view.sidebar
 
-import development
 import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.myJson
@@ -30,11 +29,9 @@ import react.*
 private val logger = KotlinLogging.logger {}
 
 external interface ActionsProps : Props {
+    var handleDisplayAlert: (OutcomeCode, CryptoACAlertSeverity) -> Unit
     var handleChangeBackdropIsOpen: (Boolean) -> Unit
     var handleAddTableInContent: (String) -> Unit
-    var handleDisplayAlert: (OutcomeCode, CryptoACAlertSeverity) -> Unit
-    var userHasProfile: Boolean
-    var userIsLogged: Boolean
     var userIsAdmin: Boolean
     var httpClient: HttpClient
     var coreType: CoreType
@@ -47,67 +44,65 @@ external interface ActionsProps : Props {
  */
 class Actions: RComponent<ActionsProps, State>() {
 
-    // TODO autocomplete fields (e.g., with Lucene?)
+    // TODO autocomplete fields based on tables in the dashboard (e.g., with Lucene?)
 
     override fun RBuilder.render() {
 
         proSidebarContent {
 
             /** Show the CryptoAC forms only if the user is logged and has a profile */
-            if (props.userIsLogged && props.userHasProfile) {
-                val cryptoACForm = when (props.coreType) {
-                    CoreType.RBAC_CLOUD -> if (props.userIsAdmin) (adminCryptoACFormsRBACCLOUD + userCryptoACFormsRBACCloud) else userCryptoACFormsRBACCloud
-                    CoreType.RBAC_MQTT -> if (props.userIsAdmin) (adminCryptoACFormsRBACMQTT + userCryptoACFormsRBACMQTT) else userCryptoACFormsRBACMQTT
-                    CoreType.RBAC_MOCK -> if (development) {
-                        if (props.userIsAdmin) (adminCryptoACFormsRBACMOCK + userCryptoACFormsRBACMOCK) else userCryptoACFormsRBACMOCK
-                    } else {
-                        val message = "Using MOCK core when not in development mode"
-                        logger.error { message }
-                        throw IllegalStateException(message)
-                    }
+            val cryptoACForm = when (props.coreType) {
+                CoreType.RBAC_CLOUD -> if (props.userIsAdmin) {
+                    (adminCryptoACFormsRBACCLOUD + userCryptoACFormsRBACCloud)
+                } else {
+                    userCryptoACFormsRBACCloud
                 }
-                cryptoACForm.forEach { cryptoACFormData ->
+                CoreType.RBAC_MQTT -> if (props.userIsAdmin) {
+                    (adminCryptoACFormsRBACMQTT + userCryptoACFormsRBACMQTT)
+                } else {
+                    userCryptoACFormsRBACMQTT
+                }
+            }
+            cryptoACForm.forEach { cryptoACFormData ->
 
-                    /**
-                     * "key" helps the React rendered figure out which parts
-                     * of the list need to refresh and which ones can stay the
-                     * same (optimisation).
-                     */
-                    key = cryptoACFormData.key
+                /**
+                 * "key" helps the React rendered figure out which parts
+                 * of the list need to refresh and which ones can stay the
+                 * same (optimisation).
+                 */
+                key = cryptoACFormData.key
 
-                    /** Create a pro sidebar menu for containing the form */
-                    proSidebarMenu {
-                        attrs.iconShape = "circle"
-                        proSidebarSubMenu {
-                            attrs {
-                                title = cryptoACFormData.submitButtonText
-                                icon = createElement { cryptoACFormData.icon { } }!!
-                            }
-
-                            /** Render a CryptoAC form component */
-                            child(cryptoACForm {
-                                attrs {
-                                    submitButtonText = cryptoACFormData.submitButtonText
-                                    endpoint = cryptoACFormData.endpoint
-                                    coreType = cryptoACFormData.coreType
-                                    method = cryptoACFormData.method
-                                    cryptoACFormFields = cryptoACFormData.cryptoACFormFields
-                                    handleSubmitEvent = cryptoACFormData.submit
-                                    handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
-                                    handleDisplayCryptoACAlert = props.handleDisplayAlert
-                                }
-                            })
+                /** Create a pro sidebar menu for containing the form */
+                proSidebarMenu {
+                    attrs.iconShape = "circle"
+                    proSidebarSubMenu {
+                        attrs {
+                            title = cryptoACFormData.submitButtonText
+                            icon = createElement { cryptoACFormData.icon { } }!!
                         }
-                    }
 
-                    /** Divider between the add/assign CryptoAC forms and the delete/revoke ones */
-                    if (cryptoACFormData.divider) {
-                        child(cryptoACDivider {
-                            width = 100.pct
-                            marginTop = 0.px
-                            marginBottom = 0.px
+                        /** Render a CryptoAC form component */
+                        child(cryptoACForm {
+                            attrs {
+                                submitButtonText = cryptoACFormData.submitButtonText
+                                endpoint = cryptoACFormData.endpoint
+                                coreType = cryptoACFormData.coreType
+                                method = cryptoACFormData.method
+                                cryptoACFormFields = cryptoACFormData.cryptoACFormFields
+                                handleSubmitEvent = cryptoACFormData.submit
+                                handleDisplayAlert = props.handleDisplayAlert
+                            }
                         })
                     }
+                }
+
+                /** Divider between the add/assign CryptoAC forms and the delete/revoke ones */
+                if (cryptoACFormData.divider) {
+                    child(cryptoACDivider {
+                        width = 100.pct
+                        marginTop = 0.px
+                        marginBottom = 0.px
+                    })
                 }
             }
         }
@@ -829,12 +824,6 @@ class Actions: RComponent<ActionsProps, State>() {
             )
         ),
     )
-
-    /** CryptoAC forms for the administrator in the MOCK implementation */
-    private val adminCryptoACFormsRBACMOCK: List<CryptoACFormData> = listOf()
-
-    /** CryptoAC forms for the user in the MOCK implementation */
-    private val userCryptoACFormsRBACMOCK: List<CryptoACFormData> = listOf()
 }
 
 /** Extend RBuilder for easier use of this React component */

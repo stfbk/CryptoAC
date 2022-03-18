@@ -8,7 +8,6 @@ import eu.fbk.st.cryptoac.implementation.mm.*
 import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCryptoACParameters
 import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceRBACCLOUDParameters
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.*
 import mu.KotlinLogging
@@ -74,14 +73,12 @@ abstract class CoreParameters {
  */
 enum class CoreType {
     RBAC_CLOUD,
-    RBAC_MQTT,
-    RBAC_MOCK;
+    RBAC_MQTT;
 
     /** Return a pretty representation of the core type */
     fun toPrettyString(): String = when(this) {
         RBAC_CLOUD -> "RBAC for the Cloud"
         RBAC_MQTT -> "RBAC for MQTT"
-        RBAC_MOCK -> "RBAC for testing"
     }
 }
 
@@ -113,7 +110,6 @@ val module = SerializersModule {
     polymorphic(CoreParameters::class) {
         subclass(CoreParametersMQTT::class)
         subclass(CoreParametersCLOUD::class)
-        subclass(CoreParametersMOCK::class)
     }
 }
 

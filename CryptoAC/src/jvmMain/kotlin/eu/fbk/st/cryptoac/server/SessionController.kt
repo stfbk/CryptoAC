@@ -26,7 +26,7 @@ class SessionController {
         }
 
         /** Add the [wss] to the user [session] for the current [core] */
-        fun addSocketToSection(session: CurrentSession, wss: DefaultWebSocketSession, core: CoreType) {
+        fun addSocketToSession(session: CurrentSession, wss: DefaultWebSocketSession, core: CoreType) {
             when (core) {
                 CoreType.RBAC_CLOUD -> {
                     val message = "Web socket is not expected for ${CoreType.RBAC_CLOUD}"
@@ -42,13 +42,6 @@ class SessionController {
                         logger.error { message }
                         throw IllegalStateException(message)
                     }
-                }
-                CoreType.RBAC_MOCK -> if (development) {
-                    /** Do nothing */
-                } else {
-                    val message = "Using MOCK core when not in development mode"
-                    logger.error { message }
-                    throw IllegalStateException(message)
                 }
             }
         }

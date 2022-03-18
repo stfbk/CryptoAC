@@ -1,5 +1,10 @@
 package eu.fbk.st.cryptoac
 
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
+import io.ktor.http.*
+
 /**
  * Parameters for HTTP requests
  * Required parameters are rendered as path parameters.
@@ -89,5 +94,18 @@ object SERVER {
 
     /** The port of the OPA */
     const val OPA_PORT = "OPA_Port"
+}
+
+/**
+ * Ktor (2.0.0-beta-1) lacks a submit form method
+ * with HTTP patch, thus, we create this extension
+ */
+suspend fun HttpClient.submitFormPatch(
+    formParameters: Parameters,
+    block: HttpRequestBuilder.() -> Unit
+) = request {
+    method = HttpMethod.Patch
+    setBody(FormDataContent(formParameters))
+    block()
 }
 

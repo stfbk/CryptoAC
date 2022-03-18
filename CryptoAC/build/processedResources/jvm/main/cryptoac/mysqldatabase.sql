@@ -21,11 +21,11 @@ CREATE TABLE `users` (
 
 CREATE TABLE `deletedUsers` (
   `username` varchar(50) NOT NULL,
-  `userToken` char(20) NOT NULL,
+  `userToken` char(20) NOT NULL UNIQUE,
   `asymEncPublicKey` varchar(500) NOT NULL,
   `asymSigPublicKey` varchar(500) NOT NULL,
   `status` varchar(20) NOT NULL,
-  PRIMARY KEY (`username`, `userToken`)
+  PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -42,12 +42,12 @@ CREATE TABLE `roles` (
 
 CREATE TABLE `deletedRoles` (
   `roleName` varchar(50) NOT NULL,
-  `roleToken` char(20) NOT NULL,
+  `roleToken` char(20) NOT NULL UNIQUE,
   `asymEncPublicKey` varchar(500) NOT NULL,
   `asymSigPublicKey` varchar(500) NOT NULL,
   `roleVersionNumber` int NOT NULL,
   `status` varchar(20) NOT NULL,
-  PRIMARY KEY (`roleName`, `roleToken`)
+  PRIMARY KEY (`roleName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -56,18 +56,18 @@ CREATE TABLE `files` (
   `fileToken` char(20) NOT NULL UNIQUE,
   `symEncKeyVersionNumber` int NOT NULL,
   `status` varchar(20) NOT NULL,
-  `enforcement` char(50) NOT NULL,
+  `enforcement` varchar(50) NOT NULL,
   PRIMARY KEY (`fileName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `deletedFiles` (
   `fileName` varchar(50) NOT NULL,
-  `fileToken` char(20) NOT NULL,
+  `fileToken` char(20) NOT NULL UNIQUE,
   `symEncKeyVersionNumber` int NOT NULL,
   `status` varchar(20) NOT NULL,
-  `enforcement` char(50) NOT NULL,
-  PRIMARY KEY (`fileName`, `fileToken`)
+  `enforcement` varchar(50) NOT NULL,
+  PRIMARY KEY (`fileName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -117,7 +117,7 @@ CREATE TABLE `fileTuples` (
   `fileName` varchar(50),
   `fileToken` char(20),
   `symDecKeyVersionNumber` int NOT NULL,
-  `enforcement` char(50) NOT NULL,
+  `enforcement` varchar(50) NOT NULL,
   `roleToken`char(20) NOT NULL,
   `signerToken` char(20) NOT NULL,
   `signature` text(344) NOT NULL,

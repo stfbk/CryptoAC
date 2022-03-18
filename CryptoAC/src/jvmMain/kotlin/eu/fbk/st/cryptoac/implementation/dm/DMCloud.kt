@@ -4,7 +4,6 @@ import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.API.DM
 import eu.fbk.st.cryptoac.API.FILES
-import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.server.FileSaveMode
 import eu.fbk.st.cryptoac.server.FileSystemManager
 import eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters
@@ -14,7 +13,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
@@ -339,12 +337,6 @@ fun Route.configureRouting() {
             // TODO logs
 
             /** Get the core parameters from the request */
-            // TODO this should be "val opaParametersCloud = call.receive<opaParametersCloudString>()",
-            //  but a bug in kotlinx serialization library prevents it. Therefore, receive as string and then serialize.
-            //  When a new version of the kotlinx serialization library is provided, try again
-            //val opaParametersCloudString = call.receive<String>()
-            //opaInterfaceParameters = myJson.decodeFromString(opaParametersCloudString)
-
             opaInterfaceParameters = call.receive()
 
             // TODO check that received parameters are ok, i.e., OPA server is

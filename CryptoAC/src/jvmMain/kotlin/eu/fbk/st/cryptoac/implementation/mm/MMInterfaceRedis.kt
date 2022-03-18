@@ -86,13 +86,13 @@ class MMInterfaceRedis(
     /**
      * The connection for modifying the
      * Redis database during a transaction
-     * */
+     */
     private var jTransaction: Transaction? = null
 
     /**
      * The connection for querying the
      * Redis database during a transaction
-     * */
+     */
     private var jQuery: Jedis? = null
 
     /**

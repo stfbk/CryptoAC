@@ -11,7 +11,7 @@
    "rmInterfaceParameters":{
       "type":"eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCryptoACParameters",
       "port":8443,
-      "url":"10.1.0.6",
+      "url":"10.1.0.4",
       "rmType":"CRYPTOAC"
    },
    "mmInterfaceParameters":{
@@ -19,18 +19,18 @@
       "username":"admin",
       "password":"password",
       "port":3306,
-      "url":"10.1.0.5",
+      "url":"10.1.0.3",
       "mmType":"MYSQL"
    },
    "dmInterfaceParameters":{
       "type":"eu.fbk.st.cryptoac.implementation.dm.DMInterfaceCryptoACParameters",
       "port":8443,
-      "url":"10.1.0.7",
+      "url":"10.1.0.5",
       "dmType":"CRYPTOAC"
    },
    "opaInterfaceParameters":{
       "port":8181,
-      "url":"10.1.0.8",
+      "url":"10.1.0.6",
       "policyModel":"RBAC"
    }
 }

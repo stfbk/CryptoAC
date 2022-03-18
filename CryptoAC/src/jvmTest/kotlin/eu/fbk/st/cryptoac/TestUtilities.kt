@@ -111,7 +111,6 @@ class TestUtilities {
             runBlocking {
                 HttpClient(CIO) {
                     expectSuccess = false
-                    // TODO configure http client
                 }.use {
                     assert(
                         it.delete {
@@ -241,7 +240,6 @@ class TestUtilities {
                 install(ContentNegotiation) {
                     json(json = myJson)
                 }
-                // TODO configure http client, as for now the client accepts all certificates
                 engine {
                     sslContextFactory.isTrustAll = true
                 }

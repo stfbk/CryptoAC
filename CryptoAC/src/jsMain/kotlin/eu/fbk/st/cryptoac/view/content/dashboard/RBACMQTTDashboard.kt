@@ -415,16 +415,21 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                 }
             }
 
-            while(true) {
-                val serializedMQTTMessage = (state.wss.incoming.receive() as? Frame.Text)!!.readText() // TODO refactor !!
-                val mqttMessage = myJson.decodeFromString<MQTTMessage>(serializedMQTTMessage)
-                val message = mqttMessage.message
-                val topic = mqttMessage.topic
-                logger.warn { "RECEIVED MESSAGE $message in topic $topic" }
+            try {
+                while (true) {
+                    val serializedMQTTMessage =
+                        (state.wss.incoming.receive() as? Frame.Text)!!.readText()
+                    val mqttMessage = myJson.decodeFromString<MQTTMessage>(serializedMQTTMessage)
+                    val message = mqttMessage.message
+                    val topic = mqttMessage.topic
+                    logger.warn { "RECEIVED MESSAGE $message in topic $topic" }
 
-                setState {
-                    mqttMessages.getOrPut(topic) { mutableListOf() }.add(message)
+                    setState {
+                        mqttMessages.getOrPut(topic) { mutableListOf() }.add(message)
+                    }
                 }
+            } catch (e: NullPointerException) {
+                logger.warn { "Web socket was closed" }
             }
         }
     }

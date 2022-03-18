@@ -17,16 +17,16 @@ external interface TrustAssumptionsLikelihoodProps : Props {
     var defaultValue: Likelihood
 
     /** The domain related to the attacker */
-    var domain : DomainsWithChannels
+    var domain: DomainsWithChannels
 
     /** The attacker */
-    var attacker : Attackers
+    var attacker: Attackers
 
     /** Change likelihood for the attacker in the given domain */
-    var handleChangeLikelihood : (DomainsWithChannels, Attackers, Likelihood) -> Unit
+    var handleChangeLikelihood: (DomainsWithChannels, Attackers, Likelihood) -> Unit
 
     /** Is this the last element */
-    var last : Boolean
+    var last: Boolean
 }
 
 external interface TrustAssumptionsLikelihoodState : State {

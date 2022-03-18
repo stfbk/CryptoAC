@@ -1,13 +1,4 @@
-/**
-TODO in "TradeOffBoard", devi controllare le funzioni
-- computePossibleArchitectures
-- computeScoresArray
-- getProtectionLevel
-- orderArchitectures
-- dominates
 
-
-*/
 package eu.fbk.st.cryptoac.view
 
 import development

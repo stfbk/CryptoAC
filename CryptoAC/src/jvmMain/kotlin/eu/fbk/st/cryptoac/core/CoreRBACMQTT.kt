@@ -148,7 +148,10 @@ class CoreRBACMQTT(
     override fun deinit() {
         mm.deinit()
         dm.deinit()
-        runBlocking { wss?.close() }
+        runBlocking {
+            wss?.flush()
+            wss?.close()
+        }
         // TODO wipe crypto material from user object
     }
 

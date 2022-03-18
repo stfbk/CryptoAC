@@ -1,6 +1,15 @@
 package eu.fbk.st.cryptoac.view.content.tradeoffboard
 
-import eu.fbk.st.cryptoac.Themes.plainPaperTitleStyle
+/**
+TODO in "TradeOffBoard", devi controllare le funzioni
+- computePossibleArchitectures
+- computeScoresArray
+- getProtectionLevel
+- orderArchitectures
+- dominates
+ */
+
+import eu.fbk.st.cryptoac.view.Themes.plainPaperTitleStyle
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.icons.faUndoAlt
 import eu.fbk.st.cryptoac.view.components.materialui.grid
@@ -910,7 +919,7 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
         }
     }
 
-    private fun orderArchitectures(possibleArchitectures: MutableList<Architecture>) : MutableList<Architecture> {
+    private fun orderArchitectures(possibleArchitectures: MutableList<Architecture>): MutableList<Architecture> {
 
         logger.info { "${possibleArchitectures.size} architectures are being ordered" }
 

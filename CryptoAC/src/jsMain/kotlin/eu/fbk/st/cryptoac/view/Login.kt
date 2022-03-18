@@ -5,32 +5,22 @@ import eu.fbk.st.cryptoac.CryptoACFormField
 import eu.fbk.st.cryptoac.InputType
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.SERVER.USERNAME
-import eu.fbk.st.cryptoac.Themes.largePlainPaperTitleStyle
+import eu.fbk.st.cryptoac.view.Themes.largePlainPaperTitleStyle
 import eu.fbk.st.cryptoac.view.components.custom.*
 import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.Transforms
 import kotlinx.css.properties.translate
-import mu.KotlinLogging
 import react.*
 import react.dom.attrs
 import styled.css
 import styled.styledDiv
 
-private val logger = KotlinLogging.logger {}
-
 external interface LoginProps : Props {
+    var handleSubmitLogin: (HttpMethod, String, HashMap<String, String>) -> Unit
+    var handleDisplayAlert: (OutcomeCode, CryptoACAlertSeverity) -> Unit
     var httpClient: HttpClient
-    var handleChangeBackdropIsOpen: (Boolean) -> Unit
-    var handleChangeUserIsLogged: (Boolean) -> Unit
-    var handleChangeUsername: (String?) -> Unit
-    var handleDisplayAlert : (OutcomeCode, CryptoACAlertSeverity) -> Unit
 }
 
 /** The login/logout React component */
@@ -79,13 +69,12 @@ class Login: RComponent<LoginProps, State>() {
                             /** The login form */
                             child(cryptoACForm {
                                 attrs {
-                                    handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
-                                    handleDisplayCryptoACAlert = props.handleDisplayAlert
+                                    handleDisplayAlert = props.handleDisplayAlert
                                     submitButtonText = "Login"
                                     method = HttpMethod.Post
                                     endpoint = LOGIN
                                     handleSubmitEvent = { method, endpoint, values, _ ->
-                                        submitLogin(method, endpoint, values)
+                                        props.handleSubmitLogin(method, endpoint, values)
                                     }
                                     cryptoACFormFields = listOf(
                                         listOf(
@@ -101,57 +90,6 @@ class Login: RComponent<LoginProps, State>() {
                         }
                     }!!
                 })
-            }
-        }
-
-
-    }
-
-    /**
-     * Submit and handle the callback for the login form. It receives as input the
-     * http [method], the [endpoint] (URL) and the [values] to add to the request
-     */
-    private fun submitLogin(method: HttpMethod, endpoint: String, values: HashMap<String, String>) {
-
-        logger.info { "Submitting CryptoAC login form, method $method, endpoint $endpoint" }
-        props.handleChangeBackdropIsOpen(true)
-
-        MainScope().launch {
-
-            try {
-                val response = props.httpClient.submitForm(
-                    formParameters = Parameters.build {
-                        values.forEach {
-                            append(it.key, it.value)
-                        }
-                    }
-                ) {
-                    url(endpoint)
-                }
-
-                val code: OutcomeCode = response.body()
-                val status = response.status
-
-                if (status == HttpStatusCode.OK) {
-                    logger.info { "Response status is ${status}, code is $code" }
-                    props.handleChangeBackdropIsOpen(false)
-                    props.handleChangeUserIsLogged(true)
-                    props.handleChangeUsername(values[USERNAME]!!)
-                    props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
-                } else {
-                    logger.warn { "Response status is ${status}, code is $code" }
-                    props.handleChangeBackdropIsOpen(false)
-                    props.handleChangeUserIsLogged(false)
-                    props.handleChangeUsername(null)
-                    props.handleDisplayAlert(code, CryptoACAlertSeverity.ERROR)
-                }
-            } catch (e: Throwable) {
-                props.handleChangeBackdropIsOpen(false)
-                props.handleChangeUserIsLogged(false)
-                props.handleChangeUsername(null)
-                logger.error { "Error during login (${e.message}), see console log for details" }
-                console.log(e)
-                props.handleDisplayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             }
         }
     }

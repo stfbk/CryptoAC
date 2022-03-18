@@ -28,7 +28,7 @@ external interface RBACDashboardProps : Props {
     var coreType: CoreType
     var userIsAdmin: Boolean
     var handleChangeBackdropIsOpen: (Boolean) -> Unit
-    var handleDisplayAlert : (OutcomeCode, CryptoACAlertSeverity) -> Unit
+    var handleDisplayAlert: (OutcomeCode, CryptoACAlertSeverity) -> Unit
 }
 external interface RBACDashboardState : State {
     /** The list of users */
@@ -50,7 +50,7 @@ external interface RBACDashboardState : State {
     var openedTables: MutableList<CryptoACTableData>
 }
 
-abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : RComponent<P, S>() {
+abstract class RBACDashboard<P: RBACDashboardProps, S: RBACDashboardState>: RComponent<P, S>() {
 
     /** Get the list of users */
     suspend fun getUsers(): List<Array<String>>? {
@@ -71,7 +71,7 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
     }
 
     /** Get the list of assignments filtering, if given, by [username] and [roleName] */
-    suspend fun getAssignments(username: String? = null, roleName: String? = null) : List<Array<String>>? {
+    suspend fun getAssignments(username: String? = null, roleName: String? = null): List<Array<String>>? {
         val actualEndpoint =
             "$baseURL${API.CRYPTOAC}${API.ASSIGNMENTS.replace("{Core}", props.coreType.toString())}?" +
                     if (username != null) "${SERVER.USERNAME}=$username" else "" +
@@ -93,7 +93,7 @@ abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : R
      * comparing the [endpoint] response with the provided [errorCode] for when
      * no elements are available
      */
-    suspend fun getElements(endpoint: String, errorCode: OutcomeCode, type: ElementType): List<Array<String>>? {
+    private suspend fun getElements(endpoint: String, errorCode: OutcomeCode, type: ElementType): List<Array<String>>? {
         logger.info { "Getting the list of elements of type $type" }
 
         logger.info { "Sending get request to $endpoint" }

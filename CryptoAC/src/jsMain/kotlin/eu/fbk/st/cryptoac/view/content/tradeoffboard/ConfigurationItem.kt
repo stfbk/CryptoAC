@@ -12,22 +12,22 @@ import styled.styledDiv
 
 external interface ConfigurationItemProps : Props {
     /** The name of this configuration item */
-    var name : String
+    var name: String
 
     /** Whether the item should be disabled */
-    var disabled : Boolean
+    var disabled: Boolean
 
     /** Whether the radio options should be in the same row */
-    var optionsInRow : Boolean
+    var optionsInRow: Boolean
 
     /** The values for this configuration item */
-    var values : List<String>
+    var values: List<String>
 
     /** The default value for this configuration item */
-    var defaultValue : String
+    var defaultValue: String
 
     /** Change configuration for this item */
-    var handleChangeChoice : (String) -> Unit
+    var handleChangeChoice: (String) -> Unit
 }
 
 external interface ConfigurationItemState : State {

@@ -1,16 +1,15 @@
 package eu.fbk.st.cryptoac.view
 
 import eu.fbk.st.cryptoac.API
-import eu.fbk.st.cryptoac.Themes.concreteColor
-import eu.fbk.st.cryptoac.Themes.greyColor
-import eu.fbk.st.cryptoac.Themes.lightGreyColor
-import eu.fbk.st.cryptoac.Themes.wetAsphaltColor
+import eu.fbk.st.cryptoac.view.Themes.concreteColor
+import eu.fbk.st.cryptoac.view.Themes.greyColor
+import eu.fbk.st.cryptoac.view.Themes.lightGreyColor
+import eu.fbk.st.cryptoac.view.Themes.wetAsphaltColor
 import eu.fbk.st.cryptoac.OutcomeCode
+import eu.fbk.st.cryptoac.SERVER
+import eu.fbk.st.cryptoac.core.CoreParameters
 import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.myJson
-import eu.fbk.st.cryptoac.implementation.dm.DMType
-import eu.fbk.st.cryptoac.implementation.mm.MMType
-import eu.fbk.st.cryptoac.implementation.rm.RMType
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.icons.*
 import eu.fbk.st.cryptoac.view.components.materialui.*
@@ -18,7 +17,7 @@ import eu.fbk.st.cryptoac.view.components.prosidebar.proSidebar
 import eu.fbk.st.cryptoac.view.components.prosidebar.proSidebarFooter
 import eu.fbk.st.cryptoac.view.components.prosidebar.proSidebarHeader
 import eu.fbk.st.cryptoac.view.content.dashboard.dashboard
-import eu.fbk.st.cryptoac.view.content.modules.modules
+import eu.fbk.st.cryptoac.view.content.newProfile.newProfile
 import eu.fbk.st.cryptoac.view.content.tradeoffboard.*
 import eu.fbk.st.cryptoac.view.sidebar.actions
 import eu.fbk.st.cryptoac.view.sidebar.empty
@@ -30,14 +29,15 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.cookies.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.serialization.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
+import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import react.*
 import react.dom.div
@@ -50,14 +50,9 @@ private val logger = KotlinLogging.logger {}
  * the "setState" lambda or in the "init" function
  */
 external interface AppState : State {
+
     /** Whether the user is logged-in */
     var userIsLogged: Boolean
-
-    /** Whether the user has a profile */
-    var userHasProfile: Boolean
-
-    /** Whether the currently logged user (if any) is an administrator */
-    var userIsAdmin: Boolean
 
     /** The name of the user, if logged-in, null otherwise */
     var username: String?
@@ -65,8 +60,21 @@ external interface AppState : State {
     /** The HTTPS/WSS client to interact with CryptoAC */
     var httpClient: HttpClient
 
-    /** The core type, i.e., the chosen (implementation of the) CAC scheme */
+    /** The currently chosen core type */
     var coreType: CoreType
+
+    /**
+     * For each core type the user has
+     * a profile for, the core parameters
+     */
+    var userProfiles: HashMap<CoreType, CoreParameters>
+
+
+    /** The buttons on the sidebar */
+    var sidebarButtons: List<CryptoACButtonAndIconData>
+
+    /** The index of the sidebar button (to highlight) */
+    var sidebarButtonIndex: Int
 
     /** Whether the backdrop (i.e., the loading screen) is open */
     var backdropIsOpen: Boolean
@@ -80,53 +88,37 @@ external interface AppState : State {
     /** Whether the alert component is open */
     var alertIsOpen: Boolean
 
-    /** Additional tables to show in the content (e.g., for MQTT topics) */
+    /** Additional tables to show in the content */
     var tables: MutableList<String>
 
-    /** The current UI to display */
+    /** The current UI to display in the App */
     var uiType: UIType
 
     /** Whether the sidebar is collapsed */
     var sidebarIsCollapsed: Boolean
 
-    /** The currently selected scenario */
-    var scenario: Scenario
-
-    /** The currently selected algorithm */
-    var algorithm: Algorithm
-
-    /** The currently selected metric */
-    var metric: Metric
-
     /** The value to display as progress indicator */
     var circularProgressValue: Int
 
-    /** The selected RM type */
-    var rmType: RMType
 
-    /** The selected MM type */
-    var mmType: MMType
-
-    /** The selected DM type */
-    var dmType: DMType
 
     /**
-     * The options for the RM implementation
-     * based on the selected core type
+     * The currently selected
+     * scenario for TradeOffBoard
      */
-    var availableRMImplementations: List<String>
+    var tradeOffBoardScenario: Scenario
 
     /**
-     * The options for the MM implementation
-     * based on the selected core type
+     * The currently selected
+     * algorithm for TradeOffBoard
      */
-    var availableMMImplementations: List<String>
+    var tradeOffBoardAlgorithm: Algorithm
 
     /**
-     * The options for the DM implementation
-     * based on the selected core type
+     * The currently selected
+     * metric for TradeOffBoard
      */
-    var availableDMImplementations: List<String>
+    var tradeOffBoardMetric: Metric
 }
 
 
@@ -229,49 +221,56 @@ class App : RComponent<Props, AppState>() {
 
                         /** 3.1.3a. The main content, set based on the current 'uiType' state value */
                         child(when (state.uiType) {
-                            /** "modules" allows to choose the implementation of entities in CryptoAC */
-                            UIType.Modules -> modules {
-                                handleChangeCoreType = { core: CoreType -> changeCoreType(core) }
-                                handleChangeRMType = { rmType: RMType -> changeRMType(rmType) }
-                                handleChangeMMType = { mmType: MMType -> changeMMType(mmType) }
-                                handleChangeDMType = { dmType: DMType -> changeDMType(dmType) }
-                                coreType = state.coreType
-                                rmType = state.rmType
-                                mmType = state.mmType
-                                dmType = state.dmType
-                                availableRMImplementations = state.availableRMImplementations
-                                availableMMImplementations = state.availableMMImplementations
-                                availableDMImplementations = state.availableDMImplementations
-                            }
-
-                            /** "dashboard" shows the elements (e.g., users, files) of the currently selected core type */
-                            UIType.Dashboard -> dashboard {
-                                handleChangeUserHasProfile = { userHasProfile: Boolean -> changeUserHasProfile(userHasProfile) }
-                                handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
-                                handleChangeUserIsAdmin = { userIsAdmin: Boolean -> changeUserIsAdmin(userIsAdmin) }
-                                handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity) }
-                                handleChangeRMType = { rmType: RMType -> changeRMType(rmType) }
-                                handleChangeMMType = { mmType: MMType -> changeMMType(mmType) }
-                                handleChangeDMType = { dmType: DMType -> changeDMType(dmType) }
-                                userHasProfile = state.userHasProfile
-                                userIsLogged = state.userIsLogged
-                                userIsAdmin = state.userIsAdmin
-                                httpClient = state.httpClient
-                                coreType = state.coreType
-                                rmType = state.rmType
-                                mmType = state.mmType
-                                dmType = state.dmType
-                                username = state.username
-                                tables = state.tables
-                            }
-
-                            /** "tradeOffBoard" shows the web dashboard for the trade-off analysis of CAC architectures */
+                            /**
+                             * "tradeOffBoard" shows the web dashboard for
+                             * the trade-off analysis of CAC architectures
+                             */
                             UIType.TradeOffBoard -> tradeOffBoard {
                                 handleChangeCircularProgressValue = { circularProgressValue: Int -> changeCircularProgressValue(circularProgressValue) }
                                 handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
-                                scenario = state.scenario
-                                algorithm = state.algorithm
-                                metric = state.metric
+                                scenario = state.tradeOffBoardScenario
+                                algorithm = state.tradeOffBoardAlgorithm
+                                metric = state.tradeOffBoardMetric
+                            }
+
+                            /**
+                             * "newProfile" allows creating a new
+                             * profile for a core type in CryptoAC
+                             */
+                            UIType.NewProfile -> newProfile {
+                                handleProfileWasCreatedOrModified = {
+                                        coreType: CoreType -> profileWasCreatedOrModified(coreType)
+                                }
+                                handleChangeBackdropIsOpen = {
+                                        backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen)
+                                }
+                                handleDisplayAlert = {
+                                        code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity)
+                                }
+                                httpClient = state.httpClient
+                                excludedCoreTypes = state.userProfiles.keys
+                            }
+
+                            /**
+                             * "dashboard" shows the dashboard
+                             * for the selected core type
+                             */
+                            UIType.CoreType -> dashboard {
+                                handleProfileWasCreatedOrModified = {
+                                        coreType: CoreType -> profileWasCreatedOrModified(coreType)
+                                }
+                                handleChangeBackdropIsOpen = {
+                                        backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen)
+                                }
+                                handleDisplayAlert = {
+                                        code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity)
+                                }
+                                coreParameters = state.userProfiles[state.coreType]!!
+                                userIsLogged = state.userIsLogged
+                                httpClient = state.httpClient
+                                coreType = state.coreType
+                                username = state.username
+                                tables = state.tables
                             }
                         })
                     }
@@ -353,21 +352,14 @@ class App : RComponent<Props, AppState>() {
                                     marginBottom = 10.px
                                 })
 
-                                /** The buttons to select the UI type */
                                 child(cryptoACButtonAndIconGroup {
-                                    defaultSelectedButton = 0
-                                    buttons = listOf(
+                                    defaultSelectedButton = state.sidebarButtonIndex
+                                    buttons = mutableListOf(
                                         CryptoACButtonAndIconData(
                                             icon = createElement { faBoxes { attrs { style = JSON.parse("""{"marginRight": "${ if (state.sidebarIsCollapsed) "unset" else "auto" } "}""".trimMargin()) }}}!!,
-                                            text = "Modules",
+                                            text = "New profile",
                                             showText = !state.sidebarIsCollapsed,
-                                            onClick = { changeUIType(UIType.Modules) },
-                                        ),
-                                        CryptoACButtonAndIconData(
-                                            icon = createElement { faBullseye { attrs { style = JSON.parse("""{"marginRight": "${ if (state.sidebarIsCollapsed) "unset" else "auto" } "}""".trimMargin()) }}}!!,
-                                            text = "Dashboard",
-                                            showText = !state.sidebarIsCollapsed,
-                                            onClick = { changeUIType(UIType.Dashboard) }
+                                            onClick = { changeUIType(UIType.NewProfile) },
                                         ),
                                         CryptoACButtonAndIconData(
                                             icon = createElement { faVials { attrs { style = JSON.parse("""{"marginRight": "${ if (state.sidebarIsCollapsed) "unset" else "auto" } "}""".trimMargin()) }}}!!,
@@ -375,7 +367,9 @@ class App : RComponent<Props, AppState>() {
                                             showText = !state.sidebarIsCollapsed,
                                             onClick = { changeUIType(UIType.TradeOffBoard) }
                                         )
-                                    )
+                                    ).apply {
+                                        addAll(state.sidebarButtons)
+                                    }
                                 })
                             }
                         }
@@ -386,30 +380,49 @@ class App : RComponent<Props, AppState>() {
                             empty { }
                         } else {
                             when (state.uiType) {
-                                /** "empty" is an empty content */
+                                /**
+                                 * "configuration" allows configuring
+                                 *  parameters for TradeOffBoard
+                                 */
                                 UIType.TradeOffBoard -> configuration {
-                                    handleChangeScenario = { newScenario -> changeScenario(newScenario) }
-                                    handleChangeAlgorithm = { newAlgorithm -> changeAlgorithm(newAlgorithm) }
-                                    handleChangeMetric = { newMetric -> changeMetric(newMetric) }
-                                    currentScenario = state.scenario
-                                    currentAlgorithm = state.algorithm
-                                    currentMetric = state.metric
+                                    handleChangeAlgorithm = {
+                                            newAlgorithm -> changeTradeOffBoardAlgorithm(newAlgorithm)
+                                    }
+                                    handleChangeScenario = {
+                                            newScenario -> changeTradeOffBoardScenario(newScenario)
+                                    }
+                                    handleChangeMetric = {
+                                            newMetric -> changeTradeOffBoardMetric(newMetric)
+                                    }
+                                    currentScenario = state.tradeOffBoardScenario
+                                    currentAlgorithm = state.tradeOffBoardAlgorithm
+                                    currentMetric = state.tradeOffBoardMetric
                                 }
 
-                                /** "actions" are the form actions to manage CAC policies */
-                                UIType.Dashboard -> actions {
-                                    handleChangeBackdropIsOpen =
-                                        { backdropIsOpen -> changeBackdropIsOpen(backdropIsOpen) }
-                                    handleAddTableInContent = { topic -> addTableInContent(topic) }
-                                    handleDisplayAlert = { code, severity -> displayAlert(code, severity) }
-                                    userHasProfile = state.userHasProfile
-                                    userIsLogged = state.userIsLogged
-                                    userIsAdmin = state.userIsAdmin
+                                /**
+                                 * "actions" are the form actions
+                                 * to interact with the CAC scheme
+                                 */
+                                UIType.CoreType -> actions {
+                                    handleChangeBackdropIsOpen = {
+                                            backdropIsOpen -> changeBackdropIsOpen(backdropIsOpen)
+                                    }
+                                    handleAddTableInContent = {
+                                            topic -> addTableInContent(topic)
+                                    }
+                                    handleDisplayAlert = {
+                                            code, severity -> displayAlert(code, severity)
+                                    }
+                                    userIsAdmin = state.userProfiles[state.coreType]!!.user.isAdmin
                                     httpClient = state.httpClient
                                     coreType = state.coreType
                                 }
-                                /** "evaluation" summarizes the characteristics of the chosen modules */
-                                UIType.Modules -> evaluation { }
+
+                                /**
+                                 * "evaluation" summarizes the characteristics
+                                 * of the chosen modules for the new profile
+                                 */
+                                UIType.NewProfile -> evaluation { }
                             }
                         })
 
@@ -455,13 +468,13 @@ class App : RComponent<Props, AppState>() {
 
             /** 3b. The login form */
             child(login {
-                httpClient = state.httpClient
-                handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
-                handleChangeUserIsLogged = { userIsLogged: Boolean -> changeUserIsLogged(userIsLogged) }
-                handleChangeUsername = { username: String? -> changeUsername(username) }
                 handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity ->
                     displayAlert(code, severity)
                 }
+                handleSubmitLogin = { method: HttpMethod, endpoint: String, values: HashMap<String, String> ->
+                    submitLogin(method, endpoint, values)
+                }
+                httpClient = state.httpClient
             })
         }
     }
@@ -475,18 +488,7 @@ class App : RComponent<Props, AppState>() {
      */
     override fun AppState.init() {
         logger.info { "Initializing the state of the App component" }
-        coreType = CoreType.RBAC_CLOUD
-        uiType = UIType.Modules
-        sidebarIsCollapsed = false
-        backdropIsOpen = false
-        userHasProfile = false
-        userIsLogged = false
-        userIsAdmin = false
-        alertIsOpen = false
 
-        alertMessage = ""
-        tables = mutableListOf()
-        alertSeverity = CryptoACAlertSeverity.SUCCESS
         httpClient = HttpClient { // TODO check configuration
             expectSuccess = false
             install(WebSockets)
@@ -495,45 +497,132 @@ class App : RComponent<Props, AppState>() {
                 json(json = myJson)
             }
         }
-        metric = Metric.Goals
-        scenario = Scenario.CLOUD
-        algorithm = Algorithm.Best
-        rmType = RMType.CRYPTOAC
-        mmType = MMType.MYSQL
-        dmType = DMType.CRYPTOAC
-        availableRMImplementations = getRMImplementations(CoreType.RBAC_CLOUD)
-        availableMMImplementations = getMMImplementations(CoreType.RBAC_CLOUD)
-        availableDMImplementations = getDMImplementations(CoreType.RBAC_CLOUD)
 
+        sidebarButtons = listOf()
+        sidebarButtonIndex = 0
+        coreType = CoreType.RBAC_CLOUD
+        uiType = UIType.NewProfile
+        sidebarIsCollapsed = false
+        backdropIsOpen = false
+        userIsLogged = false
+        alertIsOpen = false
+        alertMessage = ""
+        tables = mutableListOf()
+        userProfiles = hashMapOf()
+        alertSeverity = CryptoACAlertSeverity.SUCCESS
         circularProgressValue = 0
+
+        tradeOffBoardMetric = Metric.Goals
+        tradeOffBoardScenario = Scenario.CLOUD
+        tradeOffBoardAlgorithm = Algorithm.Best
+
     }
 
-    /** Submit and handle the callback for the logout action */
-    private fun submitLogout() {
+    /**
+     * Fetch the parameters for the [newCoreType] and
+     * update both the userProfiles and uiType value
+     */
+    private fun profileWasCreatedOrModified(newCoreType: CoreType) {
+        logger.info { "A profile for core $newCoreType was created or modified " }
+        MainScope().launch {
+            logger.info { "Fetching profile for core $newCoreType " }
+            getProfileFromCryptoAC(coreType = newCoreType)?.let {
+                setState {
+                    userProfiles[newCoreType] = it
+                }
+                changeCoreType(newCoreType)
+                computeSidebarButtonsAndIndex(state.userProfiles)
+                changeUIType(UIType.CoreType)
+            }
+        }
+    }
 
-        logger.info { "Submitting CryptoAC logout form" }
+    /**
+     * Reset the state of the App, probably due to
+     * the fact that the user logout from CryptoAC
+     */
+    private fun resetAppState() {
+        changeBackdropIsOpen(false)
+        changeUserIsLogged(false)
+        changeUsername(null)
+        changeUIType(UIType.NewProfile)
+        setState {
+            userProfiles = hashMapOf()
+            tables = mutableListOf()
+        }
+    }
+
+    /**
+     * Submit and handle the callback for the login form.
+     * It receives as input the http [method], the [endpoint]
+     * (URL) and the [values] to add to the request
+     */
+    private fun submitLogin(method: HttpMethod, endpoint: String, values: HashMap<String, String>) {
+
+        logger.info { "Submitting CryptoAC login form, method $method, endpoint $endpoint" }
         changeBackdropIsOpen(true)
 
         MainScope().launch {
+
             try {
-                val response: HttpResponse = state.httpClient.delete("$baseURL${API.LOGOUT}") { }
+                val response = state.httpClient.submitForm(
+                    formParameters = Parameters.build {
+                        values.forEach {
+                            append(it.key, it.value)
+                        }
+                    }
+                ) {
+                    url(endpoint)
+                }
+
                 val code: OutcomeCode = response.body()
                 val status = response.status
 
                 if (status == HttpStatusCode.OK) {
                     logger.info { "Response status is ${status}, code is $code" }
-                    changeUserIsLogged(false)
-                    changeUsername(null)
+                    changeBackdropIsOpen(false)
+                    changeUsername(values[SERVER.USERNAME]!!)
+                    changeUserIsLogged(true)
+                    displayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
+                } else {
+                    logger.warn { "Response status is ${status}, code is $code" }
+                    resetAppState()
+                    displayAlert(code, CryptoACAlertSeverity.ERROR)
+                }
+            } catch (e: Throwable) {
+                resetAppState()
+                logger.error { "Error during login (${e.message}), see console log for details" }
+                console.log(e)
+                displayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
+            }
+        }
+    }
+
+    /** Submit and handle the callback for the logout action */
+    private fun submitLogout() {
+        logger.info { "Submitting CryptoAC logout form" }
+        changeBackdropIsOpen(true)
+
+        MainScope().launch {
+            try {
+                val response: HttpResponse = state.httpClient.delete {
+                    url("$baseURL${API.LOGOUT}")
+                }
+                val code: OutcomeCode = response.body()
+                val status = response.status
+
+                if (status == HttpStatusCode.OK) {
+                    logger.info { "Response status is ${status}, code is $code" }
                 } else {
                     logger.warn { "Response status is ${status}, code is $code" }
                     displayAlert(code, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Error) {
-                logger.error { "Error during login (${e.message}), see console log for details" }
+                logger.error { "Error during logout (${e.message}), see console log for details" }
                 console.log(e)
                 displayAlert(OutcomeCode.CODE_049_UNEXPECTED, CryptoACAlertSeverity.ERROR)
             } finally {
-                changeBackdropIsOpen(false)
+                resetAppState()
             }
         }
     }
@@ -562,16 +651,24 @@ class App : RComponent<Props, AppState>() {
 
     /**
      * Change the value of the 'uiType'
-     * state to the [newUIType], if possible,
-     * and return whether the UI changed or not
+     * state to the [newUIType]
      */
-    private fun changeUIType(newUIType: UIType): Boolean {
-        logger.info { "Asking to change the 'uiType' state to $newUIType" }
+    private fun changeUIType(newUIType: UIType) {
+        logger.info { "Setting the 'uiType' state to $newUIType" }
         setState {
-            logger.info { "Setting the 'uiType' state to $newUIType" }
             uiType = newUIType
         }
-        return true
+    }
+
+    /**
+     * Change the value of the 'coreType'
+     * state to the [newCoreType]
+     */
+    private fun changeCoreType(newCoreType: CoreType) {
+        logger.info { "Setting the 'coreType' state to $newCoreType" }
+        setState {
+            coreType = newCoreType
+        }
     }
 
     /**
@@ -602,15 +699,75 @@ class App : RComponent<Props, AppState>() {
     private fun changeUserIsLogged(newUserIsLogged: Boolean) {
         logger.info { "Setting the 'userIsLogged' state to $newUserIsLogged" }
         setState { userIsLogged = newUserIsLogged }
+
+        /**
+         * We get all profiles that the logged user
+         * has on the server. For each profile, we
+         * show in the sidebar a dedicated button.
+         */
+        if (newUserIsLogged) {
+            val newUserProfiles = hashMapOf<CoreType, CoreParameters>()
+            MainScope().launch {
+                CoreType.values().forEach { coreType ->
+                    logger.info { "Checking if profile for core $coreType exists" }
+                    getProfileFromCryptoAC(coreType = coreType)?.let {
+                        logger.info { "The profile exists, adding it to the user's profiles" }
+                        newUserProfiles[coreType] = it
+                    }
+                }
+                if (newUserProfiles.isNotEmpty()) {
+                    setState {
+                        userProfiles = newUserProfiles
+                    }
+                    changeCoreType(newUserProfiles.keys.first())
+                    computeSidebarButtonsAndIndex(newUserProfiles)
+                    changeUIType(UIType.CoreType)
+                }
+            }
+        } else {
+            setState {
+                userProfiles = hashMapOf()
+                sidebarButtons = listOf()
+            }
+        }
     }
 
-    /**
-     * Change the value of the 'userHasProfile'
-     * state to the [newUserHasProfile]
-     */
-    private fun changeUserHasProfile(newUserHasProfile: Boolean) {
-        logger.info { "Changing the 'newHasProfile' state to $newUserHasProfile" }
-        setState { userHasProfile = newUserHasProfile }
+    private fun computeSidebarButtonsAndIndex(profiles: HashMap<CoreType, CoreParameters>) {
+        logger.info { "Computing sidebar buttons and index" }
+        val listOfButtons = mutableListOf<CryptoACButtonAndIconData>()
+        var loopCount = 2
+        var indexButton = loopCount
+        profiles.forEach { entry ->
+            val newCoreType = entry.key
+            if (newCoreType == state.coreType) {
+                indexButton = loopCount
+            }
+            loopCount += 1
+            listOfButtons.add(
+                CryptoACButtonAndIconData(
+                    icon = createElement {
+                        faBoxes {
+                            attrs {
+                                style =
+                                    JSON.parse("""{"marginRight": "${if (state.sidebarIsCollapsed) "unset" else "auto"} "}""".trimMargin())
+                            }
+                        }
+                    }!!,
+                    text = entry.key.toPrettyString(),
+                    showText = !state.sidebarIsCollapsed,
+                    onClick = {
+                        changeCoreType(newCoreType)
+                        changeUIType(UIType.CoreType)
+                    },
+                )
+            )
+        }
+        logger.info { "Number of buttons computed is ${listOfButtons.size}" }
+        logger.info { "Sidebar index is $indexButton" }
+        setState {
+            sidebarButtons = listOfButtons
+            sidebarButtonIndex = indexButton
+        }
     }
 
     /**
@@ -618,113 +775,43 @@ class App : RComponent<Props, AppState>() {
      * state to the [newUsername]
      */
     private fun changeUsername(newUsername: String?) {
-        logger.info { "Changing the 'username' state to $newUsername" }
+        logger.info { "Setting the 'username' state to $newUsername" }
         setState { username = newUsername }
     }
 
     /**
-     * Change the value of the 'userIsAdmin'
-     * state to the [newUserIsAdmin]
-     */
-    private fun changeUserIsAdmin(newUserIsAdmin: Boolean) {
-        logger.info { "Changing the 'userIsAdmin' state to $newUserIsAdmin" }
-        setState { userIsAdmin = newUserIsAdmin }
-    }
-
-    /**
-     * Change the value of the 'coreType'
-     * state to the [newCoreType]
-     */
-    private fun changeCoreType(newCoreType: CoreType) {
-        logger.info { "Changing the 'coreType' state to $newCoreType" }
-        setState {
-            coreType = newCoreType
-            userHasProfile = false
-            userIsAdmin = false
-            availableRMImplementations = getRMImplementations(newCoreType)
-            availableMMImplementations = getMMImplementations(newCoreType)
-            availableDMImplementations = getDMImplementations(newCoreType)
-            if (rmType.toString() !in availableRMImplementations) {
-                rmType = RMType.valueOf(availableRMImplementations.first())
-            }
-            if (mmType.toString() !in availableMMImplementations) {
-                mmType = MMType.valueOf(availableMMImplementations.first())
-            }
-            if (dmType.toString() !in availableDMImplementations) {
-                dmType = DMType.valueOf(availableDMImplementations.first())
-            }
-        }
-    }
-
-    /**
      * Change the value of the 'algorithm'
-     * state to the [newAlgorithm]
+     * state to the [newTradeOffBoardAlgorithm]
      */
-    private fun changeAlgorithm(newAlgorithm: Algorithm) {
-        logger.info { "Changing the 'algorithm' state to $newAlgorithm" }
+    private fun changeTradeOffBoardAlgorithm(newTradeOffBoardAlgorithm: Algorithm) {
+        logger.info { "Setting the 'algorithm' state to $newTradeOffBoardAlgorithm" }
         setState {
-            algorithm = newAlgorithm
+            tradeOffBoardAlgorithm = newTradeOffBoardAlgorithm
         }
     }
 
     /**
      * Change the value of the 'metric'
-     * state to the [newMetric]
+     * state to the [newTradeOffBoardMetric]
      */
-    private fun changeMetric(newMetric: Metric) {
-        logger.info { "Changing the 'metric' state to $newMetric" }
+    private fun changeTradeOffBoardMetric(newTradeOffBoardMetric: Metric) {
+        logger.info { "Setting the 'metric' state to $newTradeOffBoardMetric" }
         setState {
-            metric = newMetric
+            tradeOffBoardMetric = newTradeOffBoardMetric
         }
     }
 
     /**
      * Change the value of the 'scenario'
-     * state to the [newScenario]
+     * state to the [newTradeOffBoardScenario]
      */
-    private fun changeScenario(newScenario: Scenario) {
-        logger.info { "Changing the 'scenario' state to $newScenario" }
+    private fun changeTradeOffBoardScenario(newTradeOffBoardScenario: Scenario) {
+        logger.info { "Setting the 'scenario' state to $newTradeOffBoardScenario" }
         setState {
-            scenario = newScenario
+            tradeOffBoardScenario = newTradeOffBoardScenario
         }
     }
 
-    /**
-     * Change the value of the 'rmType'
-     * state to the [newRMType]
-     */
-    private fun changeRMType(newRMType: RMType) {
-        logger.info { "Setting the 'rmType' state to $newRMType" }
-        setState {
-            rmType = newRMType
-            // TODO compute and update score
-        }
-    }
-
-    /**
-     * Change the value of the 'mmType'
-     * state to the [newMMType]
-     */
-    private fun changeMMType(newMMType: MMType) {
-        logger.info { "Setting the 'mmType' state to $newMMType" }
-        setState {
-            mmType = newMMType
-            // TODO compute and update score
-        }
-    }
-
-    /**
-     * Change the value of the 'dmType'
-     * state to the [newDMType]
-     */
-    private fun changeDMType(newDMType: DMType) {
-        logger.info { "Setting the 'dmType' state to $newDMType" }
-        setState {
-            dmType = newDMType
-            // TODO compute and update score
-        }
-    }
-    
     /**
      * Toggle the value of the
      * 'sidebarIsCollapsed' state
@@ -735,44 +822,33 @@ class App : RComponent<Props, AppState>() {
         setState { sidebarIsCollapsed = collapsed }
     }
 
-    /**
-     * Get the available implementations for the
-     * DM entity based on the core type selected
-     */
-    private fun getDMImplementations(coreType: CoreType) = when (coreType) {
-        CoreType.RBAC_CLOUD -> listOf(DMType.CRYPTOAC.toString())
-        CoreType.RBAC_MQTT -> listOf(DMType.MOSQUITTO.toString())
-        CoreType.RBAC_MOCK -> listOf()
-    }
+    /** Get the profile of the [username] for the current coreType */
+    private suspend fun getProfileFromCryptoAC(
+        username: String? = state.username,
+        coreType: CoreType? = state.coreType,
+    ): CoreParameters? {
+        val actualEndpoint = "$baseURL${API.PROFILES.replace("{Core}", coreType.toString())}$username"
+        logger.info { "Getting the profile for user $username and core $coreType" }
+        val httpResponse = state.httpClient.get { url(actualEndpoint) }
 
-    /**
-     * Get the available implementations for the
-     * MM entity based on the core type selected
-     */
-    private fun getMMImplementations(coreType: CoreType) = when (coreType) {
-        CoreType.RBAC_CLOUD -> listOf(
-            MMType.MYSQL.toString(),
-            MMType.REDIS.toString(),
-        )
-        CoreType.RBAC_MQTT -> listOf(
-            MMType.MYSQL.toString(),
-            MMType.REDIS.toString(),
-        )
-        CoreType.RBAC_MOCK -> listOf()
-    }
-
-    /**
-     * Get the available implementations for the
-     * RM entity based on the core type selected
-     */
-    private fun getRMImplementations(coreType: CoreType) = when (coreType) {
-        CoreType.RBAC_CLOUD -> listOf(RMType.CRYPTOAC.toString())
-        CoreType.RBAC_MQTT -> listOf(RMType.NONE.toString())
-        CoreType.RBAC_MOCK -> listOf()
+        val status = httpResponse.status
+        return if (status == HttpStatusCode.OK) {
+            logger.info { "Response status is $status" }
+            val profileAsString = httpResponse.bodyAsText()
+            myJson.decodeFromString<CoreParameters>(profileAsString)
+        } else {
+            val text = httpResponse.bodyAsText()
+            val outcomeCode: OutcomeCode = myJson.decodeFromString(text)
+            logger.warn { "Response status is ${status}, code is $outcomeCode" }
+            if (outcomeCode != OutcomeCode.CODE_039_PROFILE_NOT_FOUND) {
+                displayAlert(outcomeCode, CryptoACAlertSeverity.ERROR)
+            }
+            null
+        }
     }
 }
 
 /** Possible UI to display */
 enum class UIType {
-    Modules, Dashboard, TradeOffBoard
+    NewProfile, TradeOffBoard, CoreType
 }

@@ -15,7 +15,7 @@
       "token":"admin",
       "password":"password",
       "port":6379,
-      "url":"10.1.0.5"
+      "url":"10.1.0.7"
    },
    "dmInterfaceParameters":{
       "type":"eu.fbk.st.cryptoac.implementation.dm.DMInterfaceMosquittoParameters",

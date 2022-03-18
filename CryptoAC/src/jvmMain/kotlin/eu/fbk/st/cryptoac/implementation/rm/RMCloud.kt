@@ -10,7 +10,6 @@ import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.elements.ElementTypeWithKey
 import eu.fbk.st.cryptoac.core.elements.ElementTypeWithVersionNumber
 import eu.fbk.st.cryptoac.core.elements.File
-import eu.fbk.st.cryptoac.core.myJson
 import eu.fbk.st.cryptoac.core.tuples.FileTuple
 import eu.fbk.st.cryptoac.core.tuples.PermissionTuple
 import eu.fbk.st.cryptoac.core.tuples.PermissionType
@@ -29,7 +28,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 
 
@@ -505,12 +503,6 @@ fun Route.configureRouting() {
             // TODO logging
 
             /** Get the storage parameters from the request */
-            // TODO this should be "val parameters = call.receive<ReferenceMonitorCloudConfigureParameters>()",
-            //  but a bug in kotlinx serialization library prevents it. Therefore, receive as string and then serialize.
-            //  When a new version of the kotlinx serialization library is provided, try again
-            //val parametersString = call.receive<String>()
-            //val parameters: RMCloudParameters = myJson.decodeFromString(parametersString)
-
             val parameters: RMCloudParameters = call.receive()
 
             mm = MMFactory.getMM(parameters.mmMySQLInterfaceParameters)

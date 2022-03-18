@@ -45,22 +45,6 @@ class CoreFactory {
                         throw IllegalArgumentException(message)
                     }
                 }
-                CoreType.RBAC_MOCK -> if (development) {
-                    if (coreParameters is CoreParametersMOCK) {
-                        CoreRBACMOCK(
-                            crypto = cryptoObject,
-                            coreParameters = coreParameters,
-                        )
-                    } else {
-                        val message = "Received wrong parameters for core type ${CoreType.RBAC_MOCK}"
-                        logger.error { message }
-                        throw IllegalArgumentException(message)
-                    }
-                } else {
-                    val message = "Using MOCK core when not in development mode"
-                    logger.error { message }
-                    throw IllegalStateException(message)
-                }
             }
         }
     }

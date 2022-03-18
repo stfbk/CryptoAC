@@ -1,8 +1,7 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
-import eu.fbk.st.cryptoac.Themes.greyColor
-import eu.fbk.st.cryptoac.Themes.purpleColor
-import eu.fbk.st.cryptoac.Themes.purpleLinearGradient
+import eu.fbk.st.cryptoac.view.Themes.greyColor
+import eu.fbk.st.cryptoac.view.Themes.purpleLinearGradient
 import kotlinx.css.*
 import org.w3c.dom.events.Event
 import styled.css

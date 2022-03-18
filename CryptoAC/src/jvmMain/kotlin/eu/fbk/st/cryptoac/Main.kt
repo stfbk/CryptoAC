@@ -171,12 +171,18 @@ fun Application.module() {
         exception<Throwable> { call, cause ->
             logger.error { "Request to ${call.request.uri} resulted in exception: ${cause.message}" }
             logger.error { cause }
-            cause.printStackTrace() // TODO delete
-            internalError(
-                call,
-                OutcomeCode.CODE_049_UNEXPECTED.toString(),
-                OutcomeCode.CODE_049_UNEXPECTED
-            )
+            cause.printStackTrace() // TODO delete?
+
+            // TODO "ScopeCoroutine was cancelled" is the message in the exception thrown
+            //  when closing a websocket. We need to find a way to not throw
+            //  an exception when closing a websocket
+            if (cause.message != "ScopeCoroutine was cancelled" ) {
+                internalError(
+                    call,
+                    OutcomeCode.CODE_049_UNEXPECTED.toString(),
+                    OutcomeCode.CODE_049_UNEXPECTED
+                )
+            }
         }
     }
 
@@ -304,7 +310,7 @@ fun String.inputStream(charset: Charset = Charsets.UTF_8): InputStream = this.to
  * [timeout], return false.
  * Specify tail recursion to allow the function to be optimized into a loop
  */
-tailrec suspend fun waitForCondition (timeout: Long = 5000, polling: Long = 100, block: () -> Boolean) : Boolean {
+tailrec suspend fun waitForCondition (timeout: Long = 5000, polling: Long = 100, block: () -> Boolean): Boolean {
     if (timeout < 0) {
         return false
     }

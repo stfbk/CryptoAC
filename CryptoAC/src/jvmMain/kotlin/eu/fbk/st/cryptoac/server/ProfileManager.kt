@@ -1,6 +1,5 @@
 package eu.fbk.st.cryptoac.server
 
-import development
 import eu.fbk.st.cryptoac.USERS_PROFILE_DIRECTORY_PATH
 import eu.fbk.st.cryptoac.core.*
 import kotlinx.serialization.decodeFromString
@@ -31,13 +30,6 @@ class ProfileManager {
                 content = when (coreParameters.coreType) {
                     CoreType.RBAC_CLOUD -> myJson.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
                     CoreType.RBAC_MQTT -> myJson.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
-                    CoreType.RBAC_MOCK -> if (development) {
-                        myJson.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
-                    } else {
-                        val message = "Using MOCK core when not in development mode"
-                        logger.error { message }
-                        throw IllegalStateException(message)
-                    }
                 },
                 saveMode = FileSaveMode.THROW_EXCEPTION
             )
@@ -51,13 +43,6 @@ class ProfileManager {
                 content = when (coreParameters.coreType) {
                     CoreType.RBAC_CLOUD -> myJson.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
                     CoreType.RBAC_MQTT -> myJson.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
-                    CoreType.RBAC_MOCK -> if (development) {
-                        myJson.encodeToString(coreParameters as CoreParametersMOCK).byteInputStream()
-                    } else {
-                        val message = "Using MOCK core when not in development mode"
-                        logger.error { message }
-                        throw IllegalStateException(message)
-                    }
                 },
                 saveMode = FileSaveMode.OVERWRITE
             )
@@ -72,13 +57,6 @@ class ProfileManager {
                 when (coreType) {
                     CoreType.RBAC_CLOUD -> myJson.decodeFromString<CoreParametersCLOUD>(profileString)
                     CoreType.RBAC_MQTT -> myJson.decodeFromString<CoreParametersMQTT>(profileString)
-                    CoreType.RBAC_MOCK -> if (development) {
-                        myJson.decodeFromString<CoreParametersMOCK>(profileString)
-                    } else {
-                        val message = "Using MOCK core when not in development mode"
-                        logger.error { message }
-                        throw IllegalStateException(message)
-                    }
                 }
             } else {
                 null

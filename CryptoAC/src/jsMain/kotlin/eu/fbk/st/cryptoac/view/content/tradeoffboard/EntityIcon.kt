@@ -9,16 +9,16 @@ import styled.styledImg
 
 external interface EntityIconProps : Props {
     /** The src of the image of this entity icon */
-    var src : String
+    var src: String
 
     /** The entity this icon is representing */
-    var entity : Entities
+    var entity: Entities
 
     /** The domain assigned to this entity */
-    var domain : Domains
+    var domain: Domains
 
     /** The function to invoke when the icon is clicked */
-    var onClick : (Entities, Domains, Boolean) -> Unit
+    var onClick: (Entities, Domains, Boolean) -> Unit
 }
 
 external interface EntityIconState : State {

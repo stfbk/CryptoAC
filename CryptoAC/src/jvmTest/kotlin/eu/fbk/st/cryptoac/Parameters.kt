@@ -85,19 +85,19 @@ object Parameters {
 
     /** CLOUD Parameters */
     val dmInterfaceCryptoACParameters = DMInterfaceCryptoACParameters(
-        port = 8443, url = "10.1.0.7"
+        port = 8443, url = "10.1.0.5"
     )
     val rmInterfaceCryptoACParameters = RMInterfaceCryptoACParameters(
-        port = 8443, url = "10.1.0.6"
+        port = 8443, url = "10.1.0.4"
     )
     val mmInterfaceMySQLParameters = MMInterfaceMySQLParameters(
         port = 3306,
-        url = "10.1.0.5",
+        url = "10.1.0.3",
         password = "password",
         username = ADMIN
     )
     val opaInterfaceParameters = OPAInterfaceParameters(
-        port = 8181, url = "10.1.0.8", policyModel = PolicyModel.RBAC
+        port = 8181, url = "10.1.0.6", policyModel = PolicyModel.RBAC
     )
     val adminCoreRBACCLOUDParameters = CoreParametersCLOUD(
         user = adminUser,
@@ -113,14 +113,14 @@ object Parameters {
     /** MQTT Parameters */
     val dmInterfaceMosquittoParameters = DMInterfaceMosquittoParameters(
         port = 1883,
-        url = "0.0.0.0",
+        url = "10.1.0.8",
         password = "password".toByteArray(),
         username = ADMIN,
         tls = false,
     )
     val mmInterfaceRedisParameters = MMInterfaceRedisParameters(
         port = 6379,
-        url = "10.1.0.5",
+        url = "10.1.0.7",
         password = "password",
         username = ADMIN,
         token = ADMIN,
@@ -130,11 +130,6 @@ object Parameters {
         cryptoType = cryptoType,
         mmInterfaceParameters = mmInterfaceRedisParameters,
         dmInterfaceParameters = dmInterfaceMosquittoParameters
-    )
-
-    val adminCoreRBACMOCKParameters = CoreParametersMOCK(
-        user = adminUser,
-        cryptoType = cryptoType,
     )
 
 

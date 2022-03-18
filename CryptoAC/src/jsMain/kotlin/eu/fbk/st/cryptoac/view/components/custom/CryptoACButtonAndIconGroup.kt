@@ -17,10 +17,14 @@ external interface CryptoACButtonAndIconGroupProps : Props {
 external interface CryptoACButtonAndIconGroupState : State {
     /** The current selected button (0-indexed) */
     var selectedButton: Int
+
+    /** Whether the component was just mounted */
+    var justMounted: Boolean
 }
 
 /** A custom component for a group of button and icon elements */
 class CryptoACButtonAndIconGroup: RComponent<CryptoACButtonAndIconGroupProps, CryptoACButtonAndIconGroupState>() {
+
     override fun RBuilder.render() {
 
         div {
@@ -36,13 +40,26 @@ class CryptoACButtonAndIconGroup: RComponent<CryptoACButtonAndIconGroupProps, Cr
                         changeSelectedButton(index)
                         it.onClick(event)
                     }
-                    highlighted = if (state.selectedButton == undefined) {
-                        props.defaultSelectedButton == index
-                    } else {
-                        state.selectedButton == index
-                    }
+                    highlighted = state.selectedButton == index
                 })
             }
+        }
+    }
+
+    override fun CryptoACButtonAndIconGroupState.init() {
+        justMounted = true
+
+        /** Execute before the render in both the Mounting and Updating lifecycle phases */
+        CryptoACButtonAndIconGroup::class.js.asDynamic().getDerivedStateFromProps = {
+                newProps: CryptoACButtonAndIconGroupProps, state: CryptoACButtonAndIconGroupState ->
+            if (
+                state.justMounted ||
+                newProps.defaultSelectedButton != props.defaultSelectedButton ||
+                newProps.buttons.size != props.buttons.size
+            ) {
+                state.selectedButton = newProps.defaultSelectedButton
+            }
+            state.justMounted = false
         }
     }
 

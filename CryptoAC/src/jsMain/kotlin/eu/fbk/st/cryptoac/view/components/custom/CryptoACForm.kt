@@ -9,7 +9,6 @@ import eu.fbk.st.cryptoac.view.*
 import eu.fbk.st.cryptoac.view.components.icons.faCloudUploadAlt
 import eu.fbk.st.cryptoac.view.components.icons.faPaperPlane
 import eu.fbk.st.cryptoac.view.components.materialui.*
-import eu.fbk.st.cryptoac.view.content.tradeoffboard.Likelihood
 import eu.fbk.st.cryptoac.view.content.tradeoffboard.Scenario
 import io.ktor.http.*
 import kotlinx.coroutines.MainScope
@@ -29,7 +28,7 @@ import styled.styledDiv
 
 private val logger = KotlinLogging.logger {}
 
-external interface CryptoACProps : Props {
+external interface CryptoACFormProps : Props {
     /** The HTTP endpoint this form should send request to */
     var endpoint: String
 
@@ -46,12 +45,12 @@ external interface CryptoACProps : Props {
     var handleSubmitEvent: (HttpMethod, String, HashMap<String, String>, HashMap<String, File>) -> Unit
 
     var coreType: CoreType
-    var handleChangeBackdropIsOpen: (Boolean) -> Unit
-    var handleDisplayCryptoACAlert : (OutcomeCode, CryptoACAlertSeverity) -> Unit
+
+    var handleDisplayAlert : (OutcomeCode, CryptoACAlertSeverity) -> Unit
 }
 
 /** This component renders a form for sending API requests to the proxy */
-class CryptoACForm: RComponent<CryptoACProps, State>() {
+class CryptoACForm: RComponent<CryptoACFormProps, State>() {
 
     override fun RBuilder.render() {
 
@@ -295,7 +294,7 @@ class CryptoACForm: RComponent<CryptoACProps, State>() {
         }
         else {
             logger.warn { "Not all values were given (collected $collectedValues, expected $expectedValues), canceling submit request" }
-            props.handleDisplayCryptoACAlert(OutcomeCode.CODE_019_MISSING_PARAMETERS, CryptoACAlertSeverity.WARNING)
+            props.handleDisplayAlert(OutcomeCode.CODE_019_MISSING_PARAMETERS, CryptoACAlertSeverity.WARNING)
         }
     }
 
@@ -339,7 +338,7 @@ class CryptoACForm: RComponent<CryptoACProps, State>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACForm(handler: CryptoACProps.() -> Unit): ReactElement {
+fun cryptoACForm(handler: CryptoACFormProps.() -> Unit): ReactElement {
     return createElement {
         child(CryptoACForm::class) {
             this.attrs(handler)
