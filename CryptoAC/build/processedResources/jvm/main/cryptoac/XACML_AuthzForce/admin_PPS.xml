@@ -1,0 +1,19 @@
+<PolicySet
+    xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17 xacml-core-v3-schema-wd-17.xsd"
+    PolicySetId="PPS:role:admin"
+    Version="1.0"
+    PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:permit-overrides">
+    <Target/>
+    <Policy
+        PolicyId="Permissions:for:the:role:admin"
+        Version="1.0"
+        RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:permit-overrides">
+        <Target/>
+        <!-- Permission to read and write anything -->
+        <Rule RuleId="Permission:to:read:and:write:anything" Effect="Permit">
+            <Target/>
+        </Rule>
+    </Policy>
+</PolicySet>

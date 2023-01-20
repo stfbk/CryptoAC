@@ -10,7 +10,7 @@ external val formControlLabel: ComponentClass<FormControlLabelProps>
 
 external interface FormControlLabelProps : Props {
     var value: String
-    var control: ReactElement
+    var control: ReactElement<Props>
     var label: String
     var labelPlacement: String
 }

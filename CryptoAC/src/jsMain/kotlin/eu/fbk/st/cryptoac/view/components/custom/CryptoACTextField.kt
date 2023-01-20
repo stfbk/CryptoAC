@@ -45,7 +45,7 @@ external interface CryptoACTextFieldState : State {
 }
 
 /** A custom component for a radio group */
-class CryptoACTextField: RComponent<CryptoACTextFieldProps, CryptoACTextFieldState>() {
+class CryptoACTextField : RComponent<CryptoACTextFieldProps, CryptoACTextFieldState>() {
     override fun RBuilder.render() {
 
         textField {
@@ -80,7 +80,7 @@ class CryptoACTextField: RComponent<CryptoACTextFieldProps, CryptoACTextFieldSta
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACTextField::class.js.asDynamic().getDerivedStateFromProps = {
-                props: CryptoACTextFieldProps, state: CryptoACTextFieldState ->
+            props: CryptoACTextFieldProps, state: CryptoACTextFieldState ->
             if (state.justMounted || !state.changedByUser) {
                 state.value = props.defaultValue
             }
@@ -91,7 +91,7 @@ class CryptoACTextField: RComponent<CryptoACTextFieldProps, CryptoACTextFieldSta
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACTextField(handler: CryptoACTextFieldProps.() -> Unit): ReactElement {
+fun cryptoACTextField(handler: CryptoACTextFieldProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACTextField::class) {
             attrs(handler)

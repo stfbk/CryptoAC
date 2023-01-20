@@ -32,7 +32,7 @@ external interface RequirementItemProps : Props {
 }
 
 /** A requirement item component */
-class RequirementItem: RComponent<RequirementItemProps, State>() {
+class RequirementItem : RComponent<RequirementItemProps, State>() {
     override fun RBuilder.render() {
 
         /** The requirement name */
@@ -57,16 +57,18 @@ class RequirementItem: RComponent<RequirementItemProps, State>() {
                 css {
                     color = Color("#000000")
                 }
-                child(cryptoACTextField {
-                    className = "darkTextField"
-                    defaultValue = props.defaultValue.weight.toString()
-                    type = "Number"
-                    color = "primary"
-                    onChange = { it ->
-                        val newWeight = it.toInt()
-                        props.handleChangeWeightValue(newWeight)
+                child(
+                    cryptoACTextField {
+                        className = "darkTextField"
+                        defaultValue = props.defaultValue.weight.toString()
+                        type = "Number"
+                        color = "primary"
+                        onChange = { it ->
+                            val newWeight = it.toInt()
+                            props.handleChangeWeightValue(newWeight)
+                        }
                     }
-                })
+                )
             }
         }
 
@@ -75,16 +77,18 @@ class RequirementItem: RComponent<RequirementItemProps, State>() {
             css {
                 padding = "10px"
             }
-            child(cryptoACSelect {
-                name = "threshold"
-                id = "threshold"
-                options = Threshold.values().map { it.toString() }
-                defaultValue = props.defaultValue.thresholdType.toString()
-                onChange = { e ->
-                    val newThresholdType = Threshold.valueOf(e)
-                    props.handleChangeThresholdType(newThresholdType)
+            child(
+                cryptoACSelect {
+                    name = "threshold"
+                    id = "threshold"
+                    options = Threshold.values().map { it.toString() }
+                    defaultValue = props.defaultValue.thresholdType.toString()
+                    onChange = { e ->
+                        val newThresholdType = Threshold.valueOf(e)
+                        props.handleChangeThresholdType(newThresholdType)
+                    }
                 }
-            })
+            )
         }
 
         /** The requirement threshold value */
@@ -96,26 +100,28 @@ class RequirementItem: RComponent<RequirementItemProps, State>() {
                 css {
                     color = Color("#000000")
                 }
-                child(cryptoACTextField {
-                    defaultValue = props.defaultValue.thresholdValue.toString()
-                    type = "Number"
-                    color = "primary"
-                    disabled = props.requirement.thresholdType == Threshold.None
-                    className = if (props.requirement.thresholdType == Threshold.None) {
-                        "greyTextField"
-                    } else {
-                        "darkTextField"
+                child(
+                    cryptoACTextField {
+                        defaultValue = props.defaultValue.thresholdValue.toString()
+                        type = "Number"
+                        color = "primary"
+                        disabled = props.requirement.thresholdType == Threshold.None
+                        className = if (props.requirement.thresholdType == Threshold.None) {
+                            "greyTextField"
+                        } else {
+                            "darkTextField"
+                        }
+                        className = if (props.requirement.thresholdType == Threshold.None) {
+                            "greyTextField"
+                        } else {
+                            "darkTextField"
+                        }
+                        onChange = { it ->
+                            val newThreshold = it.toInt()
+                            props.handleChangeThresholdValue(newThreshold)
+                        }
                     }
-                    className = if (props.requirement.thresholdType == Threshold.None) {
-                        "greyTextField"
-                    } else {
-                        "darkTextField"
-                    }
-                    onChange = { it ->
-                        val newThreshold = it.toInt()
-                        props.handleChangeThresholdValue(newThreshold)
-                    }
-                })
+                )
             }
         }
 
@@ -131,28 +137,30 @@ class RequirementItem: RComponent<RequirementItemProps, State>() {
                 css {
                     color = Color("#000000")
                 }
-                child(cryptoACTextField {
-                    defaultValue = props.defaultValue.penalty.toString()
-                    type = "Number"
-                    color = "primary"
-                    disabled = props.requirement.thresholdType == Threshold.None
-                    className = if (props.requirement.thresholdType == Threshold.None) {
-                        "greyTextField"
-                    } else {
-                        "darkTextField"
+                child(
+                    cryptoACTextField {
+                        defaultValue = props.defaultValue.penalty.toString()
+                        type = "Number"
+                        color = "primary"
+                        disabled = props.requirement.thresholdType == Threshold.None
+                        className = if (props.requirement.thresholdType == Threshold.None) {
+                            "greyTextField"
+                        } else {
+                            "darkTextField"
+                        }
+                        onChange = { it ->
+                            val newPenalty = it.toInt()
+                            props.handleChangePenaltyValue(newPenalty)
+                        }
                     }
-                    onChange = { it ->
-                        val newPenalty = it.toInt()
-                        props.handleChangePenaltyValue(newPenalty)
-                    }
-                })
+                )
             }
         }
     }
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun requirementItem(handler: RequirementItemProps.() -> Unit): ReactElement {
+fun requirementItem(handler: RequirementItemProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(RequirementItem::class) {
             this.attrs(handler)

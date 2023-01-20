@@ -6,7 +6,7 @@ import eu.fbk.st.cryptoac.crypto.*
  * A symmetric cryptographic key composed
  *  of a [secretKey] for the Sodium library
  */
-class SymmetricKeySodium(override val secretKey: SecretKeySodium): SymmetricKeyCryptoAC(secretKey)
+class SymmetricKeySodium(override val secretKey: SecretKeySodium) : SymmetricKeyCryptoAC(secretKey)
 
 /** A secret cryptographic key for the Sodium library */
 class SecretKeySodium(private val secretKey: UByteArray) : SecretKeyCryptoAC {

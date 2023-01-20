@@ -12,10 +12,10 @@ internal class SafeRegexTest {
     private val exampleIpv4Regex = "192.168.111.4"
     private val exampleBase64Regex = "At539hww"
     private val exampleAwsAccessKeyRegex = "A94KF94IR9FIEKDMCJ84"
-    private val exampleAwsSecretKeyRegex ="3F9IKGJRIT58TYRHhe93hg88skf95uf74hdy3=/d"
+    private val exampleAwsSecretKeyRegex = "3F9IKGJRIT58TYRHhe93hg88skf95uf74hdy3=/d"
 
     @Test
-    fun `valid texts validate against regex`() {
+    fun valid_texts_validate_against_regex() {
         assertTrue(SafeRegex.TEXT.matches(exampleSafeTextNoSpacesRegex))
         assertTrue(SafeRegex.URL.matches(exampleUrlRegex))
         assertTrue(SafeRegex.URI.matches(exampleUriRegex))
@@ -28,7 +28,7 @@ internal class SafeRegexTest {
     }
 
     @Test
-    fun `empty text do not validate against regex`() {
+    fun empty_text_do_not_validate_against_regex() {
         assertFalse(SafeRegex.TEXT.matches(""))
         assertFalse(SafeRegex.URL.matches(""))
         assertFalse(SafeRegex.URI.matches(""))
@@ -40,7 +40,7 @@ internal class SafeRegexTest {
     }
 
     @Test
-    fun `blank text do not validate against regex`() {
+    fun blank_text_do_not_validate_against_regex() {
         assertFalse(SafeRegex.TEXT.matches(" "))
         assertFalse(SafeRegex.URL.matches(" "))
         assertFalse(SafeRegex.URI.matches(" "))
@@ -52,7 +52,7 @@ internal class SafeRegexTest {
     }
 
     @Test
-    fun `not anchored text at the beginning do not validate against regex`() {
+    fun not_anchored_text_at_the_beginning_do_not_validate_against_regex() {
         assertFalse(SafeRegex.TEXT.matches(" $exampleSafeTextNoSpacesRegex"))
         assertFalse(SafeRegex.URL.matches(" $exampleUrlRegex"))
         assertFalse(SafeRegex.URI.matches(" $exampleUriRegex"))
@@ -65,7 +65,7 @@ internal class SafeRegexTest {
     }
 
     @Test
-    fun `not anchored text at the end do not validate against regex`() {
+    fun not_anchored_text_at_the_end_do_not_validate_against_regex() {
         assertFalse(SafeRegex.TEXT.matches("$exampleSafeTextNoSpacesRegex "))
         assertFalse(SafeRegex.URL.matches("$exampleUrlRegex "))
         assertFalse(SafeRegex.URI.matches("$exampleUriRegex "))

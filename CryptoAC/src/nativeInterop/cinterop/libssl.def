@@ -1,4 +1,0 @@
-headers = openssl/conf.h \ openssl/evp.h \ openssl/err.h \ openssl/pem.h
-headerFilter = openssl/*
-compilerOpts.linux = -I/usr/include -I/usr/include/x86_64-linux-gnu
-linkerOpts.linux = -L/usr/lib/x86_64-linux-gnu -lcrypto

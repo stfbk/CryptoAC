@@ -1,15 +1,27 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
 import eu.fbk.st.cryptoac.*
-import eu.fbk.st.cryptoac.core.*
-import eu.fbk.st.cryptoac.core.elements.User
+import eu.fbk.st.cryptoac.model.unit.User
 import eu.fbk.st.cryptoac.crypto.CryptoType
-import eu.fbk.st.cryptoac.implementation.dm.*
-import eu.fbk.st.cryptoac.implementation.mm.*
-import eu.fbk.st.cryptoac.implementation.opa.OPAInterfaceParameters
-import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceCryptoACParameters
-import eu.fbk.st.cryptoac.implementation.rm.RMInterfaceParameters
-import eu.fbk.st.cryptoac.implementation.rm.RMType
+import eu.fbk.st.cryptoac.dm.cryptoac.DMServiceCryptoACParameters
+import eu.fbk.st.cryptoac.dm.mqtt.DMServiceMQTTParameters
+import eu.fbk.st.cryptoac.dm.DMServiceParameters
+import eu.fbk.st.cryptoac.dm.DMType
+import eu.fbk.st.cryptoac.ac.*
+import eu.fbk.st.cryptoac.ac.dynsec.ACServiceRBACDynSecParameters
+import eu.fbk.st.cryptoac.ac.opa.ACServiceRBACOPAParameters
+import eu.fbk.st.cryptoac.ac.xacmlauthzforce.ACServiceRBACXACMLAuthzForceParameters
+import eu.fbk.st.cryptoac.rm.cryptoac.RMServiceRBACCryptoACParameters
+import eu.fbk.st.cryptoac.rm.RMServiceParameters
+import eu.fbk.st.cryptoac.rm.RMType
+import eu.fbk.st.cryptoac.mm.MMServiceParameters
+import eu.fbk.st.cryptoac.mm.redis.MMServiceRedisParameters
+import eu.fbk.st.cryptoac.mm.MMType
+import eu.fbk.st.cryptoac.core.CoreParameters
+import eu.fbk.st.cryptoac.core.CoreParametersRBAC
+import eu.fbk.st.cryptoac.core.CoreType
+import eu.fbk.st.cryptoac.core.myJson
+import eu.fbk.st.cryptoac.mm.mysql.MMServiceRBACMySQLParameters
 import eu.fbk.st.cryptoac.view.components.icons.faChevronDown
 import eu.fbk.st.cryptoac.view.components.icons.faChevronUp
 import eu.fbk.st.cryptoac.view.components.icons.faCloudUploadAlt
@@ -41,6 +53,7 @@ external interface CryptoACEditProfileFormProps : Props {
     var handleDisplayAlert: (OutcomeCode, CryptoACAlertSeverity) -> Unit
     var handleChangeBackdropIsOpen: (Boolean) -> Unit
     var handleChangeCoreType: ((CoreType) -> Unit)?
+    var handleChangeACType: ((ACType) -> Unit)?
     var handleChangeRMType: ((RMType) -> Unit)?
     var handleChangeMMType: ((MMType) -> Unit)?
     var handleChangeDMType: ((DMType) -> Unit)?
@@ -53,6 +66,7 @@ external interface CryptoACEditProfileFormProps : Props {
     var rmType: RMType
     var mmType: MMType
     var dmType: DMType
+    var acType: ACType
 }
 
 external interface CryptoACEditProfileFormState : State {
@@ -68,7 +82,7 @@ external interface CryptoACEditProfileFormState : State {
 }
 
 /** This component renders a form for sending API requests to the proxy */
-class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoACEditProfileFormState>() {
+class CryptoACEditProfileForm : RComponent<CryptoACEditProfileFormProps, CryptoACEditProfileFormState>() {
 
     override fun RBuilder.render() {
         styledDiv {
@@ -83,7 +97,7 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                 typography {
                     attrs {
                         variant = "h6"
-                        //id = "editProfile"
+                        // id = "editProfile"
                         component = "div"
                     }
                     +"${if (props.isCreatingNewProfile) {
@@ -102,14 +116,14 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                                 }
                             }
                         }
-                        child(createElement { faCloudUploadAlt { } }!!)
+                        child(createElement<Props> { faCloudUploadAlt { } }!!)
                         input {
                             attrs {
                                 type = kotlinx.html.InputType.file
                                 accept = ".json"
                                 hidden = true
                                 this.onChangeFunction = { event ->
-                                    logger.info {"Received upload configuration file event" }
+                                    logger.info { "Received upload configuration file event" }
                                     parseProfileFile((event.target as HTMLInputElement).files!![0]!!)
                                 }
                             }
@@ -127,11 +141,13 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                                 color = "primary"
                                 component = "label"
                                 size = "small"
-                                children = createElement { if (!state.editProfileFormIsOpen) {
-                                    faChevronDown { }
-                                } else {
-                                    faChevronUp { }
-                                }}!!
+                                children = createElement {
+                                    if (!state.editProfileFormIsOpen) {
+                                        faChevronDown { }
+                                    } else {
+                                        faChevronUp { }
+                                    }
+                                }!!
                                 onClick = {
                                     setState {
                                         editProfileFormIsOpen = !editProfileFormIsOpen
@@ -155,28 +171,30 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                     }
 
                     /** Render the edit profile form */
-                    child(cryptoACForm {
-                        attrs {
-                            handleDisplayAlert = props.handleDisplayAlert
-                            handleSubmitEvent = { method, endpoint, values, _ ->
-                                submitEditProfileForm(method, endpoint, values)
+                    child(
+                        cryptoACForm {
+                            attrs {
+                                acceptDisabledElements = !props.isCreatingNewProfile
+                                handleDisplayAlert = props.handleDisplayAlert
+                                handleSubmitEvent = { method, endpoint, values, _ ->
+                                    submitEditProfileForm(method, endpoint, values)
+                                }
+                                method = if (props.isCreatingNewProfile) {
+                                    HttpMethod.Post
+                                } else {
+                                    HttpMethod.Patch
+                                }
+                                cryptoACFormFields = state.cryptoACFormFields
+                                submitButtonText = "Edit Profile"
+                                coreType = props.coreType
+                                endpoint = API.PROFILES
                             }
-                            method = if (props.isCreatingNewProfile) {
-                                HttpMethod.Post
-                            } else {
-                                HttpMethod.Patch
-                            }
-                            cryptoACFormFields = state.cryptoACFormFields
-                            submitButtonText = "Edit Profile"
-                            coreType = props.coreType
-                            endpoint = API.PROFILES
                         }
-                    })
+                    )
                 }
             }
         }
     }
-
 
     override fun CryptoACEditProfileFormState.init() {
         logger.info { "Initializing the state of the CryptoACEditProfileFormState component" }
@@ -188,7 +206,10 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACEditProfileForm::class.js.asDynamic().getDerivedStateFromProps = {
-                newProps: CryptoACEditProfileFormProps, state: CryptoACEditProfileFormState ->
+            newProps: CryptoACEditProfileFormProps, state: CryptoACEditProfileFormState ->
+            logger.info { "Check whether to update CryptoACEditProfileForm" }
+            logger.debug { "state.justMounted: ${state.justMounted}" }
+            logger.debug { "!areEquals(props, newProps): ${!areEquals(props, newProps)}" }
             if (state.justMounted || !areEquals(props, newProps)) {
                 logger.info { "CryptoACEditProfileForm is getting updated" }
                 if (newProps.coreParameters != null) {
@@ -223,10 +244,10 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
         if (props.rmType != newProps.rmType) return false
         if (props.mmType != newProps.mmType) return false
         if (props.dmType != newProps.dmType) return false
+        if (props.acType != newProps.acType) return false
 
         return true
     }
-
 
     /**
      * Parse the content of the given profile [file] and update
@@ -252,18 +273,17 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                 }
             }
         } else {
-            logger.warn {"The user did not provide a .json file for the profile" }
-            props.handleDisplayAlert(OutcomeCode.CODE_040_MALFORMED_PROFILE_FILE, CryptoACAlertSeverity.WARNING)
+            logger.warn { "The user did not provide a .json file for the profile" }
+            props.handleDisplayAlert(OutcomeCode.CODE_040_MALFORMED_PROFILE, CryptoACAlertSeverity.WARNING)
         }
     }
-
 
     /**
      * Fill the fields of the edit profile form with the
      * given [parameters]. If the [parameters] do not
-     * correspond to the currently selected interfaces
-     * (i.e., the RM, MM and DM types), either force
-     * the update of the interfaces (if [forceTypesUpdate]
+     * correspond to the currently selected services
+     * (i.e., the RM, MM, DM and AC types), either force
+     * the update of the services (if [forceTypesUpdate]
      * is true) or throw an error. If everything succeeds,
      * return true, else false
      */
@@ -286,7 +306,7 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
             if (coreType != propsToUse.coreType) {
                 throw UnsupportedOperationException(
                     "Core type of parameters ($coreType) is different " +
-                    "from core type of properties (${propsToUse.coreType}"
+                        "from core type of properties (${propsToUse.coreType}"
                 )
             }
             when (versionNumber) {
@@ -300,20 +320,19 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
 
             /** Acquire eventual RM parameters */
             val rmParameters = when (parameters) {
-                is CoreParametersCLOUD -> parameters.rmInterfaceParameters
+                is CoreParametersRBAC -> parameters.rmServiceParameters
                 else -> null
             }
             if (rmParameters != null) {
                 logger.info {
                     "RM parameters type is ${rmParameters.rmType} " +
-                    "(RM type in props is ${propsToUse.rmType}"
+                        "(RM type in props is ${propsToUse.rmType}"
                 }
                 if (rmParameters.rmType != propsToUse.rmType) {
                     if (forceTypesUpdate) {
                         logger.info { "Forcing update of RM type" }
                         propsToUse.handleChangeRMType?.let { it(rmParameters.rmType) }
-                        propsToUse.handleDisplayAlert(OutcomeCode.CODE_057_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
-
+                        propsToUse.handleDisplayAlert(OutcomeCode.CODE_057_SERVICE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
                     } else {
                         throw UnsupportedOperationException(
                             "RM type of file (${rmParameters.rmType}) is different from currently selected core type (${propsToUse.rmType}"
@@ -326,20 +345,19 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
 
             /** Acquire eventual MM parameters */
             val mmParameters = when (parameters) {
-                is CoreParametersCLOUD -> parameters.mmInterfaceParameters
-                is CoreParametersMQTT -> parameters.mmInterfaceParameters
+                is CoreParametersRBAC -> parameters.mmServiceParameters
                 else -> null
             }
             if (mmParameters != null) {
                 logger.info {
                     "MM parameters type is ${mmParameters.mmType} " +
-                    "(MM type in props is ${propsToUse.mmType}"
+                        "(MM type in props is ${propsToUse.mmType}"
                 }
                 if (mmParameters.mmType != propsToUse.mmType) {
                     if (forceTypesUpdate) {
                         logger.info { "Forcing update of MM type" }
                         propsToUse.handleChangeMMType?.let { it(mmParameters.mmType) }
-                        propsToUse.handleDisplayAlert(OutcomeCode.CODE_057_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
+                        propsToUse.handleDisplayAlert(OutcomeCode.CODE_057_SERVICE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
                     } else {
                         throw UnsupportedOperationException(
                             "MM type of file (${mmParameters.mmType}) is different from currently selected core type (${propsToUse.mmType}"
@@ -352,20 +370,19 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
 
             /** Acquire eventual DM parameters */
             val dmParameters = when (parameters) {
-                is CoreParametersCLOUD -> parameters.dmInterfaceParameters
-                is CoreParametersMQTT -> parameters.dmInterfaceParameters
+                is CoreParametersRBAC -> parameters.dmServiceParameters
                 else -> null
             }
             if (dmParameters != null) {
                 logger.info {
                     "DM parameters type is ${dmParameters.dmType} " +
-                    "(DM type in props is ${propsToUse.dmType}"
+                        "(DM type in props is ${propsToUse.dmType}"
                 }
                 if (dmParameters.dmType != propsToUse.dmType) {
                     if (forceTypesUpdate) {
                         logger.info { "Forcing update of DM type" }
                         propsToUse.handleChangeDMType?.let { it(dmParameters.dmType) }
-                        propsToUse.handleDisplayAlert(OutcomeCode.CODE_057_INTERFACE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
+                        propsToUse.handleDisplayAlert(OutcomeCode.CODE_057_SERVICE_TYPE_UPDATED, CryptoACAlertSeverity.INFO)
                     } else {
                         throw UnsupportedOperationException(
                             "DM type of file (${dmParameters.dmType}) is different from currently selected core type (${propsToUse.dmType}"
@@ -376,12 +393,33 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                 logger.info { "No DM parameters were given" }
             }
 
-            /** Acquire eventual OPA parameters */
-            val opaParameters = when (parameters) {
-                is CoreParametersCLOUD -> parameters.opaInterfaceParameters
+            /** Acquire eventual AC parameters */
+            val acParameters = when (parameters) {
+                is CoreParametersRBAC -> parameters.acServiceParameters
                 else -> null
             }
-            logger.info { "OPA parameters were${if (opaParameters == null) { " not " } else { " " }}provided" }
+            if (acParameters != null) {
+                logger.info {
+                    "AC parameters type is ${acParameters.acType} " +
+                    "(AC type in props is ${propsToUse.acType}"
+                }
+                if (acParameters.acType != propsToUse.acType) {
+                    if (forceTypesUpdate) {
+                        logger.info { "Forcing update of AC type" }
+                        propsToUse.handleChangeACType?.let { it(acParameters.acType) }
+                        propsToUse.handleDisplayAlert(
+                            OutcomeCode.CODE_057_SERVICE_TYPE_UPDATED,
+                            CryptoACAlertSeverity.INFO
+                        )
+                    } else {
+                        throw UnsupportedOperationException(
+                            "AC type of file (${acParameters.acType}) is different from currently selected core type (${propsToUse.acType}"
+                        )
+                    }
+                }
+            } else {
+                logger.info { "No AC parameters were given" }
+            }
 
             getFieldsFromParameters(
                 propsToUse,
@@ -389,12 +427,12 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                 rmParameters,
                 mmParameters,
                 dmParameters,
-                opaParameters,
+                acParameters,
             )
         } catch (e: NullPointerException) {
             logger.warn { "NullPointerException, malformed .json profile file" }
             logger.warn { e }
-            propsToUse.handleDisplayAlert(OutcomeCode.CODE_040_MALFORMED_PROFILE_FILE, CryptoACAlertSeverity.ERROR)
+            propsToUse.handleDisplayAlert(OutcomeCode.CODE_040_MALFORMED_PROFILE, CryptoACAlertSeverity.ERROR)
             null
         } catch (e: UnsupportedOperationException) {
             logger.warn { "UnsupportedOperationException, .json profile file have different types than requested" }
@@ -404,30 +442,40 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
         }
     }
 
-
     /**
      * Submit and handle the callback for the edit profile form. It receives as input
      * the HTTPS [method], the [endpoint] (URL) and the [values] to add to the request
      */
     private fun submitEditProfileForm(
-        method: HttpMethod, 
-        endpoint: String, 
+        method: HttpMethod,
+        endpoint: String,
         values: HashMap<String, String>
     ) {
         logger.info { "Submitting CryptoAC edit profile form, method $method, endpoint $endpoint" }
 
         try {
             val rmParameters = when (props.rmType) {
-                RMType.CRYPTOAC -> RMInterfaceCryptoACParameters.fromMap(values)
+                RMType.RBAC_CRYPTOAC -> RMServiceRBACCryptoACParameters.fromMap(values)
                 RMType.NONE -> null
             }
             val mmParameters = when (props.mmType) {
-                MMType.MYSQL -> MMInterfaceMySQLParameters.fromMap(values)
-                MMType.REDIS -> MMInterfaceRedisParameters.fromMap(values)
+                MMType.RBAC_MYSQL, MMType.ABAC_MYSQL -> MMServiceRBACMySQLParameters.fromMap(
+                    parameters = values
+                )
+                MMType.RBAC_REDIS -> MMServiceRedisParameters.fromMap(
+                    parameters = values,
+                    mmType = MMType.RBAC_REDIS
+                )
             }
             val dmParameters = when (props.dmType) {
-                DMType.CRYPTOAC -> DMInterfaceCryptoACParameters.fromMap(values)
-                DMType.MOSQUITTO -> DMInterfaceMosquittoParameters.fromMap(values)
+                DMType.CRYPTOAC -> DMServiceCryptoACParameters.fromMap(values)
+                DMType.MQTT -> DMServiceMQTTParameters.fromMap(values)
+            }
+            val acParameters = when (props.acType) {
+                ACType.RBAC_XACML_AUTHZFORCE -> ACServiceRBACXACMLAuthzForceParameters.fromMap(values)
+                ACType.RBAC_OPA -> ACServiceRBACOPAParameters.fromMap(values)
+                ACType.RBAC_DYNSEC -> ACServiceRBACDynSecParameters.fromMap(values)
+                ACType.NONE -> null
             }
             val user = User(
                 name = values[SERVER.USERNAME]!!,
@@ -437,28 +485,30 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
 
             /** Create the core parameters object based on the core type */
             val parameters = when (props.coreType) {
-                CoreType.RBAC_CLOUD -> {
-                    CoreParametersCLOUD(
+                CoreType.RBAC_AT_REST -> {
+                    CoreParametersRBAC(
                         user = user,
+                        coreType = CoreType.RBAC_AT_REST,
                         cryptoType = cryptoType,
-                        rmInterfaceParameters = rmParameters!!,
-                        mmInterfaceParameters = mmParameters as MMInterfaceRBACCLOUDParameters,
-                        dmInterfaceParameters = dmParameters as DMInterfaceRBACCLOUDParameters,
-                        opaInterfaceParameters = OPAInterfaceParameters(
-                            port = values[SERVER.OPA_PORT]!!.toInt(),
-                            url = values[SERVER.OPA_URL]!!,
-                            policyModel = PolicyModel.valueOf(values[SERVER.OPA_POLICY_MODEL]!!)
-                        )
+                        rmServiceParameters = rmParameters!!,
+                        mmServiceParameters = mmParameters,
+                        dmServiceParameters = dmParameters,
+                        acServiceParameters = acParameters as ACServiceRBACOPAParameters?
                     )
                 }
                 CoreType.RBAC_MQTT -> {
-                    CoreParametersMQTT(
+                    CoreParametersRBAC(
                         user = user,
+                        coreType = CoreType.RBAC_MQTT,
                         cryptoType = cryptoType,
-                        mmInterfaceParameters = mmParameters,
-                        dmInterfaceParameters = dmParameters as DMInterfaceRBACMQTTParameters,
+                        rmServiceParameters = null,
+                        mmServiceParameters = mmParameters,
+                        dmServiceParameters = dmParameters,
+                        acServiceParameters = acParameters as ACServiceRBACDynSecParameters?
                     )
                 }
+                CoreType.ABAC_AT_REST -> TODO()
+                CoreType.ABAC_MQTT -> TODO()
             }
 
             if (method != HttpMethod.Post && method != HttpMethod.Patch) {
@@ -472,13 +522,13 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                     props.httpClient.post {
                         url(endpoint)
                         contentType(ContentType.Application.Json)
-                        setBody(parameters)
+                        setBody(parameters as CoreParameters)
                     }
                 } else {
                     props.httpClient.patch {
                         url(endpoint)
                         contentType(ContentType.Application.Json)
-                        setBody(parameters)
+                        setBody(parameters as CoreParameters)
                     }
                 }
                 val code: OutcomeCode = response.body()
@@ -486,12 +536,12 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
                 props.handleChangeBackdropIsOpen(false)
 
                 if (status == HttpStatusCode.OK) {
-                    logger.info { "Response status is ${status}, code is $code" }
+                    logger.info { "Response status is $status, code is $code" }
                     props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
                     props.handleProfileWasCreatedOrModified(props.coreType)
                     setState { editProfileFormIsOpen = false }
                 } else {
-                    logger.warn { "Response status is ${status}, code is $code" }
+                    logger.warn { "Response status is $status, code is $code" }
                     props.handleDisplayAlert(code, CryptoACAlertSeverity.ERROR)
                     setState { editProfileFormIsOpen = true }
                 }
@@ -507,123 +557,112 @@ class CryptoACEditProfileForm: RComponent<CryptoACEditProfileFormProps, CryptoAC
         }
     }
 
-
     /**
      * Update the edit profile fields with the given [user], [cryptoType],
-     * [rmParameters], [mmParameters] and [dmParameters]
+     * [rmParameters], [mmParameters], [dmParameters] and [acParameters]
      */
     private fun getFieldsFromParameters(
         propsToUse: CryptoACEditProfileFormProps = props,
         user: User? = null,
         cryptoType: CryptoType = CryptoType.SODIUM,
-        rmParameters: RMInterfaceParameters? = null,
-        mmParameters: MMInterfaceParameters? = null,
-        dmParameters: DMInterfaceParameters? = null,
-        opaParameters: OPAInterfaceParameters? = null,
+        rmParameters: RMServiceParameters? = null,
+        mmParameters: MMServiceParameters? = null,
+        dmParameters: DMServiceParameters? = null,
+        acParameters: ACServiceParameters? = null,
     ): List<List<CryptoACFormField>> {
 
-        logger.info {"Getting profile fields from parameters (core type is ${propsToUse.coreType})" }
+        logger.info { "Getting profile fields from parameters (core type is ${propsToUse.coreType})" }
 
-        val fields = mutableListOf(listOf(
-            CryptoACFormField(
-                SERVER.USERNAME,
-                SERVER.USERNAME,
-                InputType.text,
-                className = "darkTextField",
-                defaultValue = user?.name
-            ),
-            CryptoACFormField(
-                SERVER.IS_ADMIN,
-                SERVER.IS_ADMIN.replace("_", " "),
-                InputType.checkBox,
-                className = "darkTextField",
-                defaultValue = user?.isAdmin.toString()
-            ),
-            CryptoACFormField(
-                SERVER.CRYPTO,
-                SERVER.CRYPTO,
-                InputType.select,
-                options = CryptoType.values().map { it.toString() },
-                className = "darkTextField",
-                defaultValue = cryptoType.toString()
-            ),
-        ))
+        val fields = mutableListOf(
+            listOf(
+                CryptoACFormField(
+                    SERVER.USERNAME,
+                    SERVER.USERNAME,
+                    InputType.text,
+                    className = "darkTextField",
+                    defaultValue = user?.name,
+                    disabled = true,
+                ),
+                CryptoACFormField(
+                    SERVER.IS_ADMIN,
+                    SERVER.IS_ADMIN.replace("_", " "),
+                    InputType.checkBox,
+                    className = "darkTextField",
+                    defaultValue = user?.isAdmin.toString(),
+                    disabled = true,
+                ),
+                CryptoACFormField(
+                    SERVER.CRYPTO,
+                    SERVER.CRYPTO,
+                    InputType.select,
+                    options = CryptoType.values().map { it.toString() },
+                    className = "darkTextField",
+                    defaultValue = cryptoType.toString(),
+                    disabled = true,
+                ),
+            )
+        )
 
         val rmType = rmParameters?.rmType ?: propsToUse.rmType
-        logger.info {"RM type to use is $rmType" }
+        logger.info { "RM type to use is $rmType" }
         fields.addAll(
             when (rmType) {
-                RMType.CRYPTOAC -> RMInterfaceCryptoACParameters.toMap(
-                    rmParameters?.let { it as RMInterfaceCryptoACParameters }
+                RMType.RBAC_CRYPTOAC -> RMServiceRBACCryptoACParameters.toMap(
+                    rmParameters?.let { it as RMServiceRBACCryptoACParameters }
                 )
                 RMType.NONE -> listOf()
             }
         )
 
         val mmType = mmParameters?.mmType ?: propsToUse.mmType
-        logger.info {"MM type to use is $mmType" }
+        logger.info { "MM type to use is $mmType" }
         fields.addAll(
             when (mmType) {
-                MMType.MYSQL -> MMInterfaceMySQLParameters.toMap(
-                    mmParameters?.let { it as MMInterfaceMySQLParameters }
+                MMType.RBAC_MYSQL, MMType.ABAC_MYSQL -> MMServiceRBACMySQLParameters.toMap(
+                    mmParameters?.let { it as MMServiceRBACMySQLParameters }
                 )
-                MMType.REDIS -> MMInterfaceRedisParameters.toMap(
-                    mmParameters?.let { it as MMInterfaceRedisParameters }
+                MMType.RBAC_REDIS -> MMServiceRedisParameters.toMap(
+                    mmParameters?.let { it as MMServiceRedisParameters }
                 )
             }
         )
 
         val dmType = dmParameters?.dmType ?: propsToUse.dmType
-        logger.info {"DM type to use is $dmType" }
+        logger.info { "DM type to use is $dmType" }
         fields.addAll(
             when (dmType) {
-                DMType.CRYPTOAC -> DMInterfaceCryptoACParameters.toMap(
-                    dmParameters?.let { it as DMInterfaceCryptoACParameters }
+                DMType.CRYPTOAC -> DMServiceCryptoACParameters.toMap(
+                    dmParameters?.let { it as DMServiceCryptoACParameters }
                 )
-                DMType.MOSQUITTO -> DMInterfaceMosquittoParameters.toMap(
-                    dmParameters?.let { it as DMInterfaceMosquittoParameters }
+                DMType.MQTT -> DMServiceMQTTParameters.toMap(
+                    dmParameters?.let { it as DMServiceMQTTParameters }
                 )
             }
         )
 
-        if (propsToUse.coreType == CoreType.RBAC_CLOUD) {
-            logger.info {"Core type is ${CoreType.RBAC_CLOUD}, thus add OPA fields" }
-            fields.addAll(
-                listOf(
-                    listOf(
-                        CryptoACFormField(
-                            SERVER.OPA_URL,
-                            SERVER.OPA_URL.replace("_", " "),
-                            InputType.text,
-                            className = "darkTextField",
-                            defaultValue = opaParameters?.url
-                        ),
-                        CryptoACFormField(
-                            SERVER.OPA_PORT,
-                            SERVER.OPA_PORT.replace("_", " "),
-                            InputType.number,
-                            className = "darkTextField",
-                            defaultValue = opaParameters?.port.toString()
-                        ),
-                        CryptoACFormField(
-                            SERVER.OPA_POLICY_MODEL,
-                            SERVER.OPA_POLICY_MODEL.replace("_", " "),
-                            InputType.select,
-                            options = PolicyModel.values().map { it.toString() },
-                            className = "darkTextField",
-                            defaultValue = (opaParameters?.policyModel ?: PolicyModel.RBAC).toString()
-                        ),
-                    )
+        val acType = acParameters?.acType ?: propsToUse.acType
+        logger.info { "AC type to use is $acType" }
+        fields.addAll(
+            when (acType) {
+                ACType.RBAC_XACML_AUTHZFORCE -> ACServiceRBACXACMLAuthzForceParameters.toMap(
+                    acParameters?.let { it as ACServiceRBACXACMLAuthzForceParameters }
                 )
-            )
-        }
+                ACType.RBAC_OPA -> ACServiceRBACOPAParameters.toMap(
+                    acParameters?.let { it as ACServiceRBACOPAParameters }
+                )
+                ACType.RBAC_DYNSEC -> ACServiceRBACDynSecParameters.toMap(
+                    acParameters?.let { it as ACServiceRBACDynSecParameters }
+                )
+                ACType.NONE -> listOf()
+            }
+        )
 
         return fields.toList()
     }
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACEditProfileForm(handler: CryptoACEditProfileFormProps.() -> Unit): ReactElement {
+fun cryptoACEditProfileForm(handler: CryptoACEditProfileFormProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACEditProfileForm::class) {
             this.attrs(handler)

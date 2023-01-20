@@ -12,5 +12,5 @@ external interface RadioProps : Props {
     var color: String
     var disabled: Boolean
     var checked: Boolean
-    var size: String  // either "small" or "medium"
+    var size: String // either "small" or "medium"
 }

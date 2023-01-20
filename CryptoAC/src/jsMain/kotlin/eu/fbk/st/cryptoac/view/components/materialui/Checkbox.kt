@@ -8,8 +8,9 @@ import react.*
 
 @JsName("Checkbox")
 external val checkbox: ComponentClass<CheckboxProps>
-
+// TODO doc
 external interface CheckboxProps : Props {
+    var disabled: Boolean
     var checked: Boolean
     var value: String
     var onChange: (Event) -> Unit

@@ -1,5 +1,5 @@
 let config = {
-  mode: 'development',
+  mode: 'production',
   resolve: {
     modules: [
       "node_modules"
@@ -13,7 +13,7 @@ let config = {
 
 // entry
 config.entry = {
-    main: ["/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev/CryptoAC.js"]
+    main: ["/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce/CryptoAC.js"]
 };
 
 config.output = {
@@ -29,7 +29,7 @@ config.output = {
 };
 
 // resolve modules
-config.resolve.modules.unshift("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev")
+config.resolve.modules.unshift("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce")
 
 // source maps
 config.module.rules.push({
@@ -37,7 +37,7 @@ config.module.rules.push({
         use: ["source-map-loader"],
         enforce: "pre"
 });
-config.devtool = 'eval-source-map';
+config.devtool = 'source-map';
 config.ignoreWarnings = [/Failed to parse source map/]
 
 // Report progress to console

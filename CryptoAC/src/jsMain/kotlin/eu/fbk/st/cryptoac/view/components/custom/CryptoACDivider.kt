@@ -1,8 +1,8 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
 import kotlinx.css.*
-import styled.css
 import react.*
+import styled.css
 import styled.styledDiv
 
 external interface CryptoACDividerProps : Props {
@@ -17,7 +17,7 @@ external interface CryptoACDividerProps : Props {
 }
 
 /** A custom component for a divider (a single pixel solid line) */
-class CryptoACDivider: RComponent<CryptoACDividerProps, State>() {
+class CryptoACDivider : RComponent<CryptoACDividerProps, State>() {
     override fun RBuilder.render() {
 
         styledDiv {
@@ -34,12 +34,10 @@ class CryptoACDivider: RComponent<CryptoACDividerProps, State>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACDivider(handler: CryptoACDividerProps.() -> Unit): ReactElement {
+fun cryptoACDivider(handler: CryptoACDividerProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACDivider::class) {
             attrs(handler)
         }
     }!!
 }
-
-

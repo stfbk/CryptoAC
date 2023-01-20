@@ -6,7 +6,7 @@ data class Requirement(
     var thresholdType: Threshold = Threshold.None,
     var thresholdValue: Int = 0,
     var penalty: Int = 0,
-    ) {
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class.js != other::class.js) return false

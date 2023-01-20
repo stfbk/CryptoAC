@@ -1,10 +1,10 @@
 package eu.fbk.st.cryptoac.view.content.dashboard
 
-import eu.fbk.st.cryptoac.API.FILES
 import eu.fbk.st.cryptoac.API.CRYPTOAC
+import eu.fbk.st.cryptoac.API.RESOURCES
 import eu.fbk.st.cryptoac.OutcomeCode
+import eu.fbk.st.cryptoac.core.mqtt.MQTTMessage
 import eu.fbk.st.cryptoac.core.myJson
-import eu.fbk.st.cryptoac.implementation.dm.MQTTMessage
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.custom.table.*
 import eu.fbk.st.cryptoac.view.components.materialui.grid
@@ -40,11 +40,11 @@ external interface MQTTDashboardState : RBACDashboardState {
  * The RBACMQTTDashboard React component, consisting of:
  * 1. The table of the users (admin only);
  * 2. The table of the roles (admin only);
- * 3. The table of the files (admin only);
+ * 3. The table of the resources, i.e., topics (admin only);
  * 4. The table of the user-role assignments;
- * 5. The table of the role-file permissions
+ * 5. The table of the role-resource permissions
  */
-class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
+class RBACMQTTDashboard : RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
 
     override fun RBuilder.render() {
         styledDiv {
@@ -54,7 +54,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                 maxHeight = 500.px
             }
 
-            /** Show the users, roles and files tables only to the admin */
+            /** Show the users, roles and resources tables only to the admin */
             if (props.userIsAdmin) {
                 grid {
                     attrs {
@@ -68,42 +68,44 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                             xs = 12
                             sm = 4
                         }
-                        child(cryptoACTable {
-                            attrs {
-                                elements = state.users
-                                tableColumns = userColumns
-                                title = "Users"
-                                onRefresh = {
-                                    MainScope().launch {
-                                        val fetchedUsers = getUsers()
-                                        if (fetchedUsers != null) {
-                                            setState {
-                                                users = fetchedUsers
+                        child(
+                            cryptoACTable {
+                                attrs {
+                                    elements = state.users
+                                    tableColumns = userColumns
+                                    title = "Users"
+                                    onRefresh = {
+                                        MainScope().launch {
+                                            val fetchedUsers = getUsers()
+                                            if (fetchedUsers != null) {
+                                                setState {
+                                                    users = fetchedUsers
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                onElementClick = {
-                                    MainScope().launch {
-                                        val username = it.first()
-                                        val result = getAssignments(username = username)
-                                        if (result != null && result.isNotEmpty()) {
-                                            setState {
-                                                openedTables.add(
-                                                    CryptoACTableData(
-                                                        elements = result,
-                                                        columns = assignmentColumns,
-                                                        title = "Assignments of user $username",
+                                    onElementClick = {
+                                        MainScope().launch {
+                                            val username = it.first()
+                                            val result = getAssignments(username = username)
+                                            if (result != null && result.isNotEmpty()) {
+                                                setState {
+                                                    openedTables.add(
+                                                        CryptoACTableData(
+                                                            elements = result,
+                                                            columns = assignmentColumns,
+                                                            title = "Assignments of user $username",
+                                                        )
                                                     )
-                                                )
+                                                }
+                                            } else {
+                                                props.handleDisplayAlert(OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
                                             }
-                                        } else {
-                                            props.handleDisplayAlert(OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
                                         }
                                     }
                                 }
                             }
-                        })
+                        )
                     }
                     /** 2. The table of the roles (admin only) */
                     grid {
@@ -112,104 +114,108 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                             xs = 12
                             sm = 4
                         }
-                        child(cryptoACTable {
-                            attrs {
-                                elements = state.roles
-                                tableColumns = roleColumns
-                                title = "Roles"
-                                onRefresh = {
-                                    MainScope().launch {
-                                        val fetchedRoles = getRoles()
-                                        if (fetchedRoles != null) {
-                                            setState {
-                                                roles = fetchedRoles
+                        child(
+                            cryptoACTable {
+                                attrs {
+                                    elements = state.roles
+                                    tableColumns = roleColumns
+                                    title = "Roles"
+                                    onRefresh = {
+                                        MainScope().launch {
+                                            val fetchedRoles = getRoles()
+                                            if (fetchedRoles != null) {
+                                                setState {
+                                                    roles = fetchedRoles
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                onElementClick = {
-                                    MainScope().launch {
-                                        val roleName = it.first()
-                                        val assignments = getAssignments(roleName = roleName)
-                                        val permissions = getPermissions(roleName = roleName)
-                                        if (assignments != null && assignments.isNotEmpty()) {
-                                            setState {
-                                                openedTables.add(
-                                                    CryptoACTableData(
-                                                        elements = assignments,
-                                                        columns = assignmentColumns,
-                                                        title = "Assignments of role $roleName",
+                                    onElementClick = {
+                                        MainScope().launch {
+                                            val roleName = it.first()
+                                            val assignments = getAssignments(roleName = roleName)
+                                            val permissions = getPermissions(roleName = roleName)
+                                            if (assignments != null && assignments.isNotEmpty()) {
+                                                setState {
+                                                    openedTables.add(
+                                                        CryptoACTableData(
+                                                            elements = assignments,
+                                                            columns = assignmentColumns,
+                                                            title = "Assignments of role $roleName",
+                                                        )
                                                     )
-                                                )
+                                                }
+                                            } else {
+                                                props.handleDisplayAlert(OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
                                             }
-                                        } else {
-                                            props.handleDisplayAlert(OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
-                                        }
-                                        if (permissions != null && permissions.isNotEmpty()) {
-                                            setState {
-                                                openedTables.add(
-                                                    CryptoACTableData(
-                                                        elements = permissions,
-                                                        columns = permissionColumns,
-                                                        title = "Permissions of role $roleName",
+                                            if (permissions != null && permissions.isNotEmpty()) {
+                                                setState {
+                                                    openedTables.add(
+                                                        CryptoACTableData(
+                                                            elements = permissions,
+                                                            columns = permissionColumns,
+                                                            title = "Permissions of role $roleName",
+                                                        )
                                                     )
-                                                )
+                                                }
+                                            } else {
+                                                props.handleDisplayAlert(OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
                                             }
-                                        } else {
-                                            props.handleDisplayAlert(OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
                                         }
                                     }
                                 }
                             }
-                        })
+                        )
                     }
-                    /** 3. The table of the files (admin only) */
+                    /** 3. The table of the resources (admin only) */
                     grid {
                         attrs {
                             item = true
                             xs = 12
                             sm = 4
                         }
-                        child(cryptoACTable {
-                            attrs {
-                                elements = state.files
-                                tableColumns = fileColumns
-                                title = "Files"
-                                onRefresh = {
-                                    MainScope().launch {
-                                        val fetchedFiles = getFiles()
-                                        if (fetchedFiles != null) {
-                                            setState {
-                                                files = fetchedFiles
+                        child(
+                            cryptoACTable {
+                                attrs {
+                                    elements = state.resources
+                                    tableColumns = resourceColumns
+                                    title = "Topics"
+                                    onRefresh = {
+                                        MainScope().launch {
+                                            val fetchedResources = getResources()
+                                            if (fetchedResources != null) {
+                                                setState {
+                                                    resources = fetchedResources
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                onElementClick = {
-                                    MainScope().launch {
-                                        val fileName = it.first()
-                                        val permissions = getPermissions(fileName = fileName)
-                                        if (permissions != null && permissions.isNotEmpty()) {
-                                            setState {
-                                                openedTables.add(
-                                                    CryptoACTableData(
-                                                        elements = permissions,
-                                                        columns = permissionColumns,
-                                                        title = "Permissions for file $fileName",
+                                    onElementClick = {
+                                        MainScope().launch {
+                                            val resourceName = it.first()
+                                            val permissions = getPermissions(resourceName = resourceName)
+                                            if (permissions != null && permissions.isNotEmpty()) {
+                                                setState {
+                                                    openedTables.add(
+                                                        CryptoACTableData(
+                                                            elements = permissions,
+                                                            columns = permissionColumns,
+                                                            title = "Permissions for resource $resourceName",
+                                                        )
                                                     )
-                                                )
+                                                }
+                                            } else {
+                                                props.handleDisplayAlert(OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
                                             }
-                                        } else {
-                                            props.handleDisplayAlert(OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND, CryptoACAlertSeverity.INFO)
                                         }
                                     }
                                 }
                             }
-                        })
+                        )
                     }
                 }
             }
-            /** Show the user-role assignments and role-file permissions */
+            /** Show the user-role assignments and role-resource permissions */
             grid {
                 attrs {
                     container = true
@@ -222,54 +228,58 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                         xs = 12
                         sm = 6
                     }
-                    child(cryptoACTable {
-                        attrs {
-                            elements = state.assignments
-                            tableColumns = assignmentColumns
-                            title = "User-Role Assignments"
-                            onRefresh = {
-                                MainScope().launch {
-                                    val fetchedAssignments = getAssignments()
-                                    if (fetchedAssignments != null) {
-                                        setState {
-                                            assignments = fetchedAssignments
+                    child(
+                        cryptoACTable {
+                            attrs {
+                                elements = state.assignments
+                                tableColumns = assignmentColumns
+                                title = "User-Role Assignments"
+                                onRefresh = {
+                                    MainScope().launch {
+                                        val fetchedAssignments = getAssignments()
+                                        if (fetchedAssignments != null) {
+                                            setState {
+                                                assignments = fetchedAssignments
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            onElementClick = {
-                                props.handleDisplayAlert(OutcomeCode.CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
+                                onElementClick = {
+                                    props.handleDisplayAlert(OutcomeCode.CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
+                                }
                             }
                         }
-                    })
+                    )
                 }
-                /** 5. The table of the role-file permissions */
+                /** 5. The table of the role-resource permissions */
                 grid {
                     attrs {
                         item = true
                         xs = 12
                         sm = 6
                     }
-                    child(cryptoACTable {
-                        attrs {
-                            elements = state.permissions
-                            tableColumns = permissionColumns
-                            title = "Role-File Permissions"
-                            onRefresh = {
-                                MainScope().launch {
-                                    val fetchedPermissions = getPermissions()
-                                    if (fetchedPermissions != null) {
-                                        setState {
-                                            permissions = fetchedPermissions
+                    child(
+                        cryptoACTable {
+                            attrs {
+                                elements = state.permissions
+                                tableColumns = permissionColumns
+                                title = "Role-Topic Permissions"
+                                onRefresh = {
+                                    MainScope().launch {
+                                        val fetchedPermissions = getPermissions()
+                                        if (fetchedPermissions != null) {
+                                            setState {
+                                                permissions = fetchedPermissions
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            onElementClick = {
-                                props.handleDisplayAlert(OutcomeCode.CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
+                                onElementClick = {
+                                    props.handleDisplayAlert(OutcomeCode.CODE_050_FUNCTIONALITY_UNDER_CONSTRUCTION, CryptoACAlertSeverity.INFO)
+                                }
                             }
                         }
-                    })
+                    )
                 }
             }
 
@@ -288,18 +298,20 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                                 xs = it
                                 sm = it
                             }
-                            child(cryptoACTable {
-                                attrs {
-                                    elements = cryptoACTableData.elements
-                                    tableColumns = cryptoACTableData.columns
-                                    title = cryptoACTableData.title
-                                    onClose = {
-                                        setState {
-                                            openedTables.remove(cryptoACTableData)
+                            child(
+                                cryptoACTable {
+                                    attrs {
+                                        elements = cryptoACTableData.elements
+                                        tableColumns = cryptoACTableData.columns
+                                        title = cryptoACTableData.title
+                                        onClose = {
+                                            setState {
+                                                openedTables.remove(cryptoACTableData)
+                                            }
                                         }
                                     }
                                 }
-                            })
+                            )
                         }
                     }
                 }
@@ -319,24 +331,26 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                                 xs = it
                                 sm = it
                             }
-                            child(cryptoACTable {
-                                val topicName = props.topics[i]
-                                val listOfMessages = mutableListOf<Array<String>>()
-                                state.mqttMessages[topicName]?.forEach {
-                                    listOfMessages.add(arrayOf(it))
-                                }
-                                attrs {
-                                    elements = listOfMessages
-                                    tableColumns = mqttMessagesColumns
-                                    title = "Topic: $topicName"
-                                    onClose = {
-                                        setState {
-                                            // props.topics.remove(topic)
-                                            state.mqttMessages.remove(topicName)
+                            child(
+                                cryptoACTable {
+                                    val topicName = props.topics[i]
+                                    val listOfMessages = mutableListOf<Array<String>>()
+                                    state.mqttMessages[topicName]?.forEach {
+                                        listOfMessages.add(arrayOf(it))
+                                    }
+                                    attrs {
+                                        elements = listOfMessages
+                                        tableColumns = mqttMessagesColumns
+                                        title = "Topic: $topicName"
+                                        onClose = {
+                                            setState {
+                                                // props.topics.remove(topic)
+                                                state.mqttMessages.remove(topicName)
+                                            }
                                         }
                                     }
                                 }
-                            })
+                            )
                         }
                     }
                 }
@@ -346,7 +360,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
 
     /**
      * Init by retrieving the lists of users, roles and
-     * files (admin only), assignments and permissions.
+     * resources (admin only), assignments and permissions.
      * Also, create a (secure) web socket to receive
      * MQTT messages from CryptoAC.
      */
@@ -354,7 +368,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
         logger.info { "Initializing the state of the RBACMQTTDashboard component" }
         users = listOf()
         roles = listOf()
-        files = listOf()
+        resources = listOf()
         assignments = listOf()
         permissions = listOf()
         openedTables = mutableListOf()
@@ -363,7 +377,7 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
         MainScope().launch {
             var fetchedUsers: List<Array<String>>? = listOf()
             var fetchedRoles: List<Array<String>>? = listOf()
-            var fetchedFiles: List<Array<String>>? = listOf()
+            var fetchedResources: List<Array<String>>? = listOf()
             var fetchedPermissions: List<Array<String>>? = listOf()
             val fetchedAssignments: List<Array<String>>? = getAssignments()
             if (fetchedAssignments != null) {
@@ -373,15 +387,14 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                     if (fetchedUsers != null) {
                         fetchedRoles = getRoles()
                         if (fetchedRoles != null) {
-                            fetchedFiles = getFiles()
+                            fetchedResources = getResources()
                         }
                     }
                 }
             }
 
-
             /** Create the socket to receive MQTT messages from CryptoAC */
-            val path = "$CRYPTOAC${FILES.replace("{Core}", props.coreType.toString())}"
+            val path = "$CRYPTOAC${RESOURCES.replace("{Core}", props.coreType.toString())}"
             val tempWSS = props.httpClient.webSocketSession(
                 method = HttpMethod.Get,
                 host = window.location.hostname,
@@ -391,7 +404,6 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                 url("wss", host, port, path)
             }
 
-
             setState {
                 if (props.userIsAdmin && fetchedUsers != null) {
                     users = fetchedUsers
@@ -399,8 +411,8 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
                 if (props.userIsAdmin && fetchedRoles != null) {
                     roles = fetchedRoles
                 }
-                if (props.userIsAdmin && fetchedFiles != null) {
-                    files = fetchedFiles
+                if (props.userIsAdmin && fetchedResources != null) {
+                    resources = fetchedResources
                 }
                 if (fetchedAssignments != null) {
                     assignments = fetchedAssignments
@@ -435,12 +447,10 @@ class MQTTDashboard: RBACDashboard<MQTTDashboardProps, MQTTDashboardState>() {
     }
 }
 
-fun rbacMQTTDashboard(handler: MQTTDashboardProps.() -> Unit): ReactElement {
+fun rbacMQTTDashboard(handler: MQTTDashboardProps.() -> Unit): ReactElement<Props> {
     return createElement {
-        child(MQTTDashboard::class) {
+        child(RBACMQTTDashboard::class) {
             this.attrs(handler)
         }
     }!!
 }
-
-

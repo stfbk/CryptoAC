@@ -1,2 +1,0 @@
-./clean.sh
-./buildAll.sh

@@ -4,12 +4,12 @@ import eu.fbk.st.cryptoac.API
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.SERVER
 import eu.fbk.st.cryptoac.core.CoreType
-import eu.fbk.st.cryptoac.core.elements.ElementType
-import eu.fbk.st.cryptoac.core.elements.Role
-import eu.fbk.st.cryptoac.core.elements.User
+import eu.fbk.st.cryptoac.model.unit.Role
+import eu.fbk.st.cryptoac.model.unit.User
 import eu.fbk.st.cryptoac.core.myJson
-import eu.fbk.st.cryptoac.core.tuples.PermissionTuple
-import eu.fbk.st.cryptoac.core.tuples.RoleTuple
+import eu.fbk.st.cryptoac.model.RBACElementType
+import eu.fbk.st.cryptoac.model.tuple.PermissionTuple
+import eu.fbk.st.cryptoac.model.tuple.RoleTuple
 import eu.fbk.st.cryptoac.view.baseURL
 import eu.fbk.st.cryptoac.view.components.custom.CryptoACAlertSeverity
 import eu.fbk.st.cryptoac.view.components.custom.table.*
@@ -37,8 +37,8 @@ external interface RBACDashboardState : State {
     /** The list of roles */
     var roles: List<Array<String>>
 
-    /** The list of files */
-    var files: List<Array<String>>
+    /** The list of resources */
+    var resources: List<Array<String>>
 
     /** The list of assignments */
     var assignments: List<Array<String>>
@@ -50,41 +50,42 @@ external interface RBACDashboardState : State {
     var openedTables: MutableList<CryptoACTableData>
 }
 
-abstract class RBACDashboard<P: RBACDashboardProps, S: RBACDashboardState>: RComponent<P, S>() {
+abstract class RBACDashboard<P : RBACDashboardProps, S : RBACDashboardState> : RComponent<P, S>() {
 
     /** Get the list of users */
     suspend fun getUsers(): List<Array<String>>? {
         val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.USERS.replace("{Core}", props.coreType.toString())}"
-        return getElements(actualEndpoint, OutcomeCode.CODE_004_USER_NOT_FOUND, ElementType.USER)
+        return getElements(actualEndpoint, OutcomeCode.CODE_004_USER_NOT_FOUND, RBACElementType.USER)
     }
 
     /** Get the list of roles */
     suspend fun getRoles(): List<Array<String>>? {
         val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.ROLES.replace("{Core}", props.coreType.toString())}"
-        return getElements(actualEndpoint, OutcomeCode.CODE_005_ROLE_NOT_FOUND, ElementType.ROLE)
+        return getElements(actualEndpoint, OutcomeCode.CODE_005_ROLE_NOT_FOUND, RBACElementType.ROLE)
     }
 
-    /** Get the list of files */
-    suspend fun getFiles(): List<Array<String>>? {
-        val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.FILES.replace("{Core}", props.coreType.toString())}"
-        return getElements(actualEndpoint, OutcomeCode.CODE_006_FILE_NOT_FOUND, ElementType.FILE)
+    /** Get the list of resources */
+    suspend fun getResources(): List<Array<String>>? {
+        val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.RESOURCES.replace("{Core}", props.coreType.toString())}"
+        return getElements(actualEndpoint, OutcomeCode.CODE_006_RESOURCE_NOT_FOUND, RBACElementType.RESOURCE)
     }
 
     /** Get the list of assignments filtering, if given, by [username] and [roleName] */
     suspend fun getAssignments(username: String? = null, roleName: String? = null): List<Array<String>>? {
         val actualEndpoint =
             "$baseURL${API.CRYPTOAC}${API.ASSIGNMENTS.replace("{Core}", props.coreType.toString())}?" +
-                    if (username != null) "${SERVER.USERNAME}=$username" else "" +
-                            if (roleName != null) "${SERVER.ROLE_NAME}=$roleName" else ""
-        return getElements(actualEndpoint, OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND, ElementType.ASSIGNMENT)
+            (if (username != null) "${SERVER.USERNAME}=$username" else "") +
+            if (roleName != null) "${SERVER.ROLE_NAME}=$roleName" else ""
+        return getElements(actualEndpoint, OutcomeCode.CODE_007_ROLETUPLE_NOT_FOUND, RBACElementType.ROLETUPLE)
     }
 
-    /** Get the list of permissions filtering, if given, by [roleName] and [fileName] */
-    suspend fun getPermissions(roleName: String? = null, fileName: String? = null): List<Array<String>>? {
-        val actualEndpoint = "$baseURL${API.CRYPTOAC}${API.PERMISSIONS.replace("{Core}", props.coreType.toString())}?" +
-                if (roleName != null) "${SERVER.ROLE_NAME}=$roleName" else "" +
-                        if (fileName != null) "${SERVER.FILE_NAME}=$fileName" else ""
-        return getElements(actualEndpoint, OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND, ElementType.PERMISSION)
+    /** Get the list of permissions filtering, if given, by [roleName] and [resourceName] */
+    suspend fun getPermissions(roleName: String? = null, resourceName: String? = null): List<Array<String>>? {
+        val actualEndpoint =
+            "$baseURL${API.CRYPTOAC}${API.PERMISSIONS.replace("{Core}", props.coreType.toString())}?" +
+            (if (roleName != null) "${SERVER.ROLE_NAME}=$roleName" else "") +
+            if (resourceName != null) "${SERVER.RESOURCE_NAME}=$resourceName" else ""
+        return getElements(actualEndpoint, OutcomeCode.CODE_008_PERMISSIONTUPLE_NOT_FOUND, RBACElementType.PERMISSIONTUPLE)
     }
 
     // TODO refactor this function
@@ -93,7 +94,7 @@ abstract class RBACDashboard<P: RBACDashboardProps, S: RBACDashboardState>: RCom
      * comparing the [endpoint] response with the provided [errorCode] for when
      * no elements are available
      */
-    private suspend fun getElements(endpoint: String, errorCode: OutcomeCode, type: ElementType): List<Array<String>>? {
+    private suspend fun getElements(endpoint: String, errorCode: OutcomeCode, type: RBACElementType): List<Array<String>>? {
         logger.info { "Getting the list of elements of type $type" }
 
         logger.info { "Sending get request to $endpoint" }
@@ -119,23 +120,23 @@ abstract class RBACDashboard<P: RBACDashboardProps, S: RBACDashboardState>: RCom
         return if (httpResponse != null) {
             if (httpResponse.status == HttpStatusCode.OK) {
                 when (type) {
-                    ElementType.USER ->  {
+                    RBACElementType.USER -> {
                         val users: HashSet<User> = myJson.decodeFromString(httpResponse.bodyAsText())
                         users.map { it.toArray() }
                     }
-                    ElementType.ROLE -> {
+                    RBACElementType.ROLE -> {
                         val roles: HashSet<Role> = myJson.decodeFromString(httpResponse.bodyAsText())
                         roles.map { it.toArray() }
                     }
-                    ElementType.FILE -> {
-                        val files: HashSet<eu.fbk.st.cryptoac.core.elements.File> = myJson.decodeFromString(httpResponse.bodyAsText())
-                        files.map { it.toArray() }
+                    RBACElementType.RESOURCE -> {
+                        val resources: HashSet<eu.fbk.st.cryptoac.model.unit.Resource> = myJson.decodeFromString(httpResponse.bodyAsText())
+                        resources.map { it.toArray() }
                     }
-                    ElementType.ASSIGNMENT -> {
+                    RBACElementType.ROLETUPLE -> {
                         val assignments: HashSet<RoleTuple> = myJson.decodeFromString(httpResponse.bodyAsText())
                         assignments.map { it.toArray() }
                     }
-                    ElementType.PERMISSION -> {
+                    RBACElementType.PERMISSIONTUPLE -> {
                         val permissions: HashSet<PermissionTuple> = myJson.decodeFromString(httpResponse.bodyAsText())
                         permissions.map { it.toArray() }
                     }
@@ -167,9 +168,9 @@ abstract class RBACDashboard<P: RBACDashboardProps, S: RBACDashboardState>: RCom
     fun getColumnsForTables(numberOfTables: Int): MutableList<Int> {
         var tablesLeft = numberOfTables
         val columnsForRow = mutableListOf<Int>()
-        while(tablesLeft > 0) {
+        while (tablesLeft > 0) {
             tablesLeft = when (tablesLeft) {
-                1 ->  {
+                1 -> {
                     columnsForRow.add(12)
                     0
                 }

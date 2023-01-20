@@ -2,20 +2,18 @@ package eu.fbk.st.cryptoac.server
 
 import eu.fbk.st.cryptoac.Constants.ADMIN
 import eu.fbk.st.cryptoac.OutcomeCode
-import eu.fbk.st.cryptoac.Parameters.adminCoreRBACMOCKParameters
+import eu.fbk.st.cryptoac.Parameters.adminCoreRBACMQTTParameters
+import eu.fbk.st.cryptoac.TestUtilities
 import eu.fbk.st.cryptoac.TestUtilities.Companion.dir
 import eu.fbk.st.cryptoac.core.CoreType
-import eu.fbk.st.cryptoac.core.tuples.EnforcementType
-import eu.fbk.st.cryptoac.core.tuples.PermissionType
 import eu.fbk.st.cryptoac.inputStream
+import eu.fbk.st.cryptoac.model.tuple.PermissionType
+import eu.fbk.st.cryptoac.model.unit.EnforcementType
 import eu.fbk.st.cryptoac.runCommand
+import eu.fbk.st.cryptoac.server.CryptoACUtilities.Companion.initAdmin
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-
+import org.junit.jupiter.api.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class CryptoACRoutesTest {
@@ -24,16 +22,32 @@ internal class CryptoACRoutesTest {
 
     @BeforeAll
     fun setUpAll() {
-        "./buildAll.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
-        processDocker = "./startCryptoAC_proxy.sh \"cryptoac_proxy\"".runCommand(dir, hashSetOf("Started ServerConnector"))
-        CryptoACUtilities.initAdminInRBAC_MOCK(adminCoreRBACMOCKParameters)
+        "./cleanAllAndBuild.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
+        processDocker = "./startCryptoAC_ALL.sh \"cryptoac_redis cryptoac_proxy cryptoac_mosquitto_dynsec\"".runCommand(dir, hashSetOf(
+            "Started ServerConnector",
+            "Server initialized",
+            "mosquitto version 2.0.14 running",
+        ))
+    }
+
+    @BeforeEach
+    fun setUp() {
+        initAdmin(adminCoreRBACMQTTParameters)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        TestUtilities.resetACServiceRBACDynSEC()
+        TestUtilities.resetDMServiceRBACMQTT()
+        TestUtilities.resetMMServiceRBACRedis()
+        CryptoACUtilities.deleteProfile(ADMIN)
     }
 
     @AfterAll
     fun tearDownAll() {
         processDocker!!.destroy()
         Runtime.getRuntime().exec("kill -SIGINT ${processDocker!!.pid()}")
-        "./clean.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
+        "./cleanAll.sh".runCommand(dir, hashSetOf("clean_all_end_of_script"))
     }
 
 
@@ -43,62 +57,66 @@ internal class CryptoACRoutesTest {
     fun `create profile of user as user or user as admin works`() {
         /** create profile of user as user */
         run {
-            val parameters = CryptoACUtilities.addUserInRBAC_MOCK(username = "alice")
-            CryptoACUtilities.initUserInRBAC_MOCK(parameters!!, loggedUser = "alice")
+            val parameters = CryptoACUtilities.addUser(username = "alice")
+            CryptoACUtilities.initUser(parameters!!, loggedUser = "alice")
         }
 
         /** create profile of user as admin */
         run {
-            val parameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-            CryptoACUtilities.initUserInRBAC_MOCK(parameters!!, loggedUser = ADMIN)
+            val parameters = CryptoACUtilities.addUser("bob")
+            CryptoACUtilities.initUser(parameters!!, loggedUser = ADMIN)
         }
 
-        /** Cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        /** cleanup */
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("alice")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `create profile of user as another user or while not logged-in fails`() {
-        val aliceParameters = CryptoACUtilities.addUserInRBAC_MOCK("alice")
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** create profile of user as another user */
         runBlocking {
-            CryptoACUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_037_FORBIDDEN,
+            CryptoACUtilities.initUser(bobParameters, OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden, loggedUser = "alice")
         }
         /** create profile of user while not logged-in */
         runBlocking {
-            CryptoACUtilities.initUserInRBAC_MOCK(bobParameters, OutcomeCode.CODE_038_UNAUTHORIZED,
+            CryptoACUtilities.initUser(bobParameters, OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
         }
 
-        /** Cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        /** cleanup */
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("alice")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `get profile of admin as admin, user as user or user as admin works`() {
-        val aliceParameters = CryptoACUtilities.addUserInRBAC_MOCK("alice")
-        CryptoACUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        CryptoACUtilities.initUser(aliceParameters!!)
 
         /** get profile of admin as admin */
         run {
-            val getAdminParameters = CryptoACUtilities.getProfileInRBAC_MOCK(ADMIN)
-            assert(adminCoreRBACMOCKParameters.user.isAdmin == getAdminParameters!!.user.isAdmin)
-            assert(adminCoreRBACMOCKParameters.coreType == getAdminParameters.coreType)
-            assert(adminCoreRBACMOCKParameters.user.name == getAdminParameters.user.name)
+            val getAdminParameters = CryptoACUtilities.getProfile(ADMIN)
+            assert(adminCoreRBACMQTTParameters.user.isAdmin == getAdminParameters!!.user.isAdmin)
+            assert(adminCoreRBACMQTTParameters.coreType == getAdminParameters.coreType)
+            assert(adminCoreRBACMQTTParameters.user.name == getAdminParameters.user.name)
         }
 
         /** get profile of user as user */
         run {
-            val getAliceParameters = CryptoACUtilities.getProfileInRBAC_MOCK("alice", loggedUser = "alice")
+            val getAliceParameters = CryptoACUtilities.getProfile("alice", loggedUser = "alice")
             assert(aliceParameters.user.isAdmin == getAliceParameters!!.user.isAdmin)
             assert(aliceParameters.coreType == getAliceParameters.coreType)
             assert(aliceParameters.user.name == getAliceParameters.user.name)
@@ -106,27 +124,28 @@ internal class CryptoACRoutesTest {
 
         /** get profile of user as admin */
         run {
-            val getAliceParameters = CryptoACUtilities.getProfileInRBAC_MOCK("alice")
+            val getAliceParameters = CryptoACUtilities.getProfile("alice")
             assert(aliceParameters.user.isAdmin == getAliceParameters!!.user.isAdmin)
             assert(aliceParameters.coreType == getAliceParameters.coreType)
             assert(aliceParameters.user.name == getAliceParameters.user.name)
         }
 
-        /** Cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
+        /** cleanup */
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteUser("alice")
     }
 
     @Test
     fun `get profile of user as another user or while not logged-in fails`() {
 
-        val aliceParameters = CryptoACUtilities.addUserInRBAC_MOCK("alice")
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** get profile of user as another user */
         run {
-            CryptoACUtilities.getProfileInRBAC_MOCK("alice",
+            CryptoACUtilities.getProfile("alice",
                 loggedUser = "bob",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden)
@@ -134,46 +153,52 @@ internal class CryptoACRoutesTest {
 
         /** get profile of user while not logged-in */
         run {
-            CryptoACUtilities.getProfileInRBAC_MOCK("alice",
+            CryptoACUtilities.getProfile("alice",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
         }
 
-        /** Cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        /** cleanup */
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("alice")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `delete profile of user as admin or user as user works`() {
-        val aliceParameters = CryptoACUtilities.addUserInRBAC_MOCK("alice")
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** delete profile of user as admin */
         run {
-            CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
+            CryptoACUtilities.deleteProfile("alice")
         }
 
         /** delete profile of user as user */
         run {
-            CryptoACUtilities.deleteProfileInRBAC_MOCK("bob", loggedUser = "bob")
+            CryptoACUtilities.deleteProfile("bob", loggedUser = "bob")
         }
+        
+        /** cleanup */
+        CryptoACUtilities.deleteUser("alice")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `delete profile of user as another user or while not logged-in fails`() {
-        val aliceParameters = CryptoACUtilities.addUserInRBAC_MOCK("alice")
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** delete profile of user as another user */
         run {
-            CryptoACUtilities.deleteProfileInRBAC_MOCK(
+            CryptoACUtilities.deleteProfile(
                 "alice",
                 loggedUser = "bob",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
@@ -183,52 +208,55 @@ internal class CryptoACRoutesTest {
 
         /** delete profile of user while not logged */
         run {
-            CryptoACUtilities.deleteProfileInRBAC_MOCK("alice",
+            CryptoACUtilities.deleteProfile("alice",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
         }
 
-        /** Cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        /** cleanup */
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("alice")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `update profile of admin as admin, user as user or user as admin works`() {
-        val aliceParameters = CryptoACUtilities.addUserInRBAC_MOCK("alice")
-        CryptoACUtilities.initUserInRBAC_MOCK(aliceParameters!!)
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        CryptoACUtilities.initUser(aliceParameters!!)
 
         /** update profile of admin as admin */
         run {
-            CryptoACUtilities.updateProfileInRBAC_MOCK(adminCoreRBACMOCKParameters)
+            CryptoACUtilities.updateProfile(adminCoreRBACMQTTParameters)
         }
 
         /** update profile of user as user */
         run {
-            CryptoACUtilities.updateProfileInRBAC_MOCK(aliceParameters, loggedUser = "alice")
+            CryptoACUtilities.updateProfile(aliceParameters, loggedUser = "alice")
         }
 
         /** get profile of user as admin */
         run {
-            CryptoACUtilities.updateProfileInRBAC_MOCK(aliceParameters)
+            CryptoACUtilities.updateProfile(aliceParameters)
         }
 
-        /** Cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
+        /** cleanup */
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteUser("alice")
     }
 
     @Test
     fun `update profile of user as another user or while not logged-in fails`() {
-        val aliceParameters = CryptoACUtilities.addUserInRBAC_MOCK("alice")
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(aliceParameters!!)
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** update profile of user as another user */
         run {
-            CryptoACUtilities.updateProfileInRBAC_MOCK(aliceParameters,
+            CryptoACUtilities.updateProfile(aliceParameters,
                 loggedUser = "bob",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden)
@@ -236,16 +264,18 @@ internal class CryptoACRoutesTest {
 
         /** update profile of user while not logged-in */
         run {
-            CryptoACUtilities.updateProfileInRBAC_MOCK(aliceParameters,
+            CryptoACUtilities.updateProfile(aliceParameters,
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
         }
 
-        /** Cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("alice")
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        /** cleanup */
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("alice")
+        CryptoACUtilities.deleteUser("bob")
     }
 
 
@@ -258,20 +288,23 @@ internal class CryptoACRoutesTest {
     fun `add user works`() {
         /** add user */
         run {
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = "alice",
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteUser("alice")
     }
 
     @Test
-    fun `add user not logged-in, not logged as admin, with no username or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `add user not logged-in, not logged as admin, with no username or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** add user not logged-in */
         run {
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = "alice",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -281,7 +314,7 @@ internal class CryptoACRoutesTest {
 
         /** add user not logged as admin */
         run {
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = "alice",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
@@ -291,52 +324,57 @@ internal class CryptoACRoutesTest {
 
         /** add user with no username */
         run {
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** add user with wrong core parameter */
+        /** add user with wrong profile */
         run {
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = "alice",
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = "alice",
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `delete user works`() {
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.deleteProfile("alice")
+
         /** delete user */
         run {
-            CryptoACUtilities.deleteUserInRBAC_MOCK(
+            CryptoACUtilities.deleteUser(
                 username = "alice",
             )
         }
     }
 
     @Test
-    fun `delete user not logged-in, not logged as admin or wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `delete user not logged-in, not logged as admin or wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** delete user not logged-in */
         run {
-            CryptoACUtilities.deleteUserInRBAC_MOCK(
+            CryptoACUtilities.deleteUser(
                 username = "alice",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -346,7 +384,7 @@ internal class CryptoACRoutesTest {
 
         /** delete user not logged as admin */
         run {
-            CryptoACUtilities.deleteUserInRBAC_MOCK(
+            CryptoACUtilities.deleteUser(
                 username = "alice",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
@@ -354,45 +392,49 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** delete user with wrong core parameter */
+        /** delete user with wrong profile */
         run {
-            CryptoACUtilities.deleteUserInRBAC_MOCK(
+            CryptoACUtilities.deleteUser(
                 username = "alice",
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = "alice",
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `add role works`() {
         /** add role */
         run {
-            CryptoACUtilities.addRoleInRBAC_MOCK(
-                roleName = "alice",
+            CryptoACUtilities.addRole(
+                roleName = "employee",
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteRole("employee")
     }
 
     @Test
-    fun `add role not logged-in, not logged as admin, with no role name or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `add role not logged-in, not logged as admin, with no role name or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** add role not logged-in */
         run {
-            CryptoACUtilities.addRoleInRBAC_MOCK(
+            CryptoACUtilities.addRole(
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -402,7 +444,7 @@ internal class CryptoACRoutesTest {
 
         /** add role not logged as admin */
         run {
-            CryptoACUtilities.addRoleInRBAC_MOCK(
+            CryptoACUtilities.addRole(
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
@@ -412,52 +454,57 @@ internal class CryptoACRoutesTest {
 
         /** add role with no role name */
         run {
-            CryptoACUtilities.addRoleInRBAC_MOCK(
+            CryptoACUtilities.addRole(
                 roleName = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** add role with wrong core parameter */
+        /** add role with wrong profile */
         run {
-            CryptoACUtilities.addRoleInRBAC_MOCK(
+            CryptoACUtilities.addRole(
                 roleName = "employee",
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addUserInRBAC_MOCK(
+            CryptoACUtilities.addUser(
                 username = "alice",
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `delete role works`() {
+        CryptoACUtilities.addRole(
+            roleName = "employee",
+        )
+
         /** delete role */
         run {
-            CryptoACUtilities.deleteRoleInRBAC_MOCK(
+            CryptoACUtilities.deleteRole(
                 roleName = "employee",
             )
         }
     }
 
     @Test
-    fun `delete role not logged-in, not logged as admin or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `delete role not logged-in, not logged as admin or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** delete role not logged-in */
         run {
-            CryptoACUtilities.deleteRoleInRBAC_MOCK(
+            CryptoACUtilities.deleteRole(
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -467,7 +514,7 @@ internal class CryptoACRoutesTest {
 
         /** delete role not logged as admin */
         run {
-            CryptoACUtilities.deleteRoleInRBAC_MOCK(
+            CryptoACUtilities.deleteRole(
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
@@ -475,102 +522,120 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** delete role with wrong core parameter */
+        /** delete role with wrong profile */
         run {
-            CryptoACUtilities.deleteRoleInRBAC_MOCK(
+            CryptoACUtilities.deleteRole(
                 roleName = "employee",
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.deleteRoleInRBAC_MOCK(
+            CryptoACUtilities.deleteRole(
                 roleName = "employee",
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
-    fun `delete file works`() {
-        /** delete file */
+    fun `delete resource works`() {
+        CryptoACUtilities.addResourceForm(
+            resourceName = "test",
+            enforcementType = EnforcementType.COMBINED.toString(),
+        )
+
+        /** delete resource */
         run {
-            CryptoACUtilities.deleteFileInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.deleteResource(
+                resourceName = "test",
             )
         }
     }
 
     @Test
-    fun `delete file not logged-in, not logged as admin or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `delete resource not logged-in, not logged as admin or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
-        /** delete file not logged-in */
+        /** delete resource not logged-in */
         run {
-            CryptoACUtilities.deleteFileInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.deleteResource(
+                resourceName = "test",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
         }
 
-        /** delete file not logged as admin */
+        /** delete resource not logged as admin */
         run {
-            CryptoACUtilities.deleteFileInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.deleteResource(
+                resourceName = "test",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob"
             )
         }
 
-        /** delete file with wrong core parameter */
+        /** delete resource with wrong profile */
         run {
-            CryptoACUtilities.deleteFileInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.deleteResource(
+                resourceName = "test",
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.deleteFileInRBAC_MOCK(
-                fileName = "test",
-                core = CoreType.RBAC_CLOUD.toString(),
+            CryptoACUtilities.deleteResource(
+                resourceName = "test",
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
-
+        
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `assign user to role works`() {
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.addRole(
+            roleName = "employee",
+        )
+
         /** assign user to role */
         run {
-            CryptoACUtilities.assignUserToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignUserToRole(
                 username = "alice",
                 roleName = "employee",
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteRole("employee")
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteUser("alice")
     }
 
     @Test
-    fun `assign user to role not logged-in, not logged as admin, with no username or role name or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `assign user to role not logged-in, not logged as admin, with no username or role name or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** assign user to role not logged-in */
         run {
-            CryptoACUtilities.assignUserToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignUserToRole(
                 username = "alice",
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
@@ -581,7 +646,7 @@ internal class CryptoACRoutesTest {
 
         /** assign user to role not logged as admin */
         run {
-            CryptoACUtilities.assignUserToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignUserToRole(
                 username = "alice",
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
@@ -592,7 +657,7 @@ internal class CryptoACRoutesTest {
 
         /** assign user to role with no username */
         run {
-            CryptoACUtilities.assignUserToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignUserToRole(
                 username = null,
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
@@ -602,7 +667,7 @@ internal class CryptoACRoutesTest {
 
         /** assign user to role with no role name */
         run {
-            CryptoACUtilities.assignUserToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignUserToRole(
                 username = "alice",
                 roleName = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
@@ -610,9 +675,9 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** assign user to role with wrong core parameter */
+        /** assign user to role with wrong profile */
         run {
-            CryptoACUtilities.assignUserToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignUserToRole(
                 username = "alice",
                 roleName = "employee",
                 core = "this_is_wrong",
@@ -620,38 +685,54 @@ internal class CryptoACRoutesTest {
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignUserToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignUserToRole(
                 username = "alice",
                 roleName = "employee",
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `revoke user from role works`() {
+        val aliceParameters = CryptoACUtilities.addUser("alice")
+        CryptoACUtilities.initUser(aliceParameters!!)
+        CryptoACUtilities.addRole(
+            roleName = "employee",
+        )
+        CryptoACUtilities.assignUserToRole(
+            username = "alice",
+            roleName = "employee",
+        )
+
         /** revoke user from role */
         run {
-            CryptoACUtilities.revokeUserFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokeUserFromRole(
                 username = "alice",
                 roleName = "employee",
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteRole("employee")
+        CryptoACUtilities.deleteProfile("alice")
+        CryptoACUtilities.deleteUser("alice")
     }
 
     @Test
-    fun `revoke user from role not logged-in, not logged as admin or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `revoke user from role not logged-in, not logged as admin or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** revoke user to role not logged-in */
         run {
-            CryptoACUtilities.revokeUserFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokeUserFromRole(
                 username = "alice",
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
@@ -662,7 +743,7 @@ internal class CryptoACRoutesTest {
 
         /** revoke user to role not logged as admin */
         run {
-            CryptoACUtilities.revokeUserFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokeUserFromRole(
                 username = "alice",
                 roleName = "employee",
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
@@ -671,9 +752,9 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** revoke user to role with wrong core parameter */
+        /** revoke user to role with wrong profile */
         run {
-            CryptoACUtilities.revokeUserFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokeUserFromRole(
                 username = "alice",
                 roleName = "employee",
                 core = "this_is_wrong",
@@ -681,77 +762,81 @@ internal class CryptoACRoutesTest {
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.revokeUserFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokeUserFromRole(
                 username = "alice",
                 roleName = "employee",
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
-    fun `assign read or write or both permissions to role over file works`() {
-        /** assign read permission to role over file */
+    fun `assign read or read-write permissions to role over resource works`() {
+        CryptoACUtilities.addRole(
+            roleName = "employee",
+        )
+        CryptoACUtilities.addResourceForm(
+            resourceName = "test",
+            enforcementType = EnforcementType.COMBINED.toString(),
+        )
+
+        /** assign read permission to role over resource */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
             )
         }
 
-        /** assign write permission to role over file */
+        /** assign read-write permission to role over resource */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
-                permission = PermissionType.WRITE.toString(),
-            )
-        }
-
-        /** assign read-write permission to role over file */
-        run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
-                roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteResource("test")
+        CryptoACUtilities.deleteRole("employee")
     }
 
     @Test
-    fun `assign read or write or both permissions to role over file not logged-in, not logged as admin, with no role name or file name or null or wrong permission or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `assign read or write or both permissions to role over resource not logged-in, not logged as admin, with no role name or resource name or null or wrong permission or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
-        /** assign permission to role over file not logged-in */
+        /** assign permission to role over resource not logged-in */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -759,29 +844,29 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** assign permission to role over file not logged as admin */
+        /** assign permission to role over resource not logged as admin */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
@@ -789,198 +874,207 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** assign permission to role over file with no role name */
+        /** assign permission to role over resource with no role name */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = null,
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = null,
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = null,
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** assign permission to role over file with no file name */
+        /** assign permission to role over resource with no resource name */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = null,
+                resourceName = null,
                 permission = PermissionType.READ.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = null,
+                resourceName = null,
                 permission = PermissionType.WRITE.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = null,
+                resourceName = null,
                 permission = PermissionType.READWRITE.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** assign permission to role over file with null or wrong permission */
+        /** assign permission to role over resource with null or wrong permission */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** assign permission to role over file with wrong core parameter */
+        /** assign permission to role over resource with wrong profile */
         run {
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
-            CryptoACUtilities.assignPermissionToRoleInRBAC_MOCK(
+            CryptoACUtilities.assignPermissionToRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
-    fun `revoke read or write or both permissions from role over file works`() {
-        /** assign read permission to role over file */
-        run {
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
-                roleName = "employee",
-                fileName = "test",
-                permission = PermissionType.READ.toString(),
-            )
-        }
+    fun `revoke write or read-write permissions from role over resource works`() {
+        CryptoACUtilities.addRole(
+            roleName = "employee",
+        )
+        CryptoACUtilities.addResourceForm(
+            resourceName = "test",
+            enforcementType = EnforcementType.COMBINED.toString(),
+        )
+        CryptoACUtilities.assignPermissionToRole(
+            roleName = "employee",
+            resourceName = "test",
+            permission = PermissionType.READWRITE.toString(),
+        )
 
-        /** assign write permission to role over file */
+        /** revoke write permission from role over resource */
         run {
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
             )
         }
 
-        /** assign read-write permission to role over file */
+        /** revoke read-write permission from role over resource */
         run {
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteResource("test")
+        CryptoACUtilities.deleteRole("employee")
     }
 
     @Test
-    fun `revoke read or write or both permissions from role over file not logged-in, not logged as admin, with wrong permission or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `revoke read or write or both permissions from role over resource not logged-in, not logged as admin, with wrong permission or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
-        /** revoke permission to role over file not logged-in */
+        /** revoke permission to role over resource not logged-in */
         run {
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -988,29 +1082,29 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** revoke permission to role over file not logged as admin */
+        /** revoke permission to role over resource not logged as admin */
         run {
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
@@ -1018,90 +1112,91 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** revoke permission to role over file with wrong permission */
+        /** revoke permission to role over resource with wrong permission */
         run {
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** revoke permission to role over file with wrong core parameter */
+        /** revoke permission to role over resource with wrong profile */
         run {
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READ.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.WRITE.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
-            CryptoACUtilities.revokePermissionFromRoleInRBAC_MOCK(
+            CryptoACUtilities.revokePermissionFromRole(
                 roleName = "employee",
-                fileName = "test",
+                resourceName = "test",
                 permission = PermissionType.READWRITE.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `get users works`() {
         /** get users */
         run {
-            assert(CryptoACUtilities.getUsers(loggedUser = ADMIN)!!.isEmpty())
+            assert(CryptoACUtilities.getUsers(loggedUser = ADMIN)!!.first().name == ADMIN)
         }
     }
 
     @Test
-    fun `get users not logged-in, not logged as admin or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `get users not logged-in, not logged as admin or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** get users not logged-in */
         run {
@@ -1121,7 +1216,7 @@ internal class CryptoACRoutesTest {
                 ) == null)
         }
 
-        /** get users with wrong core parameter */
+        /** get users with wrong profile */
         run {
             assert(CryptoACUtilities.getUsers(
                 core = "this_is_wrong",
@@ -1130,28 +1225,29 @@ internal class CryptoACRoutesTest {
             ) == null)
 
             assert(CryptoACUtilities.getUsers(
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
     fun `get roles works`() {
         /** get roles */
         run {
-            assert(CryptoACUtilities.getRoles(loggedUser = ADMIN)!!.isEmpty())
+            assert(CryptoACUtilities.getRoles(loggedUser = ADMIN)!!.first().name == ADMIN)
         }
     }
 
     @Test
-    fun `get roles not logged-in, not logged as admin or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `get roles not logged-in, not logged as admin or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
         /** get roles not logged-in */
         run {
@@ -1171,7 +1267,7 @@ internal class CryptoACRoutesTest {
             ) == null)
         }
 
-        /** get roles with wrong core parameter */
+        /** get roles with wrong profile */
         run {
             assert(CryptoACUtilities.getRoles(
                 core = "this_is_wrong",
@@ -1180,118 +1276,130 @@ internal class CryptoACRoutesTest {
             ) == null)
 
             assert(CryptoACUtilities.getRoles(
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
     @Test
-    fun `get files works`() {
-        /** get files */
+    fun `get resources works`() {
+        /** get resources */
         run {
-            assert(CryptoACUtilities.getFiles(loggedUser = ADMIN)!!.isEmpty())
+            assert(CryptoACUtilities.getResources(loggedUser = ADMIN)!!.isEmpty())
         }
     }
 
     @Test
-    fun `get files not logged-in, not logged as admin or with wrong core parameter fails`() {
-        val bobParameters = CryptoACUtilities.addUserInRBAC_MOCK("bob")
-        CryptoACUtilities.initUserInRBAC_MOCK(bobParameters!!)
+    fun `get resources not logged-in, not logged as admin or with wrong profile fails`() {
+        val bobParameters = CryptoACUtilities.addUser("bob")
+        CryptoACUtilities.initUser(bobParameters!!)
 
-        /** get files not logged-in */
+        /** get resources not logged-in */
         run {
-            assert(CryptoACUtilities.getFiles(
+            assert(CryptoACUtilities.getResources(
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false,
             ) == null)
         }
 
-        /** get files not logged as admin */
+        /** get resources not logged as admin */
         run {
-            assert(CryptoACUtilities.getFiles(
+            assert(CryptoACUtilities.getResources(
                 expectedCode = OutcomeCode.CODE_037_FORBIDDEN,
                 expectedStatus = HttpStatusCode.Forbidden,
                 loggedUser = "bob",
             ) == null)
         }
 
-        /** get files with wrong core parameter */
+        /** get resources with wrong profile */
         run {
-            assert(CryptoACUtilities.getFiles(
+            assert(CryptoACUtilities.getResources(
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             ) == null)
 
-            assert(CryptoACUtilities.getFiles(
-                core = CoreType.RBAC_CLOUD.toString(),
+            assert(CryptoACUtilities.getResources(
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
         }
 
         /** cleanup */
-        CryptoACUtilities.deleteProfileInRBAC_MOCK("bob")
+        CryptoACUtilities.deleteProfile("bob")
+        CryptoACUtilities.deleteUser("bob")
     }
 
 
 
     /** User routing testing */
     @Test
-    fun `add combined or traditional file form or binary works`() {
-        /** add file form */
+    fun `add combined or traditional resource form or binary works`() {
+        /** add resource form */
         run {
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test1",
                 enforcementType = EnforcementType.COMBINED.toString(),
-                
             )
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test2",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                
             )
         }
 
-        /** add file binary */
+        /** add resource binary */
         run {
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test3",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
-                
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test4",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteResource(
+            resourceName = "test1",
+        )
+        CryptoACUtilities.deleteResource(
+            resourceName = "test2",
+        )
+        CryptoACUtilities.deleteResource(
+            resourceName = "test3",
+        )
+        CryptoACUtilities.deleteResource(
+            resourceName = "test4",
+        )
     }
 
     @Test
-    fun `add combined or traditional file form or binary not logged-in, with no file name or content, null or wrong enforcement type or or with wrong core parameter fails`() {
-        /** add file form not logged-in */
+    fun `add combined or traditional resource form or binary not logged-in, with no resource name or content, null or wrong enforcement type or or with wrong profile fails`() {
+        /** add resource form not logged-in */
         run {
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -1299,36 +1407,36 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** add file form with no file name */
+        /** add resource form with no resource name */
         run {
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = null,
+            CryptoACUtilities.addResourceForm(
+                resourceName = null,
                 enforcementType = EnforcementType.COMBINED.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = null,
+            CryptoACUtilities.addResourceForm(
+                resourceName = null,
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** addFileFormUrlEncodedInRBAC_MOCK does not have content */
+        /** addResourceFormUrlEncodedInRBAC_MOCK does not have content */
 
-        /** add file form with null or wrong enforcement type */
+        /** add resource form with null or wrong enforcement type */
         run {
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
@@ -1336,57 +1444,57 @@ internal class CryptoACRoutesTest {
         }
 
 
-        /** add file form with wrong core parameter */
+        /** add resource form with wrong profile */
         run {
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = EnforcementType.COMBINED.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
-            CryptoACUtilities.addFileFormInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.addResourceForm(
+                resourceName = "test",
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
 
-        /** add file binary not logged-in */
+        /** add resource binary not logged-in */
         run {
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
@@ -1394,140 +1502,147 @@ internal class CryptoACRoutesTest {
             )
         }
 
-        /** add file binary with no file name */
+        /** add resource binary with no resource name */
         run {
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = null,
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = null,
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = null,
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = null,
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** add file binary with no content */
+        /** add resource binary with no content */
         run {
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = null,
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = null,
                 enforcementType = EnforcementType.COMBINED.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = null,
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = null,
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** add file binary with null or wrong enforcement type */
+        /** add resource binary with null or wrong enforcement type */
         run {
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** add file binary with wrong core parameter */
+        /** add resource binary with wrong profile */
         run {
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.COMBINED.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
 
-            CryptoACUtilities.addFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.addResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 enforcementType = EnforcementType.TRADITIONAL.toString(),
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
-
-
     }
 
     @Test
-    fun `read file works`() {
-        /** read file */
+    fun `read resource works`() {
+        CryptoACUtilities.addResourceForm(
+            resourceName = "test",
+            enforcementType = EnforcementType.COMBINED.toString(),
+        )
+
+        /** read resource */
         run {
-            CryptoACUtilities.readFileInRBAC_MOCK(
-                fileName = "test",
-                
+            CryptoACUtilities.readResource(
+                resourceName = "test",
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteResource(
+            resourceName = "test",
+        )
     }
 
     @Test
-    fun `read file not logged-in or with wrong core parameter fails`() {
-        /** read file not logged-in */
+    fun `read resource not logged-in or with wrong profile fails`() {
+        /** read resource not logged-in */
         run {
-            CryptoACUtilities.readFileInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.readResource(
+                resourceName = "test",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
         }
 
-        /** read file with wrong core parameter */
+        /** read resource with wrong profile */
         run {
-            CryptoACUtilities.readFileInRBAC_MOCK(
-                fileName = "test",
+            CryptoACUtilities.readResource(
+                resourceName = "test",
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.readFileInRBAC_MOCK(
-                fileName = "test",
-                core = CoreType.RBAC_CLOUD.toString(),
+            CryptoACUtilities.readResource(
+                resourceName = "test",
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
@@ -1536,124 +1651,140 @@ internal class CryptoACRoutesTest {
     }
 
     @Test
-    fun `write file form or binary works`() {
-        /** write file form */
+    fun `write resource form or binary works`() {
+        CryptoACUtilities.addResourceForm(
+            resourceName = "test1",
+            enforcementType = EnforcementType.COMBINED.toString(),
+        )
+        CryptoACUtilities.addResourceBinary(
+            resourceName = "test2",
+            resourceContent = "content".inputStream(),
+            enforcementType = EnforcementType.TRADITIONAL.toString(),
+        )
+
+        /** write resource form */
         run {
-            CryptoACUtilities.writeFileFormInRBAC_MOCK (
-                fileName = "test",
-                fileContent = "content",
-                
+            CryptoACUtilities.writeResourceForm(
+                resourceName = "test1",
+                resourceContent = "content",
             )
         }
 
-        /** write file binary */
+        /** write resource binary */
         run {
-            CryptoACUtilities.writeFileBinaryInRBAC_MOCK (
-                fileName = "test",
-                fileContent = "content".inputStream(),
-                
+            CryptoACUtilities.writeResourceBinary(
+                resourceName = "test2",
+                resourceContent = "content".inputStream(),
             )
         }
+
+        /** cleanup */
+        CryptoACUtilities.deleteResource(
+            resourceName = "test1",
+        )
+        CryptoACUtilities.deleteResource(
+            resourceName = "test2",
+        )
     }
 
     @Test
-    fun `write combined or traditional file form or binary not logged-in, with no file name or content or with wrong core parameter fails`() {
-        /** write file form not logged-in */
+    fun `write combined or traditional resource form or binary not logged-in, with no resource name or content or with wrong profile fails`() {
+        /** write resource form not logged-in */
         run {
-            CryptoACUtilities.writeFileFormInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content",
+            CryptoACUtilities.writeResourceForm(
+                resourceName = "test",
+                resourceContent = "content",
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
         }
 
-        /** write file form with no file name */
+        /** write resource form with no resource name */
         run {
-            CryptoACUtilities.writeFileFormInRBAC_MOCK(
-                fileName = null,
-                fileContent = "content",
+            CryptoACUtilities.writeResourceForm(
+                resourceName = null,
+                resourceContent = "content",
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** write file form with no content */
+        /** write resource form with no content */
         run {
-            CryptoACUtilities.writeFileFormInRBAC_MOCK(
-                fileName = "test",
-                fileContent = null,
+            CryptoACUtilities.writeResourceForm(
+                resourceName = "test",
+                resourceContent = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** write file form with wrong core parameter */
+        /** write resource form with wrong profile */
         run {
-            CryptoACUtilities.writeFileFormInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content",
+            CryptoACUtilities.writeResourceForm(
+                resourceName = "test",
+                resourceContent = "content",
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.writeFileFormInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content",
-                core = CoreType.RBAC_CLOUD.toString(),
+            CryptoACUtilities.writeResourceForm(
+                resourceName = "test",
+                resourceContent = "content",
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
         }
 
 
-        /** write file binary not logged-in */
+        /** write resource binary not logged-in */
         run {
-            CryptoACUtilities.writeFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.writeResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 expectedCode = OutcomeCode.CODE_038_UNAUTHORIZED,
                 expectedStatus = HttpStatusCode.Unauthorized,
                 login = false
             )
         }
 
-        /** write file binary with no file name */
+        /** write resource binary with no resource name */
         run {
-            CryptoACUtilities.writeFileBinaryInRBAC_MOCK(
-                fileName = null,
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.writeResourceBinary(
+                resourceName = null,
+                resourceContent = "content".inputStream(),
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** write file binary with no content */
+        /** write resource binary with no content */
         run {
-            CryptoACUtilities.writeFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = null,
+            CryptoACUtilities.writeResourceBinary(
+                resourceName = "test",
+                resourceContent = null,
                 expectedCode = OutcomeCode.CODE_019_MISSING_PARAMETERS,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
         }
 
-        /** write file binary with wrong core parameter */
+        /** write resource binary with wrong profile */
         run {
-            CryptoACUtilities.writeFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
+            CryptoACUtilities.writeResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
                 core = "this_is_wrong",
                 expectedCode = OutcomeCode.CODE_020_INVALID_PARAMETER,
                 expectedStatus = HttpStatusCode.UnprocessableEntity,
             )
 
-            CryptoACUtilities.writeFileBinaryInRBAC_MOCK(
-                fileName = "test",
-                fileContent = "content".inputStream(),
-                core = CoreType.RBAC_CLOUD.toString(),
+            CryptoACUtilities.writeResourceBinary(
+                resourceName = "test",
+                resourceContent = "content".inputStream(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             )
@@ -1664,12 +1795,12 @@ internal class CryptoACRoutesTest {
     fun `get assignments works`() {
         /** get assignments */
         run {
-            assert(CryptoACUtilities.getAssignments(loggedUser = ADMIN)!!.isEmpty())
+            assert(CryptoACUtilities.getAssignments(loggedUser = ADMIN)!!.first().username == ADMIN)
         }
     }
 
     @Test
-    fun `get assignments not logged-in or with wrong core parameter fails`() {
+    fun `get assignments not logged-in or with wrong profile fails`() {
         /** get assignments not logged-in */
         run {
             assert(CryptoACUtilities.getAssignments(
@@ -1679,7 +1810,7 @@ internal class CryptoACRoutesTest {
             ) == null)
         }
 
-        /** get assignments with wrong core parameter */
+        /** get assignments with wrong profile */
         run {
             assert(CryptoACUtilities.getAssignments(
                 core = "this_is_wrong",
@@ -1688,7 +1819,7 @@ internal class CryptoACRoutesTest {
             ) == null)
 
             assert(CryptoACUtilities.getAssignments(
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
@@ -1704,7 +1835,7 @@ internal class CryptoACRoutesTest {
     }
 
     @Test
-    fun `get permissions not logged-in or with wrong core parameter fails`() {
+    fun `get permissions not logged-in or with wrong profile fails`() {
         /** get permissions not logged-in */
         run {
             assert(CryptoACUtilities.getPermissions(
@@ -1714,7 +1845,7 @@ internal class CryptoACRoutesTest {
             ) == null)
         }
 
-        /** get permissions with wrong core parameter */
+        /** get permissions with wrong profile */
         run {
             assert(CryptoACUtilities.getPermissions(
                 core = "this_is_wrong",
@@ -1723,7 +1854,7 @@ internal class CryptoACRoutesTest {
             ) == null)
 
             assert(CryptoACUtilities.getPermissions(
-                core = CoreType.RBAC_CLOUD.toString(),
+                core = CoreType.RBAC_AT_REST.toString(),
                 expectedCode = OutcomeCode.CODE_039_PROFILE_NOT_FOUND,
                 expectedStatus = HttpStatusCode.NotFound,
             ) == null)
@@ -1735,4 +1866,5 @@ internal class CryptoACRoutesTest {
     //  - login procedures (after implementation)
     //  - routes for ABAC (after implementation)
 }
+
 

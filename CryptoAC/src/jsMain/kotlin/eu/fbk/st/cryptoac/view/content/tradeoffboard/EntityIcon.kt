@@ -27,7 +27,7 @@ external interface EntityIconState : State {
 }
 
 /** A entity icon for the pre-filters component */
-class EntityIcon: RComponent<EntityIconProps, EntityIconState>() {
+class EntityIcon : RComponent<EntityIconProps, EntityIconState>() {
     override fun RBuilder.render() {
         styledImg {
             css {
@@ -62,7 +62,7 @@ class EntityIcon: RComponent<EntityIconProps, EntityIconState>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun entityIcon(handler: EntityIconProps.() -> Unit): ReactElement {
+fun entityIcon(handler: EntityIconProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(EntityIcon::class) {
             this.attrs(handler)

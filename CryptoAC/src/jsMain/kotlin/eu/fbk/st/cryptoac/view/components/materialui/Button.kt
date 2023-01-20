@@ -3,7 +3,7 @@
 
 package eu.fbk.st.cryptoac.view.components.materialui
 
-import kotlinext.js.Object
+import kotlinx.js.Object
 import org.w3c.dom.events.Event
 import react.*
 

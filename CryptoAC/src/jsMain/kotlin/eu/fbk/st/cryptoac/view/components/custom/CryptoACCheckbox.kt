@@ -8,6 +8,9 @@ import react.*
 const val divider = "4%&£$5"
 
 external interface CryptoACCheckboxProps : Props {
+    /** Whether the field is disabled */
+    var disabled: Boolean
+
     /** Default value for the input */
     var defaultValue: String
 
@@ -27,14 +30,15 @@ external interface CryptoACCheckboxState : State {
 }
 
 /** A custom component for a radio group */
-class CryptoACCheckbox: RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>() {
+class CryptoACCheckbox : RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>() {
     override fun RBuilder.render() {
 
         formControlLabel {
             attrs {
-                control = createElement {
+                control = createElement<Props> {
                     checkbox {
                         attrs {
+                            disabled = props.disabled
                             value = state.value
                             checked = state.value.split(divider)[0].toBoolean()
                             onChange = {
@@ -62,7 +66,7 @@ class CryptoACCheckbox: RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACCheckbox::class.js.asDynamic().getDerivedStateFromProps = {
-                props: CryptoACCheckboxProps, state: CryptoACCheckboxState ->
+            props: CryptoACCheckboxProps, state: CryptoACCheckboxState ->
             if (state.justMounted || !state.changedByUser) {
                 state.value = "${props.defaultValue}$divider${props.label}"
             }
@@ -73,7 +77,7 @@ class CryptoACCheckbox: RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACCheckbox(handler: CryptoACCheckboxProps.() -> Unit): ReactElement {
+fun cryptoACCheckbox(handler: CryptoACCheckboxProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACCheckbox::class) {
             this.attrs(handler)

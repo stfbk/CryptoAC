@@ -8,7 +8,6 @@ import react.*
 import styled.css
 import styled.styledDiv
 import styled.styledP
-import kotlin.random.Random
 
 // TODO doc all
 external interface CryptoACScoreProps : Props {
@@ -25,9 +24,8 @@ external interface CryptoACScoreProps : Props {
     var value: Int
 }
 
-
 /** A custom component for a radio group */
-class CryptoACScore: RComponent<CryptoACScoreProps, State>() {
+class CryptoACScore : RComponent<CryptoACScoreProps, State>() {
     override fun RBuilder.render() {
 
         styledDiv {
@@ -42,7 +40,8 @@ class CryptoACScore: RComponent<CryptoACScoreProps, State>() {
             }
             box {
                 attrs {
-                    sx = JSON.parse("""{
+                    sx = JSON.parse(
+                        """{
                         "padding":"0 0 0 0",
                         "height":"5px",
                         "width":"${getWidth(bar = true)}",
@@ -50,12 +49,14 @@ class CryptoACScore: RComponent<CryptoACScoreProps, State>() {
                         "span":2,
                         "background-color":"${getColor()}",
                         "border-radius":"25px 0 0 25px"
-                    }""".trimMargin())
+                    }""".trimMargin()
+                    )
                 }
             }
             box {
                 attrs {
-                    sx = JSON.parse("""{
+                    sx = JSON.parse(
+                        """{
                         "padding":"0 0 0 0",
                         "height":"5px",
                         "width":"${getWidth(bar = false)}",
@@ -63,7 +64,8 @@ class CryptoACScore: RComponent<CryptoACScoreProps, State>() {
                         "span":2,
                         "background-color":"black",
                         "border-radius":"0px 25px 25px 0px"
-                    }""".trimMargin())
+                    }""".trimMargin()
+                    )
                 }
             }
         }
@@ -74,14 +76,14 @@ class CryptoACScore: RComponent<CryptoACScoreProps, State>() {
         return if (bar) {
             "$percentage%"
         } else {
-            "${100-percentage}%"
+            "${100 - percentage}%"
         }
     }
 
     private fun getColor() = "hsl(${getValueOfBar() * 100},100%,50%)"
 
     private fun getValueOfBar(): Double {
-        var valueOfBar = (props.value.toDouble()) / (props.max.toDouble()-props.min.toDouble())
+        var valueOfBar = (props.value.toDouble()) / (props.max.toDouble() - props.min.toDouble())
         if (valueOfBar == 0.0) {
             valueOfBar = 0.01
         }
@@ -93,7 +95,7 @@ class CryptoACScore: RComponent<CryptoACScoreProps, State>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACScore(handler: CryptoACScoreProps.() -> Unit): ReactElement {
+fun cryptoACScore(handler: CryptoACScoreProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACScore::class) {
             attrs(handler)

@@ -48,7 +48,6 @@ external interface TradeOffBoardState : State {
 
     /** The entities of the current scenario */
     var entities: List<Entities>
-
 }
 
 external interface TradeOffBoardProps : Props {
@@ -59,10 +58,8 @@ external interface TradeOffBoardProps : Props {
     var metric: Metric
 }
 
-
-
 /** The TradeOffBoard React component */
-class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
+class TradeOffBoard : RComponent<TradeOffBoardProps, TradeOffBoardState>() {
 
     override fun RBuilder.render() {
         styledDiv {
@@ -78,7 +75,6 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                     spacing = 3
                 }
 
-
                 grid {
                     attrs {
                         item = true
@@ -88,75 +84,78 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                         xl = 12
                     }
                     /** Allow users to define how many instances of each entity to have */
-                    child(cryptoACPaper{
-                        titleStyle = plainPaperTitleStyle
-                        titleText = "Replication of Entities"
-                        titleVariant = "subtitle1"
-                        setDivider = false
-                        dividerWidth = 95.pct
-                        child = createElement {
+                    child(
+                        cryptoACPaper {
+                            titleStyle = plainPaperTitleStyle
+                            titleText = "Replication of Entities"
+                            titleVariant = "subtitle1"
+                            setDivider = false
+                            dividerWidth = 95.pct
+                            child = createElement {
 
-                            styledTable {
-                                css {
-                                    borderCollapse = BorderCollapse.collapse
-                                    width = 100.pct
-                                }
-                                /** The first row contains the titles */
-                                styledThead {
+                                styledTable {
                                     css {
-                                        borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
+                                        borderCollapse = BorderCollapse.collapse
+                                        width = 100.pct
                                     }
-                                    tr {
-                                        state.entities.forEach {
-                                            styledTd {
-                                                css {
-                                                    padding = "4px"
+                                    /** The first row contains the titles */
+                                    styledThead {
+                                        css {
+                                            borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
+                                        }
+                                        tr {
+                                            state.entities.forEach {
+                                                styledTd {
+                                                    css {
+                                                        padding = "4px"
+                                                    }
+                                                    +it.toString()
                                                 }
-                                                +it.toString()
+                                            }
+                                        }
+                                    }
+
+                                    /** The rows are for the sliders */
+                                    tbody {
+                                        tr {
+                                            state.entities.forEachIndexed { index, entity ->
+                                                styledTd {
+                                                    css {
+                                                        if (index == 0) {
+                                                            paddingTop = 3.px
+                                                        } else if (index == state.entities.size - 1) {
+                                                            paddingBottom = 3.px
+                                                        }
+                                                        if (index == state.entities.size - 1 && index == state.entities.size - 1) {
+                                                            borderBottomRightRadius = 15.px
+                                                        }
+                                                    }
+
+                                                    child(
+                                                        cryptoACSlider {
+                                                            label = ""
+                                                            min = 0
+                                                            max = state.domains.size
+                                                            defaultValues = arrayOf(0, Domains.values().size)
+                                                            color = "primary"
+                                                            range = true
+                                                            onChange = { newNumberOfInstances ->
+                                                                changeNumberOfInstances(
+                                                                    entity,
+                                                                    newNumberOfInstances as Array<Int>
+                                                                )
+                                                            }
+                                                        }
+                                                    )
+                                                }
                                             }
                                         }
                                     }
                                 }
-
-                                /** The rows are for the sliders */
-                                tbody {
-                                    tr {
-                                        state.entities.forEachIndexed { index, entity ->
-                                            styledTd {
-                                                css {
-                                                    if (index == 0) {
-                                                        paddingTop = 3.px
-                                                    } else if (index == state.entities.size-1) {
-                                                        paddingBottom = 3.px
-                                                    }
-                                                    if (index == state.entities.size-1 && index == state.entities.size-1) {
-                                                        borderBottomRightRadius = 15.px
-                                                    }
-                                                }
-
-                                                child(cryptoACSlider {
-                                                    label = ""
-                                                    min = 0
-                                                    max = state.domains.size
-                                                    defaultValues = arrayOf(0, Domains.values().size)
-                                                    color = "primary"
-                                                    range = true
-                                                    onChange = { newNumberOfInstances ->
-                                                        changeNumberOfInstances(
-                                                            entity,
-                                                            newNumberOfInstances as Array<Int>
-                                                        )
-                                                    }
-                                                })
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }!!
-                    })
+                            }!!
+                        }
+                    )
                 }
-
 
                 grid {
                     attrs {
@@ -167,85 +166,89 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                         xl = 12
                     }
                     /** Allow users to set pre-filters */
-                    child(cryptoACPaper{
-                        titleStyle = plainPaperTitleStyle
-                        titleText = "Pre-filters"
-                        titleVariant = "subtitle1"
-                        setDivider = false
-                        dividerWidth = 95.pct
-                        child = createElement {
+                    child(
+                        cryptoACPaper {
+                            titleStyle = plainPaperTitleStyle
+                            titleText = "Pre-filters"
+                            titleVariant = "subtitle1"
+                            setDivider = false
+                            dividerWidth = 95.pct
+                            child = createElement {
 
-                            styledTable {
-                                css {
-                                    borderCollapse = BorderCollapse.collapse
-                                    width = 100.pct
-                                }
-                                /** The first row contains the entities */
-                                styledThead {
+                                styledTable {
                                     css {
-                                        borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
+                                        borderCollapse = BorderCollapse.collapse
+                                        width = 100.pct
                                     }
-                                    tr {
-                                        styledTd {
-                                            css {
-                                                padding = "4px"
-                                            }
+                                    /** The first row contains the entities */
+                                    styledThead {
+                                        css {
+                                            borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
                                         }
-                                        state.entities.forEach {
+                                        tr {
                                             styledTd {
                                                 css {
                                                     padding = "4px"
                                                 }
-                                                +it.toString()
                                             }
-                                        }
-                                    }
-                                }
-
-                                /** The rows are for the domains */
-                                tbody {
-                                    state.domains.forEachIndexed { index, domain ->
-                                        tr {
-                                            styledTd {
-                                                css {
-                                                    paddingLeft = 10.px
-                                                    width = 160.px
-                                                    textAlign = TextAlign.left
-                                                    if (index == state.domains.size-1) {
-                                                        borderBottomLeftRadius = 15.px
-                                                    }
-                                                }
-                                                +domain.toString()
-                                            }
-                                            state.entities.forEachIndexed { entityIndex, entity ->
+                                            state.entities.forEach {
                                                 styledTd {
                                                     css {
-                                                        if (index == 0) {
-                                                            paddingTop = 3.px
-                                                        } else if (index == state.domains.size-1) {
-                                                            paddingBottom = 3.px
-                                                        }
-                                                        if (index == state.domains.size-1 && entityIndex == state.entities.size-1) {
-                                                            borderBottomRightRadius = 15.px
+                                                        padding = "4px"
+                                                    }
+                                                    +it.toString()
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    /** The rows are for the domains */
+                                    tbody {
+                                        state.domains.forEachIndexed { index, domain ->
+                                            tr {
+                                                styledTd {
+                                                    css {
+                                                        paddingLeft = 10.px
+                                                        width = 160.px
+                                                        textAlign = TextAlign.left
+                                                        if (index == state.domains.size - 1) {
+                                                            borderBottomLeftRadius = 15.px
                                                         }
                                                     }
-                                                        child(entityIcon {
-                                                            key = state.domains.toString()+state.entities.toString()
-                                                            src = getImageFromEntity(entity)
-                                                            onClick = { entity, domain, assignment ->
-                                                                toggleAssignment(entity, domain, assignment)
+                                                    +domain.toString()
+                                                }
+                                                state.entities.forEachIndexed { entityIndex, entity ->
+                                                    styledTd {
+                                                        css {
+                                                            if (index == 0) {
+                                                                paddingTop = 3.px
+                                                            } else if (index == state.domains.size - 1) {
+                                                                paddingBottom = 3.px
                                                             }
-                                                            this.entity = entity
-                                                            this.domain = domain
-                                                        })
+                                                            if (index == state.domains.size - 1 && entityIndex == state.entities.size - 1) {
+                                                                borderBottomRightRadius = 15.px
+                                                            }
+                                                        }
+                                                        child(
+                                                            entityIcon {
+                                                                key = state.domains.toString() + state.entities.toString()
+                                                                src = getImageFromEntity(entity)
+                                                                onClick = { entity, domain, assignment ->
+                                                                    toggleAssignment(entity, domain, assignment)
+                                                                }
+                                                                this.entity = entity
+                                                                this.domain = domain
+                                                            }
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }!!
-                    })
+                            }!!
+                        }
+                    )
                 }
                 grid {
                     attrs {
@@ -256,123 +259,10 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                         xl = 12
                     }
                     /** Allow users to input trust assumptions */
-                    child(cryptoACPaper{
-                        titleStyle = plainPaperTitleStyle
-                        titleText = "Trust Assumptions"
-                        titleVariant = "subtitle1"
-                        setDivider = false
-                        dividerWidth = 95.pct
-                        child = createElement {
-                            styledTable {
-                                css {
-                                    borderCollapse = BorderCollapse.collapse
-                                    width = 100.pct
-                                }
-
-                                /** The first row contains the headers */
-                                styledThead {
-                                    css {
-                                        borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
-                                    }
-                                    tr {
-                                        styledTd {
-                                            css {
-                                                padding = "4px"
-                                            }
-                                            +"Domain or Channel"
-                                        }
-                                        styledTd {
-                                            css {
-                                                padding = "4px"
-                                            }
-                                            +"Attacker"
-                                        }
-                                        styledTd {
-                                            css {
-                                                padding = "4px"
-                                            }
-                                            attrs {
-                                                colSpan = "2"
-                                            }
-                                            +"Likelihood"
-                                        }
-
-                                    }
-                                }
-
-                                /** Each row contains the attackers and likelihoods */
-                                tbody {
-                                    val iterator = state.attackersInput.iterator()
-                                    while (iterator.hasNext()) {
-                                        val entry = iterator.next()
-                                        val domain = entry.key
-                                        val attackers = entry.value
-                                        tr {
-                                            styledTd {
-                                                css {
-                                                    paddingLeft = 10.px
-                                                    width = 160.px
-                                                    textAlign = TextAlign.left
-                                                    if (!iterator.hasNext()) {
-                                                        borderBottomLeftRadius = 15.px
-                                                    }
-                                                }
-                                                attrs {
-                                                    rowSpan = attackers.size.toString()
-                                                }
-                                                +domain.toString()
-                                            }
-                                            child(trustAssumptionsLikelihood {
-                                                this.defaultValue = Likelihood.High
-                                                this.last = attackers.size == 1 && !iterator.hasNext()
-                                                this.domain = domain
-                                                this.attacker =  attackers.first().attacker
-                                                this.handleChangeLikelihood = { domain, attacker, newLikelihood ->
-                                                    changeLikelihood(domain, attacker, newLikelihood)
-                                                }
-                                            })
-
-                                        }
-                                        attackers.forEachIndexed { index, attacker ->
-                                            if (index != 0) {
-                                                tr {
-                                                    child(trustAssumptionsLikelihood {
-                                                        this.defaultValue = Likelihood.High
-                                                        this.last = index == attackers.size-1 && !iterator.hasNext()
-                                                        this.domain = domain
-                                                        this.attacker =  attacker.attacker
-                                                        this.handleChangeLikelihood = { domain, attacker, newLikelihood ->
-                                                            changeLikelihood(domain, attacker, newLikelihood)
-                                                        }
-                                                    })
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }!!
-                    })
-                }
-
-
-                if (props.algorithm == Algorithm.AdHoc) {
-
-                    grid {
-                        attrs {
-                            item = true
-                            sm = 12
-                            md = 12
-                            lg = 12
-                            xl = 12
-                        }
-                        /** Allow users to input weights and constraints for requirements */
-                        child(cryptoACPaper {
+                    child(
+                        cryptoACPaper {
                             titleStyle = plainPaperTitleStyle
-                            titleText = when (props.metric) {
-                                Metric.Protection -> "Security Requirements"
-                                Metric.Goals -> "Scenario Requirements"
-                            }
+                            titleText = "Trust Assumptions"
                             titleVariant = "subtitle1"
                             setDivider = false
                             dividerWidth = 95.pct
@@ -393,205 +283,329 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                                                 css {
                                                     padding = "4px"
                                                 }
+                                                +"Domain or Channel"
                                             }
                                             styledTd {
                                                 css {
                                                     padding = "4px"
                                                 }
-                                                +"Weight"
+                                                +"Attacker"
                                             }
                                             styledTd {
                                                 css {
                                                     padding = "4px"
                                                 }
-                                                +"Threshold"
-                                            }
-                                            styledTd {
-                                                css {
-                                                    padding = "4px"
+                                                attrs {
+                                                    colSpan = "2"
                                                 }
-                                                +"Threshold Value"
-                                            }
-                                            styledTd {
-                                                css {
-                                                    padding = "4px"
-                                                }
-                                                +"Penalty"
+                                                +"Likelihood"
                                             }
                                         }
                                     }
 
                                     /** Each row contains the attackers and likelihoods */
                                     tbody {
-
-                                        val requirements = when (props.metric) {
-                                            Metric.Goals -> state.performanceRequirementsInputs
-                                            Metric.Protection -> state.securityRequirementsInputs
-                                        }
-
-                                        requirements.forEachIndexed { index, req ->
-                                            key = req.name
+                                        val iterator = state.attackersInput.iterator()
+                                        while (iterator.hasNext()) {
+                                            val entry = iterator.next()
+                                            val domain = entry.key
+                                            val attackers = entry.value
                                             tr {
-                                                child(requirementItem {
-                                                    defaultValue = when (props.metric) {
-                                                        Metric.Goals -> state.performanceRequirementsInputs
-                                                        Metric.Protection -> state.securityRequirementsInputs
-                                                    }.first { it.name == req.name }
-                                                    last = index == requirements.size - 1
-                                                    requirement = req
-                                                    handleChangeWeightValue = { weight ->
-                                                        changeWeightValue(req.name, weight)
+                                                styledTd {
+                                                    css {
+                                                        paddingLeft = 10.px
+                                                        width = 160.px
+                                                        textAlign = TextAlign.left
+                                                        if (!iterator.hasNext()) {
+                                                            borderBottomLeftRadius = 15.px
+                                                        }
                                                     }
-                                                    handleChangeThresholdType = { type ->
-                                                        changeThresholdType(req.name, type)
+                                                    attrs {
+                                                        rowSpan = attackers.size.toString()
                                                     }
-                                                    handleChangeThresholdValue = { threshold ->
-                                                        changeThresholdValue(req.name, threshold)
+                                                    +domain.toString()
+                                                }
+                                                child(
+                                                    trustAssumptionsLikelihood {
+                                                        this.defaultValue = Likelihood.High
+                                                        this.last = attackers.size == 1 && !iterator.hasNext()
+                                                        this.domain = domain
+                                                        this.attacker = attackers.first().attacker
+                                                        this.handleChangeLikelihood = { domain, attacker, newLikelihood ->
+                                                            changeLikelihood(domain, attacker, newLikelihood)
+                                                        }
                                                     }
-                                                    handleChangePenaltyValue = { penalty ->
-                                                        changePenaltyValue(req.name, penalty)
+                                                )
+                                            }
+                                            attackers.forEachIndexed { index, attacker ->
+                                                if (index != 0) {
+                                                    tr {
+                                                        child(
+                                                            trustAssumptionsLikelihood {
+                                                                this.defaultValue = Likelihood.High
+                                                                this.last = index == attackers.size - 1 && !iterator.hasNext()
+                                                                this.domain = domain
+                                                                this.attacker = attacker.attacker
+                                                                this.handleChangeLikelihood = { domain, attacker, newLikelihood ->
+                                                                    changeLikelihood(domain, attacker, newLikelihood)
+                                                                }
+                                                            }
+                                                        )
                                                     }
-                                                })
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }!!
-                        })
+                        }
+                    )
+                }
 
+                if (props.algorithm == Algorithm.AdHoc) {
+
+                    grid {
+                        attrs {
+                            item = true
+                            sm = 12
+                            md = 12
+                            lg = 12
+                            xl = 12
+                        }
+                        /** Allow users to input weights and constraints for requirements */
+                        child(
+                            cryptoACPaper {
+                                titleStyle = plainPaperTitleStyle
+                                titleText = when (props.metric) {
+                                    Metric.Protection -> "Security Requirements"
+                                    Metric.Goals -> "Scenario Requirements"
+                                }
+                                titleVariant = "subtitle1"
+                                setDivider = false
+                                dividerWidth = 95.pct
+                                child = createElement {
+                                    styledTable {
+                                        css {
+                                            borderCollapse = BorderCollapse.collapse
+                                            width = 100.pct
+                                        }
+
+                                        /** The first row contains the headers */
+                                        styledThead {
+                                            css {
+                                                borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
+                                            }
+                                            tr {
+                                                styledTd {
+                                                    css {
+                                                        padding = "4px"
+                                                    }
+                                                }
+                                                styledTd {
+                                                    css {
+                                                        padding = "4px"
+                                                    }
+                                                    +"Weight"
+                                                }
+                                                styledTd {
+                                                    css {
+                                                        padding = "4px"
+                                                    }
+                                                    +"Threshold"
+                                                }
+                                                styledTd {
+                                                    css {
+                                                        padding = "4px"
+                                                    }
+                                                    +"Threshold Value"
+                                                }
+                                                styledTd {
+                                                    css {
+                                                        padding = "4px"
+                                                    }
+                                                    +"Penalty"
+                                                }
+                                            }
+                                        }
+
+                                        /** Each row contains the attackers and likelihoods */
+                                        tbody {
+
+                                            val requirements = when (props.metric) {
+                                                Metric.Goals -> state.performanceRequirementsInputs
+                                                Metric.Protection -> state.securityRequirementsInputs
+                                            }
+
+                                            requirements.forEachIndexed { index, req ->
+                                                key = req.name
+                                                tr {
+                                                    child(
+                                                        requirementItem {
+                                                            defaultValue = when (props.metric) {
+                                                                Metric.Goals -> state.performanceRequirementsInputs
+                                                                Metric.Protection -> state.securityRequirementsInputs
+                                                            }.first { it.name == req.name }
+                                                            last = index == requirements.size - 1
+                                                            requirement = req
+                                                            handleChangeWeightValue = { weight ->
+                                                                changeWeightValue(req.name, weight)
+                                                            }
+                                                            handleChangeThresholdType = { type ->
+                                                                changeThresholdType(req.name, type)
+                                                            }
+                                                            handleChangeThresholdValue = { threshold ->
+                                                                changeThresholdValue(req.name, threshold)
+                                                            }
+                                                            handleChangePenaltyValue = { penalty ->
+                                                                changePenaltyValue(req.name, penalty)
+                                                            }
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }!!
+                            }
+                        )
                     }
                 }
             }
 
-            br {  }
-
+            br { }
 
             /** The ranking of architectures */
-            child(cryptoACPaper{
-                titleStyle = plainPaperTitleStyle
-                titleText = "Best Architectures"
-                titleVariant = "subtitle1"
-                setDivider = false
-                dividerWidth = 95.pct
-                child = createElement {
-                    styledDiv {
-                        css {
-                            float = Float.right
-                        }
-                        iconButton {
-                            attrs {
-                                size = "small"
-                                label = "refresh"
-                                color = "secondary"
-                                onClick = {
-                                    // TODO the backdrop does not work => I think
-                                    //  "computePossibleArchitectures" takes too
-                                    //  much CPU resources and thus React does not
-                                    //  render
-                                    props.handleChangeBackdropIsOpen(true)
-                                    val newArchitectures = computePossibleArchitectures()
-                                    props.handleChangeBackdropIsOpen(false)
-                                    setState {
-                                        architectures = newArchitectures
+            child(
+                cryptoACPaper {
+                    titleStyle = plainPaperTitleStyle
+                    titleText = "Best Architectures"
+                    titleVariant = "subtitle1"
+                    setDivider = false
+                    dividerWidth = 95.pct
+                    child = createElement {
+                        styledDiv {
+                            css {
+                                float = Float.right
+                            }
+                            iconButton {
+                                attrs {
+                                    size = "small"
+                                    label = "refresh"
+                                    color = "secondary"
+                                    onClick = {
+                                        // TODO the backdrop does not work => I think
+                                        //  "computePossibleArchitectures" takes too
+                                        //  much CPU resources and thus React does not
+                                        //  render
+                                        props.handleChangeBackdropIsOpen(true)
+                                        val newArchitectures = computePossibleArchitectures()
+                                        props.handleChangeBackdropIsOpen(false)
+                                        setState {
+                                            architectures = newArchitectures
+                                        }
                                     }
                                 }
+                                child(createElement<Props> { faUndoAlt { } }!!)
                             }
-                            child(createElement { faUndoAlt { } }!!)
                         }
-                    }
 
-                    styledTable {
-                        css {
-                            borderCollapse = BorderCollapse.collapse
-                            width = 100.pct
-                        }
-                        /** The first row contains the domains */
-                        styledThead {
+                        styledTable {
                             css {
-                                borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
+                                borderCollapse = BorderCollapse.collapse
+                                width = 100.pct
                             }
-                            tr {
-                                state.domains.forEach {
+                            /** The first row contains the domains */
+                            styledThead {
+                                css {
+                                    borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
+                                }
+                                tr {
+                                    state.domains.forEach {
+                                        styledTd {
+                                            css {
+                                                padding = "4px"
+                                            }
+                                            +it.toString()
+                                        }
+                                    }
                                     styledTd {
                                         css {
                                             padding = "4px"
                                         }
-                                        +it.toString()
+                                        +"Score"
                                     }
-                                }
-                                styledTd {
-                                    css {
-                                        padding = "4px"
-                                    }
-                                    +"Score"
                                 }
                             }
-                        }
 
-                        tbody {
-                            val architecturesToShow = state.architectures
-                            logger.info { "Showing ${architecturesToShow.size} architectures" }
-                            architecturesToShow.forEachIndexed { architectureIndex, architecture ->
-                                tr {
-                                    state.domains.forEachIndexed { domainIndex, domain ->
-                                        val entitiesInDomain = architecture.arcs[domain] ?: listOf()
+                            tbody {
+                                val architecturesToShow = state.architectures
+                                logger.info { "Showing ${architecturesToShow.size} architectures" }
+                                architecturesToShow.forEachIndexed { architectureIndex, architecture ->
+                                    tr {
+                                        state.domains.forEachIndexed { domainIndex, domain ->
+                                            val entitiesInDomain = architecture.arcs[domain] ?: listOf()
+                                            styledTd {
+                                                css {
+                                                    if (architectureIndex == 0) {
+                                                        paddingTop = 3.px
+                                                    } else if (architectureIndex == architecturesToShow.size - 1) {
+                                                        paddingBottom = 3.px
+                                                        if (domainIndex == 0) {
+                                                            borderBottomLeftRadius = 15.px
+                                                        }
+                                                    }
+                                                }
+                                                entitiesInDomain.forEach { entity ->
+                                                    child(
+                                                        entityIcon {
+                                                            src = getImageFromEntity(entity)
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+
                                         styledTd {
                                             css {
                                                 if (architectureIndex == 0) {
                                                     paddingTop = 3.px
                                                 } else if (architectureIndex == architecturesToShow.size - 1) {
                                                     paddingBottom = 3.px
-                                                    if (domainIndex == 0) {
-                                                        borderBottomLeftRadius = 15.px
-                                                    }
+                                                    borderBottomRightRadius = 15.px
                                                 }
                                             }
-                                            entitiesInDomain.forEach { entity ->
-                                                child(entityIcon {
-                                                    src = getImageFromEntity(entity)
-                                                })
-                                            }
-                                        }
-                                    }
+                                            if (props.algorithm == Algorithm.AdHoc) {
+                                                +architecture.requirementsScore.toString()
+                                            } else if (props.algorithm == Algorithm.Best) {
+                                                architecture.arrayRequirementsScore.forEach {
 
+                                                    val score = it.value
 
-                                    styledTd {
-                                        css {
-                                            if (architectureIndex == 0) {
-                                                paddingTop = 3.px
-                                            } else if (architectureIndex == architecturesToShow.size - 1) {
-                                                paddingBottom = 3.px
-                                                borderBottomRightRadius = 15.px
-                                            }
-                                        }
-                                        if (props.algorithm == Algorithm.AdHoc) {
-                                            +architecture.requirementsScore.toString()
-                                        } else if (props.algorithm == Algorithm.Best) {
-                                            architecture.arrayRequirementsScore.forEach {
-
-                                                val score = it.value
-
-                                                tooltip {
-                                                    attrs {
-                                                        title = it.key.replace("_", "-")
-                                                    }
-                                                    child(createElement {
-                                                        styledSpan {
-                                                            css {
-                                                                marginRight = 0.5.em
-                                                                fontFamily = "Courier"
-                                                                color = Color(
-                                                                    if (score < 0) {
-                                                                        "#c0392b"
-                                                                    } else if (score == 0) {
-                                                                        "black"
-                                                                    } else {
-                                                                        "#27ae60"
-                                                                    })
-                                                            }
-                                                            +"${(if (score >= 0) { "+" } else { "" })}$score"
+                                                    tooltip {
+                                                        attrs {
+                                                            title = it.key.replace("_", "-")
                                                         }
-                                                    }!!)
+                                                        child(
+                                                            createElement<Props> {
+                                                                styledSpan {
+                                                                    css {
+                                                                        marginRight = 0.5.em
+                                                                        fontFamily = "Courier"
+                                                                        color = Color(
+                                                                            if (score < 0) {
+                                                                                "#c0392b"
+                                                                            } else if (score == 0) {
+                                                                                "black"
+                                                                            } else {
+                                                                                "#27ae60"
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                    +"${(if (score >= 0) { "+" } else { "" })}$score"
+                                                                }
+                                                            }!!
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
@@ -599,9 +613,9 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                                 }
                             }
                         }
-                    }
-                }!!
-            })
+                    }!!
+                }
+            )
         }
     }
 
@@ -695,8 +709,6 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
         }
     }
 
-
-
     /**
      * Compute the list of possible architectures based on
      * the thresholds and pre-filters given, and evaluate
@@ -754,12 +766,12 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
 
                 var excludeArchitecture = false
                 if (props.algorithm == Algorithm.AdHoc) {
-                    //logger.info { "As algorithm is AdHoc, apply the weights, thresholds and penalty" }
+                    // logger.info { "As algorithm is AdHoc, apply the weights, thresholds and penalty" }
                     var finalScore = 0
 
                     scoresArray.forEach { entry ->
                         val requirementName = entry.key
-                        //logger.info { "Requirement is $requirementName" }
+                        // logger.info { "Requirement is $requirementName" }
                         var tempScore = entry.value
 
                         val requirement = when (props.metric) {
@@ -806,28 +818,30 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
             performanceRequirementsImpact.forEach { entry ->
 
                 val requirementName = entry.key
-                //logger.info { "Requirement is $requirementName" }
+                // logger.info { "Requirement is $requirementName" }
                 var score = 0
                 val assignmentsAndImpact = entry.value
                 currentArchitecture.forEach { assignment ->
-                    //logger.info { "Assignment is $assignment" }
+                    // logger.info { "Assignment is $assignment" }
 
                     val requirement = state.performanceRequirementsInputs.first { it.name == requirementName.name }
 
-                    score += (assignmentsAndImpact[assignment]!! * (
-                        if (props.algorithm == Algorithm.AdHoc) {
-                            requirement.weight
-                        } else {
-                            1
-                        }
-                    ))
+                    score += (
+                        assignmentsAndImpact[assignment]!! * (
+                            if (props.algorithm == Algorithm.AdHoc) {
+                                requirement.weight
+                            } else {
+                                1
+                            }
+                            )
+                        )
                 }
                 scoresArray[requirementName.toString()] = score
             }
         } else if (props.metric == Metric.Protection) {
             securityRequirementsImpact.forEach { securityRequirementImpact ->
                 val requirementName = securityRequirementImpact.key.toString()
-                //logger.info { "Requirement is $requirementName" }
+                // logger.info { "Requirement is $requirementName" }
                 var score = 3
                 val targetAndImpact = securityRequirementImpact.value
                 state.attackersInput.forEach { domainsAndAttackers ->
@@ -871,8 +885,8 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                             entitiesInFirstDomain.forEach { firstEntity ->
                                 entitiesInSecondDomain.forEach { secondEntity ->
 
-                                    val entityWithChannel = EntitiesWithChannels.valueOf("${firstEntity}_${secondEntity}")
-                                    val entityWithChannelReverse = EntitiesWithChannels.valueOf("${secondEntity}_${firstEntity}")
+                                    val entityWithChannel = EntitiesWithChannels.valueOf("${firstEntity}_$secondEntity")
+                                    val entityWithChannelReverse = EntitiesWithChannels.valueOf("${secondEntity}_$firstEntity")
 
                                     var eventualImpact = targetAndImpact[entityWithChannel]
                                     if (eventualImpact == null) {
@@ -900,7 +914,7 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                     } else {
                         1
                     }
-                )
+                    )
             }
         }
 
@@ -955,7 +969,7 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
         var dominate = true
         var majorInAtLeastOne = false
         dominator.forEach {
-            if (dominatee[it.key]!! > it.value ) {
+            if (dominatee[it.key]!! > it.value) {
                 dominate = false
             }
             if (it.value > dominatee[it.key]!!) {
@@ -964,7 +978,6 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
         }
         return dominate && majorInAtLeastOne
     }
-
 
     override fun TradeOffBoardState.init() {
         logger.info { "Initializing the state of the TradeOffBoard component" }
@@ -993,7 +1006,7 @@ class TradeOffBoard: RComponent<TradeOffBoardProps, TradeOffBoardState>() {
     }
 }
 
-fun tradeOffBoard(handler: TradeOffBoardProps.() -> Unit): ReactElement {
+fun tradeOffBoard(handler: TradeOffBoardProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(TradeOffBoard::class) {
             this.attrs(handler)
@@ -1002,7 +1015,7 @@ fun tradeOffBoard(handler: TradeOffBoardProps.() -> Unit): ReactElement {
 }
 
 // TODO doc below
-enum class Scenario { CLOUD, MQTT }
+enum class Scenario { CryptoAC, MQTT }
 
 enum class Algorithm { Best, AdHoc }
 
@@ -1351,40 +1364,40 @@ var performanceRequirementsImpact: HashMap<PerformanceRequirements, HashMap<Assi
 
 /** The impact of targets on each security requirement of the current scenario */
 var securityRequirementsImpact: HashMap<SecurityRequirements, HashMap<EntitiesWithChannels, Impact>> = hashMapOf(
-SecurityRequirements.Confidentiality to hashMapOf(
-EntitiesWithChannels.CryptoAC to Impact.High,
-EntitiesWithChannels.RM to Impact.None,
-EntitiesWithChannels.MM to Impact.None,
-EntitiesWithChannels.DM to Impact.None,
-EntitiesWithChannels.CryptoAC_RM to Impact.None,
-EntitiesWithChannels.CryptoAC_DM to Impact.None,
-EntitiesWithChannels.CryptoAC_MM to Impact.None,
-EntitiesWithChannels.RM_MM to Impact.None,
-EntitiesWithChannels.RM_DM to Impact.None,
-EntitiesWithChannels.MM_DM to Impact.None,
-),
-SecurityRequirements.Integrity to hashMapOf(
-EntitiesWithChannels.CryptoAC to Impact.High,
-EntitiesWithChannels.RM to Impact.None,
-EntitiesWithChannels.MM to Impact.None,
-EntitiesWithChannels.DM to Impact.None,
-EntitiesWithChannels.CryptoAC_RM to Impact.None,
-EntitiesWithChannels.CryptoAC_DM to Impact.None,
-EntitiesWithChannels.CryptoAC_MM to Impact.None,
-EntitiesWithChannels.RM_MM to Impact.None,
-EntitiesWithChannels.RM_DM to Impact.None,
-EntitiesWithChannels.MM_DM to Impact.None,
-),
-SecurityRequirements.Availability to hashMapOf(
-EntitiesWithChannels.CryptoAC to Impact.High,
-EntitiesWithChannels.RM to Impact.None,
-EntitiesWithChannels.MM to Impact.None,
-EntitiesWithChannels.DM to Impact.None,
-EntitiesWithChannels.CryptoAC_RM to Impact.None,
-EntitiesWithChannels.CryptoAC_DM to Impact.None,
-EntitiesWithChannels.CryptoAC_MM to Impact.None,
-EntitiesWithChannels.RM_MM to Impact.None,
-EntitiesWithChannels.RM_DM to Impact.None,
-EntitiesWithChannels.MM_DM to Impact.None,
-),
+    SecurityRequirements.Confidentiality to hashMapOf(
+        EntitiesWithChannels.CryptoAC to Impact.High,
+        EntitiesWithChannels.RM to Impact.None,
+        EntitiesWithChannels.MM to Impact.None,
+        EntitiesWithChannels.DM to Impact.None,
+        EntitiesWithChannels.CryptoAC_RM to Impact.None,
+        EntitiesWithChannels.CryptoAC_DM to Impact.None,
+        EntitiesWithChannels.CryptoAC_MM to Impact.None,
+        EntitiesWithChannels.RM_MM to Impact.None,
+        EntitiesWithChannels.RM_DM to Impact.None,
+        EntitiesWithChannels.MM_DM to Impact.None,
+    ),
+    SecurityRequirements.Integrity to hashMapOf(
+        EntitiesWithChannels.CryptoAC to Impact.High,
+        EntitiesWithChannels.RM to Impact.None,
+        EntitiesWithChannels.MM to Impact.None,
+        EntitiesWithChannels.DM to Impact.None,
+        EntitiesWithChannels.CryptoAC_RM to Impact.None,
+        EntitiesWithChannels.CryptoAC_DM to Impact.None,
+        EntitiesWithChannels.CryptoAC_MM to Impact.None,
+        EntitiesWithChannels.RM_MM to Impact.None,
+        EntitiesWithChannels.RM_DM to Impact.None,
+        EntitiesWithChannels.MM_DM to Impact.None,
+    ),
+    SecurityRequirements.Availability to hashMapOf(
+        EntitiesWithChannels.CryptoAC to Impact.High,
+        EntitiesWithChannels.RM to Impact.None,
+        EntitiesWithChannels.MM to Impact.None,
+        EntitiesWithChannels.DM to Impact.None,
+        EntitiesWithChannels.CryptoAC_RM to Impact.None,
+        EntitiesWithChannels.CryptoAC_DM to Impact.None,
+        EntitiesWithChannels.CryptoAC_MM to Impact.None,
+        EntitiesWithChannels.RM_MM to Impact.None,
+        EntitiesWithChannels.RM_DM to Impact.None,
+        EntitiesWithChannels.MM_DM to Impact.None,
+    ),
 )

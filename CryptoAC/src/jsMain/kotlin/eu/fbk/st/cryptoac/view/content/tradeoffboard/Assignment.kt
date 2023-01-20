@@ -1,6 +1,5 @@
 package eu.fbk.st.cryptoac.view.content.tradeoffboard
 
-
 data class Assignment(val domain: Domains, val entity: Entities) {
 
     override fun toString(): String {
@@ -24,9 +23,7 @@ data class Assignment(val domain: Domains, val entity: Entities) {
         result = 31 * result + entity.hashCode()
         return result
     }
-
 }
-
 
 fun <T> Collection<T>.powerSet(): Set<Set<T>> =
     powerSet(this, setOf(emptySet()))

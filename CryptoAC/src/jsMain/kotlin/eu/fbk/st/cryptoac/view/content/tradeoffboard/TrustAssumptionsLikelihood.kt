@@ -35,19 +35,21 @@ external interface TrustAssumptionsLikelihoodState : State {
 }
 
 /** A trust assumptions likelihood component with a radio group */
-class TrustAssumptionsLikelihood: RComponent<TrustAssumptionsLikelihoodProps, TrustAssumptionsLikelihoodState>() {
+class TrustAssumptionsLikelihood : RComponent<TrustAssumptionsLikelihoodProps, TrustAssumptionsLikelihoodState>() {
     override fun RBuilder.render() {
         td {
             +props.attacker.toString()
         }
         styledTd {
             css {
-                color = Color(when (state.currentLikelihood) {
-                    Likelihood.High -> "#c0392b"
-                    Likelihood.Medium -> "#f39c12"
-                    Likelihood.Low -> "#27ae60"
-                    Likelihood.None -> "#bdc3c7"
-                })
+                color = Color(
+                    when (state.currentLikelihood) {
+                        Likelihood.High -> "#c0392b"
+                        Likelihood.Medium -> "#f39c12"
+                        Likelihood.Low -> "#27ae60"
+                        Likelihood.None -> "#bdc3c7"
+                    }
+                )
                 width = 100.px
             }
             +state.currentLikelihood.toString()
@@ -65,21 +67,23 @@ class TrustAssumptionsLikelihood: RComponent<TrustAssumptionsLikelihoodProps, Tr
                 css {
                     display = Display.block
                 }
-                child(cryptoACRadioGroup {
-                    row = true
-                    defaultValue = props.defaultValue.toString()
-                    options = Likelihood.values().map {
-                        CryptoACRadioOption("", it.toString(), "primary")
-                    }
-                    onChange = { event ->
-                        val newLikelihood = Likelihood.valueOf((event.target as HTMLInputElement).value)
-                        setState {
-                            currentLikelihood = newLikelihood
+                child(
+                    cryptoACRadioGroup {
+                        row = true
+                        defaultValue = props.defaultValue.toString()
+                        options = Likelihood.values().map {
+                            CryptoACRadioOption("", it.toString(), "primary")
                         }
-                        props.handleChangeLikelihood(props.domain, props.attacker, newLikelihood)
-                        true
+                        onChange = { event ->
+                            val newLikelihood = Likelihood.valueOf((event.target as HTMLInputElement).value)
+                            setState {
+                                currentLikelihood = newLikelihood
+                            }
+                            props.handleChangeLikelihood(props.domain, props.attacker, newLikelihood)
+                            true
+                        }
                     }
-                })
+                )
             }
         }
     }
@@ -100,7 +104,7 @@ class TrustAssumptionsLikelihood: RComponent<TrustAssumptionsLikelihoodProps, Tr
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun trustAssumptionsLikelihood(handler: TrustAssumptionsLikelihoodProps.() -> Unit): ReactElement {
+fun trustAssumptionsLikelihood(handler: TrustAssumptionsLikelihoodProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(TrustAssumptionsLikelihood::class) {
             this.attrs(handler)

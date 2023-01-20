@@ -1,9 +1,9 @@
 {
   "name": "CryptoAC-benchmark",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "0.0.1-SNAPSHOT",
   "main": "kotlin/CryptoAC-benchmark.js",
   "devDependencies": {
-    "source-map-support": "0.5.20",
+    "source-map-support": "0.5.21",
     "dukat": "0.5.8-rc.4"
   },
   "dependencies": {
@@ -20,7 +20,7 @@
     "react-pro-sidebar": "0.6.0",
     "sass": "1.35.1",
     "sass-loader": "12.1.0",
-    "source-map-support": "0.5.20"
+    "source-map-support": "0.5.21"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

@@ -1,0 +1,5 @@
+FROM authzforce/server:release-11.0.1
+
+COPY taz-ca-keystore.jks /usr/local/tomcat/conf/taz-ca-keystore.jks
+
+COPY server.xml /usr/local/tomcat/conf/server.xml

@@ -4,7 +4,9 @@ import kotlinx.serialization.Serializable
 
 /** An encrypted symmetric (not empty) [key] */
 @Serializable
-data class EncryptedSymKey(val key: ByteArray) {
+data class EncryptedSymKey(
+    val key: ByteArray,
+) {
 
     init {
         require(key.isNotEmpty()) { "No encrypted symmetric key was given" }

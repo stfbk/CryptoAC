@@ -16,17 +16,23 @@ class KeyPairSodium(
     override val public: PublicKeySodium,
     override val private: PrivateKeySodium,
     override val keyType: AsymKeysType,
-): KeyPairCryptoAC(public, private, keyType)
+) : KeyPairCryptoAC(public, private, keyType)
 
 /** A public cryptographic key for the Sodium library */
-class PublicKeySodium(val public: UByteArray) : PublicKeyCryptoAC {
+class PublicKeySodium(
+    val public: UByteArray,
+    override val keyID: String? = null,
+) : PublicKeyCryptoAC {
     override fun getAlgorithm() = "Sodium"
     override fun getFormat() = "Sodium"
     override fun getEncoded() = public.toByteArray()
 }
 
 /** A private cryptographic key for the Sodium library */
-class PrivateKeySodium(val private: UByteArray) : PrivateKeyCryptoAC {
+class PrivateKeySodium(
+    val private: UByteArray,
+    override var keyID: String? = null,
+) : PrivateKeyCryptoAC {
     override fun getAlgorithm() = "Sodium"
     override fun getFormat() = "Sodium"
     override fun getEncoded() = private.toByteArray()
@@ -45,4 +51,3 @@ fun SignatureKeyPair.toKeyPairSodium(): KeyPairSodium = KeyPairSodium(
     private = PrivateKeySodium(this.secretKey),
     keyType = AsymKeysType.SIG,
 )
-

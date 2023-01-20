@@ -4,13 +4,13 @@ import eu.fbk.st.cryptoac.view.Themes.greyColor
 import eu.fbk.st.cryptoac.view.Themes.purpleLinearGradient
 import kotlinx.css.*
 import org.w3c.dom.events.Event
-import styled.css
 import react.*
+import styled.css
 import styled.styledSpan
 
 external interface CryptoACButtonAndIconProps : Props {
     /** The icon for this button */
-    var icon: ReactElement
+    var icon: ReactElement<Props>
 
     /** The text of the button */
     var text: String
@@ -26,18 +26,20 @@ external interface CryptoACButtonAndIconProps : Props {
 }
 
 /** A custom component for a button and icon element */
-class CryptoACButtonAndIcon: RComponent<CryptoACButtonAndIconProps, State>() {
+class CryptoACButtonAndIcon : RComponent<CryptoACButtonAndIconProps, State>() {
     override fun RBuilder.render() {
 
         eu.fbk.st.cryptoac.view.components.materialui.button {
             attrs {
                 variant = "text"
-                style = JSON.parse("""{
+                style = JSON.parse(
+                    """{
                     "margin": "5px",
                     ${if (props.showText) """ "width": "90%", """ else "" }
                     ${if (props.highlighted) """ "backgroundImage": "$purpleLinearGradient", """ else "" }
                     "color": "${ if (props.highlighted) "white" else greyColor }"
-                }""".trimMargin())
+                }""".trimMargin()
+                )
                 onClick = { it -> props.onClick(it) }
             }
 
@@ -57,7 +59,7 @@ class CryptoACButtonAndIcon: RComponent<CryptoACButtonAndIconProps, State>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACButtonAndIcon(handler: CryptoACButtonAndIconProps.() -> Unit): ReactElement {
+fun cryptoACButtonAndIcon(handler: CryptoACButtonAndIconProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACButtonAndIcon::class) {
             attrs(handler)
@@ -67,7 +69,7 @@ fun cryptoACButtonAndIcon(handler: CryptoACButtonAndIconProps.() -> Unit): React
 
 /** Data defining a CryptoACButtonAndIcon react element */
 data class CryptoACButtonAndIconData(
-    var icon: ReactElement,
+    var icon: ReactElement<Props>,
     var text: String,
     var showText: Boolean,
     var onClick: (Event) -> Unit

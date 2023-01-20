@@ -2,11 +2,12 @@ package eu.fbk.st.cryptoac.view.content.newProfile
 
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.SERVER
-import eu.fbk.st.cryptoac.view.Themes.plainPaperTitleStyle
+import eu.fbk.st.cryptoac.ac.ACType
 import eu.fbk.st.cryptoac.core.CoreType
-import eu.fbk.st.cryptoac.implementation.dm.DMType
-import eu.fbk.st.cryptoac.implementation.mm.MMType
-import eu.fbk.st.cryptoac.implementation.rm.RMType
+import eu.fbk.st.cryptoac.dm.DMType
+import eu.fbk.st.cryptoac.mm.MMType
+import eu.fbk.st.cryptoac.rm.RMType
+import eu.fbk.st.cryptoac.view.Themes.plainPaperTitleStyle
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.materialui.grid
 import io.ktor.client.*
@@ -19,7 +20,6 @@ import styled.css
 import styled.styledDiv
 
 private val logger = KotlinLogging.logger {}
-
 
 external interface NewProfileState : State {
 
@@ -37,6 +37,9 @@ external interface NewProfileState : State {
 
     /** The selected DM type */
     var dmType: DMType
+
+    /** The selected AC type */
+    var acType: ACType
 
     /**
      * The options for the RM implementation
@@ -56,6 +59,11 @@ external interface NewProfileState : State {
      */
     var availableDMImplementations: List<String>
 
+    /**
+     * The options for the AC implementation
+     * based on the selected core type
+     */
+    var availableACImplementations: List<String>
 
     /** Whether to render the value on change by user */
     var changedByUser: Boolean
@@ -77,12 +85,11 @@ external interface NewProfileProps : Props {
     var excludedCoreTypes: Set<CoreType>
 }
 
-
 /**
  * The NewProfile React component allowing
  * the user to create a new profile for CryptoAC
  */
-class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
+class NewProfile : RComponent<NewProfileProps, NewProfileState>() {
 
     override fun RBuilder.render() {
 
@@ -94,72 +101,82 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
             }
 
             /** The paper collecting the available options for the core type */
-            child(cryptoACPaper{
-                titleStyle = plainPaperTitleStyle
-                titleText = "Select the Core Type"
-                titleVariant = "subtitle1"
-                setDivider = true
-                dividerWidth = 95.pct
-                child = createElement {
-                    grid {
-                        attrs {
-                            item = true
-                            xs = 12
-                            sm = 12
-                        }
-                        styledDiv {
-                            css {
-                                display = Display.inlineFlex
+            child(
+                cryptoACPaper {
+                    titleStyle = plainPaperTitleStyle
+                    titleText = "Select the Core Type"
+                    titleVariant = "subtitle1"
+                    setDivider = true
+                    dividerWidth = 95.pct
+                    child = createElement {
+                        grid {
+                            attrs {
+                                item = true
+                                xs = 12
+                                sm = 12
                             }
-                            /** Radio group for selecting the core type */
-                            child(cryptoACRadioGroup {
-                                name = "CoreType"
-                                disabled = false
-                                row = true
-                                options = state.listOfCores
-                                defaultValue = state.coreType.toString()
-                                onChange = { event ->
-                                    changeCoreType(CoreType.valueOf((event.target as HTMLInputElement).value))
-                                    true
+                            styledDiv {
+                                css {
+                                    display = Display.inlineFlex
                                 }
-                            })
+                                /** Radio group for selecting the core type */
+                                child(
+                                    cryptoACRadioGroup {
+                                        name = "CoreType"
+                                        disabled = false
+                                        row = true
+                                        options = state.listOfCores
+                                        defaultValue = state.coreType.toString()
+                                        onChange = { event ->
+                                            changeCoreType(CoreType.valueOf((event.target as HTMLInputElement).value))
+                                            true
+                                        }
+                                    }
+                                )
+                            }
                         }
-                    }
-                }!!
-            })
+                    }!!
+                }
+            )
 
             if (state.listOfCores.isNotEmpty()) {
 
                 br { }
 
                 /** The edit profile form */
-                child(cryptoACEditProfileForm {
-                    handleProfileWasCreatedOrModified = { coreType: CoreType ->
-                        props.handleProfileWasCreatedOrModified(coreType)
+                child(
+                    cryptoACEditProfileForm {
+                        handleProfileWasCreatedOrModified = { coreType: CoreType ->
+                            props.handleProfileWasCreatedOrModified(coreType)
+                        }
+                        handleChangeCoreType = { newCoreType: CoreType ->
+                            changeCoreType(newCoreType)
+                        }
+                        handleChangeRMType = { newRMType: RMType ->
+                            changeRMType(newRMType)
+                        }
+                        handleChangeMMType = { newMMType: MMType ->
+                            changeMMType(newMMType)
+                        }
+                        handleChangeDMType = { newDMType: DMType ->
+                            changeDMType(newDMType)
+                        }
+                        handleChangeACType = { newACType: ACType ->
+                            changeACType(newACType)
+                        }
+                        handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
+                        handleDisplayAlert = props.handleDisplayAlert
+                        httpClient = props.httpClient
+                        coreType = state.coreType
+                        rmType = state.rmType
+                        mmType = state.mmType
+                        dmType = state.dmType
+                        acType = state.acType
+                        isCreatingNewProfile = true
+                        coreParameters = null
+                        username = null
                     }
-                    handleChangeCoreType = { newCoreType: CoreType ->
-                        changeCoreType(newCoreType)
-                    }
-                    handleChangeRMType = { newRMType: RMType ->
-                        changeRMType(newRMType)
-                    }
-                    handleChangeMMType = { newMMType: MMType ->
-                        changeMMType(newMMType)
-                    }
-                    handleChangeDMType = { newDMType: DMType ->
-                        changeDMType(newDMType)
-                    }
-                    handleChangeBackdropIsOpen = props.handleChangeBackdropIsOpen
-                    handleDisplayAlert = props.handleDisplayAlert
-                    httpClient = props.httpClient
-                    coreType = state.coreType
-                    rmType = state.rmType
-                    mmType = state.mmType
-                    dmType = state.dmType
-                    isCreatingNewProfile = true
-                    coreParameters = null
-                    username = null
-                })
+                )
 
                 br { }
 
@@ -174,13 +191,15 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
                             sm = 12
                             md = 6
                         }
-                        child(moduleItem {
-                            name = SERVER.RM
-                            title = "Select the Reference Monitor"
-                            defaultValue = state.rmType.toString()
-                            options = state.availableRMImplementations
-                            handleChangeChoice = { newChoice -> changeRMType(RMType.valueOf(newChoice)) }
-                        })
+                        child(
+                            moduleItem {
+                                name = SERVER.RM
+                                title = "Select the Reference Monitor"
+                                defaultValue = state.rmType.toString()
+                                options = state.availableRMImplementations
+                                handleChangeChoice = { newChoice -> changeRMType(RMType.valueOf(newChoice)) }
+                            }
+                        )
                     }
                     grid {
                         attrs {
@@ -188,13 +207,15 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
                             sm = 12
                             md = 6
                         }
-                        child(moduleItem {
-                            name = SERVER.MM
-                            title = "Select the Metadata Manager"
-                            defaultValue = state.mmType.toString()
-                            options = state.availableMMImplementations
-                            handleChangeChoice = { newChoice -> changeMMType(MMType.valueOf(newChoice)) }
-                        })
+                        child(
+                            moduleItem {
+                                name = SERVER.MM
+                                title = "Select the Metadata Manager"
+                                defaultValue = state.mmType.toString()
+                                options = state.availableMMImplementations
+                                handleChangeChoice = { newChoice -> changeMMType(MMType.valueOf(newChoice)) }
+                            }
+                        )
                     }
                     grid {
                         attrs {
@@ -202,13 +223,31 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
                             sm = 12
                             md = 6
                         }
-                        child(moduleItem {
-                            name = SERVER.DM
-                            title = "Select the Data Manager"
-                            defaultValue = state.dmType.toString()
-                            options = state.availableDMImplementations
-                            handleChangeChoice = { newChoice -> changeDMType(DMType.valueOf(newChoice)) }
-                        })
+                        child(
+                            moduleItem {
+                                name = SERVER.DM
+                                title = "Select the Data Manager"
+                                defaultValue = state.dmType.toString()
+                                options = state.availableDMImplementations
+                                handleChangeChoice = { newChoice -> changeDMType(DMType.valueOf(newChoice)) }
+                            }
+                        )
+                    }
+                    grid {
+                        attrs {
+                            item = true
+                            sm = 12
+                            md = 6
+                        }
+                        child(
+                            moduleItem {
+                                name = SERVER.AC
+                                title = "Select the traditional AC"
+                                defaultValue = state.acType.toString()
+                                options = state.availableACImplementations
+                                handleChangeChoice = { newChoice -> changeACType(ACType.valueOf(newChoice)) }
+                            }
+                        )
                     }
                 }
             }
@@ -225,28 +264,35 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
         changedByUser = false
 
         listOfCores = mutableListOf()
-        rmType = RMType.CRYPTOAC
-        mmType = MMType.MYSQL
+        rmType = RMType.RBAC_CRYPTOAC
+        mmType = MMType.RBAC_MYSQL
         dmType = DMType.CRYPTOAC
-        coreType = CoreType.RBAC_CLOUD
-        availableRMImplementations = getRMImplementations(CoreType.RBAC_CLOUD)
-        availableMMImplementations = getMMImplementations(CoreType.RBAC_CLOUD)
-        availableDMImplementations = getDMImplementations(CoreType.RBAC_CLOUD)
+        acType = ACType.RBAC_OPA
+        coreType = CoreType.RBAC_AT_REST
+        availableRMImplementations = getRMImplementations(CoreType.RBAC_AT_REST)
+        availableMMImplementations = getMMImplementations(CoreType.RBAC_AT_REST)
+        availableDMImplementations = getDMImplementations(CoreType.RBAC_AT_REST)
+        availableACImplementations = getACImplementations(CoreType.RBAC_AT_REST)
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         NewProfile::class.js.asDynamic().getDerivedStateFromProps = {
-                props: NewProfileProps, state: NewProfileState ->
+            props: NewProfileProps, state: NewProfileState ->
             if (state.justMounted || !state.changedByUser) {
                 state.listOfCores = mutableListOf()
                 CoreType.values().forEach {
-                    if (!props.excludedCoreTypes.contains(it)) {
-                        state.listOfCores.add(
-                            CryptoACRadioOption(
-                                label = it.toPrettyString(),
-                                name = it.toString(),
-                                color = "primary"
+                    // TODO when ABAC cores are completed and functioning,
+                    //  decomment "if" below. that removes the possibility
+                    //  of having ABAC cores
+                    if (it != CoreType.ABAC_AT_REST && it != CoreType.ABAC_MQTT) {
+                        if (!props.excludedCoreTypes.contains(it)) {
+                            state.listOfCores.add(
+                                CryptoACRadioOption(
+                                    label = it.toPrettyString(),
+                                    name = it.toString(),
+                                    color = "primary"
+                                )
                             )
-                        )
+                        }
                     }
                 }
                 if (state.listOfCores.firstOrNull { it.name == state.coreType.toString() } == null) {
@@ -296,14 +342,27 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
         }
     }
 
+    /**
+     * Change the value of the 'acType'
+     * state to the [newACType]
+     */
+    private fun changeACType(newACType: ACType) {
+        logger.info { "Setting the 'acType' state to $newACType" }
+        setState {
+            acType = newACType
+            // TODO compute and update score
+        }
+    }
 
     /**
      * Get the available implementations for the
      * DM entity based on the core type selected
      */
     private fun getDMImplementations(coreType: CoreType) = when (coreType) {
-        CoreType.RBAC_CLOUD -> listOf(DMType.CRYPTOAC.toString())
-        CoreType.RBAC_MQTT -> listOf(DMType.MOSQUITTO.toString())
+        CoreType.RBAC_AT_REST -> listOf(DMType.CRYPTOAC.toString())
+        CoreType.RBAC_MQTT -> listOf(DMType.MQTT.toString())
+        CoreType.ABAC_AT_REST -> listOf(DMType.CRYPTOAC.toString())
+        CoreType.ABAC_MQTT -> listOf(DMType.MQTT.toString())
     }
 
     /**
@@ -311,13 +370,19 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
      * MM entity based on the core type selected
      */
     private fun getMMImplementations(coreType: CoreType) = when (coreType) {
-        CoreType.RBAC_CLOUD -> listOf(
-            MMType.MYSQL.toString(),
-            MMType.REDIS.toString(),
+        CoreType.RBAC_AT_REST -> listOf(
+            MMType.RBAC_MYSQL.toString(),
+            MMType.RBAC_REDIS.toString(),
         )
         CoreType.RBAC_MQTT -> listOf(
-            MMType.MYSQL.toString(),
-            MMType.REDIS.toString(),
+            MMType.RBAC_MYSQL.toString(),
+            MMType.RBAC_REDIS.toString(),
+        )
+        CoreType.ABAC_AT_REST -> listOf(
+            MMType.ABAC_MYSQL.toString(),
+        )
+        CoreType.ABAC_MQTT -> listOf(
+            MMType.ABAC_MYSQL.toString(),
         )
     }
 
@@ -326,8 +391,32 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
      * RM entity based on the core type selected
      */
     private fun getRMImplementations(coreType: CoreType) = when (coreType) {
-        CoreType.RBAC_CLOUD -> listOf(RMType.CRYPTOAC.toString())
+        CoreType.RBAC_AT_REST -> listOf(RMType.RBAC_CRYPTOAC.toString())
         CoreType.RBAC_MQTT -> listOf(RMType.NONE.toString())
+        CoreType.ABAC_AT_REST -> listOf(RMType.RBAC_CRYPTOAC.toString()) // TODO even though RMType.CryptoAC is not ready yet
+        CoreType.ABAC_MQTT -> listOf(RMType.NONE.toString())
+    }
+    /**
+     * Get the available implementations for the
+     * AC entity based on the core type selected
+     */
+    private fun getACImplementations(coreType: CoreType) = when (coreType) {
+        CoreType.RBAC_AT_REST -> listOf(
+            ACType.RBAC_OPA.toString(),
+            ACType.RBAC_XACML_AUTHZFORCE.toString(),
+            ACType.NONE.toString()
+        )
+        CoreType.RBAC_MQTT -> listOf(
+            ACType.RBAC_DYNSEC.toString(),
+            ACType.NONE.toString()
+        )
+        CoreType.ABAC_AT_REST -> listOf( // TODO even though RMType.RBAC_OPA is not ready yet
+            ACType.RBAC_OPA.toString(),
+            ACType.NONE.toString()
+        )
+        CoreType.ABAC_MQTT -> listOf(
+            ACType.NONE.toString()
+        )
     }
 
     /**
@@ -341,6 +430,7 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
             availableRMImplementations = getRMImplementations(newCoreType)
             availableMMImplementations = getMMImplementations(newCoreType)
             availableDMImplementations = getDMImplementations(newCoreType)
+            availableACImplementations = getACImplementations(newCoreType)
             if (rmType.toString() !in availableRMImplementations) {
                 rmType = RMType.valueOf(availableRMImplementations.first())
             }
@@ -350,28 +440,17 @@ class NewProfile: RComponent<NewProfileProps, NewProfileState>() {
             if (dmType.toString() !in availableDMImplementations) {
                 dmType = DMType.valueOf(availableDMImplementations.first())
             }
+            if (acType.toString() !in availableACImplementations) {
+                acType = ACType.valueOf(availableACImplementations.first())
+            }
         }
     }
 }
 
-
-fun newProfile(handler: NewProfileProps.() -> Unit): ReactElement {
+fun newProfile(handler: NewProfileProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(NewProfile::class) {
             attrs(handler)
         }
     }!!
-}
-
-fun getImageFromModuleImplementation(choice: String) = when (choice) {
-    "CRYPTOAC" -> { "proxy.png" }
-    "MOSQUITTO" -> { "mosquitto.png" }
-    "MYSQL" -> { "mysql.png" }
-    "REDIS" -> { "redis.png" }
-    "NONE" -> { "none.png" }
-    else -> {
-        val message = "Given choice \"$choice\" not corresponding to any module implementation"
-        logger.error { message }
-        throw IllegalStateException(message)
-    }
 }

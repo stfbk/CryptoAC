@@ -29,7 +29,7 @@ external interface CryptoACSwitchState : State {
 }
 
 /** A custom component for a radio group */
-class CryptoACSwitch: RComponent<CryptoACSwitchProps, CryptoACSwitchState>() {
+class CryptoACSwitch : RComponent<CryptoACSwitchProps, CryptoACSwitchState>() {
     override fun RBuilder.render() {
 
         switch {
@@ -54,7 +54,7 @@ class CryptoACSwitch: RComponent<CryptoACSwitchProps, CryptoACSwitchState>() {
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACSwitch::class.js.asDynamic().getDerivedStateFromProps = {
-                props: CryptoACSwitchProps, state: CryptoACSwitchState ->
+            props: CryptoACSwitchProps, state: CryptoACSwitchState ->
             if (state.justMounted || !state.changedByUser) {
                 state.value = if (props.defaultValue == undefined) false else props.defaultValue
             }
@@ -65,7 +65,7 @@ class CryptoACSwitch: RComponent<CryptoACSwitchProps, CryptoACSwitchState>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACSwitch(handler: CryptoACSwitchProps.() -> Unit): ReactElement {
+fun cryptoACSwitch(handler: CryptoACSwitchProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACSwitch::class) {
             this.attrs(handler)

@@ -8,10 +8,10 @@ class SafeRegex {
         /**
          * the safe (not-empty) text regex:
          * ^                     # start of the line
-         *   [-a-zA-Z0-9 ._/+=]  # one or more repetitions of these chars (no space)
+         *   [-a-zA-Z0-9 ._/+=*]  # one or more repetitions of these chars (no space)
          * $                     # end of the line
          */
-        val TEXT = """^[-a-zA-Z0-9._/+=]+$""".toRegex()
+        val TEXT = """^[-a-zA-Z0-9._/+=*]+$""".toRegex()
 
         /**
          * the safe (not-empty) URL regex:

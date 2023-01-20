@@ -33,11 +33,12 @@ val roleColumns = arrayOf(
     CryptoACTableColumn("token", "Token", "The token of the role"),
 )
 
-val fileColumns = arrayOf(
+val resourceColumns = arrayOf(
     CryptoACTableColumn("name", "Name", "The name of the file"),
     CryptoACTableColumn("status", "Status", "The current status of the file (OPERATIONAL or DELETED)"),
     CryptoACTableColumn("versionNumber", "#", "The version number of the file", "number"),
     CryptoACTableColumn("token", "Token", "The token of the file"),
+    CryptoACTableColumn("enforcement", "Enforcement", "The access control enforcement of the file"),
 )
 
 val assignmentColumns = arrayOf(
@@ -48,7 +49,7 @@ val assignmentColumns = arrayOf(
 
 val permissionColumns = arrayOf(
     CryptoACTableColumn("role name", "Role Name", "The name of the role"),
-    CryptoACTableColumn("file name", "File Name", "The name of the file"),
+    CryptoACTableColumn("resource name", "resource name", "The name of the file"),
     CryptoACTableColumn("fileVersionNumber", "#", "The version number of the key", "number"),
     CryptoACTableColumn("permission", "Permission", "The permission assigned (either Read or ReadWrite)"),
 )

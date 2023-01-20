@@ -3,12 +3,15 @@ package eu.fbk.st.cryptoac.view.components.custom
 import eu.fbk.st.cryptoac.view.components.materialui.inputLabel
 import eu.fbk.st.cryptoac.view.components.materialui.menuItem
 import eu.fbk.st.cryptoac.view.components.materialui.select
-import kotlinext.js.Object
+import kotlinx.js.Object
 import react.*
 
 external interface CryptoACSelectProps : Props {
     /** The label for the select object */
     var label: String
+
+    /** Whether the item should be disabled */
+    var disabled: Boolean
 
     /** The default value of the select object */
     var defaultValue: String
@@ -50,7 +53,7 @@ external interface CryptoACSelectState : State {
 }
 
 /** A custom component for a paper */
-class CryptoACSelect: RComponent<CryptoACSelectProps, CryptoACSelectState>() {
+class CryptoACSelect : RComponent<CryptoACSelectProps, CryptoACSelectState>() {
     override fun RBuilder.render() {
 
         if (props.labelId != undefined && props.label != undefined) {
@@ -63,6 +66,7 @@ class CryptoACSelect: RComponent<CryptoACSelectProps, CryptoACSelectState>() {
         }
         select {
             attrs {
+                disabled = props.disabled
                 style = props.selectStyle
                 autoWidth = props.autoWidth
                 name = props.name
@@ -105,7 +109,7 @@ class CryptoACSelect: RComponent<CryptoACSelectProps, CryptoACSelectState>() {
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACSelect::class.js.asDynamic().getDerivedStateFromProps = {
-                props: CryptoACSelectProps, state: CryptoACSelectState ->
+            props: CryptoACSelectProps, state: CryptoACSelectState ->
             if (state.justMounted || !state.changedByUser) {
                 state.value = if (props.defaultValue == undefined) props.options.first() else props.defaultValue
             }
@@ -116,11 +120,10 @@ class CryptoACSelect: RComponent<CryptoACSelectProps, CryptoACSelectState>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACSelect(handler: CryptoACSelectProps.() -> Unit): ReactElement {
+fun cryptoACSelect(handler: CryptoACSelectProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACSelect::class) {
             attrs(handler)
         }
     }!!
 }
-

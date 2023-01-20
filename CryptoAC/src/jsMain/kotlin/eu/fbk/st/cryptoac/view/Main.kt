@@ -1,7 +1,6 @@
 
 package eu.fbk.st.cryptoac.view
 
-import development
 import kotlinx.browser.document
 import kotlinx.browser.window
 import mu.KotlinLoggingConfiguration
@@ -16,16 +15,13 @@ import react.dom.render
 val baseURL = "${window.location.protocol}//${window.location.host}"
 
 fun main() {
-    /** Define the log level */
-    KotlinLoggingConfiguration.LOG_LEVEL = when(development) {
-        true -> { KotlinLoggingLevel.DEBUG }
-        false -> { KotlinLoggingLevel.INFO }
-    }
+    /** Define the log level TODO properly change this */
+    KotlinLoggingConfiguration.LOG_LEVEL = KotlinLoggingLevel.DEBUG
 
     /**
-    * Add here dependencies on SASS files added in the
-    * "./build/js/packages/CryptoAC/kotlin-dce-dev" directory
-    */
+     * Add here dependencies on SASS files added in the
+     * "./build/js/packages/CryptoAC/kotlin-dce-dev" directory
+     */
     kotlinext.js.require("prosidebar.scss")
 
     /** Render the app */
@@ -34,7 +30,6 @@ fun main() {
     }
 }
 
-
 inline fun <reified T : Enum<T>> enumContains(name: String): Boolean {
-    return enumValues<T>().any { it.name == name}
+    return enumValues<T>().any { it.name == name }
 }

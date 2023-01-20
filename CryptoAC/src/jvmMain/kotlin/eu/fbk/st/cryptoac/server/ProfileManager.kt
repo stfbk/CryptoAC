@@ -1,7 +1,10 @@
 package eu.fbk.st.cryptoac.server
 
 import eu.fbk.st.cryptoac.USERS_PROFILE_DIRECTORY_PATH
-import eu.fbk.st.cryptoac.core.*
+import eu.fbk.st.cryptoac.core.CoreParameters
+import eu.fbk.st.cryptoac.core.CoreParametersRBAC
+import eu.fbk.st.cryptoac.core.CoreType
+import eu.fbk.st.cryptoac.core.myJson
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
@@ -20,7 +23,7 @@ class ProfileManager {
 
         /** Return the key identifying the [username]'s profile for the given [core] */
         private fun getProfileKey(username: String, core: CoreType) =
-            "$USERS_PROFILE_DIRECTORY_PATH$username.${core}"
+            "$USERS_PROFILE_DIRECTORY_PATH$username.$core"
 
         /** Save the [username]'s [coreParameters] */
         fun saveProfile(username: String, coreParameters: CoreParameters) {
@@ -28,8 +31,14 @@ class ProfileManager {
             FileSystemManager.saveFile(
                 path = getProfileKey(username, coreParameters.coreType),
                 content = when (coreParameters.coreType) {
-                    CoreType.RBAC_CLOUD -> myJson.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
-                    CoreType.RBAC_MQTT -> myJson.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
+                    CoreType.RBAC_AT_REST -> myJson.encodeToString(
+                        coreParameters as CoreParametersRBAC
+                    ).byteInputStream()
+                    CoreType.RBAC_MQTT -> myJson.encodeToString(
+                        coreParameters as CoreParametersRBAC
+                    ).byteInputStream()
+                    CoreType.ABAC_AT_REST -> TODO()
+                    CoreType.ABAC_MQTT -> TODO()
                 },
                 saveMode = FileSaveMode.THROW_EXCEPTION
             )
@@ -41,8 +50,14 @@ class ProfileManager {
             FileSystemManager.saveFile(
                 path = getProfileKey(username, coreParameters.coreType),
                 content = when (coreParameters.coreType) {
-                    CoreType.RBAC_CLOUD -> myJson.encodeToString(coreParameters as CoreParametersCLOUD).byteInputStream()
-                    CoreType.RBAC_MQTT -> myJson.encodeToString(coreParameters as CoreParametersMQTT).byteInputStream()
+                    CoreType.RBAC_AT_REST -> myJson.encodeToString(
+                        coreParameters as CoreParametersRBAC
+                    ).byteInputStream()
+                    CoreType.RBAC_MQTT -> myJson.encodeToString(
+                        coreParameters as CoreParametersRBAC
+                    ).byteInputStream()
+                    CoreType.ABAC_AT_REST -> TODO()
+                    CoreType.ABAC_MQTT -> TODO()
                 },
                 saveMode = FileSaveMode.OVERWRITE
             )
@@ -55,8 +70,10 @@ class ProfileManager {
             return if (profileFile.exists()) {
                 val profileString = String(profileFile.inputStream().readAllBytes())
                 when (coreType) {
-                    CoreType.RBAC_CLOUD -> myJson.decodeFromString<CoreParametersCLOUD>(profileString)
-                    CoreType.RBAC_MQTT -> myJson.decodeFromString<CoreParametersMQTT>(profileString)
+                    CoreType.RBAC_AT_REST -> myJson.decodeFromString<CoreParametersRBAC>(profileString)
+                    CoreType.RBAC_MQTT -> myJson.decodeFromString<CoreParametersRBAC>(profileString)
+                    CoreType.ABAC_AT_REST -> TODO()
+                    CoreType.ABAC_MQTT -> TODO()
                 }
             } else {
                 null

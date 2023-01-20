@@ -1,0 +1,256 @@
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m13[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m14[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m15[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m21[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m26[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m27[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m28[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m29[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m30[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m31[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m32[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m33[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m34[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m35[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m38[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m43[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mApp.kt[90m:[0m45[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACAlert.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACButtonAndIcon.kt[90m:[0m5[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACButtonAndIcon.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACButtonAndIconGroup.kt[90m:[0m4[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACCheckbox.kt[90m:[0m5[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACDivider.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACDivider.kt[90m:[0m4[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m3[90m:1:[0m Imports must be ordered in lexicographic order without any empty lines in-between with "java", "javax", "kotlin" and aliases in the end
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m10[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m28[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m29[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m30[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m31[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m32[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m33[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m36[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m41[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m45[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m46[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACEditProfileForm.kt[90m:[0m404[90m:1:[0m Unexpected indentation (20) (should be 24)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACForm.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACForm.kt[90m:[0m11[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACForm.kt[90m:[0m13[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACForm.kt[90m:[0m16[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACForm.kt[90m:[0m20[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACForm.kt[90m:[0m23[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACForm.kt[90m:[0m24[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACPaper.kt[90m:[0m5[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACPaper.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACRadioGroup.kt[90m:[0m12[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACScore.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACSelect.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACSlider.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACSwitch.kt[90m:[0m4[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/[0mCryptoACTextField.kt[90m:[0m5[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/table/[0mCryptoACTable.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/table/[0mCryptoACTable.kt[90m:[0m4[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/table/[0mCryptoACTable.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/table/[0mCryptoACTable.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaBoxes.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaBullseye.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaCaretLeft.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaCaretRight.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaChevronDown.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mfaChevronUp.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaCloud.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaCloudMeatball.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaCloudUploadAlt.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaDoorClosed.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaDoorOpen.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaDownload.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaFileDownload.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaFileExcel.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaFileMedical.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaFileSignature.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaGithub.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaMedal.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaPaperPlane.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaQuestionCircle.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaShoppingCart.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaStream.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaTimes.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUndoAlt.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUser.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserEdit.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserFriends.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserLock.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserMinus.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserNinja.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserPlus.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserSecret.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserShield.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaUserTimes.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaVials.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaWater.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/icons/[0mFaWifi.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mAlert.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mBackdrop.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mBox.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mButton.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mCheckbox.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mCircularProgress.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mContainer.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mFormControl.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mFormControlLabel.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mGrid.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mIconButton.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mInputLabel.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mMenuItem.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mPaper.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mRadio.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mRadioGroup.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mSelect.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mSlider.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mSnackbar.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mSubmitButton.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mSwitch.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTable.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTableBody.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTableCell.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTableContainer.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTableFooter.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTableHead.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTablePagination.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTableRow.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTableSortLabel.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTextField.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mToolbar.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTooltip.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/materialui/[0mTypography.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/prosidebar/[0mProSidebar.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/prosidebar/[0mProSidebarContent.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/prosidebar/[0mProSidebarFooter.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/prosidebar/[0mProSidebarHeader.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/prosidebar/[0mProSidebarMenu.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/prosidebar/[0mProSidebarSubMenu.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mDashboard.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mDashboard.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mDashboard.kt[90m:[0m10[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mDashboard.kt[90m:[0m11[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACCryptoACDashboard.kt[90m:[0m4[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACCryptoACDashboard.kt[90m:[0m5[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACCryptoACDashboard.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACCryptoACDashboard.kt[90m:[0m11[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m3[90m:1:[0m Imports must be ordered in lexicographic order without any empty lines in-between with "java", "javax", "kotlin" and aliases in the end
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m15[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m16[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m17[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m18[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m19[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m22[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m77[90m:1:[0m Unexpected indentation (12) (should be 16)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m78[90m:1:[0m Unexpected indentation (12) (should be 16)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m86[90m:1:[0m Unexpected indentation (12) (should be 16)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACDashboard.kt[90m:[0m87[90m:1:[0m Unexpected indentation (12) (should be 16)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m11[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m12[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m13[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m14[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m18[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/[0mRBACMQTTDashboard.kt[90m:[0m21[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m4[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m125[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m126[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m127[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m128[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m129[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m129[90m:35:[0m Missing newline after "("
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m130[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m131[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m132[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m133[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m134[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m134[90m:29:[0m Missing newline before ")"
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m136[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m136[90m:35:[0m Missing newline after "("
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m137[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m138[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m139[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m140[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m141[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m141[90m:29:[0m Missing newline before ")"
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m143[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m143[90m:35:[0m Missing newline after "("
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m144[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m145[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m146[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m147[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m148[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m148[90m:29:[0m Missing newline before ")"
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m150[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m150[90m:35:[0m Missing newline after "("
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m151[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m152[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m153[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m154[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m155[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m155[90m:29:[0m Missing newline before ")"
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m157[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m157[90m:35:[0m Missing newline after "("
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m158[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m159[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m160[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m161[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m162[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m162[90m:29:[0m Missing newline before ")"
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m164[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m164[90m:35:[0m Missing newline after "("
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m165[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m166[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m167[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m168[90m:1:[0m Unexpected indentation (32) (should be 36)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m169[90m:1:[0m Unexpected indentation (28) (should be 32)
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mModuleItem.kt[90m:[0m169[90m:29:[0m Missing newline before ")"
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mNewProfile.kt[90m:[0m11[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mNewProfile.kt[90m:[0m13[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mNewProfile.kt[90m:[0m14[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/[0mNewProfile.kt[90m:[0m17[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mConfigurationItem.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mConfigurationItem.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mConfigurationItem.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mEntityIcon.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mEntityIcon.kt[90m:[0m5[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mRequirementItem.kt[90m:[0m5[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mRequirementItem.kt[90m:[0m6[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mTradeOffBoard.kt[90m:[0m13[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mTradeOffBoard.kt[90m:[0m19[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mTradeOffBoard.kt[90m:[0m21[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mTradeOffBoard.kt[90m:[0m22[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mTradeOffBoard.kt[90m:[0m23[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mTrustAssumptionsLikelihood.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/[0mTrustAssumptionsLikelihood.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mLogin.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mLogin.kt[90m:[0m7[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mLogin.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mLogin.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mLogin.kt[90m:[0m10[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/[0mLogin.kt[90m:[0m13[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m3[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m8[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m13[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m14[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m15[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m16[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m17[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m22[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m29[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m210[90m:59:[0m Missing space before //
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mActions.kt[90m:[0m210[90m:59:[0m Missing space after //
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mConfiguration.kt[90m:[0m9[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mConfiguration.kt[90m:[0m10[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mEmpty.kt[90m:[0m4[90m:1:[0m Wildcard import
+[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/[0mEvaluation.kt[90m:[0m4[90m:1:[0m Wildcard import

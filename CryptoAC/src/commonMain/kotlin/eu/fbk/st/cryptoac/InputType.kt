@@ -1,7 +1,7 @@
 package eu.fbk.st.cryptoac
 
 /** List of HTML input types */
-enum class InputType(val realValue : String) {
+enum class InputType(val realValue: String) {
     button("button"),
     checkBox("checkbox"),
     color("color"),

@@ -1,47 +1,52 @@
 package eu.fbk.st.cryptoac.server
 
-import eu.fbk.st.cryptoac.Constants.ADMIN
-import eu.fbk.st.cryptoac.OutcomeCode
-import eu.fbk.st.cryptoac.core.elements.User
-import eu.fbk.st.cryptoac.core.tuples.EnforcementType
-import eu.fbk.st.cryptoac.core.tuples.PermissionType
-import eu.fbk.st.cryptoac.crypto.CryptoFactory
+import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.API.ASSIGNMENTS
-import eu.fbk.st.cryptoac.API.FILES
+import eu.fbk.st.cryptoac.API.CRYPTOAC
+import eu.fbk.st.cryptoac.API.RESOURCES
 import eu.fbk.st.cryptoac.API.LOGIN
 import eu.fbk.st.cryptoac.API.LOGOUT
 import eu.fbk.st.cryptoac.API.PERMISSIONS
 import eu.fbk.st.cryptoac.API.PROFILES
-import eu.fbk.st.cryptoac.API.CRYPTOAC
 import eu.fbk.st.cryptoac.API.ROLES
 import eu.fbk.st.cryptoac.API.USERS
-import eu.fbk.st.cryptoac.PolicyModel
+import eu.fbk.st.cryptoac.Constants.ADMIN
+import eu.fbk.st.cryptoac.ResponseRoutes.Companion.conflict
 import eu.fbk.st.cryptoac.ResponseRoutes.Companion.forbidden
 import eu.fbk.st.cryptoac.ResponseRoutes.Companion.internalError
 import eu.fbk.st.cryptoac.ResponseRoutes.Companion.notFound
 import eu.fbk.st.cryptoac.ResponseRoutes.Companion.ok
 import eu.fbk.st.cryptoac.ResponseRoutes.Companion.unauthorized
 import eu.fbk.st.cryptoac.ResponseRoutes.Companion.unprocessableEntity
+import eu.fbk.st.cryptoac.SERVER.CORE
 import eu.fbk.st.cryptoac.SERVER.ENFORCEMENT
-import eu.fbk.st.cryptoac.SERVER.FILE_NAME
-import eu.fbk.st.cryptoac.SERVER.FILE_CONTENT
+import eu.fbk.st.cryptoac.SERVER.RESOURCE_CONTENT
+import eu.fbk.st.cryptoac.SERVER.RESOURCE_NAME
 import eu.fbk.st.cryptoac.SERVER.PERMISSION
 import eu.fbk.st.cryptoac.SERVER.ROLE_NAME
-import eu.fbk.st.cryptoac.SERVER.CORE
 import eu.fbk.st.cryptoac.SERVER.USERNAME
-import eu.fbk.st.cryptoac.core.*
-import eu.fbk.st.cryptoac.core.elements.ElementStatus
+import eu.fbk.st.cryptoac.core.CoreFactory
+import eu.fbk.st.cryptoac.model.unit.UnitElementStatus
+import eu.fbk.st.cryptoac.model.unit.User
+import eu.fbk.st.cryptoac.model.unit.EnforcementType
+import eu.fbk.st.cryptoac.model.tuple.PermissionType
 import eu.fbk.st.cryptoac.crypto.AsymKeys
 import eu.fbk.st.cryptoac.crypto.AsymKeysType
 import eu.fbk.st.cryptoac.encodeBase64
-import eu.fbk.st.cryptoac.inputStream
+import eu.fbk.st.cryptoac.core.CoreParameters
+import eu.fbk.st.cryptoac.core.CoreRBAC
+import eu.fbk.st.cryptoac.core.CoreType
+import eu.fbk.st.cryptoac.crypto.CryptoPKEFactory
+import eu.fbk.st.cryptoac.server.LoginController.Companion.isUserLoggedIn
+import eu.fbk.st.cryptoac.server.LoginController.Companion.login
+import eu.fbk.st.cryptoac.server.LoginController.Companion.logout
 import eu.fbk.st.cryptoac.server.SessionController.Companion.addSocketToSession
 import eu.fbk.st.cryptoac.server.SessionController.Companion.createSession
 import eu.fbk.st.cryptoac.server.SessionController.Companion.deinitAllCores
 import eu.fbk.st.cryptoac.server.SessionController.Companion.doesSessionExists
 import eu.fbk.st.cryptoac.server.SessionController.Companion.getOrCreateCore
 import eu.fbk.st.cryptoac.server.SessionController.Companion.getSessionUsername
-import eu.fbk.st.cryptoac.server.SessionController.Companion.setSessionCore
+import eu.fbk.st.cryptoac.server.SessionController.Companion.setUserCore
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -54,16 +59,29 @@ import io.ktor.server.websocket.*
 import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
 import java.lang.IllegalArgumentException
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.LinkedHashSet
 
 private val logger = KotlinLogging.logger {}
 
-/** Route related to the web app */
+/** To synchronize login/logout requests from the same user */
+// TODO currently, we need to synchronize also GET requests, as
+//  otherwise there may be issues with the lock-unlock mechanism
+//  (e.g., it may happen that "A lock has been set but not released",
+//  i.e., two simultaneous requests enter in the lock or unlock
+//  functions at the same time). We should improve this
+val logUsersMutexes: ConcurrentHashMap<String, Mutex> = ConcurrentHashMap()
+
+
+
+/** Routes related to the web app */
 fun Route.velocityRouting() {
 
     /** Get the web app */
@@ -73,6 +91,7 @@ fun Route.velocityRouting() {
             ContentType.Text.Html
         )
     }
+
     static("/") {
         resources("")
     }
@@ -96,7 +115,7 @@ fun Route.profileRouting() {
             // TODO implement button in web interface to
             //  download user's profile as json
 
-            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+            if (!checkPreconditions(call, checkTheProfile = true, checkIfAdmin = false)) {
                 return@get
             }
 
@@ -104,8 +123,8 @@ fun Route.profileRouting() {
             val loggedUser = userData.loggedUser!!
             val coreType = userData.coreType!!
 
-            val requestedUsername = call.parameters[USERNAME] ?:
-                return@get unprocessableEntity(
+            val requestedUsername = call.parameters[USERNAME]
+                ?: return@get unprocessableEntity(
                     call,
                     "Missing $USERNAME parameter",
                     OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -116,16 +135,7 @@ fun Route.profileRouting() {
                 "user $requestedUsername for core $coreType"
             }
 
-            val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)
-            if (loggedUserParams == null) {
-                logger.info { "User $loggedUser is logged in but no profile was found" }
-                return@get notFound(
-                    call,
-                    "Profile of logged user $loggedUser not found",
-                    OutcomeCode.CODE_039_PROFILE_NOT_FOUND
-                )
-            }
-
+            val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)!!
             if (loggedUser == requestedUsername) {
                 call.respond(loggedUserParams)
             } else if (loggedUser == ADMIN && loggedUserParams.user.isAdmin) {
@@ -138,12 +148,10 @@ fun Route.profileRouting() {
                         message,
                         OutcomeCode.CODE_039_PROFILE_NOT_FOUND
                     )
-                }
-                else {
+                } else {
                     call.respond(requestedUserParams)
                 }
-            }
-            else {
+            } else {
                 logger.warn { "User $loggedUser is not authorized to get profile of user $requestedUsername" }
                 return@get forbidden(
                     call,
@@ -163,7 +171,7 @@ fun Route.profileRouting() {
 
             // TODO implement button in web interface
 
-            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+            if (!checkPreconditions(call, checkTheProfile = true, checkIfAdmin = false)) {
                 return@delete
             }
 
@@ -171,8 +179,8 @@ fun Route.profileRouting() {
             val loggedUser = userData.loggedUser!!
             val coreType = userData.coreType!!
 
-            val requestedUsername = call.parameters[USERNAME] ?:
-                return@delete unprocessableEntity(
+            val requestedUsername = call.parameters[USERNAME]
+                ?: return@delete unprocessableEntity(
                     call,
                     "Missing $USERNAME parameter",
                     OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -183,26 +191,17 @@ fun Route.profileRouting() {
                 "user $requestedUsername for core $coreType"
             }
 
-            val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)
-            if (loggedUserParams == null) {
-                logger.info { "User $loggedUser is logged in but no profile was found" }
-                return@delete notFound(
-                    call,
-                    "Profile of logged user $loggedUser not found",
-                    OutcomeCode.CODE_039_PROFILE_NOT_FOUND
-                )
-            }
-
             /**
              * Proceed only if the admin is deleting
              * the profile of another user or the
              * user herself is deleting her profile
              */
+            val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)!!
             return@delete if (
                 (loggedUser == requestedUsername) ||
                 (loggedUser == ADMIN && loggedUserParams.user.isAdmin)
             ) {
-                // TODO note that this allows an administrator to delete her profile
+                // TODO note that this allows an admin to delete her profile
                 if (ProfileManager.deleteProfile(requestedUsername, coreType)) {
                     ok(call)
                 } else {
@@ -231,7 +230,7 @@ fun Route.profileRouting() {
          */
         post {
 
-            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+            if (!checkPreconditions(call, checkTheProfile = false, checkIfAdmin = false)) {
                 return@post
             }
 
@@ -243,12 +242,10 @@ fun Route.profileRouting() {
 
             val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)
 
-
             /** Get the core parameters from the request */
             val coreParameters: CoreParameters = call.receive()
             val requestedUsername = coreParameters.user.name
             val requestedCore = coreParameters.coreType
-
 
             if (
                 loggedUser == requestedUsername ||
@@ -264,7 +261,7 @@ fun Route.profileRouting() {
                     return@post unprocessableEntity(
                         call,
                         "The given username ($requestedUsername) should be $ADMIN",
-                        OutcomeCode.CODE_018_INTERFACE_CONFIGURATION_PARAMETERS
+                        OutcomeCode.CODE_018_SERVICE_CONFIGURATION_PARAMETERS
                     )
                 }
 
@@ -272,7 +269,7 @@ fun Route.profileRouting() {
                     return@post unprocessableEntity(
                         call,
                         "Parameters were not validated by regular expressions",
-                        OutcomeCode.CODE_018_INTERFACE_CONFIGURATION_PARAMETERS
+                        OutcomeCode.CODE_018_SERVICE_CONFIGURATION_PARAMETERS
                     )
                 }
 
@@ -282,13 +279,13 @@ fun Route.profileRouting() {
                  * an incomplete status, otherwise we just save
                  * the profile
                  */
-                if (coreParameters.user.status == ElementStatus.INCOMPLETE) {
+                if (coreParameters.user.status == UnitElementStatus.INCOMPLETE) {
 
                     logger.info { "User $requestedUsername marked as incomplete, initializing" }
 
-                    val cryptoObject = CryptoFactory.getCrypto(coreParameters.cryptoType)
-                    val asymEncKeys = cryptoObject.generateAsymEncKeys()
-                    val asymSigKeys = cryptoObject.generateAsymSigKeys()
+                    val cryptoPKEObject = CryptoPKEFactory.getCrypto(coreParameters.cryptoType)
+                    val asymEncKeys = cryptoPKEObject.generateAsymEncKeys()
+                    val asymSigKeys = cryptoPKEObject.generateAsymSigKeys()
                     val newUser = User(
                         requestedUsername,
                         asymEncKeys = AsymKeys(
@@ -303,11 +300,12 @@ fun Route.profileRouting() {
                         ),
                         isAdmin = coreParameters.user.isAdmin
                     )
+                    newUser.token = coreParameters.user.token
                     coreParameters.user = newUser
                     val core = CoreFactory.getCore(coreParameters)
 
                     val initCode = if (coreParameters.user.isAdmin) {
-                        core.initAdmin()
+                        core.configureServices()
                     } else {
                         core.initUser()
                     }
@@ -330,16 +328,14 @@ fun Route.profileRouting() {
 
                 /**
                  * If the user is logged-in and with a
-                 * profile, store the core in the session
+                 * profile, store the core for the user
                  */
-
                 if (requestedUsername == loggedUser) {
-                    setSessionCore(call.sessions, CoreFactory.getCore(coreParameters))
+                    setUserCore(loggedUser, CoreFactory.getCore(coreParameters))
                 }
 
                 return@post ok(call)
-            }
-            else {
+            } else {
                 logger.warn { "User $loggedUser is not authorized to create profile for user $requestedUsername" }
                 return@post forbidden(
                     call,
@@ -355,7 +351,7 @@ fun Route.profileRouting() {
          */
         patch {
 
-            if (!checkPreconditions(call, checkProfile = false, checkAdmin = false)) {
+            if (!checkPreconditions(call, checkTheProfile = true, checkIfAdmin = false)) {
                 return@patch
             }
 
@@ -365,21 +361,12 @@ fun Route.profileRouting() {
 
             logger.info { "User $loggedUser is updating a profile for core $coreType" }
 
-            val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)
-            if (loggedUserParams == null) {
-                logger.info { "User $loggedUser is logged in but no profile was found" }
-                return@patch notFound(
-                    call,
-                    "Profile of logged user $loggedUser not found",
-                    OutcomeCode.CODE_039_PROFILE_NOT_FOUND
-                )
-            }
+            val loggedUserParams = ProfileManager.loadProfile(loggedUser, coreType)!!
 
             /** Get the core parameters from the request */
             val updatedCoreParameters: CoreParameters = call.receive()
             val requestedUsername = updatedCoreParameters.user.name
             val requestedCore = updatedCoreParameters.coreType
-
 
             if (
                 loggedUser == requestedUsername ||
@@ -388,24 +375,23 @@ fun Route.profileRouting() {
 
                 logger.info {
                     "The profile to be updated is for a user with name " +
-                    "$requestedUsername and core $requestedCore"
+                        "$requestedUsername and core $requestedCore"
                 }
 
                 if (!updatedCoreParameters.checkParameters()) {
                     return@patch unprocessableEntity(
                         call,
                         "Parameters were not validated by regular expressions",
-                        OutcomeCode.CODE_018_INTERFACE_CONFIGURATION_PARAMETERS
+                        OutcomeCode.CODE_018_SERVICE_CONFIGURATION_PARAMETERS
                     )
                 }
 
-
-                val oldUserParameters = if (loggedUser == requestedUsername) {
+                val userParameters = if (loggedUser == requestedUsername) {
                     loggedUserParams
                 } else {
                     ProfileManager.loadProfile(requestedUsername, coreType)
                 }
-                if (oldUserParameters == null) {
+                if (userParameters == null) {
                     val message = "Profile of user $requestedUsername not found"
                     logger.info { message }
                     return@patch notFound(
@@ -415,15 +401,14 @@ fun Route.profileRouting() {
                     )
                 }
 
-                oldUserParameters.update(updatedCoreParameters)
-                
-                /** Finally, save the profile and update the core in the session */
-                ProfileManager.updateProfile(requestedUsername, oldUserParameters)
-                setSessionCore(call.sessions, CoreFactory.getCore(oldUserParameters))
+                userParameters.update(updatedCoreParameters)
+
+                /** Finally, save the profile and update the core of the user */
+                ProfileManager.updateProfile(requestedUsername, userParameters)
+                setUserCore(requestedUsername, CoreFactory.getCore(userParameters))
 
                 return@patch ok(call)
-            }
-            else {
+            } else {
                 logger.warn { "User $loggedUser is not authorized to update profile of user $requestedUsername" }
                 return@patch forbidden(
                     call,
@@ -459,14 +444,18 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
                 logger.info { "User $loggedUser is retrieving the list of users" }
 
                 /** Get the (visible) users */
-                val getUsersResult = coreObject.getUsers()
+                val getUsersResult = coreObject.mutex.withLock {
+                    coreObject.getUsers()
+                }
                 if (getUsersResult.code != OutcomeCode.CODE_000_SUCCESS) {
                     return@get internalError(
                         call,
@@ -491,12 +480,14 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val newUsername = call.receiveParameters()[USERNAME] ?:
-                    return@post unprocessableEntity(
+                val newUsername = call.receiveParameters()[USERNAME]
+                    ?: return@post unprocessableEntity(
                         call,
                         "Missing $USERNAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -507,8 +498,10 @@ fun Route.adminRouting() {
                     "user $newUsername for core $coreType"
                 }
 
-                /** Create the new user  */
-                val addUserResult = coreObject.addUser(newUsername)
+                /** Create the new user */
+                val addUserResult = coreObject.mutex.withLock {
+                    coreObject.addUser(newUsername)
+                }
                 if (addUserResult.code != OutcomeCode.CODE_000_SUCCESS) {
                     return@post internalError(
                         call,
@@ -518,7 +511,6 @@ fun Route.adminRouting() {
                 }
                 val parameters = addUserResult.parameters
                 call.respond(parameters!!)
-
             }
 
             /**
@@ -535,12 +527,14 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val usernameToDelete = call.parameters[USERNAME] ?:
-                    return@delete unprocessableEntity(
+                val usernameToDelete = call.parameters[USERNAME]
+                    ?: return@delete unprocessableEntity(
                         call,
                         "Missing $USERNAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -552,7 +546,9 @@ fun Route.adminRouting() {
                 }
 
                 /** Delete the user  */
-                val deleteUserCode = coreObject.deleteUser(usernameToDelete)
+                val deleteUserCode = coreObject.mutex.withLock {
+                    coreObject.deleteUser(usernameToDelete)
+                }
                 if (deleteUserCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@delete internalError(
                         call,
@@ -582,14 +578,19 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
                 logger.info { "User $loggedUser is retrieving the list of roles" }
 
                 /** Get the (visible) roles */
-                val getRolesResult = coreObject.getRoles()
+
+                val getRolesResult = coreObject.mutex.withLock {
+                    coreObject.getRoles()
+                }
                 if (getRolesResult.code != OutcomeCode.CODE_000_SUCCESS) {
                     return@get internalError(
                         call,
@@ -598,7 +599,6 @@ fun Route.adminRouting() {
                     )
                 }
                 call.respond(getRolesResult.roles ?: hashSetOf())
-
             }
 
             /**
@@ -615,12 +615,14 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val newRoleName = call.receiveParameters()[ROLE_NAME] ?:
-                    return@post unprocessableEntity(
+                val newRoleName = call.receiveParameters()[ROLE_NAME]
+                    ?: return@post unprocessableEntity(
                         call,
                         "Missing $ROLE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -628,11 +630,13 @@ fun Route.adminRouting() {
 
                 logger.info {
                     "User $loggedUser is asking to create " +
-                    "role $newRoleName for core $coreType"
+                        "role $newRoleName for core $coreType"
                 }
 
                 /** Create the new role  */
-                val addRoleCode = coreObject.addRole(newRoleName)
+                val addRoleCode = coreObject.mutex.withLock {
+                    coreObject.addRole(newRoleName)
+                }
                 if (addRoleCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@post internalError(
                         call,
@@ -641,7 +645,7 @@ fun Route.adminRouting() {
                     )
                 }
                 call.respond(addRoleCode)
-             }
+            }
 
             /**
              * Delete a role from the
@@ -657,12 +661,14 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val roleNameToDelete = call.parameters[ROLE_NAME] ?:
-                    return@delete unprocessableEntity(
+                val roleNameToDelete = call.parameters[ROLE_NAME]
+                    ?: return@delete unprocessableEntity(
                         call,
                         "Missing $ROLE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -670,11 +676,13 @@ fun Route.adminRouting() {
 
                 logger.info {
                     "User $loggedUser is asking to delete " +
-                    "role $roleNameToDelete for core $coreType"
+                        "role $roleNameToDelete for core $coreType"
                 }
 
                 /** Delete the role  */
-                val deleteRoleCode = coreObject.deleteRole(roleNameToDelete)
+                val deleteRoleCode = coreObject.mutex.withLock {
+                    coreObject.deleteRole(roleNameToDelete)
+                }
                 if (deleteRoleCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@delete internalError(
                         call,
@@ -683,15 +691,14 @@ fun Route.adminRouting() {
                     )
                 }
                 call.respond(deleteRoleCode)
-
             }
         }
 
-        route(FILES) {
+        route(RESOURCES) {
 
             /**
              * Get the list of currently
-             * existing files
+             * existing resources
              */
             get {
                 // TODO implement button in web interface
@@ -704,29 +711,33 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                logger.info { "User $loggedUser is retrieving the list of files" }
+                logger.info { "User $loggedUser is retrieving the list of resources" }
 
-                /** Get the (visible) files */
-                val getFilesResult = coreObject.getFiles()
-                if (getFilesResult.code != OutcomeCode.CODE_000_SUCCESS) {
+                /** Get the (visible) resources */
+                val getResourcesResult = coreObject.mutex.withLock {
+                    coreObject.getResources()
+                }
+                if (getResourcesResult.code != OutcomeCode.CODE_000_SUCCESS) {
                     return@get internalError(
                         call,
-                        "Error while getting files",
-                        getFilesResult.code
+                        "Error while getting resources",
+                        getResourcesResult.code
                     )
                 }
-                call.respond(getFilesResult.files ?: hashSetOf())
+                call.respond(getResourcesResult.resources ?: hashSetOf())
             }
 
             /**
-             * Delete a file from the
+             * Delete a resource from the
              * access control policy
              */
-            delete("{$FILE_NAME}") {
+            delete("{$RESOURCE_NAME}") {
 
                 if (!checkPreconditions(call)) {
                     return@delete
@@ -736,33 +747,36 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val fileNameToDelete = call.parameters[FILE_NAME] ?:
-                    return@delete unprocessableEntity(
+                val resourceNameToDelete = call.parameters[RESOURCE_NAME]
+                    ?: return@delete unprocessableEntity(
                         call,
-                        "Missing $FILE_NAME parameter",
+                        "Missing $RESOURCE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
 
                 logger.info {
                     "User $loggedUser is asking to delete " +
-                    "file $fileNameToDelete for core $coreType"
+                    "resource $resourceNameToDelete for core $coreType"
                 }
 
-                /** Delete the file  */
-                val deleteFileCode = coreObject.deleteFile(fileNameToDelete)
-                if (deleteFileCode != OutcomeCode.CODE_000_SUCCESS) {
+                /** Delete the resource  */
+                val deleteResourceCode = coreObject.mutex.withLock {
+                    coreObject.deleteResource(resourceNameToDelete)
+                }
+                if (deleteResourceCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@delete internalError(
                         call,
-                        "Error while deleting file $fileNameToDelete",
-                        deleteFileCode
+                        "Error while deleting resource $resourceNameToDelete",
+                        deleteResourceCode
                     )
                 }
-                call.respond(deleteFileCode)
-
+                call.respond(deleteResourceCode)
             }
         }
 
@@ -782,19 +796,21 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
                 val parameters = call.receiveParameters()
-                val username = parameters[USERNAME] ?:
-                    return@post unprocessableEntity(
+                val username = parameters[USERNAME]
+                    ?: return@post unprocessableEntity(
                         call,
                         "Missing $USERNAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
-                val roleName = parameters[ROLE_NAME] ?:
-                    return@post unprocessableEntity(
+                val roleName = parameters[ROLE_NAME]
+                    ?: return@post unprocessableEntity(
                         call,
                         "Missing $ROLE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -806,7 +822,9 @@ fun Route.adminRouting() {
                 }
 
                 /** Create the new user-role assignment  */
-                val addAssignmentCode = coreObject.assignUserToRole(username, roleName)
+                val addAssignmentCode = coreObject.mutex.withLock {
+                    coreObject.assignUserToRole(username, roleName)
+                }
                 if (addAssignmentCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@post internalError(
                         call,
@@ -831,18 +849,20 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val username = call.parameters[USERNAME] ?:
-                    return@delete unprocessableEntity(
+                val username = call.parameters[USERNAME]
+                    ?: return@delete unprocessableEntity(
                         call,
                         "Missing $USERNAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
-                val roleName = call.parameters[ROLE_NAME] ?:
-                    return@delete unprocessableEntity(
+                val roleName = call.parameters[ROLE_NAME]
+                    ?: return@delete unprocessableEntity(
                         call,
                         "Missing $ROLE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -850,11 +870,13 @@ fun Route.adminRouting() {
 
                 logger.info {
                     "User $loggedUser is asking to revoke user " +
-                    "$username from role $roleName for core $coreType"
+                        "$username from role $roleName for core $coreType"
                 }
 
                 /** Revoke the user-role assignment  */
-                val revokeAssignmentCode = coreObject.revokeUserFromRole(username, roleName)
+                val revokeAssignmentCode = coreObject.mutex.withLock {
+                    coreObject.revokeUserFromRole(username, roleName)
+                }
                 if (revokeAssignmentCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@delete internalError(
                         call,
@@ -870,7 +892,7 @@ fun Route.adminRouting() {
 
             /**
              * Assign a new permission to a role over
-             * a file in the access control policy
+             * a resource in the access control policy
              */
             post {
 
@@ -882,25 +904,27 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
                 val parameters = call.receiveParameters()
-                val roleName = parameters[ROLE_NAME] ?:
-                    return@post unprocessableEntity(
+                val roleName = parameters[ROLE_NAME]
+                    ?: return@post unprocessableEntity(
                         call,
                         "Missing $ROLE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
-                val fileName = parameters[FILE_NAME] ?:
-                    return@post unprocessableEntity(
+                val resourceName = parameters[RESOURCE_NAME]
+                    ?: return@post unprocessableEntity(
                         call,
-                        "Missing $FILE_NAME parameter",
+                        "Missing $RESOURCE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
-                val permissionInput = parameters[PERMISSION] ?:
-                    return@post unprocessableEntity(
+                val permissionInput = parameters[PERMISSION]
+                    ?: return@post unprocessableEntity(
                         call,
                         "Missing $PERMISSION parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -917,16 +941,18 @@ fun Route.adminRouting() {
 
                 logger.info {
                     "User $loggedUser is asking to assign permission $permission " +
-                    "to role $roleName over file $fileName for core $coreType"
+                        "to role $roleName over resource $resourceName for core $coreType"
                 }
 
                 /** Assign the new permission */
-                val addPermissionCode = coreObject.assignPermissionToRole(roleName, fileName, permission)
+                val addPermissionCode = coreObject.mutex.withLock {
+                    coreObject.assignPermissionToRole(roleName, resourceName, permission)
+                }
                 if (addPermissionCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@post internalError(
                         call,
                         "Error while assigning permission " +
-                                "$permission to role $roleName over file $fileName",
+                            "$permission to role $roleName over resource $resourceName",
                         addPermissionCode
                     )
                 }
@@ -935,9 +961,9 @@ fun Route.adminRouting() {
 
             /**
              * Delete a permission from a role over a
-             * file from the access control policy
+             * resource from the access control policy
              */
-            delete("{$ROLE_NAME}/{$FILE_NAME}/{$PERMISSION}") {
+            delete("{$ROLE_NAME}/{$RESOURCE_NAME}/{$PERMISSION}") {
 
                 if (!checkPreconditions(call)) {
                     return@delete
@@ -947,24 +973,26 @@ fun Route.adminRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val roleName = call.parameters[ROLE_NAME] ?:
-                    return@delete unprocessableEntity(
+                val roleName = call.parameters[ROLE_NAME]
+                    ?: return@delete unprocessableEntity(
                         call,
                         "Missing $ROLE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
-                val fileName = call.parameters[FILE_NAME] ?:
-                    return@delete unprocessableEntity(
+                val resourceName = call.parameters[RESOURCE_NAME]
+                    ?: return@delete unprocessableEntity(
                         call,
-                        "Missing $FILE_NAME parameter",
+                        "Missing $RESOURCE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
-                val permissionInput = call.parameters[PERMISSION] ?:
-                    return@delete unprocessableEntity(
+                val permissionInput = call.parameters[PERMISSION]
+                    ?: return@delete unprocessableEntity(
                         call,
                         "Missing $PERMISSION parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
@@ -981,16 +1009,18 @@ fun Route.adminRouting() {
 
                 logger.info {
                     "User $loggedUser is asking to revoke permission $permission " +
-                    "from role $roleName over file $fileName for core $coreType"
+                        "from role $roleName over resource $resourceName for core $coreType"
                 }
 
                 /** Revoke the permission */
-                val revokePermissionCode = coreObject.revokePermissionFromRole(roleName, fileName, permission)
+                val revokePermissionCode = coreObject.mutex.withLock {
+                    coreObject.revokePermissionFromRole(roleName, resourceName, permission)
+                }
                 if (revokePermissionCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@delete internalError(
                         call,
                         "Error while revoking permission $permission " +
-                                "from role $roleName over file $fileName",
+                            "from role $roleName over resource $resourceName",
                         revokePermissionCode
                     )
                 }
@@ -1000,23 +1030,21 @@ fun Route.adminRouting() {
     }
 }
 
-
-
 /** Routes related to users' access control policy operations */
 fun Route.userRouting() {
 
     /** Wrap all routes related to CryptoAC */
     route(CRYPTOAC) {
 
-        route(FILES) {
+        route(RESOURCES) {
 
             /**
-             * Get a file from the access
+             * Get a resource from the access
              * control policy
              */
-            get("{$FILE_NAME}") {
+            get("{$RESOURCE_NAME}") {
 
-                if (!checkPreconditions(call, checkAdmin = false)) {
+                if (!checkPreconditions(call, checkIfAdmin = false)) {
                     return@get
                 }
 
@@ -1024,57 +1052,61 @@ fun Route.userRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                val fileNameToGet = call.parameters[FILE_NAME] ?:
-                    return@get unprocessableEntity(
+                val resourceNameToGet = call.parameters[RESOURCE_NAME]
+                    ?: return@get unprocessableEntity(
                         call,
-                        "Missing $FILE_NAME parameter",
+                        "Missing $RESOURCE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
 
                 logger.info {
-                    "User $loggedUser is asking to get file " +
-                    "$fileNameToGet for core $coreType"
+                    "User $loggedUser is asking to get resource " +
+                        "$resourceNameToGet for core $coreType"
                 }
 
-                /** Get the file */
-                val cryptoACFile = coreObject.readFile(fileNameToGet)
-                if (cryptoACFile.code != OutcomeCode.CODE_000_SUCCESS) {
+                /** Get the resource */
+                val cryptoACResource = coreObject.mutex.withLock {
+                    coreObject.readResource(resourceNameToGet)
+                }
+                if (cryptoACResource.code != OutcomeCode.CODE_000_SUCCESS) {
                     return@get internalError(
                         call,
-                        "Error while getting file $fileNameToGet",
-                        cryptoACFile.code
+                        "Error while getting resource $resourceNameToGet",
+                        cryptoACResource.code
                     )
                 }
-                if (cryptoACFile.stream == null) {
+                if (cryptoACResource.stream == null) {
                     return@get ok(call)
                 } else {
                     call.response.header(
                         HttpHeaders.ContentDisposition,
                         ContentDisposition.Attachment.withParameter(
-                            ContentDisposition.Parameters.FileName, fileNameToGet
+                            ContentDisposition.Parameters.FileName, resourceNameToGet
                         ).toString()
                     )
-                    //call.response.header("Content-Disposition", "attachment; filename=\"$fileNameToGet\"")
+                    // call.response.header("Content-Disposition", "attachment; filename=\"$fileNameToGet\"")
 
-                    val contentType = ContentType.fromFileExtension(File(fileNameToGet).extension).firstOrNull()
+                    val contentType = ContentType.fromFileExtension(File(resourceNameToGet).extension).firstOrNull()
                         ?: ContentType.Application.OctetStream
                     call.respondOutputStream(contentType, HttpStatusCode.OK) {
-                        cryptoACFile.stream.copyTo(this)
+                        cryptoACResource.stream.copyTo(this)
                     }
                 }
             }
 
             /**
-             * Create a new file in the
+             * Create a new resource in the
              * access control policy
              */
             post {
 
-                if (!checkPreconditions(call, checkAdmin = false)) {
+                if (!checkPreconditions(call, checkIfAdmin = false)) {
                     return@post
                 }
 
@@ -1082,13 +1114,14 @@ fun Route.userRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-
                 var enforcementInput: String? = null
-                var newFileName: String? = null
+                var newResourceName: String? = null
                 var stream: InputStream = "".inputStream()
 
                 val cType = call.request.contentType()
@@ -1103,7 +1136,7 @@ fun Route.userRouting() {
                                 }
                             }
                             is PartData.FileItem -> {
-                                newFileName = part.originalFileName as String
+                                newResourceName = part.originalFileName as String
                                 stream = part.streamProvider()
                             }
                             is PartData.BinaryItem -> {
@@ -1116,9 +1149,9 @@ fun Route.userRouting() {
                     }
                 } else if (cType.match(ContentType.Application.FormUrlEncoded)) {
                     val parameters = call.receiveParameters()
-                    newFileName = parameters[FILE_NAME]
+                    newResourceName = parameters[RESOURCE_NAME]
                     enforcementInput = parameters[ENFORCEMENT]
-                    stream = (parameters[FILE_CONTENT] ?: "").inputStream()
+                    stream = (parameters[RESOURCE_CONTENT] ?: "").inputStream()
                 } else {
                     return@post unprocessableEntity(
                         call,
@@ -1126,7 +1159,6 @@ fun Route.userRouting() {
                         OutcomeCode.CODE_060_HTTP_CONTENT_TYPE_NOT_SUPPORTED
                     )
                 }
-
 
                 val enforcement = if (enforcementInput == null) {
                     return@post unprocessableEntity(
@@ -1145,38 +1177,40 @@ fun Route.userRouting() {
                         )
                     }
                 }
-                if (newFileName == null) {
+                if (newResourceName == null) {
                     return@post unprocessableEntity(
                         call,
-                        "Missing $FILE_NAME parameter",
+                        "Missing $RESOURCE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
                 }
 
                 logger.info {
-                    "User $loggedUser is asking to create file $newFileName " +
-                    "with enforcement $enforcement for core $coreType"
+                    "User $loggedUser is asking to create resource $newResourceName " +
+                        "with enforcement $enforcement for core $coreType"
                 }
 
-                /** Create the new file */
-                val addFileCode = coreObject.addFile(newFileName!!, stream, enforcement)
-                if (addFileCode != OutcomeCode.CODE_000_SUCCESS) {
+                /** Create the new resource */
+                val addResourceCode = coreObject.mutex.withLock {
+                    coreObject.addResource(newResourceName!!, stream, enforcement)
+                }
+                if (addResourceCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@post internalError(
                         call,
-                        "Error while creating file $newFileName",
-                        addFileCode
+                        "Error while creating resource $newResourceName",
+                        addResourceCode
                     )
                 }
-                call.respond(addFileCode)
+                call.respond(addResourceCode)
             }
 
             /**
-             * Update a file in the
+             * Update a resource in the
              * access control policy
              */
             patch {
 
-                if (!checkPreconditions(call, checkAdmin = false)) {
+                if (!checkPreconditions(call, checkIfAdmin = false)) {
                     return@patch
                 }
 
@@ -1184,11 +1218,13 @@ fun Route.userRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
-                var fileName: String? = null
+                var resourceName: String? = null
                 var stream: InputStream? = null
 
                 val cType = call.request.contentType()
@@ -1199,19 +1235,22 @@ fun Route.userRouting() {
                                 logger.warn { "Received unexpected part ${part.name}" }
                             }
                             is PartData.FileItem -> {
-                                fileName = part.originalFileName as String
+                                resourceName = part.originalFileName as String
                                 stream = part.streamProvider()
                             }
                             is PartData.BinaryItem -> {
                                 logger.warn { "Received unexpected binary ${part.name}" }
                             }
+                            is PartData.BinaryChannelItem -> {
+                                logger.warn { "Received unexpected binary channel item ${part.name}" }
+                            }
                         }
                     }
                 } else if (cType.match(ContentType.Application.FormUrlEncoded)) {
                     val parameters = call.receiveParameters()
-                    fileName = parameters[FILE_NAME]
-                    val fileContent = parameters[FILE_CONTENT]
-                    stream = fileContent?.inputStream()
+                    resourceName = parameters[RESOURCE_NAME]
+                    val resourceContent = parameters[RESOURCE_CONTENT]
+                    stream = resourceContent?.inputStream()
                 } else {
                     return@patch unprocessableEntity(
                         call,
@@ -1220,38 +1259,39 @@ fun Route.userRouting() {
                     )
                 }
 
-                if (fileName == null) {
+                if (resourceName == null) {
                     return@patch unprocessableEntity(
                         call,
-                        "Missing $FILE_NAME parameter",
+                        "Missing $RESOURCE_NAME parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
                 }
                 if (stream == null) {
                     return@patch unprocessableEntity(
                         call,
-                        "Missing $FILE_CONTENT parameter",
+                        "Missing $RESOURCE_CONTENT parameter",
                         OutcomeCode.CODE_019_MISSING_PARAMETERS
                     )
                 }
 
                 logger.info {
                     "User $loggedUser is asking to write " +
-                    "file $fileName for core $coreType"
+                    "resource $resourceName for core $coreType"
                 }
 
-                /** Update the file */
-                val writeFileCode = coreObject.writeFile(fileName!!, stream!!)
-                if (writeFileCode != OutcomeCode.CODE_000_SUCCESS) {
+                /** Update the resource */
+                val writeResourceCode = coreObject.mutex.withLock {
+                    coreObject.writeResource(resourceName!!, stream!!)
+                }
+                if (writeResourceCode != OutcomeCode.CODE_000_SUCCESS) {
                     return@patch internalError(
                         call,
-                        "Error while writing file $fileName",
-                        writeFileCode
+                        "Error while writing resource $resourceName",
+                        writeResourceCode
                     )
                 }
-                call.respond(writeFileCode)
+                call.respond(writeResourceCode)
             }
-
 
             /**
              * Allows connecting to CryptoAC
@@ -1313,14 +1353,14 @@ fun Route.userRouting() {
         route(ASSIGNMENTS) {
 
             /**
-             * Get the assignments of the
-             * currently logged-in user
+             * Get the list of currently
+             * existing assignments
              */
             get {
                 // TODO implement button in web interface
                 // TODO think of eventual path or query parameters
 
-                if (!checkPreconditions(call, checkAdmin = false)) {
+                if (!checkPreconditions(call, checkIfAdmin = false)) {
                     return@get
                 }
 
@@ -1328,8 +1368,10 @@ fun Route.userRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
                 val requestedUsername = if (coreObject.coreParameters.user.isAdmin) {
@@ -1345,14 +1387,18 @@ fun Route.userRouting() {
                 }
 
                 /** Get the assignments */
-                val getAssignmentsResult = coreObject.getAssignments(
-                    username = requestedUsername,
-                    roleName = requestedRoleName
-                )
+                val getAssignmentsResult = coreObject.mutex.withLock {
+                    coreObject.getAssignments(
+                        username = requestedUsername,
+                        roleName = requestedRoleName
+                    )
+                }
                 if (getAssignmentsResult.code != OutcomeCode.CODE_000_SUCCESS) {
-                    return@get internalError(call,
+                    return@get internalError(
+                        call,
                         "Error while getting assignments",
-                        getAssignmentsResult.code)
+                        getAssignmentsResult.code
+                    )
                 }
                 call.respond(getAssignmentsResult.roleTuples ?: hashSetOf())
             }
@@ -1361,14 +1407,14 @@ fun Route.userRouting() {
         route(PERMISSIONS) {
 
             /**
-             * Get the permissions of the
-             * currently logged-in user
+             * Get the list of currently
+             * existing permissions
              */
             get {
                 // TODO implement button in web interface
                 // TODO think of eventual path or query parameters
 
-                if (!checkPreconditions(call, checkAdmin = false)) {
+                if (!checkPreconditions(call, checkIfAdmin = false)) {
                     return@get
                 }
 
@@ -1376,34 +1422,45 @@ fun Route.userRouting() {
                 val loggedUser = userData.loggedUser!!
                 val coreType = userData.coreType!!
                 val coreObject = getOrCreateCore(
-                    call.sessions, loggedUser, coreType,
-                    userData.parameters!!, PolicyModel.RBAC,
+                    username = loggedUser,
+                    coreType = coreType,
+                    parameters = userData.parameters!!,
+                    policyModel = PolicyModel.RBAC
                 ) as CoreRBAC
 
+                val requestedUsername = if (coreObject.coreParameters.user.isAdmin) {
+                    call.request.queryParameters[USERNAME]
+                } else {
+                    loggedUser
+                }
                 val requestedRoleName = call.request.queryParameters[ROLE_NAME]
-                val requestedFileName = call.request.queryParameters[FILE_NAME]
+                val requestedResourceName = call.request.queryParameters[RESOURCE_NAME]
                 logger.info {
-                    "User $loggedUser is querying for permissions with filter role " +
-                    "$requestedRoleName and file $requestedFileName for core $coreType"
+                    "User $loggedUser is querying for permissions with filter user " +
+                    "$requestedUsername, role $requestedRoleName and resource " +
+                    "$requestedResourceName for core $coreType"
                 }
 
                 /** Get the permissions */
-                val getPermissionsResult = coreObject.getPermissions(
-                    roleName = requestedRoleName,
-                    fileName = requestedFileName
-                )
+                val getPermissionsResult = coreObject.mutex.withLock {
+                    coreObject.getPermissions(
+                        username = requestedUsername,
+                        roleName = requestedRoleName,
+                        resourceName = requestedResourceName
+                    )
+                }
                 if (getPermissionsResult.code != OutcomeCode.CODE_000_SUCCESS) {
-                    return@get internalError(call,
+                    return@get internalError(
+                        call,
                         "Error while getting assignments",
-                        getPermissionsResult.code)
+                        getPermissionsResult.code
+                    )
                 }
                 call.respond(getPermissionsResult.permissionTuples ?: hashSetOf())
             }
         }
     }
 }
-
-
 
 /** Routes related to user's login; login (post), logout (delete) */
 fun Route.loginRouting() {
@@ -1414,25 +1471,54 @@ fun Route.loginRouting() {
 
         /** Log in the user */
         post {
-            if (doesSessionExists(call.sessions)) {
-                logger.warn {
-                    "Received login request from already " +
-                    "logged user ${getSessionUsername(call.sessions)}"
-                }
-                return@post ok(call)
-            }
-            else {
-                val postParameters = call.receiveParameters()
-                val username = postParameters[USERNAME] ?:
-                return@post unprocessableEntity(
+            val postParameters = call.receiveParameters()
+            val username = postParameters[USERNAME]
+                ?: return@post unprocessableEntity(
                     call,
                     "Missing $USERNAME parameter",
-                    OutcomeCode.CODE_019_MISSING_PARAMETERS)
-                logger.info { "Received login request for user $username" }
-                // TODO actually login the user (https://ktor.io/docs/authentication.html)
+                    OutcomeCode.CODE_019_MISSING_PARAMETERS
+                )
+            logger.info { "Received login request from user $username " }
 
-                createSession(call.sessions, username)
-                return@post ok(call)
+            /** Since logUsersLocks is a concurrent hash map, getOrPut is thread-safe */
+            logUsersMutexes.getOrPut(username) { Mutex() }
+            val returnCode = logUsersMutexes[username]!!.withLock  {
+                if (doesSessionExists(call.sessions)) {
+                    val alreadyLoggedUsername = getSessionUsername(call.sessions)
+                    logger.info {
+                        "Received login request from user $username which has " +
+                        "already a valid session as user $alreadyLoggedUsername"
+                    }
+                    if (username == alreadyLoggedUsername) {
+                        OutcomeCode.CODE_000_SUCCESS
+                    } else {
+                        OutcomeCode.CODE_062_ALREADY_LOGGED_IN_WITH_DIFFERENT_USERNAME
+                    }
+                } else {
+                    if (isUserLoggedIn(username)) {
+                        logger.info {
+                            "Received login request from user $username which is " +
+                            "already authenticated in another session. Allow it"
+                        }
+                    }
+                    when (val loginCode = login(username)) {
+                        OutcomeCode.CODE_000_SUCCESS -> {
+                            createSession(call.sessions, username)
+                            OutcomeCode.CODE_000_SUCCESS
+                        }
+                        else -> loginCode
+                    }
+                }
+            }
+
+            return@post when (returnCode) {
+                OutcomeCode.CODE_000_SUCCESS -> ok(call)
+                OutcomeCode.CODE_062_ALREADY_LOGGED_IN_WITH_DIFFERENT_USERNAME -> conflict(
+                    call,
+                    "The user was already logged in but with a different username",
+                    OutcomeCode.CODE_062_ALREADY_LOGGED_IN_WITH_DIFFERENT_USERNAME
+                )
+                else -> internalError(call, "Error during login procedure", returnCode)
             }
         }
     }
@@ -1442,20 +1528,41 @@ fun Route.loginRouting() {
 
         /** Log out the user */
         delete {
-            if (doesSessionExists(call.sessions)) {
-                val username = getSessionUsername(call.sessions)
-                logger.info { "Received logout request from user $username " }
-
-                // TODO when Ktor will have automatic session expire,
-                //  remember to invoke this function also in that case
-                deinitAllCores(call.sessions)
-
-                call.sessions.clear<UserSession>()
-                return@delete ok(call)
-            }
-            else {
+            val username = getSessionUsername(call.sessions)
+            val returnCode = if (username == null) {
                 logger.warn { "Received logout request from not logged-in user" }
-                return@delete ok(call)
+                OutcomeCode.CODE_000_SUCCESS
+            } else {
+                logger.info { "Received logout request from user $username " }
+                logUsersMutexes[username]!!.withLock {
+                    if (doesSessionExists(call.sessions)) {
+                        when (val logoutCode = logout(username)) {
+                            OutcomeCode.CODE_000_SUCCESS -> {
+                                // TODO when Ktor will have automatic session expire,
+                                //  remember to invoke this function also in that case
+
+                                /**
+                                 * Deinit the core of the user only if the user
+                                 * has logged out from all his sessions
+                                 */
+                                if (!isUserLoggedIn(username)) {
+                                    deinitAllCores(username)
+                                }
+                                call.sessions.clear<UserSession>()
+                                OutcomeCode.CODE_000_SUCCESS
+                            }
+                            else -> logoutCode
+                        }
+                    } else {
+                        logger.warn { "Received logout request from not logged-in user" }
+                        OutcomeCode.CODE_000_SUCCESS
+                    }
+                }
+            }
+
+            return@delete when (returnCode) {
+                OutcomeCode.CODE_000_SUCCESS -> ok(call)
+                else -> internalError(call, "Error during login procedure", returnCode)
             }
         }
     }
@@ -1473,19 +1580,21 @@ fun Application.registerCryptoACRoutes() {
     }
 }
 
+
+
 /**
  * Function grouping common checks on preconditions
- * before executing APIs. This function always checks 
- * that user is logged in and the core type is provided,
- * and [checkProfile] and whether the user [checkAdmin]
- * if requested. The function store relevant information
- * in the call attributes under the [loggedUserDataKey].
+ * before executing APIs. This function always checks
+ * that the user is logged in and the core type is provided.
+ * If requested, this function can also [checkTheProfile] of
+ * the user and [checkIfAdmin]. This function store relevant
+ * information in the call attributes under the [loggedUserDataKey].
  * Return true if all preconditions are met, false otherwise
  */
 suspend fun checkPreconditions(
     call: ApplicationCall,
-    checkProfile: Boolean = true,
-    checkAdmin: Boolean = true,
+    checkTheProfile: Boolean = true,
+    checkIfAdmin: Boolean = true,
 ): Boolean {
     var preconditionsAreMet = true
     val userData = UserData()
@@ -1496,10 +1605,14 @@ suspend fun checkPreconditions(
     val loggedUser = getSessionUsername(call.sessions)
     userData.loggedUser = loggedUser
     if (loggedUser == null) {
+        logger.warn {
+            "Non-authenticated user requested " +
+            "API $apiURI with method $apiMethod"
+        }
         unauthorized(
-            call,
-            "User is not authenticated",
-            OutcomeCode.CODE_038_UNAUTHORIZED
+            call = call,
+            message = "User is not authenticated",
+            code = OutcomeCode.CODE_038_UNAUTHORIZED
         )
         preconditionsAreMet = false
     }
@@ -1508,9 +1621,9 @@ suspend fun checkPreconditions(
         val coreParam = call.parameters[CORE]
         if (coreParam == null) {
             unprocessableEntity(
-                call,
-                "Missing $CORE parameter",
-                OutcomeCode.CODE_019_MISSING_PARAMETERS
+                call = call,
+                message = "Missing $CORE parameter",
+                code = OutcomeCode.CODE_019_MISSING_PARAMETERS
             )
             preconditionsAreMet = false
         } else {
@@ -1519,39 +1632,46 @@ suspend fun checkPreconditions(
                 userData.coreType = coreType
             } catch (e: IllegalArgumentException) {
                 unprocessableEntity(
-                    call,
-                    "Wrong $CORE parameter",
-                    OutcomeCode.CODE_020_INVALID_PARAMETER
+                    call = call,
+                    message = "Wrong $CORE parameter",
+                    code = OutcomeCode.CODE_020_INVALID_PARAMETER
                 )
                 preconditionsAreMet = false
             }
         }
     }
 
-    if (checkProfile && preconditionsAreMet) {
+    if (checkTheProfile && preconditionsAreMet) {
+        // TODO instead of loading the profile every time, can't we
+        //  just check that is there? This would optimize the stuff.
+        //  Also, why do we need to 'call.attributes.put(loggedUserDataKey, userData)'
+        //  everytime? why can't we just do it at the login (and then update it when
+        //  users, e.g., modify their profile or profile gets deleted)?
+        //  Also, what it a user is using two cores at the same time? The key
+        //  loggedUserDataKey is unique, we should make it dependent on the core
         val loggedUserParams = ProfileManager.loadProfile(userData.loggedUser!!, userData.coreType!!)
         userData.parameters = loggedUserParams
         if (loggedUserParams == null) {
             logger.info { "User $loggedUser is logged in but no profile was found" }
             notFound(
-                call,
-                "Profile of logged user $loggedUser not found",
-                OutcomeCode.CODE_039_PROFILE_NOT_FOUND
+                call = call,
+                message = "Profile of logged user $loggedUser not found",
+                code = OutcomeCode.CODE_039_PROFILE_NOT_FOUND
             )
             preconditionsAreMet = false
         }
     }
 
-    if (checkAdmin && preconditionsAreMet) {
+    if (checkIfAdmin && preconditionsAreMet) {
         val isAdmin = userData.parameters!!.user.isAdmin
         if (!isAdmin) {
 
             val message = "Not-admin User $loggedUser invoking restricted API $apiURI with method $apiMethod"
             logger.info { message }
             forbidden(
-                call,
-                message,
-                OutcomeCode.CODE_037_FORBIDDEN
+                call = call,
+                message = message,
+                code = OutcomeCode.CODE_037_FORBIDDEN
             )
             preconditionsAreMet = false
         }
@@ -1566,10 +1686,10 @@ suspend fun checkPreconditions(
 data class Connection(
     val session: DefaultWebSocketSession,
     val username: String
-    )
+)
 
 /**
- * Represent data of a user passed. We
+ * Represent data of a user. We
  * save the name of the [loggedUser],
  * the [coreType] and the [parameters]
  * of the profile of the user

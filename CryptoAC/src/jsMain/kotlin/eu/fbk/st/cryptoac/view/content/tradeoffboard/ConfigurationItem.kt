@@ -36,7 +36,7 @@ external interface ConfigurationItemState : State {
 }
 
 /** A configuration item component with a radio group */
-class ConfigurationItem: RComponent<ConfigurationItemProps, ConfigurationItemState>() {
+class ConfigurationItem : RComponent<ConfigurationItemProps, ConfigurationItemState>() {
     override fun RBuilder.render() {
 
         grid {
@@ -50,23 +50,25 @@ class ConfigurationItem: RComponent<ConfigurationItemProps, ConfigurationItemSta
                 css {
                     display = Display.inlineFlex
                 }
-                child(cryptoACRadioGroup {
-                    name = props.name
-                    disabled = props.disabled
-                    row = props.optionsInRow
-                    defaultValue = props.defaultValue
-                    onChange = { event ->
-                        props.handleChangeChoice((event.target as HTMLInputElement).value)
-                        true
+                child(
+                    cryptoACRadioGroup {
+                        name = props.name
+                        disabled = props.disabled
+                        row = props.optionsInRow
+                        defaultValue = props.defaultValue
+                        onChange = { event ->
+                            props.handleChangeChoice((event.target as HTMLInputElement).value)
+                            true
+                        }
+                        options = props.values.map {
+                            CryptoACRadioOption(
+                                label = it,
+                                name = it,
+                                color = "primary"
+                            )
+                        }
                     }
-                    options = props.values.map {
-                        CryptoACRadioOption(
-                            label = it,
-                            name = it,
-                            color = "primary"
-                        )
-                    }
-                })
+                )
             }
         }
     }
@@ -86,7 +88,7 @@ class ConfigurationItem: RComponent<ConfigurationItemProps, ConfigurationItemSta
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun configurationItem(handler: ConfigurationItemProps.() -> Unit): ReactElement {
+fun configurationItem(handler: ConfigurationItemProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(ConfigurationItem::class) {
             this.attrs(handler)

@@ -3,7 +3,7 @@
 
 package eu.fbk.st.cryptoac.view.components.icons
 
-import kotlinext.js.Object
+import kotlinx.js.Object
 import react.*
 
 @JsName("FaTimes")

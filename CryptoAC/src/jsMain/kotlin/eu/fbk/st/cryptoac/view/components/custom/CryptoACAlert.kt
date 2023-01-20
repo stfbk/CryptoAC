@@ -18,7 +18,7 @@ external interface CryptoACAlertProps : Props {
 }
 
 /** A custom component for an alert */
-class CryptoACAlert: RComponent<CryptoACAlertProps, State>() {
+class CryptoACAlert : RComponent<CryptoACAlertProps, State>() {
     override fun RBuilder.render() {
         snackbar {
             attrs {
@@ -40,7 +40,7 @@ class CryptoACAlert: RComponent<CryptoACAlertProps, State>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACAlert(handler: CryptoACAlertProps.() -> Unit): ReactElement {
+fun cryptoACAlert(handler: CryptoACAlertProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACAlert::class) {
             this.attrs(handler)

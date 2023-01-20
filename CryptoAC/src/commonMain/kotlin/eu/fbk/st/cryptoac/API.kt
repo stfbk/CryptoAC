@@ -9,9 +9,6 @@ import eu.fbk.st.cryptoac.SERVER.CORE
  */
 object API {
 
-    /** (any mode) the HTTP protocol. TODO this should removed and only HTTPS should be used */
-    const val HTTP = "http://"
-
     /** (any mode) the HTTPS protocol */
     const val HTTPS = "https://"
 
@@ -33,33 +30,32 @@ object API {
     /** (OPA) base URL for OPA APIs */
     const val OPA = "/v1/"
 
-    
+    /** (AuthzForce XACML Server) base URL for the AuthzForce XACML Server APIs */
+    const val XACML_AUTHZFORCE = "/authzforce-ce/domains/"
+
     /** (CryptoAC mode) base URL for user related APIs */
     const val USERS = "users/{$CORE}/"
 
     /** (CryptoAC mode) base URL for role related APIs */
     const val ROLES = "roles/{$CORE}/"
 
-    /** (CryptoAC mode) base URL for file related APIs */
-    const val FILES = "files/{$CORE}/"
+    /** (CryptoAC mode) base URL for resources related APIs */
+    const val RESOURCES = "resources/{$CORE}/"
 
     /** (CryptoAC mode) base URL for role tuple related APIs */
     const val ASSIGNMENTS = "assignments/{$CORE}/"
 
-    /** (CryptoAC mode) base URL for file tuple related APIs */
+    /** (CryptoAC mode) base URL for permission tuple related APIs */
     const val PERMISSIONS = "permissions/{$CORE}/"
 
     /** (CryptoAC mode) base URL for users' profile */
     const val PROFILES = "${CURRENT_VERSION}profile/{$CORE}/"
-
 
     /** (CryptoAC mode) get the login page */
     const val LOGIN = "/login/"
 
     /** (CryptoAC mode) log out the authenticated user */
     const val LOGOUT = "/logout/"
-
-
 
     /** (OPA) API for managing the rbac policy in OPA */
     const val OPA_RBAC_POLICY = "${OPA}policies/rbac"
@@ -68,5 +64,5 @@ object API {
     const val OPA_RBAC_DATA = "${OPA}data/rbac"
 
     /** (OPA) API for querying the rbac policy in OPA */
-    const val OPA_RBAC_QUERY = "${OPA}data/app/rbac/allow"
+    const val OPA_RBAC_QUERY = "${OPA}data/rbac/allow"
 }

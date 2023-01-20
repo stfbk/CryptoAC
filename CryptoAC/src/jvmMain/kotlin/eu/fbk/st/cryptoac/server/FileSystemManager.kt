@@ -59,7 +59,6 @@ class FileSystemManager {
                 oldFile
             }
 
-
             if (!newFile.parentFile.exists()) {
                 if (!newFile.parentFile.mkdirs()) {
                     val message = "Error while creating directories"
@@ -91,7 +90,7 @@ class FileSystemManager {
             val extension = file.extension
             while (newFile.exists()) {
                 count++
-                newFile = File("${pathWithoutExtension}_${count}_${extension}")
+                newFile = File("${pathWithoutExtension}_${count}_$extension")
             }
             return newFile
         }

@@ -1,15 +1,15 @@
 package eu.fbk.st.cryptoac.view
 
 import eu.fbk.st.cryptoac.API
-import eu.fbk.st.cryptoac.view.Themes.concreteColor
-import eu.fbk.st.cryptoac.view.Themes.greyColor
-import eu.fbk.st.cryptoac.view.Themes.lightGreyColor
-import eu.fbk.st.cryptoac.view.Themes.wetAsphaltColor
 import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.SERVER
 import eu.fbk.st.cryptoac.core.CoreParameters
 import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.myJson
+import eu.fbk.st.cryptoac.view.Themes.concreteColor
+import eu.fbk.st.cryptoac.view.Themes.greyColor
+import eu.fbk.st.cryptoac.view.Themes.lightGreyColor
+import eu.fbk.st.cryptoac.view.Themes.wetAsphaltColor
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.icons.*
 import eu.fbk.st.cryptoac.view.components.materialui.*
@@ -20,12 +20,12 @@ import eu.fbk.st.cryptoac.view.content.dashboard.dashboard
 import eu.fbk.st.cryptoac.view.content.newProfile.newProfile
 import eu.fbk.st.cryptoac.view.content.tradeoffboard.*
 import eu.fbk.st.cryptoac.view.sidebar.actions
-import eu.fbk.st.cryptoac.view.sidebar.empty
 import eu.fbk.st.cryptoac.view.sidebar.configuration
+import eu.fbk.st.cryptoac.view.sidebar.empty
 import eu.fbk.st.cryptoac.view.sidebar.evaluation
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.cookies.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -37,6 +37,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
+import kotlinx.js.Object
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import react.*
@@ -69,9 +70,11 @@ external interface AppState : State {
      */
     var userProfiles: HashMap<CoreType, CoreParameters>
 
-
-    /** The buttons on the sidebar */
-    var sidebarButtons: List<CryptoACButtonAndIconData>
+    /**
+     * The list of core types we display on the
+     * sidedar for which the user has a profile
+     */
+    var sidebarButtonsForCoreTypes: List<CoreType>
 
     /** The index of the sidebar button (to highlight) */
     var sidebarButtonIndex: Int
@@ -100,8 +103,6 @@ external interface AppState : State {
     /** The value to display as progress indicator */
     var circularProgressValue: Int
 
-
-
     /**
      * The currently selected
      * scenario for TradeOffBoard
@@ -120,7 +121,6 @@ external interface AppState : State {
      */
     var tradeOffBoardMetric: Metric
 }
-
 
 /**
  * The App React component, consisting of:
@@ -152,12 +152,14 @@ class App : RComponent<Props, AppState>() {
         }
 
         /** 2. The CryptoAC alert component for showing brief messages to the user */
-        child(cryptoACAlert {
-            severity = state.alertSeverity
-            message = state.alertMessage
-            open = state.alertIsOpen
-            handleClose = { setState { alertIsOpen = false } }
-        })
+        child(
+            cryptoACAlert {
+                severity = state.alertSeverity
+                message = state.alertMessage
+                open = state.alertIsOpen
+                handleClose = { setState { alertIsOpen = false } }
+            }
+        )
 
         /** 3. If the user is logged, show the dashboard, otherwise the login form */
         if (state.userIsLogged) {
@@ -202,77 +204,89 @@ class App : RComponent<Props, AppState>() {
                                     attrs {
                                         size = "small"
                                         label = "logout"
-                                        style = JSON.parse("""{
+                                        style = JSON.parse(
+                                            """{
                                              "marginLeft": "auto"
-                                         }""".trimMargin())
+                                         }""".trimMargin()
+                                        )
                                         onClick = { submitLogout() }
                                     }
-                                    child(createElement { faDoorOpen { } }!!)
+                                    child(createElement<Props> { faDoorOpen { } }!!)
                                 }
                             }
                         }
 
                         /** 3.1.2a. A divider between the navbar and the main content */
-                        child(cryptoACDivider {
-                            width = 100.pct
-                            marginBottom = 10.px
-                            marginTop = 0.px
-                        })
+                        child(
+                            cryptoACDivider {
+                                width = 100.pct
+                                marginBottom = 10.px
+                                marginTop = 0.px
+                            }
+                        )
 
                         /** 3.1.3a. The main content, set based on the current 'uiType' state value */
-                        child(when (state.uiType) {
-                            /**
-                             * "tradeOffBoard" shows the web dashboard for
-                             * the trade-off analysis of CAC architectures
-                             */
-                            UIType.TradeOffBoard -> tradeOffBoard {
-                                handleChangeCircularProgressValue = { circularProgressValue: Int -> changeCircularProgressValue(circularProgressValue) }
-                                handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
-                                scenario = state.tradeOffBoardScenario
-                                algorithm = state.tradeOffBoardAlgorithm
-                                metric = state.tradeOffBoardMetric
-                            }
+                        child(
+                            when (state.uiType) {
+                                /**
+                                 * "tradeOffBoard" shows the web dashboard for
+                                 * the trade-off analysis of CAC architectures
+                                 */
+                                UIType.TradeOffBoard -> tradeOffBoard {
+                                    handleChangeCircularProgressValue = { circularProgressValue: Int -> changeCircularProgressValue(circularProgressValue) }
+                                    handleChangeBackdropIsOpen = { backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen) }
+                                    scenario = state.tradeOffBoardScenario
+                                    algorithm = state.tradeOffBoardAlgorithm
+                                    metric = state.tradeOffBoardMetric
+                                }
 
-                            /**
-                             * "newProfile" allows creating a new
-                             * profile for a core type in CryptoAC
-                             */
-                            UIType.NewProfile -> newProfile {
-                                handleProfileWasCreatedOrModified = {
-                                        coreType: CoreType -> profileWasCreatedOrModified(coreType)
+                                /**
+                                 * "newProfile" allows creating a new
+                                 * profile for a core type in CryptoAC
+                                 */
+                                UIType.NewProfile -> newProfile {
+                                    handleProfileWasCreatedOrModified = {
+                                        coreType: CoreType ->
+                                        profileWasCreatedOrModified(coreType)
+                                    }
+                                    handleChangeBackdropIsOpen = {
+                                        backdropIsOpen: Boolean ->
+                                        changeBackdropIsOpen(backdropIsOpen)
+                                    }
+                                    handleDisplayAlert = {
+                                        code: OutcomeCode, severity: CryptoACAlertSeverity ->
+                                        displayAlert(code, severity)
+                                    }
+                                    httpClient = state.httpClient
+                                    excludedCoreTypes = state.userProfiles.keys
                                 }
-                                handleChangeBackdropIsOpen = {
-                                        backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen)
-                                }
-                                handleDisplayAlert = {
-                                        code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity)
-                                }
-                                httpClient = state.httpClient
-                                excludedCoreTypes = state.userProfiles.keys
-                            }
 
-                            /**
-                             * "dashboard" shows the dashboard
-                             * for the selected core type
-                             */
-                            UIType.CoreType -> dashboard {
-                                handleProfileWasCreatedOrModified = {
-                                        coreType: CoreType -> profileWasCreatedOrModified(coreType)
+                                /**
+                                 * "dashboard" shows the dashboard
+                                 * for the selected core type
+                                 */
+                                UIType.CoreType -> dashboard {
+                                    handleProfileWasCreatedOrModified = {
+                                        coreType: CoreType ->
+                                        profileWasCreatedOrModified(coreType)
+                                    }
+                                    handleChangeBackdropIsOpen = {
+                                        backdropIsOpen: Boolean ->
+                                        changeBackdropIsOpen(backdropIsOpen)
+                                    }
+                                    handleDisplayAlert = {
+                                        code: OutcomeCode, severity: CryptoACAlertSeverity ->
+                                        displayAlert(code, severity)
+                                    }
+                                    coreParameters = state.userProfiles[state.coreType]!!
+                                    userIsLogged = state.userIsLogged
+                                    httpClient = state.httpClient
+                                    coreType = state.coreType
+                                    username = state.username
+                                    tables = state.tables
                                 }
-                                handleChangeBackdropIsOpen = {
-                                        backdropIsOpen: Boolean -> changeBackdropIsOpen(backdropIsOpen)
-                                }
-                                handleDisplayAlert = {
-                                        code: OutcomeCode, severity: CryptoACAlertSeverity -> displayAlert(code, severity)
-                                }
-                                coreParameters = state.userProfiles[state.coreType]!!
-                                userIsLogged = state.userIsLogged
-                                httpClient = state.httpClient
-                                coreType = state.coreType
-                                username = state.username
-                                tables = state.tables
                             }
-                        })
+                        )
                     }
                 }
 
@@ -299,7 +313,7 @@ class App : RComponent<Props, AppState>() {
                                     textAlign = TextAlign.center
                                     fontWeight = FontWeight.bold
                                     letterSpacing = 2.px
-                                    padding( if (!state.sidebarIsCollapsed) 20.px else 0.px)
+                                    padding(if (!state.sidebarIsCollapsed) 20.px else 0.px)
                                 }
 
                                 /** The title in the header of the sidebar */
@@ -308,11 +322,13 @@ class App : RComponent<Props, AppState>() {
                                         styledDiv {
                                             button {
                                                 attrs {
-                                                    style = JSON.parse("""{
+                                                    style = JSON.parse(
+                                                        """{
                                                         "width": "100%",
                                                         "maxHeight": "20px",
                                                         "padding": "0"
-                                                    }""".trimMargin())
+                                                    }""".trimMargin()
+                                                    )
                                                     variant = "text"
                                                     onClick = { toggleSidebarIsCollapsed() }
                                                 }
@@ -339,92 +355,115 @@ class App : RComponent<Props, AppState>() {
                                                         label = "expand"
                                                         onClick = { toggleSidebarIsCollapsed() }
                                                     }
-                                                    child(createElement { faStream { } }!!)
+                                                    child(createElement<Props> { faStream { } }!!)
                                                 }
                                             }
                                         }
                                     }
                                 }
 
-                                child(cryptoACDivider {
-                                    width = 100.pct
-                                    marginTop = 10.px
-                                    marginBottom = 10.px
-                                })
-
-                                child(cryptoACButtonAndIconGroup {
-                                    defaultSelectedButton = state.sidebarButtonIndex
-                                    buttons = mutableListOf(
-                                        CryptoACButtonAndIconData(
-                                            icon = createElement { faBoxes { attrs { style = JSON.parse("""{"marginRight": "${ if (state.sidebarIsCollapsed) "unset" else "auto" } "}""".trimMargin()) }}}!!,
-                                            text = "New profile",
-                                            showText = !state.sidebarIsCollapsed,
-                                            onClick = { changeUIType(UIType.NewProfile) },
-                                        ),
-                                        CryptoACButtonAndIconData(
-                                            icon = createElement { faVials { attrs { style = JSON.parse("""{"marginRight": "${ if (state.sidebarIsCollapsed) "unset" else "auto" } "}""".trimMargin()) }}}!!,
-                                            text = "TradeOffBoard",
-                                            showText = !state.sidebarIsCollapsed,
-                                            onClick = { changeUIType(UIType.TradeOffBoard) }
-                                        )
-                                    ).apply {
-                                        addAll(state.sidebarButtons)
+                                child(
+                                    cryptoACDivider {
+                                        width = 100.pct
+                                        marginTop = 10.px
+                                        marginBottom = 10.px
                                     }
-                                })
+                                )
+
+                                child(
+                                    cryptoACButtonAndIconGroup {
+                                        defaultSelectedButton = state.sidebarButtonIndex
+                                        buttons = mutableListOf(
+                                            CryptoACButtonAndIconData(
+                                                icon = createElement<Props> { faBoxes { attrs { style = JSON.parse("""{"marginRight": "${ if (state.sidebarIsCollapsed) "unset" else "auto" } "}""".trimMargin()) } } }!!,
+                                                text = "New profile",
+                                                showText = !state.sidebarIsCollapsed,
+                                                onClick = { changeUIType(UIType.NewProfile) },
+                                            ),
+                                            CryptoACButtonAndIconData(
+                                                icon = createElement<Props> { faVials { attrs { style = JSON.parse("""{"marginRight": "${ if (state.sidebarIsCollapsed) "unset" else "auto" } "}""".trimMargin()) } } }!!,
+                                                text = "TradeOffBoard",
+                                                showText = !state.sidebarIsCollapsed,
+                                                onClick = { changeUIType(UIType.TradeOffBoard) }
+                                            )
+                                        ).apply {
+                                            state.sidebarButtonsForCoreTypes.forEach { coreType ->
+                                                add(
+                                                    CryptoACButtonAndIconData(
+                                                        icon = getIconByCoreType(coreType),
+                                                        text = coreType.toPrettyString(),
+                                                        showText = !state.sidebarIsCollapsed,
+                                                        onClick = {
+                                                            changeCoreType(coreType)
+                                                            changeUIType(UIType.CoreType)
+                                                        },
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                )
                             }
                         }
 
-
                         /** 3.2.2a. The sidebar content, set based on the current 'uiType' state value */
-                        child(if (state.sidebarIsCollapsed) {
-                            empty { }
-                        } else {
-                            when (state.uiType) {
-                                /**
-                                 * "configuration" allows configuring
-                                 *  parameters for TradeOffBoard
-                                 */
-                                UIType.TradeOffBoard -> configuration {
-                                    handleChangeAlgorithm = {
-                                            newAlgorithm -> changeTradeOffBoardAlgorithm(newAlgorithm)
+                        child(
+                            if (state.sidebarIsCollapsed) {
+                                empty { }
+                            } else {
+                                when (state.uiType) {
+                                    /**
+                                     * "configuration" allows configuring
+                                     *  parameters for TradeOffBoard
+                                     */
+                                    UIType.TradeOffBoard -> configuration {
+                                        handleChangeAlgorithm = {
+                                            newAlgorithm ->
+                                            changeTradeOffBoardAlgorithm(newAlgorithm)
+                                        }
+                                        handleChangeScenario = {
+                                            newScenario ->
+                                            changeTradeOffBoardScenario(newScenario)
+                                        }
+                                        handleChangeMetric = {
+                                            newMetric ->
+                                            changeTradeOffBoardMetric(newMetric)
+                                        }
+                                        currentScenario = state.tradeOffBoardScenario
+                                        currentAlgorithm = state.tradeOffBoardAlgorithm
+                                        currentMetric = state.tradeOffBoardMetric
                                     }
-                                    handleChangeScenario = {
-                                            newScenario -> changeTradeOffBoardScenario(newScenario)
-                                    }
-                                    handleChangeMetric = {
-                                            newMetric -> changeTradeOffBoardMetric(newMetric)
-                                    }
-                                    currentScenario = state.tradeOffBoardScenario
-                                    currentAlgorithm = state.tradeOffBoardAlgorithm
-                                    currentMetric = state.tradeOffBoardMetric
-                                }
 
-                                /**
-                                 * "actions" are the form actions
-                                 * to interact with the CAC scheme
-                                 */
-                                UIType.CoreType -> actions {
-                                    handleChangeBackdropIsOpen = {
-                                            backdropIsOpen -> changeBackdropIsOpen(backdropIsOpen)
+                                    /**
+                                     * "actions" are the form actions
+                                     * to interact with the CAC scheme
+                                     */
+                                    UIType.CoreType -> actions {
+                                        handleChangeBackdropIsOpen = {
+                                            backdropIsOpen ->
+                                            changeBackdropIsOpen(backdropIsOpen)
+                                        }
+                                        handleAddTableInContent = {
+                                            topic ->
+                                            addTableInContent(topic)
+                                        }
+                                        handleDisplayAlert = {
+                                            code, severity ->
+                                            displayAlert(code, severity)
+                                        }
+                                        userIsAdmin = state.userProfiles[state.coreType]!!.user.isAdmin
+                                        httpClient = state.httpClient
+                                        coreType = state.coreType
                                     }
-                                    handleAddTableInContent = {
-                                            topic -> addTableInContent(topic)
-                                    }
-                                    handleDisplayAlert = {
-                                            code, severity -> displayAlert(code, severity)
-                                    }
-                                    userIsAdmin = state.userProfiles[state.coreType]!!.user.isAdmin
-                                    httpClient = state.httpClient
-                                    coreType = state.coreType
-                                }
 
-                                /**
-                                 * "evaluation" summarizes the characteristics
-                                 * of the chosen modules for the new profile
-                                 */
-                                UIType.NewProfile -> evaluation { }
+                                    /**
+                                     * "evaluation" summarizes the characteristics
+                                     * of the chosen modules for the new profile
+                                     */
+                                    UIType.NewProfile -> evaluation { }
+                                }
                             }
-                        })
+                        )
 
                         /** 3.2.3a. The footer, containing a GitHub link to the source code */
                         proSidebarFooter {
@@ -467,15 +506,17 @@ class App : RComponent<Props, AppState>() {
         } else {
 
             /** 3b. The login form */
-            child(login {
-                handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity ->
-                    displayAlert(code, severity)
+            child(
+                login {
+                    handleDisplayAlert = { code: OutcomeCode, severity: CryptoACAlertSeverity ->
+                        displayAlert(code, severity)
+                    }
+                    handleSubmitLogin = { method: HttpMethod, endpoint: String, values: HashMap<String, String> ->
+                        submitLogin(method, endpoint, values)
+                    }
+                    httpClient = state.httpClient
                 }
-                handleSubmitLogin = { method: HttpMethod, endpoint: String, values: HashMap<String, String> ->
-                    submitLogin(method, endpoint, values)
-                }
-                httpClient = state.httpClient
-            })
+            )
         }
     }
 
@@ -498,9 +539,9 @@ class App : RComponent<Props, AppState>() {
             }
         }
 
-        sidebarButtons = listOf()
+        sidebarButtonsForCoreTypes = listOf()
         sidebarButtonIndex = 0
-        coreType = CoreType.RBAC_CLOUD
+        coreType = CoreType.RBAC_AT_REST
         uiType = UIType.NewProfile
         sidebarIsCollapsed = false
         backdropIsOpen = false
@@ -513,9 +554,8 @@ class App : RComponent<Props, AppState>() {
         circularProgressValue = 0
 
         tradeOffBoardMetric = Metric.Goals
-        tradeOffBoardScenario = Scenario.CLOUD
+        tradeOffBoardScenario = Scenario.CryptoAC
         tradeOffBoardAlgorithm = Algorithm.Best
-
     }
 
     /**
@@ -579,13 +619,13 @@ class App : RComponent<Props, AppState>() {
                 val status = response.status
 
                 if (status == HttpStatusCode.OK) {
-                    logger.info { "Response status is ${status}, code is $code" }
+                    logger.info { "Response status is $status, code is $code" }
                     changeBackdropIsOpen(false)
                     changeUsername(values[SERVER.USERNAME]!!)
                     changeUserIsLogged(true)
                     displayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
                 } else {
-                    logger.warn { "Response status is ${status}, code is $code" }
+                    logger.warn { "Response status is $status, code is $code" }
                     resetAppState()
                     displayAlert(code, CryptoACAlertSeverity.ERROR)
                 }
@@ -612,9 +652,9 @@ class App : RComponent<Props, AppState>() {
                 val status = response.status
 
                 if (status == HttpStatusCode.OK) {
-                    logger.info { "Response status is ${status}, code is $code" }
+                    logger.info { "Response status is $status, code is $code" }
                 } else {
-                    logger.warn { "Response status is ${status}, code is $code" }
+                    logger.warn { "Response status is $status, code is $code" }
                     displayAlert(code, CryptoACAlertSeverity.ERROR)
                 }
             } catch (e: Error) {
@@ -727,14 +767,14 @@ class App : RComponent<Props, AppState>() {
         } else {
             setState {
                 userProfiles = hashMapOf()
-                sidebarButtons = listOf()
+                sidebarButtonsForCoreTypes = listOf()
             }
         }
     }
 
     private fun computeSidebarButtonsAndIndex(profiles: HashMap<CoreType, CoreParameters>) {
         logger.info { "Computing sidebar buttons and index" }
-        val listOfButtons = mutableListOf<CryptoACButtonAndIconData>()
+        val listOfCoreTypes = mutableListOf<CoreType>()
         var loopCount = 2
         var indexButton = loopCount
         profiles.forEach { entry ->
@@ -743,31 +783,32 @@ class App : RComponent<Props, AppState>() {
                 indexButton = loopCount
             }
             loopCount += 1
-            listOfButtons.add(
-                CryptoACButtonAndIconData(
-                    icon = createElement {
-                        faBoxes {
-                            attrs {
-                                style =
-                                    JSON.parse("""{"marginRight": "${if (state.sidebarIsCollapsed) "unset" else "auto"} "}""".trimMargin())
-                            }
-                        }
-                    }!!,
-                    text = entry.key.toPrettyString(),
-                    showText = !state.sidebarIsCollapsed,
-                    onClick = {
-                        changeCoreType(newCoreType)
-                        changeUIType(UIType.CoreType)
-                    },
-                )
-            )
+            listOfCoreTypes.add(newCoreType)
         }
-        logger.info { "Number of buttons computed is ${listOfButtons.size}" }
+        logger.info { "Number of buttons computed is ${listOfCoreTypes.size}" }
         logger.info { "Sidebar index is $indexButton" }
         setState {
-            sidebarButtons = listOfButtons
+            sidebarButtonsForCoreTypes = listOfCoreTypes
             sidebarButtonIndex = indexButton
         }
+    }
+
+    /**
+     * Return an icon representative
+     * of the given [coreType]
+     */
+    private fun getIconByCoreType(coreType: CoreType): ReactElement<Props> {
+        val jsonStyle: Object = JSON.parse(
+            """{"marginRight": "${if (state.sidebarIsCollapsed) "unset" else "auto"} "}""".trimMargin()
+        )
+        return createElement {
+            when (coreType) {
+                CoreType.RBAC_AT_REST -> faCloud { attrs { style = jsonStyle } }
+                CoreType.RBAC_MQTT -> faWifi { attrs { style = jsonStyle } }
+                CoreType.ABAC_AT_REST -> faCloudMeatball { attrs { style = jsonStyle } }
+                CoreType.ABAC_MQTT -> faWater { attrs { style = jsonStyle } }
+            }
+        }!!
     }
 
     /**
@@ -839,7 +880,7 @@ class App : RComponent<Props, AppState>() {
         } else {
             val text = httpResponse.bodyAsText()
             val outcomeCode: OutcomeCode = myJson.decodeFromString(text)
-            logger.warn { "Response status is ${status}, code is $outcomeCode" }
+            logger.warn { "Response status is $status, code is $outcomeCode" }
             if (outcomeCode != OutcomeCode.CODE_039_PROFILE_NOT_FOUND) {
                 displayAlert(outcomeCode, CryptoACAlertSeverity.ERROR)
             }

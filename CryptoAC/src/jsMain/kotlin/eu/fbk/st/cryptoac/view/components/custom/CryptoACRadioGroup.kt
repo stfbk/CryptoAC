@@ -18,7 +18,7 @@ external interface CryptoACRadioGroupProps : Props {
     var name: String
 
     /** Whether the item should be disabled */
-    var disabled : Boolean
+    var disabled: Boolean
 
     /** Whether to display the radio options in a single row */
     var row: Boolean
@@ -45,7 +45,7 @@ external interface CryptoACRadioGroupState : State {
 }
 
 /** A custom component for a radio group */
-class CryptoACRadioGroup: RComponent<CryptoACRadioGroupProps, CryptoACRadioGroupState>() {
+class CryptoACRadioGroup : RComponent<CryptoACRadioGroupProps, CryptoACRadioGroupState>() {
     override fun RBuilder.render() {
         radioGroup {
             attrs {
@@ -76,7 +76,7 @@ class CryptoACRadioGroup: RComponent<CryptoACRadioGroupProps, CryptoACRadioGroup
                         attrs {
                             label = it.label
                             value = it.name
-                            control = createElement {
+                            control = createElement<Props> {
                                 radio {
                                     attrs {
                                         disabled = props.disabled
@@ -104,7 +104,7 @@ class CryptoACRadioGroup: RComponent<CryptoACRadioGroupProps, CryptoACRadioGroup
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACRadioGroup::class.js.asDynamic().getDerivedStateFromProps = {
-                props: CryptoACRadioGroupProps, state: CryptoACRadioGroupState ->
+            props: CryptoACRadioGroupProps, state: CryptoACRadioGroupState ->
             if (state.justMounted || !state.changedByUser) {
                 state.value = props.defaultValue
             }
@@ -115,7 +115,7 @@ class CryptoACRadioGroup: RComponent<CryptoACRadioGroupProps, CryptoACRadioGroup
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACRadioGroup(handler: CryptoACRadioGroupProps.() -> Unit): ReactElement {
+fun cryptoACRadioGroup(handler: CryptoACRadioGroupProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACRadioGroup::class) {
             this.attrs(handler)

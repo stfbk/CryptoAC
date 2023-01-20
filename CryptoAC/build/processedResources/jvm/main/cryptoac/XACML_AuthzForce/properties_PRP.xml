@@ -1,0 +1,6 @@
+<prpProperties
+    xmlns="http://authzforce.github.io/rest-api-model/xmlns/authz/5">
+    <!-- <maxPolicyCount>500</maxPolicyCount> -->
+    <maxVersionCountPerPolicy>100</maxVersionCountPerPolicy>
+    <versionRollingEnabled>true</versionRollingEnabled>
+</prpProperties>

@@ -8,5 +8,4 @@ import react.*
 @JsName("Table")
 external val table: ComponentClass<TableProps>
 
-external interface TableProps : Props {
-}
+external interface TableProps : Props

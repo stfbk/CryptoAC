@@ -3,8 +3,8 @@ package eu.fbk.st.cryptoac.view.sidebar
 import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.core.myJson
-import eu.fbk.st.cryptoac.core.tuples.EnforcementType
-import eu.fbk.st.cryptoac.core.tuples.PermissionType
+import eu.fbk.st.cryptoac.model.tuple.PermissionType
+import eu.fbk.st.cryptoac.model.unit.EnforcementType
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.icons.*
 import eu.fbk.st.cryptoac.view.components.prosidebar.proSidebarContent
@@ -22,6 +22,8 @@ import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
+import org.khronos.webgl.ArrayBuffer
+import org.khronos.webgl.Int8Array
 import org.w3c.files.File
 import org.w3c.files.FileReader
 import react.*
@@ -37,12 +39,11 @@ external interface ActionsProps : Props {
     var coreType: CoreType
 }
 
-
 /**
  * The React component containing the
  * forms for invoking CryptoAC APIs;
  */
-class Actions: RComponent<ActionsProps, State>() {
+class Actions : RComponent<ActionsProps, State>() {
 
     // TODO autocomplete fields based on tables in the dashboard (e.g., with Lucene?)
 
@@ -52,8 +53,8 @@ class Actions: RComponent<ActionsProps, State>() {
 
             /** Show the CryptoAC forms only if the user is logged and has a profile */
             val cryptoACForm = when (props.coreType) {
-                CoreType.RBAC_CLOUD -> if (props.userIsAdmin) {
-                    (adminCryptoACFormsRBACCLOUD + userCryptoACFormsRBACCloud)
+                CoreType.RBAC_AT_REST -> if (props.userIsAdmin) {
+                    (adminCryptoACFormsRBACCryptoAC + userCryptoACFormsRBACCloud)
                 } else {
                     userCryptoACFormsRBACCloud
                 }
@@ -62,6 +63,8 @@ class Actions: RComponent<ActionsProps, State>() {
                 } else {
                     userCryptoACFormsRBACMQTT
                 }
+                CoreType.ABAC_AT_REST -> TODO()
+                CoreType.ABAC_MQTT -> TODO()
             }
             cryptoACForm.forEach { cryptoACFormData ->
 
@@ -82,39 +85,44 @@ class Actions: RComponent<ActionsProps, State>() {
                         }
 
                         /** Render a CryptoAC form component */
-                        child(cryptoACForm {
-                            attrs {
-                                submitButtonText = cryptoACFormData.submitButtonText
-                                endpoint = cryptoACFormData.endpoint
-                                coreType = cryptoACFormData.coreType
-                                method = cryptoACFormData.method
-                                cryptoACFormFields = cryptoACFormData.cryptoACFormFields
-                                handleSubmitEvent = cryptoACFormData.submit
-                                handleDisplayAlert = props.handleDisplayAlert
+                        child(
+                            cryptoACForm {
+                                attrs {
+                                    acceptDisabledElements = false
+                                    submitButtonText = cryptoACFormData.submitButtonText
+                                    endpoint = cryptoACFormData.endpoint
+                                    coreType = cryptoACFormData.coreType
+                                    method = cryptoACFormData.method
+                                    cryptoACFormFields = cryptoACFormData.cryptoACFormFields
+                                    handleSubmitEvent = cryptoACFormData.submit
+                                    handleDisplayAlert = props.handleDisplayAlert
+                                }
                             }
-                        })
+                        )
                     }
                 }
 
                 /** Divider between the add/assign CryptoAC forms and the delete/revoke ones */
                 if (cryptoACFormData.divider) {
-                    child(cryptoACDivider {
-                        width = 100.pct
-                        marginTop = 0.px
-                        marginBottom = 0.px
-                    })
+                    child(
+                        cryptoACDivider {
+                            width = 100.pct
+                            marginTop = 0.px
+                            marginBottom = 0.px
+                        }
+                    )
                 }
             }
         }
     }
 
-
     /**
      * Submit the given [values] at the specified [endpoint] through the [method].
      * Finally, handle the HTTP response with the provided [callback] function
      */
-    private fun submitCryptoACForm (
-        method: HttpMethod, endpoint: String,
+    private fun submitCryptoACForm(
+        method: HttpMethod,
+        endpoint: String,
         values: HashMap<String, String>,
         callback: (HttpResponse, HashMap<String, String>) -> Unit,
     ) {
@@ -134,9 +142,11 @@ class Actions: RComponent<ActionsProps, State>() {
                                     values.forEach {
                                         append(it.key, it.value)
                                     }
-                                }) {
+                                }
+                            ) {
                                 url(endpoint)
-                            }, values
+                            },
+                            values
                         )
                     } else {
                         callback(
@@ -145,12 +155,14 @@ class Actions: RComponent<ActionsProps, State>() {
                                     values.forEach {
                                         append(it.key, it.value)
                                     }
-                                }) {
+                                }
+                            ) {
                                 url(endpoint)
-                            }, values)
+                            },
+                            values
+                        )
                     }
-                }
-                else {
+                } else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
@@ -169,14 +181,16 @@ class Actions: RComponent<ActionsProps, State>() {
      * [endpoint] through the [method]. Finally, handle the HTTP response with
      * the provided [callback] function
      */
-    private fun submitCryptoACFormWithBinaryData (
-        method: HttpMethod, endpoint: String,
-        values: HashMap<String, String>, files: HashMap<String, File>,
+    private fun submitCryptoACFormWithBinaryData(
+        method: HttpMethod,
+        endpoint: String,
+        values: HashMap<String, String>,
+        files: HashMap<String, File>,
         callback: (HttpResponse) -> Unit,
     ) {
         logger.info {
             "Submitting CryptoAC form, method $method, endpoint $endpoint, ${files.size} files" +
-                    if (values.size > 0) " and the following values:" else ""
+                if (values.size > 0) " and the following values:" else ""
         }
         values.forEach { logger.info { "- key: ${it.key}, value: ${it.value}" } }
 
@@ -193,13 +207,24 @@ class Actions: RComponent<ActionsProps, State>() {
                     var fileEntriesUploaded = 0
                     files.entries.forEach {
                         val reader = FileReader()
-                        reader.readAsBinaryString(it.value)
+                        reader.readAsArrayBuffer(it.value)//reader.readAsBinaryString(it.value)
                         reader.onload = { _ ->
                             fileEntriesUploaded += 1
-                            val fileContent = reader.result.toString()
-                            val formPart = FormPart(key = it.key, value = fileContent, Headers.build {
-                                append(HttpHeaders.ContentDisposition, "filename=${it.value.name}")
-                            })
+
+                            /**
+                             * TODO the code below works fine, but there should be new APIs to avoid unsafe casts
+                             * See https://youtrack.jetbrains.com/issue/KT-30098/Add-extension-function-on-ArrayBuffer-to-ByteArray-in-JS-stdlib
+                             * (there should also be APIs here: https://api.ktor.io/ktor-io/io.ktor.utils.io.js/index.html
+                             */
+                            val fileContent = Int8Array(reader.result as ArrayBuffer).unsafeCast<ByteArray>()
+
+                            val formPart = FormPart(
+                                key = it.key,
+                                value = fileContent,
+                                headers = Headers.build {
+                                    append(HttpHeaders.ContentDisposition, "filename=${it.value.name}")
+                                }
+                            )
                             parts += formPart
                             if (fileEntriesUploaded == files.size) {
                                 MainScope().launch {
@@ -215,8 +240,7 @@ class Actions: RComponent<ActionsProps, State>() {
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
@@ -235,9 +259,11 @@ class Actions: RComponent<ActionsProps, State>() {
      * [values] as URL path parameters (if [query] is false) or as URL query
      * parameters (if [query] is true) at the specified [endpoint] through the [method]
      */
-    private fun submitCryptoACFormInNewTab (
-        method: HttpMethod, endpoint: String,
-        values: HashMap<String, String>, query: Boolean
+    private fun submitCryptoACFormInNewTab(
+        method: HttpMethod,
+        endpoint: String,
+        values: HashMap<String, String>,
+        query: Boolean
     ) {
         logger.info { "Submitting CryptoAC form (method $method, endpoint $endpoint, query $query) with the following values:" }
         values.forEach { logger.info { "- key: ${it.key}, value: ${it.value}" } }
@@ -265,8 +291,7 @@ class Actions: RComponent<ActionsProps, State>() {
                         }
                         win.close()
                     }
-                }
-                else {
+                } else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
@@ -285,7 +310,8 @@ class Actions: RComponent<ActionsProps, State>() {
      * URL query parameters (if [query] is true) at the specified [endpoint] through the [method]
      */
     private fun submitCryptoACForm(
-        method: HttpMethod, endpoint: String,
+        method: HttpMethod,
+        endpoint: String,
         values: HashMap<String, String>,
         query: Boolean,
         callback: (HttpResponse, HashMap<String, String>) -> Unit,
@@ -302,17 +328,16 @@ class Actions: RComponent<ActionsProps, State>() {
                     val endpointWithParameters = StringBuilder(endpoint.substring(0, endpoint.length - 1))
                     if (query) {
                         endpointWithParameters.append("?")
-                        values.forEach { endpointWithParameters.append(it.key).append("=").append(it.value) }
+                        values.forEach { endpointWithParameters.append(it.key).append("=").append(it.value.replace("/", "%2F")) } // TODO "it.value.replace("/", "%2F")" encodes '/', but not all URL characters. Find a better solution to build URLs in Ktor (start from here https://ktor.io/docs/request.html)
                     } else {
-                        values.forEach { endpointWithParameters.append("/").append(it.value) }
+                        values.forEach { endpointWithParameters.append("/").append(it.value.replace("/", "%2F")) } // TODO "it.value.replace("/", "%2F")" encodes '/', but not all URL characters. Find a better solution to build URLs in Ktor (start from here https://ktor.io/docs/request.html)
                     }
                     if (method == HttpMethod.Delete) {
-                        callback(props.httpClient.delete { url (endpointWithParameters.toString()) }, values)
+                        callback(props.httpClient.delete { url(endpointWithParameters.toString()) }, values)
                     } else if (method == HttpMethod.Get) {
                         callback(props.httpClient.get { url(endpointWithParameters.toString()) }, values)
                     }
-                }
-                else {
+                } else {
                     props.handleChangeBackdropIsOpen(false)
                     logger.error { "Method $method is not supported" }
                     props.handleDisplayAlert(OutcomeCode.CODE_048_HTTP_METHOD_NOT_SUPPORTED, CryptoACAlertSeverity.ERROR)
@@ -325,8 +350,6 @@ class Actions: RComponent<ActionsProps, State>() {
             }
         }
     }
-
-
 
     /** Handle the [response] from CryptoAC by showing in the alert the outcome code */
     private fun callbackShowOutcomeCode(response: HttpResponse) {
@@ -381,7 +404,7 @@ class Actions: RComponent<ActionsProps, State>() {
             if (status == HttpStatusCode.OK) {
                 logger.info { "Response status is $status" }
                 props.handleDisplayAlert(OutcomeCode.CODE_000_SUCCESS, CryptoACAlertSeverity.SUCCESS)
-                props.handleAddTableInContent(values[SERVER.FILE_NAME]!!)
+                props.handleAddTableInContent(values[SERVER.RESOURCE_NAME]!!)
             } else {
                 val outcomeCode = myJson.decodeFromString<OutcomeCode>(response.bodyAsText())
                 logger.warn { "Response status is $status, outcome code is $outcomeCode" }
@@ -390,8 +413,8 @@ class Actions: RComponent<ActionsProps, State>() {
         }
     }
 
-    /** CryptoAC forms for the administrator in the CLOUD implementation */
-    private val adminCryptoACFormsRBACCLOUD = listOf(
+    /** CryptoAC forms for the admin in the CryptoAC implementation */
+    private val adminCryptoACFormsRBACCryptoAC = listOf(
 
         /** Add user form */
         CryptoACFormData(
@@ -400,13 +423,15 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Add User",
             endpoint = API.CRYPTOAC + API.USERS,
             method = HttpMethod.Post,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values) { response, params -> callbackDownloadUserProfile(response, params) }
             },
-            cryptoACFormFields = listOf(listOf(
-                CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)
-            ))
+            cryptoACFormFields = listOf(
+                listOf(
+                    CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)
+                )
+            )
         ),
 
         /** Add role form */
@@ -416,13 +441,15 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Add Role",
             endpoint = API.CRYPTOAC + API.ROLES,
             method = HttpMethod.Post,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
-            cryptoACFormFields = listOf(listOf(
-                CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)
-            ))
+            cryptoACFormFields = listOf(
+                listOf(
+                    CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)
+                )
+            )
         ),
 
         /** Assign user to role form */
@@ -432,7 +459,7 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Assign User to Role",
             endpoint = API.CRYPTOAC + API.ASSIGNMENTS,
             method = HttpMethod.Post,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
@@ -449,16 +476,22 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Assign Permission to Role",
             endpoint = API.CRYPTOAC + API.PERMISSIONS,
             method = HttpMethod.Post,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)),
-                listOf(CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME.replace("_", " "), InputType.text)),
-                listOf(CryptoACFormField(SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio, listOf(
-                    PermissionType.READ.toString(), PermissionType.READWRITE.toString()
-                ), PermissionType.READ.toString())),
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, SERVER.RESOURCE_NAME.replace("_", " "), InputType.text)),
+                listOf(
+                    CryptoACFormField(
+                        SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio,
+                        listOf(
+                            PermissionType.READ.toString(), PermissionType.READWRITE.toString()
+                        ),
+                        PermissionType.READ.toString()
+                    )
+                ),
             ),
             divider = true
         ),
@@ -470,7 +503,7 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Delete User",
             endpoint = API.CRYPTOAC + API.USERS,
             method = HttpMethod.Delete,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values, false) { response, _ -> callbackShowOutcomeCode(response) }
             },
@@ -486,7 +519,7 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Delete Role",
             endpoint = API.CRYPTOAC + API.ROLES,
             method = HttpMethod.Delete,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values, false) { response, _ -> callbackShowOutcomeCode(response) }
             },
@@ -495,22 +528,21 @@ class Actions: RComponent<ActionsProps, State>() {
             )
         ),
 
-        /** Delete file form */
+        /** Delete resource form */
         CryptoACFormData(
             icon = faFileExcel,
-            key = "delete_file",
+            key = "delete_resource",
             submitButtonText = "Delete File",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Delete,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values, false) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
-                listOf(CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME.replace("_", " "), InputType.text)),
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, SERVER.RESOURCE_NAME.replace("_", " "), InputType.text)),
             )
         ),
-
 
         /** Revoke user from role form */
         CryptoACFormData(
@@ -519,7 +551,7 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Revoke User from Role",
             endpoint = API.CRYPTOAC + API.ASSIGNMENTS,
             method = HttpMethod.Delete,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values, false) { response, _ -> callbackShowOutcomeCode(response) }
             },
@@ -536,77 +568,101 @@ class Actions: RComponent<ActionsProps, State>() {
             submitButtonText = "Revoke Permission from Role",
             endpoint = API.CRYPTOAC + API.PERMISSIONS,
             method = HttpMethod.Delete,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values, false) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)),
-                listOf(CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME.replace("_", " "), InputType.text)),
-                listOf(CryptoACFormField(SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio, listOf(
-                    PermissionType.READWRITE.toString(), PermissionType.WRITE.toString()
-                ), PermissionType.READWRITE.toString())),
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, SERVER.RESOURCE_NAME.replace("_", " "), InputType.text)),
+                listOf(
+                    CryptoACFormField(
+                        SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio,
+                        listOf(
+                            PermissionType.READWRITE.toString(), PermissionType.WRITE.toString()
+                        ),
+                        PermissionType.READWRITE.toString()
+                    )
+                ),
             ),
             divider = true
         ),
     )
 
-    /** CryptoAC forms for the user in the CLOUD implementation */
+    /** CryptoAC forms for the user in the CryptoAC implementation */
     private val userCryptoACFormsRBACCloud = listOf(
 
-        /** Add file form */
+        /** Add resource form */
         CryptoACFormData(
             icon = faFileMedical,
-            key = "add_file",
+            key = "add_resource",
             submitButtonText = "Add File",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Post,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, files ->
                 submitCryptoACFormWithBinaryData(method, endpoint, values, files) { response -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
-                listOf(CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME, InputType.file)),
-                listOf(CryptoACFormField(SERVER.ENFORCEMENT, SERVER.ENFORCEMENT, InputType.radio, listOf(
-                    EnforcementType.COMBINED.toString(), EnforcementType.TRADITIONAL.toString()
-                ), EnforcementType.COMBINED.toString())),
+                listOf(
+                    CryptoACFormField(
+                        SERVER.RESOURCE_NAME,
+                        "Upload here your file",
+                        InputType.file
+                    )
+                ),
+                listOf(
+                    CryptoACFormField(
+                        SERVER.ENFORCEMENT, SERVER.ENFORCEMENT, InputType.radio,
+                        listOf(
+                            EnforcementType.COMBINED.toString(), EnforcementType.TRADITIONAL.toString()
+                        ),
+                        EnforcementType.COMBINED.toString()
+                    )
+                ),
             )
         ),
 
-        /** Write file form */
+        /** Write resource form */
         CryptoACFormData(
             icon = faFileSignature,
-            key = "write_file",
+            key = "write_resource",
             submitButtonText = "Write File",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Patch,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, files ->
                 submitCryptoACFormWithBinaryData(method, endpoint, values, files) { response -> callbackShowOutcomeCode(response) }
             },
-            cryptoACFormFields = listOf(listOf(
-                CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME, InputType.file)
-            ))
+            cryptoACFormFields = listOf(
+                listOf(
+                    CryptoACFormField(
+                        SERVER.RESOURCE_NAME,
+                        "Upload here your file",
+                        InputType.file
+                    )
+                )
+            )
         ),
 
-        /** Read file form */
+        /** Read resource form */
         CryptoACFormData(
             icon = faFileDownload,
-            key = "read_file",
+            key = "read_resource",
             submitButtonText = "Read File",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Get,
-            coreType = CoreType.RBAC_CLOUD,
+            coreType = CoreType.RBAC_AT_REST,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACFormInNewTab(method, endpoint, values, false)
             },
             cryptoACFormFields = listOf(
-                listOf(CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME.replace("_", " "), InputType.text))
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, SERVER.RESOURCE_NAME.replace("_", " "), InputType.text))
             )
         ),
     )
 
-    /** CryptoAC forms for the administrator in the MQTT implementation */
+    /** CryptoAC forms for the admin in the MQTT implementation */
     private val adminCryptoACFormsRBACMQTT = listOf(
 
         /** Add user form */
@@ -618,11 +674,13 @@ class Actions: RComponent<ActionsProps, State>() {
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
-                submitCryptoACForm(method, endpoint, values) { response, params-> callbackDownloadUserProfile(response, params) }
+                submitCryptoACForm(method, endpoint, values) { response, params -> callbackDownloadUserProfile(response, params) }
             },
-            cryptoACFormFields = listOf(listOf(
-                CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)
-            ))
+            cryptoACFormFields = listOf(
+                listOf(
+                    CryptoACFormField(SERVER.USERNAME, SERVER.USERNAME, InputType.text)
+                )
+            )
         ),
 
         /** Add role form */
@@ -636,27 +694,35 @@ class Actions: RComponent<ActionsProps, State>() {
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
-            cryptoACFormFields = listOf(listOf(
-                CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)
-            ))
+            cryptoACFormFields = listOf(
+                listOf(
+                    CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)
+                )
+            )
         ),
 
-        /** Add file form */
+        /** Add resource form */
         CryptoACFormData(
             icon = faFileMedical,
-            key = "add_file",
+            key = "add_resource",
             submitButtonText = "Add Topic",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Post,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
-                listOf(CryptoACFormField(SERVER.FILE_NAME, SERVER.FILE_NAME, InputType.text)),
-                listOf(CryptoACFormField(SERVER.ENFORCEMENT, SERVER.ENFORCEMENT, InputType.radio, listOf(
-                    EnforcementType.COMBINED.toString(), EnforcementType.TRADITIONAL.toString()
-                ), EnforcementType.COMBINED.toString())),
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, SERVER.RESOURCE_NAME, InputType.text)),
+                listOf(
+                    CryptoACFormField(
+                        SERVER.ENFORCEMENT, SERVER.ENFORCEMENT, InputType.radio,
+                        listOf(
+                            EnforcementType.COMBINED.toString(), EnforcementType.TRADITIONAL.toString()
+                        ),
+                        EnforcementType.COMBINED.toString()
+                    )
+                ),
             )
         ),
 
@@ -690,10 +756,16 @@ class Actions: RComponent<ActionsProps, State>() {
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)),
-                listOf(CryptoACFormField(SERVER.FILE_NAME, "Topic Name", InputType.text)),
-                listOf(CryptoACFormField(SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio, listOf(
-                    PermissionType.READ.toString(), PermissionType.READWRITE.toString()
-                ), PermissionType.READ.toString())),
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, "Topic Name", InputType.text)),
+                listOf(
+                    CryptoACFormField(
+                        SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio,
+                        listOf(
+                            PermissionType.READ.toString(), PermissionType.READWRITE.toString()
+                        ),
+                        PermissionType.READ.toString()
+                    )
+                ),
             ),
             divider = true
         ),
@@ -730,22 +802,21 @@ class Actions: RComponent<ActionsProps, State>() {
             )
         ),
 
-        /** Delete file (topic) form */
+        /** Delete resource form */
         CryptoACFormData(
             icon = faFileExcel,
-            key = "delete_file",
+            key = "delete_resource",
             submitButtonText = "Delete Topic",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Delete,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values, false) { response, _ -> callbackShowOutcomeCode(response) }
             },
             cryptoACFormFields = listOf(
-                listOf(CryptoACFormField(SERVER.FILE_NAME, "Topic Name", InputType.text)),
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, "Topic Name", InputType.text)),
             )
         ),
-
 
         /** Revoke user from role form */
         CryptoACFormData(
@@ -777,10 +848,16 @@ class Actions: RComponent<ActionsProps, State>() {
             },
             cryptoACFormFields = listOf(
                 listOf(CryptoACFormField(SERVER.ROLE_NAME, SERVER.ROLE_NAME.replace("_", " "), InputType.text)),
-                listOf(CryptoACFormField(SERVER.FILE_NAME, "Topic Name", InputType.text)),
-                listOf(CryptoACFormField(SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio, listOf(
-                    PermissionType.READWRITE.toString(), PermissionType.WRITE.toString()
-                ), PermissionType.READWRITE.toString())),
+                listOf(CryptoACFormField(SERVER.RESOURCE_NAME, "Topic Name", InputType.text)),
+                listOf(
+                    CryptoACFormField(
+                        SERVER.PERMISSION, SERVER.PERMISSION, InputType.radio,
+                        listOf(
+                            PermissionType.READWRITE.toString(), PermissionType.WRITE.toString()
+                        ),
+                        PermissionType.READWRITE.toString()
+                    )
+                ),
             ),
             divider = true
         ),
@@ -789,29 +866,31 @@ class Actions: RComponent<ActionsProps, State>() {
     /** CryptoAC forms for the user in the MQTT implementation */
     private val userCryptoACFormsRBACMQTT = listOf(
 
-        /** Write file form */
+        /** Write resource form */
         CryptoACFormData(
             icon = faFileSignature,
-            key = "write_file",
+            key = "write_resource",
             submitButtonText = "Publish to Topic",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Patch,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
                 submitCryptoACForm(method, endpoint, values) { response, _ -> callbackShowOutcomeCode(response) }
             },
-            cryptoACFormFields = listOf(listOf(
-                CryptoACFormField(SERVER.FILE_NAME, "Topic Name", InputType.text),
-                CryptoACFormField(SERVER.FILE_CONTENT, "Message", InputType.text)
-            ))
+            cryptoACFormFields = listOf(
+                listOf(
+                    CryptoACFormField(SERVER.RESOURCE_NAME, "Topic Name", InputType.text),
+                    CryptoACFormField(SERVER.RESOURCE_CONTENT, "Message", InputType.text)
+                )
+            )
         ),
 
-        /** Read file form */
+        /** Read resource form */
         CryptoACFormData(
             icon = faFileDownload,
-            key = "read_file",
+            key = "read_resource",
             submitButtonText = "Subscribe to Topic",
-            endpoint = API.CRYPTOAC + API.FILES,
+            endpoint = API.CRYPTOAC + API.RESOURCES,
             method = HttpMethod.Get,
             coreType = CoreType.RBAC_MQTT,
             submit = { method, endpoint, values, _ ->
@@ -819,7 +898,7 @@ class Actions: RComponent<ActionsProps, State>() {
             },
             cryptoACFormFields = listOf(
                 listOf(
-                    CryptoACFormField(SERVER.FILE_NAME, "Topic Name", InputType.text),
+                    CryptoACFormField(SERVER.RESOURCE_NAME, "Topic Name", InputType.text),
                 )
             )
         ),
@@ -827,7 +906,7 @@ class Actions: RComponent<ActionsProps, State>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun actions(handler: ActionsProps.() -> Unit): ReactElement {
+fun actions(handler: ActionsProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(Actions::class) {
             this.attrs(handler)

@@ -1,9 +1,7 @@
 package eu.fbk.st.cryptoac.view
 
+import eu.fbk.st.cryptoac.*
 import eu.fbk.st.cryptoac.API.LOGIN
-import eu.fbk.st.cryptoac.CryptoACFormField
-import eu.fbk.st.cryptoac.InputType
-import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.SERVER.USERNAME
 import eu.fbk.st.cryptoac.view.Themes.largePlainPaperTitleStyle
 import eu.fbk.st.cryptoac.view.components.custom.*
@@ -24,10 +22,9 @@ external interface LoginProps : Props {
 }
 
 /** The login/logout React component */
-class Login: RComponent<LoginProps, State>() {
+class Login : RComponent<LoginProps, State>() {
 
     override fun RBuilder.render() {
-
         /** Full background image */
         styledDiv {
             css {
@@ -51,51 +48,56 @@ class Login: RComponent<LoginProps, State>() {
                     height = 30.pct
                 }
 
-                child(cryptoACPaper{
-                    titleStyle = largePlainPaperTitleStyle
-                    titleText = "Login to CryptoAC"
-                    titleVariant = "h5"
-                    setDivider = true
-                    dividerWidth = 80.pct
-                    child = createElement {
-                        styledDiv {
-                            css {
-                                marginLeft = 15.pct
-                                marginRight = 15.pct
-                            }
-
-                            // TODO do not allow weak passwords, use a library or something similar
-
-                            /** The login form */
-                            child(cryptoACForm {
-                                attrs {
-                                    handleDisplayAlert = props.handleDisplayAlert
-                                    submitButtonText = "Login"
-                                    method = HttpMethod.Post
-                                    endpoint = LOGIN
-                                    handleSubmitEvent = { method, endpoint, values, _ ->
-                                        props.handleSubmitLogin(method, endpoint, values)
-                                    }
-                                    cryptoACFormFields = listOf(
-                                        listOf(
-                                            CryptoACFormField(
-                                                name = USERNAME,
-                                                label = USERNAME,
-                                                className = "darkTextField",
-                                                type = InputType.text)
-                                        )
-                                    )
+                child(
+                    cryptoACPaper {
+                        titleStyle = largePlainPaperTitleStyle
+                        titleText = "Login to CryptoAC"
+                        titleVariant = "h5"
+                        setDivider = true
+                        dividerWidth = 80.pct
+                        child = createElement<Props> {
+                            styledDiv {
+                                css {
+                                    marginLeft = 15.pct
+                                    marginRight = 15.pct
                                 }
-                            })
-                        }
-                    }!!
-                })
+
+                                // TODO do not allow weak passwords, use a library or something similar
+
+                                /** The login form */
+                                child(
+                                    cryptoACForm {
+                                        attrs {
+                                            handleDisplayAlert = props.handleDisplayAlert
+                                            submitButtonText = "Login"
+                                            method = HttpMethod.Post
+                                            endpoint = LOGIN
+                                            handleSubmitEvent = { method, endpoint, values, _ ->
+                                                props.handleSubmitLogin(method, endpoint, values)
+                                            }
+                                            cryptoACFormFields = listOf(
+                                                listOf(
+                                                    CryptoACFormField(
+                                                        name = USERNAME,
+                                                        label = USERNAME,
+                                                        className = "darkTextField",
+                                                        type = InputType.text
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }!!
+                    }
+                )
             }
         }
     }
 }
 
-fun login(handler: LoginProps.() -> Unit): ReactElement {
+fun login(handler: LoginProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(Login::class) {
             attrs(handler)

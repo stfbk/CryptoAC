@@ -2,8 +2,8 @@ package eu.fbk.st.cryptoac.view.components.custom
 
 import eu.fbk.st.cryptoac.view.components.materialui.paper
 import eu.fbk.st.cryptoac.view.components.materialui.typography
-import kotlinext.js.Object
 import kotlinx.css.*
+import kotlinx.js.Object
 import react.*
 
 external interface CryptoACPaperProps : Props {
@@ -22,7 +22,7 @@ external interface CryptoACPaperProps : Props {
     var titleVariant: String
 
     /** The content of the paper */
-    var child: ReactElement
+    var child: ReactElement<Props>
 
     /** Whether to add a divider between the title and the content */
     var setDivider: Boolean
@@ -40,7 +40,7 @@ external interface CryptoACPaperState : State {
 }
 
 /** A custom component for a paper */
-class CryptoACPaper: RComponent<CryptoACPaperProps, CryptoACPaperState>() {
+class CryptoACPaper : RComponent<CryptoACPaperProps, CryptoACPaperState>() {
     override fun RBuilder.render() {
 
         paper {
@@ -55,11 +55,13 @@ class CryptoACPaper: RComponent<CryptoACPaperProps, CryptoACPaperState>() {
             }
 
             if (props.setDivider) {
-                child(cryptoACDivider {
-                    width = props.dividerWidth
-                    marginTop = 0.px
-                    marginBottom = 0.px
-                })
+                child(
+                    cryptoACDivider {
+                        width = props.dividerWidth
+                        marginTop = 0.px
+                        marginBottom = 0.px
+                    }
+                )
             }
 
             child(props.child)
@@ -72,7 +74,7 @@ class CryptoACPaper: RComponent<CryptoACPaperProps, CryptoACPaperState>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACPaper(handler: CryptoACPaperProps.() -> Unit): ReactElement {
+fun cryptoACPaper(handler: CryptoACPaperProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACPaper::class) {
             attrs(handler)

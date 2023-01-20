@@ -18,5 +18,8 @@ data class CryptoACFormField(
     val defaultValue: String? = null,
 
     /** An additional class name to apply to the form field, if any */
-    val className: String? = null
+    val className: String? = null,
+
+    /** Whether the parameter is disabled */
+    val disabled: Boolean = false,
 )

@@ -1,0 +1,11 @@
+{
+  "name": "kotlin-react-legacy",
+  "version": "18.2.0-pre.382",
+  "customFields": {},
+  "main": "kotlin-react-legacy.js",
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

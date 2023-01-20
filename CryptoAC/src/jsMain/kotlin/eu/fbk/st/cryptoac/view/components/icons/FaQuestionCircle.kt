@@ -7,4 +7,3 @@ import react.*
 
 @JsName("FaQuestionCircle")
 external val faQuestionCircle: ComponentClass<Props>
-

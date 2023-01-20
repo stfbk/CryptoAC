@@ -27,9 +27,8 @@ external interface CryptoACTableState : State {
     var page: Int
 }
 
-
 /** A table component */
-class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
+class CryptoACTable : RComponent<CryptoACTableProps, CryptoACTableState>() {
     override fun RBuilder.render() {
 
         paper {
@@ -62,7 +61,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                         label = "close"
                                         onClick = { event -> props.onClose(event) }
                                     }
-                                    child(createElement { faTimes { } }!!)
+                                    child(createElement<Props> { faTimes { } }!!)
                                 }
                             }
                         }
@@ -107,7 +106,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                         element.asDynamic().click()
                                         document.body!!.removeChild(element)
                                     }
-                                    child(createElement { faDownload { } }!!)
+                                    child(createElement<Props> { faDownload { } }!!)
                                 }
                             }
                         }
@@ -125,7 +124,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
                                     label = "refresh"
                                     onClick = { event -> props.onRefresh(event) }
                                 }
-                                child(createElement { faUndoAlt { } }!!)
+                                child(createElement<Props> { faUndoAlt { } }!!)
                             }
                         }
                     }
@@ -230,8 +229,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
         } else {
             if (fromIndex < 0) {
                 0
-            }
-            else {
+            } else {
                 fromIndex
             }
         }
@@ -244,7 +242,7 @@ class CryptoACTable: RComponent<CryptoACTableProps, CryptoACTableState>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACTable(handler: CryptoACTableProps.() -> Unit): ReactElement {
+fun cryptoACTable(handler: CryptoACTableProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACTable::class) {
             this.attrs(handler)

@@ -4,36 +4,223 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a4aa746a-6a7e-4755-98d0-dabc5e09cc17" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/OutcomeCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/OutcomeCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/core/CoreParametersMOCK.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/App.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/App.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/Login.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/Login.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/CryptoACButtonAndIconGroup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/CryptoACButtonAndIconGroup.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/CryptoACForm.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/components/custom/CryptoACForm.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/Dashboard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/Dashboard.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACDashboard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACDashboard.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACMQTTDashboard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/dashboard/RBACMQTTDashboard.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/modules/ModuleItem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/ModuleItem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/modules/Modules.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/newProfile/NewProfile.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/ConfigurationItem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/ConfigurationItem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/EntityIcon.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/EntityIcon.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/TradeOffBoard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/TradeOffBoard.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/TrustAssumptionsLikelihood.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/content/tradeoffboard/TrustAssumptionsLikelihood.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/Actions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsMain/kotlin/eu/fbk/st/cryptoac/view/sidebar/Actions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreFactory.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreFactory.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/CoreRBACMOCK.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceRedis.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/implementation/mm/MMInterfaceRedis.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/CryptoACRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/CryptoACRoutes.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/ProfileManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/ProfileManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/SessionController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/server/SessionController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/resources/cryptoac/mysqldatabase.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/resources/cryptoac/mysqldatabase.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/Parameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/Parameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-1.0-SNAPSHOT/lib/CryptoAC-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-1.0-SNAPSHOT/lib/CryptoAC-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/adminCLOUD.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Documentation/Installation/adminCLOUD.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Policy Simulator/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../Policy Simulator/README.md" afterDir="false" />
+    <list default="true" id="98c44c6d-7608-4461-96f3-adfe964c8268" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/AccessStructureTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/AccessStructureTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/MM - ABAC MySQL ER Diagram.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/MM - RBAC MySQL ER Diagram.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/MM - RBAC Redis Model and ACLs.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/OPARBACPolicy.rego" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/XACMLRBACGenericPPS.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/XACMLRBACGenericREPS.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/XACMLRBACGenericRPS.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/architecture.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/mysqldatabase.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/redis.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/swagger_CryptoAC.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/swagger_CryptoAC_DM.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Architecture/swagger_CryptoAC_RM.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Configurations/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/HowTo/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/.all.env.dev" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/bin/CryptoAC" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/bin/CryptoAC.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/CryptoAC-0.0.1-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/CryptoAC-jvm-0.0.1-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/alpn-api-1.1.3.v20160715.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/annotations-13.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/byte-buddy-1.10.9.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/byte-buddy-agent-1.10.9.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-beanutils-1.9.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-cli-1.5.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-codec-1.13.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-collections-3.2.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-compiler-3.1.6.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-digester3-3.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-lang3-3.11.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-logging-1.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-math3-3.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/commons-pool2-2.11.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/config-1.4.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/encoder-1.2.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/gson-2.8.9.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/hamcrest-core-1.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/http2-client-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/http2-common-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/http2-hpack-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/http2-http-client-transport-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/http2-server-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/janino-3.1.6.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jansi-2.4.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/javax.servlet-api-3.1.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jedis-4.0.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-alpn-client-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-alpn-java-client-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-alpn-java-server-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-alpn-openjdk8-client-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-alpn-openjdk8-server-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-alpn-server-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-client-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-continuation-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-http-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-io-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-server-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-servlets-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jetty-util-9.4.48.v20220622.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jmh-core-1.21.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jna-5.11.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jna-platform-5.9.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/jopt-simple-4.6.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/json-20211205.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/json-simple-3.0.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/junit-4.13.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-logging-jvm-2.1.21.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-reflect-1.7.10.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-stdlib-1.7.10.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-stdlib-common-1.7.10.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-stdlib-jdk7-1.7.10.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-stdlib-jdk8-1.7.10.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-test-1.6.20.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlin-test-common-1.6.20.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-benchmark-runtime-jvm-0.4.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-coroutines-core-jvm-1.6.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-coroutines-debug-1.6.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-coroutines-jdk8-1.6.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-coroutines-slf4j-1.6.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-html-jvm-0.7.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-serialization-core-jvm-1.3.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/kotlinx-serialization-json-jvm-1.3.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-client-cio-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-client-content-negotiation-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-client-core-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-client-jetty-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-client-json-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-client-serialization-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-events-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-http-cio-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-http-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-io-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-network-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-network-tls-certificates-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-network-tls-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-serialization-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-serialization-kotlinx-json-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-serialization-kotlinx-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-serialization-kotlinx-xml-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-auto-head-response-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-caching-headers-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-call-id-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-call-logging-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-compression-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-conditional-headers-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-content-negotiation-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-core-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-cors-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-data-conversion-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-default-headers-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-double-receive-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-forwarded-header-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-host-common-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-hsts-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-html-builder-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-http-redirect-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-jetty-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-method-override-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-netty-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-partial-content-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-servlet-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-sessions-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-status-pages-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-test-host-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-tests-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-velocity-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-server-websockets-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-test-dispatcher-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-utils-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-websocket-serialization-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/ktor-websockets-jvm-2.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/logback-classic-1.3.0-alpha14.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/logback-core-1.3.0-alpha14.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/multiplatform-crypto-libopenabe-bindings-jvm-0.0.20-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/multiplatform-crypto-libsodium-bindings-jvm-0.8.6.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/mysql-connector-java-8.0.28.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-buffer-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-codec-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-codec-http-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-codec-http2-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-common-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-handler-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-resolver-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-transport-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-transport-classes-epoll-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-transport-classes-kqueue-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-transport-native-epoll-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-transport-native-kqueue-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/netty-transport-native-unix-common-4.1.78.Final.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/org.eclipse.paho.mqttv5.client-1.2.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/protobuf-java-3.11.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/resource-loader-2.0.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/security-logging-common-1.1.7.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/security-logging-logback-1.1.7.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/slf4j-api-2.0.0-alpha7.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/velocity-engine-core-2.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/velocity-tools-generic-3.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/xmlutil-jvm-0.84.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/lib/xmlutil-serialization-jvm-0.84.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/CryptoAC-0.0.1-SNAPSHOT/server/temporary.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/DockerFileCryptoAC" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/DockerFileCryptoACWithOpenABE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/installOpenABE.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/mosquittoCACertificate.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/CryptoAC/server/temporary.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/DockerFileMosquittoDynSec" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/DockerFileMosquittoNoDynSec" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/ca.crt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/ca.csr" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/ca.key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/ca.srl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/createCertificates.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/dynamic-security.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/mosquittoCACertificate.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/mosquittoDynSec.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/mosquittoNoDynSec.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/server-nopass.key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/server.crt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/server.csr" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/server.key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/v3.ext" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/DMInterfaceMQTT/v3_2.ext" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/MMInterfaceMySQL/DockerFileMySQL" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/MMInterfaceMySQL/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/MMInterfaceMySQL/mysqldatabase.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/MMInterfaceRedis/DockerFileRedis" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/MMInterfaceRedis/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/MMInterfaceRedis/redis.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/OPAInterface/DockerFileOPA" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/OPAInterface/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/OPAInterface/privateOPA.key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/OPAInterface/publicOPA.crt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/XACMLInterface/DockerFileXACML" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/XACMLInterface/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/XACMLInterface/server.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/XACMLInterface/taz-ca-keystore.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/adminCryptoAC_OPA.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/adminMQTT.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/cleanAll.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/cleanAllAndBuild.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/docker-compose-all.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/replaceCryptoACFiles.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Installation/startCryptoAC_ALL.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/References/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Research/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Documentation/Roadmap/README.md" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,6 +278,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Kotlin Enum" />
+        <option value="Kotlin Interface" />
+        <option value="JUnit5 Test Class" />
         <option value="Kotlin Class" />
       </list>
     </option>
@@ -98,21 +288,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-  <component name="ProjectId" id="26NOu7TAtIfYaNW0gTVtcvTtpE2" />
+  <component name="ProjectId" id="29Nt4QyDmFNbhfhpE25erUIkst8" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
@@ -120,19 +302,99 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "TODO_SCOPE": "All Places",
+    "ToolWindowCommit.ShowToolbar": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "deletionFromPopupRequiresConfirmation": "false",
+    "last_opened_file_path": "/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonMain/kotlin/eu/fbk/st/cryptoac/mm/mysql",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.20776874",
+    "settings.editor.selected.configurable": "editor.preferences.tabs"
+  }
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/commonMain/kotlin/eu/fbk/st/cryptoac/mm/mysql" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/jvmMain/resources/cryptoac/MySQL" />
+      <recent name="$PROJECT_DIR$/src/jvmMain/resources/cryptoac/OPA" />
+      <recent name="$PROJECT_DIR$/src/jvmMain/resources/cryptoac/XACML" />
+      <recent name="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/rm/cryptoac" />
+      <recent name="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
-      <recent name="eu.fbk.st.cryptoac.view.components.custom" />
-      <recent name="eu.fbk.st.cryptoac.view" />
+      <recent name="eu.fbk.st.cryptoac.model" />
+      <recent name="eu.fbk.st.cryptoac.ac.xacml" />
+      <recent name="eu.fbk.st.cryptoac" />
+      <recent name="eu.fbk.st.cryptoac.rm.model" />
+      <recent name="eu.fbk.st.cryptoac.mm.model" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="eu.fbk.st.cryptoac.ac.opa" />
+      <recent name="eu.fbk.st.cryptoac.rm" />
+      <recent name="eu.fbk.st.cryptoac.mm" />
+      <recent name="eu.fbk.st.cryptoac.dm" />
+      <recent name="eu.fbk.st.cryptoac.crypto" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.CryptoAC [distZip]">
+    <configuration default="true" type="OPA_TEST_RUN_CONFIGURATION" factoryName="Opa configuration factory">
+      <option name="additionalargs" value="" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="CryptoAC [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="CryptoAC [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="CryptoAC [distZip]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -154,7 +416,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="CryptoAC [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="CryptoAC [run] (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -175,7 +437,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="CryptoACRoutesTest.read file works" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="CryptoAC [run]" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -186,37 +448,13 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value=":cleanJvmTest" />
-            <option value=":jvmTest" />
-            <option value="--tests &quot;eu.fbk.st.cryptoac.server.CryptoACRoutesTest.read file works&quot;" />
+            <option value="run" />
+            <option value="--args=&quot;-logLevel=warn&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="CryptoJavaTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":cleanJvmTest" />
-            <option value=":jvmTest" />
-            <option value="--tests &quot;eu.fbk.st.cryptoac.crypto.java.CryptoJavaTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
@@ -243,26 +481,38 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Gradle.CryptoAC [run]" />
+      <item itemvalue="Gradle.CryptoAC [build]" />
+      <item itemvalue="Gradle.CryptoAC [clean]" />
+      <item itemvalue="Gradle.CryptoAC [distZip]" />
+      <item itemvalue="Gradle.CryptoAC [run] (1)" />
+      <item itemvalue="Gradle.Tests in 'CryptoAC.jvmTest'" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.CryptoAC [distZip]" />
-        <item itemvalue="Gradle.CryptoAC [run]" />
-        <item itemvalue="Gradle.CryptoJavaTest" />
+        <item itemvalue="Gradle.CryptoAC [build]" />
+        <item itemvalue="Gradle.CryptoAC [clean]" />
         <item itemvalue="Gradle.Tests in 'CryptoAC.jvmTest'" />
-        <item itemvalue="Gradle.CryptoACRoutesTest.read file works" />
+        <item itemvalue="Gradle.CryptoAC [run] (1)" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="a4aa746a-6a7e-4755-98d0-dabc5e09cc17" name="Changes" comment="" />
-      <created>1647260797055</created>
+      <changelist id="98c44c6d-7608-4461-96f3-adfe964c8268" name="Changes" comment="" />
+      <created>1652965178831</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1647260797055</updated>
+      <updated>1652965178831</updated>
     </task>
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.log" />
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.sql" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -274,5 +524,20 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint suspend="NONE" type="java-exception">
+          <properties class="java.io.IOException" package="java.io" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GradleRunConfiguration">
+        <watch expression="((AccessStructureTuple)readWriteAS).accessStructure" custom="eu.fbk.st.cryptoac.model.tuple.AccessStructureTuple" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

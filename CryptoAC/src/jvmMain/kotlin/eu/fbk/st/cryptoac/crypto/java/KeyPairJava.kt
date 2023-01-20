@@ -17,17 +17,23 @@ class KeyPairJava(
     override val public: PublicKeyJava,
     override val private: PrivateKeyJava,
     override val keyType: AsymKeysType,
-): KeyPairCryptoAC(public, private, keyType)
+) : KeyPairCryptoAC(public, private, keyType)
 
 /** A public cryptographic key for the JCA */
-class PublicKeyJava(val public: PublicKey) : PublicKeyCryptoAC {
+class PublicKeyJava(
+    val public: PublicKey,
+    override val keyID: String? = null,
+) : PublicKeyCryptoAC {
     override fun getAlgorithm() = public.algorithm ?: "Algorithm is missing"
     override fun getFormat() = public.format ?: "Format is missing"
     override fun getEncoded() = public.encoded!!
 }
 
 /** A private cryptographic key for the JCA */
-class PrivateKeyJava(val private: PrivateKey) : PrivateKeyCryptoAC {
+class PrivateKeyJava(
+    val private: PrivateKey,
+    override var keyID: String? = null,
+) : PrivateKeyCryptoAC {
     override fun getAlgorithm() = private.algorithm ?: "Algorithm is missing"
     override fun getFormat() = private.format ?: "Format is missing"
     override fun getEncoded() = private.encoded!!

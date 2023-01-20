@@ -14,5 +14,5 @@ external interface SubMenuProps : Props {
     var title: String
 
     /** Icon for submenu */
-    var icon: ReactElement
+    var icon: ReactElement<Props>
 }

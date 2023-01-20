@@ -1,0 +1,20 @@
+FROM eclipse-temurin:11-jre-focal 
+
+WORKDIR /cryptoac
+
+COPY ./CryptoAC-0.0.1-SNAPSHOT/ /cryptoac
+
+COPY ./mosquittoCACertificate.jks /mosquittoCACertificate.jks
+
+
+# Install needed dependencies for OpenABE
+RUN apt-get -y update
+RUN apt-get -y install bison lsb-release git sudo python3-pip nano libgtest-dev -y
+
+
+COPY ./installOpenABE.sh /installOpenABE.sh
+RUN ["chmod", "+x", "/installOpenABE.sh"]
+RUN ["bash", "/installOpenABE.sh"]
+
+
+ENTRYPOINT ["/cryptoac/bin/CryptoAC"]

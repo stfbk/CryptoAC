@@ -3,7 +3,7 @@
 
 package eu.fbk.st.cryptoac.view.components.materialui
 
-import kotlinext.js.Object
+import kotlinx.js.Object
 import org.w3c.dom.events.Event
 import react.*
 
@@ -11,6 +11,7 @@ import react.*
 external val select: ComponentClass<SelectProps>
 // TODO doc
 external interface SelectProps : Props {
+    var disabled: Boolean
     var style: Object
     var value: String
     var inputProps: Object

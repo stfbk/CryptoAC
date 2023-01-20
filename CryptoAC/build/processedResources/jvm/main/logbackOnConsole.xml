@@ -1,4 +1,3 @@
-<!-- in production, this file needs to be placed at the root of the classpath, and this line is to be removed -->
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- Define the CRLFConverter -->

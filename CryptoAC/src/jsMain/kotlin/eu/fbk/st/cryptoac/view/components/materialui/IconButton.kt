@@ -3,7 +3,7 @@
 
 package eu.fbk.st.cryptoac.view.components.materialui
 
-import kotlinext.js.Object
+import kotlinx.js.Object
 import org.w3c.dom.events.Event
 import react.*
 
@@ -11,7 +11,7 @@ import react.*
 external val iconButton: ComponentClass<IconButtonProps>
 
 external interface IconButtonProps : Props {
-    var children: ReactElement
+    var children: ReactElement<Props>
     var color: String
     var label: String
     var component: String

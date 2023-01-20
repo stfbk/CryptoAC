@@ -29,5 +29,3 @@ external interface GridProps : Props {
 
     var spacing: Int
 }
-
-

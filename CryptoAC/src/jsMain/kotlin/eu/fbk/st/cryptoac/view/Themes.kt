@@ -1,6 +1,6 @@
 package eu.fbk.st.cryptoac.view
 
-import kotlinext.js.Object
+import kotlinx.js.Object
 
 object Themes {
     /** Light grey color hex code */
@@ -19,16 +19,20 @@ object Themes {
     const val purpleLinearGradient = "linear-gradient(to right, rgb(142, 68, 173), rgb(172, 98, 203))"
 
     /** Plain style for titles in CryptoAC papers */
-    val plainPaperTitleStyle: Object = JSON.parse("""{
+    val plainPaperTitleStyle: Object = JSON.parse(
+        """{
                                          "paddingTop": "5px",
                                          "paddingBottom": "5px",
                                          "color": "#3C4858"
-                                     }""".trimMargin())
+                                     }""".trimMargin()
+    )
 
     /** Large plain style for titles in CryptoAC papers */
-    val largePlainPaperTitleStyle: Object = JSON.parse("""{
+    val largePlainPaperTitleStyle: Object = JSON.parse(
+        """{
                                          "paddingTop": "20px",
                                          "paddingBottom": "20px",
                                          "color": "#3C4858"
-                                     }""".trimMargin())
+                                     }""".trimMargin()
+    )
 }

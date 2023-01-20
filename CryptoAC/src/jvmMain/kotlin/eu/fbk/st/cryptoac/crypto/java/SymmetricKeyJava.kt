@@ -7,7 +7,7 @@ import javax.crypto.SecretKey
  * A symmetric cryptographic key
  * composed of a [secretKey] for the JCA
  */
-class SymmetricKeyJava(override val secretKey: SecretKeyJava): SymmetricKeyCryptoAC(secretKey)
+class SymmetricKeyJava(override val secretKey: SecretKeyJava) : SymmetricKeyCryptoAC(secretKey)
 
 /** A secret cryptographic key for the JCA */
 class SecretKeyJava(private val secretKey: SecretKey) : SecretKeyCryptoAC {

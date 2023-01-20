@@ -23,7 +23,7 @@ external interface CryptoACButtonAndIconGroupState : State {
 }
 
 /** A custom component for a group of button and icon elements */
-class CryptoACButtonAndIconGroup: RComponent<CryptoACButtonAndIconGroupProps, CryptoACButtonAndIconGroupState>() {
+class CryptoACButtonAndIconGroup : RComponent<CryptoACButtonAndIconGroupProps, CryptoACButtonAndIconGroupState>() {
 
     override fun RBuilder.render() {
 
@@ -32,26 +32,29 @@ class CryptoACButtonAndIconGroup: RComponent<CryptoACButtonAndIconGroupProps, Cr
 
                 key = it.text
 
-                child(cryptoACButtonAndIcon {
-                    icon = it.icon
-                    text = it.text
-                    showText = it.showText
-                    onClick = { event ->
-                        changeSelectedButton(index)
-                        it.onClick(event)
+                child(
+                    cryptoACButtonAndIcon {
+                        icon = it.icon
+                        text = it.text
+                        showText = it.showText
+                        onClick = { event ->
+                            changeSelectedButton(index)
+                            it.onClick(event)
+                        }
+                        highlighted = state.selectedButton == index
                     }
-                    highlighted = state.selectedButton == index
-                })
+                )
             }
         }
     }
 
     override fun CryptoACButtonAndIconGroupState.init() {
         justMounted = true
+        selectedButton = 0
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACButtonAndIconGroup::class.js.asDynamic().getDerivedStateFromProps = {
-                newProps: CryptoACButtonAndIconGroupProps, state: CryptoACButtonAndIconGroupState ->
+            newProps: CryptoACButtonAndIconGroupProps, state: CryptoACButtonAndIconGroupState ->
             if (
                 state.justMounted ||
                 newProps.defaultSelectedButton != props.defaultSelectedButton ||
@@ -74,12 +77,10 @@ class CryptoACButtonAndIconGroup: RComponent<CryptoACButtonAndIconGroupProps, Cr
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACButtonAndIconGroup(handler: CryptoACButtonAndIconGroupProps.() -> Unit): ReactElement {
+fun cryptoACButtonAndIconGroup(handler: CryptoACButtonAndIconGroupProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACButtonAndIconGroup::class) {
             attrs(handler)
         }
     }!!
 }
-
-

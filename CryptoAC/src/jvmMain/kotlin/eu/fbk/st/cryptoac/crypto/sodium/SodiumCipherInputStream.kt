@@ -5,9 +5,6 @@ import com.ionspin.kotlin.crypto.secretstream.*
 import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.lang.Thread.sleep
-import javax.crypto.BadPaddingException
-import javax.crypto.IllegalBlockSizeException
 import kotlin.experimental.and
 
 /**
@@ -56,7 +53,6 @@ class SodiumCipherInputStream(
      */
     private var sentHeader = false
 
-
     /**
      * Check that a valid mode has been provided and accordingly set the
      * length of the input buffer. We encrypt blocks of 512 bytes. However,
@@ -66,11 +62,13 @@ class SodiumCipherInputStream(
      */
     init {
         require(mode == ENCRYPT_MODE || mode == DECRYPT_MODE) { "Illegal cipher mode given" }
-        ibuffer = ByteArray(512 + if (mode == DECRYPT_MODE) {
-            crypto_secretstream_xchacha20poly1305_ABYTES
-        } else {
-            0
-        })
+        ibuffer = ByteArray(
+            512 + if (mode == DECRYPT_MODE) {
+                crypto_secretstream_xchacha20poly1305_ABYTES
+            } else {
+                0
+            }
+        )
     }
 
     companion object {
@@ -139,7 +137,7 @@ class SodiumCipherInputStream(
                      */
                     var exhausted = false
                     while (ibuffer.size != readIn && !exhausted) {
-                        val readIn2 = input.read(ibuffer, readIn, ibuffer.size-readIn)
+                        val readIn2 = input.read(ibuffer, readIn, ibuffer.size - readIn)
                         if (readIn2 == -1) {
                             done = true
                             exhausted = true
@@ -148,7 +146,6 @@ class SodiumCipherInputStream(
                         }
                     }
                     ibuffer = ibuffer.sliceArray(0 until readIn)
-
 
                     /** Either encrypt or decrypt the [ibuffer] */
                     obuffer = if (cipherMode == ENCRYPT_MODE) {
@@ -161,8 +158,7 @@ class SodiumCipherInputStream(
                             } else {
                                 crypto_secretstream_xchacha20poly1305_TAG_MESSAGE.toUByte()
                             }
-                        ).toByteArray().apply {
-                        }
+                        ).toByteArray()
                     } else {
                         val decryptedDataAndTag = SecretStream.xChaCha20Poly1305Pull(
                             state = state,

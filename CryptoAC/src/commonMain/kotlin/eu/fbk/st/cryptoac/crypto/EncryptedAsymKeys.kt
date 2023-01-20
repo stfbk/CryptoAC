@@ -4,14 +4,15 @@ import kotlinx.serialization.Serializable
 
 /**
  * An encrypted asymmetric key pair of the given
- * [keysType] composed of [private] and [public] (not
- * empty) keys
+ * [keyType] composed of [private] and [public] (not
+ * empty) keys with a [keyID]
  */
 @Serializable
 data class EncryptedAsymKeys(
     val private: ByteArray,
     val public: ByteArray,
-    val keysType: AsymKeysType,
+    val keyType: AsymKeysType,
+    val keyID: String? = null,
 ) {
 
     init {
@@ -21,13 +22,12 @@ data class EncryptedAsymKeys(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as EncryptedAsymKeys
+        if (other !is EncryptedAsymKeys) return false
 
         if (!private.contentEquals(other.private)) return false
         if (!public.contentEquals(other.public)) return false
-        if (keysType != other.keysType) return false
+        if (keyType != other.keyType) return false
+        if (keyID != other.keyID) return false
 
         return true
     }
@@ -35,7 +35,9 @@ data class EncryptedAsymKeys(
     override fun hashCode(): Int {
         var result = private.contentHashCode()
         result = 31 * result + public.contentHashCode()
-        result = 31 * result + keysType.hashCode()
+        result = 31 * result + keyType.hashCode()
+        result = 31 * result + keyID.hashCode()
         return result
     }
+
 }

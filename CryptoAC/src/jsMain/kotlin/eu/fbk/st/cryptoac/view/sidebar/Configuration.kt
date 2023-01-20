@@ -21,13 +21,12 @@ external interface ConfigurationProps : Props {
     var currentMetric: Metric
 }
 
-
 /**
  * The React component containing the
  * options for selecting scenario,
  * algorithm and metric;
  */
-class Configuration: RComponent<ConfigurationProps, State>() {
+class Configuration : RComponent<ConfigurationProps, State>() {
 
     override fun RBuilder.render() {
 
@@ -56,19 +55,23 @@ class Configuration: RComponent<ConfigurationProps, State>() {
                             xs = 12
                             xl = 12
                         }
-                        child(cryptoACSelect {
-                            name = "scenario"
-                            id = "scenario"
-                            label = "Scenario"
-                            labelId = "scenario-label"
-                            autoWidth = true
-                            selectStyle = JSON.parse("""{
+                        child(
+                            cryptoACSelect {
+                                name = "scenario"
+                                id = "scenario"
+                                label = "Scenario"
+                                labelId = "scenario-label"
+                                autoWidth = true
+                                selectStyle = JSON.parse(
+                                    """{
                                 "width": "100%"
-                            }""".trimMargin())
-                            options = Scenario.values().map { it.toString() }
-                            defaultValue = props.currentScenario.toString()
-                            onChange = { it -> props.handleChangeScenario(Scenario.valueOf(it)) }
-                        })
+                            }""".trimMargin()
+                                )
+                                options = Scenario.values().map { it.toString() }
+                                defaultValue = props.currentScenario.toString()
+                                onChange = { it -> props.handleChangeScenario(Scenario.valueOf(it)) }
+                            }
+                        )
                     }
                     grid {
                         attrs {
@@ -76,19 +79,23 @@ class Configuration: RComponent<ConfigurationProps, State>() {
                             xs = 12
                             xl = 12
                         }
-                        child(cryptoACSelect {
-                            name = "algorithm"
-                            id = "algorithm"
-                            label = "Algorithm"
-                            labelId = "algorithm-label"
-                            autoWidth = true
-                            selectStyle = JSON.parse("""{
+                        child(
+                            cryptoACSelect {
+                                name = "algorithm"
+                                id = "algorithm"
+                                label = "Algorithm"
+                                labelId = "algorithm-label"
+                                autoWidth = true
+                                selectStyle = JSON.parse(
+                                    """{
                                 "width": "100%"
-                            }""".trimMargin())
-                            options = Algorithm.values().map { it.toString() }
-                            defaultValue = props.currentAlgorithm.toString()
-                            onChange = { it -> props.handleChangeAlgorithm(Algorithm.valueOf(it)) }
-                        })
+                            }""".trimMargin()
+                                )
+                                options = Algorithm.values().map { it.toString() }
+                                defaultValue = props.currentAlgorithm.toString()
+                                onChange = { it -> props.handleChangeAlgorithm(Algorithm.valueOf(it)) }
+                            }
+                        )
                     }
                     grid {
                         attrs {
@@ -96,19 +103,23 @@ class Configuration: RComponent<ConfigurationProps, State>() {
                             xs = 12
                             xl = 12
                         }
-                        child(cryptoACSelect {
-                            name = "metric"
-                            id = "metric"
-                            label = "Metric"
-                            labelId = "metric-label"
-                            autoWidth = true
-                            selectStyle = JSON.parse("""{
+                        child(
+                            cryptoACSelect {
+                                name = "metric"
+                                id = "metric"
+                                label = "Metric"
+                                labelId = "metric-label"
+                                autoWidth = true
+                                selectStyle = JSON.parse(
+                                    """{
                                 "width": "100%"
-                            }""".trimMargin())
-                            options = Metric.values().map { it.toString() }
-                            defaultValue = props.currentMetric.toString()
-                            onChange = { it -> props.handleChangeMetric(Metric.valueOf(it)) }
-                        })
+                            }""".trimMargin()
+                                )
+                                options = Metric.values().map { it.toString() }
+                                defaultValue = props.currentMetric.toString()
+                                onChange = { it -> props.handleChangeMetric(Metric.valueOf(it)) }
+                            }
+                        )
                     }
                 }
             }
@@ -117,7 +128,7 @@ class Configuration: RComponent<ConfigurationProps, State>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun configuration(handler: ConfigurationProps.() -> Unit): ReactElement {
+fun configuration(handler: ConfigurationProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(Configuration::class) {
             this.attrs(handler)

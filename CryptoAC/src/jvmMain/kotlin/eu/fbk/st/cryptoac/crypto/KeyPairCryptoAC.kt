@@ -5,16 +5,21 @@ import java.security.PublicKey
 
 /**
  * A pair of cryptographic keys composed of
- * a [public] key, a [private] key and a [keyType]
+ * a [public] key, a [private] key and a
+ * [keyType]
  */
 open class KeyPairCryptoAC(
     open val public: PublicKeyCryptoAC,
     open val private: PrivateKeyCryptoAC,
-    open val keyType: AsymKeysType,
+    open val keyType: AsymKeysType
 )
 
-/** Extend a generic public key */
-interface PublicKeyCryptoAC : PublicKey
+/** Extend a generic public key with a [keyID] */
+interface PublicKeyCryptoAC : PublicKey {
+    val keyID: String?
+}
 
-/** Extend a generic private key */
-interface PrivateKeyCryptoAC : PrivateKey
+/** Extend a generic private key with a [keyID] */
+interface PrivateKeyCryptoAC : PrivateKey {
+    var keyID: String?
+}

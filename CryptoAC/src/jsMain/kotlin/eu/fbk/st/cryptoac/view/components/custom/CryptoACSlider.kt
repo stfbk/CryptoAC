@@ -2,8 +2,6 @@ package eu.fbk.st.cryptoac.view.components.custom
 
 import eu.fbk.st.cryptoac.view.components.materialui.slider
 import kotlinx.css.padding
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.get
 import react.*
 import react.dom.div
@@ -49,7 +47,7 @@ external interface CryptoACSliderState : State {
 }
 
 /** A custom component for a radio group */
-class CryptoACSlider: RComponent<CryptoACSliderProps, CryptoACSliderState>() {
+class CryptoACSlider : RComponent<CryptoACSliderProps, CryptoACSliderState>() {
     override fun RBuilder.render() {
 
         div {
@@ -92,7 +90,7 @@ class CryptoACSlider: RComponent<CryptoACSliderProps, CryptoACSliderState>() {
 
         /** Execute before the render in both the Mounting and Updating lifecycle phases */
         CryptoACSlider::class.js.asDynamic().getDerivedStateFromProps = {
-                props: CryptoACSliderProps, state: CryptoACSliderState ->
+            props: CryptoACSliderProps, state: CryptoACSliderState ->
             if (state.justMounted) {
                 if (props.range) {
                     state.values = props.defaultValues
@@ -106,7 +104,7 @@ class CryptoACSlider: RComponent<CryptoACSliderProps, CryptoACSliderState>() {
 }
 
 /** Extend RBuilder for easier use of this React component */
-fun cryptoACSlider(handler: CryptoACSliderProps.() -> Unit): ReactElement {
+fun cryptoACSlider(handler: CryptoACSliderProps.() -> Unit): ReactElement<Props> {
     return createElement {
         child(CryptoACSlider::class) {
             attrs(handler)

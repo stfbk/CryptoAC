@@ -1,8 +1,8 @@
 {
-  mode: 'development',
+  mode: 'production',
   resolve: {
     modules: [
-      '/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev',
+      '/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce',
       'node_modules'
     ]
   },
@@ -66,7 +66,7 @@
   },
   entry: {
     main: [
-      '/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce-dev/CryptoAC.js'
+      '/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce/CryptoAC.js'
     ]
   },
   output: {
@@ -76,7 +76,7 @@
     libraryTarget: 'umd',
     globalObject: 'this'
   },
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   ignoreWarnings: [
     /Failed to parse source map/
   ],

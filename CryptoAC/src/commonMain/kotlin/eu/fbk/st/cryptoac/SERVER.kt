@@ -12,7 +12,7 @@ import io.ktor.http.*
  */
 object SERVER {
 
-    /** The chosen crypto interface for CryptoAC */
+    /** The chosen crypto provider for CryptoAC */
     const val CRYPTO = "Cryptography"
 
     /** The chosen core system for CryptoAC */
@@ -24,8 +24,8 @@ object SERVER {
     /** The name of the role */
     const val ROLE_NAME = "Role_Name"
 
-    /** The name of the file */
-    const val FILE_NAME = "File_Name"
+    /** The name of the resource */
+    const val RESOURCE_NAME = "Resource_Name"
 
     /** The permission to give or revoke */
     const val PERMISSION = "Permission"
@@ -38,11 +38,11 @@ object SERVER {
     /** The maximum number of CryptoACElements or tuples to retrieve from the metadata */
     const val LIMIT = "Limit"
 
-    /** The access control enforcement level chosen by the user for a new file */
+    /** The access control enforcement level chosen by the user for a new resource */
     const val ENFORCEMENT = "Access_Control_Enforcement"
 
-    /** The content of the file in CryptoAC */
-    const val FILE_CONTENT = "File_Content"
+    /** The content of the resource in CryptoAC */
+    const val RESOURCE_CONTENT = "Resource_Content"
 
     /** Whether the user is an admin */
     const val IS_ADMIN = "Admin"
@@ -56,11 +56,17 @@ object SERVER {
     /** The dm */
     const val DM = "DM"
 
+    /** The ac */
+    const val AC = "AC"
+
     /** The URL of the rm */
     const val RM_URL = "RM_URL"
 
     /** The port of the rm */
     const val RM_PORT = "RM_Port"
+
+    /** The password of the rm */
+    const val RM_PASSWORD = "RM_Password"
 
     /** The URL of the dm */
     const val DM_URL = "DM_URL"
@@ -86,14 +92,20 @@ object SERVER {
     /** The port of the mm */
     const val MM_PORT = "MM_Port"
 
-    /** The URL of the OPA */
-    const val OPA_URL = "OPA_URL"
+    /** The type of the mm */
+    const val MM_TYPE = "MM_Type"
 
-    /** The policy model for OPA */
-    const val OPA_POLICY_MODEL = "OPA_POLICY_MODEL"
+    /** The URL of the ac */
+    const val AC_URL = "AC_URL"
 
-    /** The port of the OPA */
-    const val OPA_PORT = "OPA_Port"
+    /** The port of the ac */
+    const val AC_PORT = "AC_Port"
+
+    /** The password of the ac */
+    const val AC_PASSWORD = "AC_Password"
+
+    /** Whether to use TLS with the ac */
+    const val AC_TLS = "AC_TLS"
 }
 
 /**
@@ -108,4 +120,3 @@ suspend fun HttpClient.submitFormPatch(
     setBody(FormDataContent(formParameters))
     block()
 }
-

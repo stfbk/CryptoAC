@@ -13,27 +13,23 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
-
 private val logger = KotlinLogging.logger {}
 
 /**
- * Java implementation of the Crypto interface to supply cryptographic operations.
- * The [parameters] are used to configure the length of keys and algorithms to use
+ * Java implementation of the Crypto
+ * provider to supply cryptographic operations
  */
-class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
+class CryptoJava: CryptoPKE, CryptoSKE {
 
-    private val asymEncKeysLength = parameters?.asymEncKeysLength ?: 2048
-    private val asymEncKeysGenAlgorithm = parameters?.asymEncKeysGenAlgorithm ?: "RSA"
-    private val asymEncAlgorithm = parameters?.asymEncAlgorithm ?: "RSA"
-    private val asymSigKeysLength = parameters?.asymSigKeysLength ?: 2048
-    private val asymSigKeysGenAlgorithm = parameters?.asymSigKeysGenAlgorithm ?: "RSA"
-    private val asymSigAlgorithm = parameters?.asymSigAlgorithm ?: "SHA512withRSA"
-    private val hashAlgorithm = parameters?.hashAlgorithm ?: "SHA-512"
-    private val hashLength = parameters?.hashAlgorithm ?: 512
-    private val symKeyLength = parameters?.symKeyLength ?: 256
-    private val symKeyAlgorithm = parameters?.symAlgorithm ?: "AES"
-    private val symAuthenticatedEncryptionAlgorithm = parameters?.symAuthenticatedEncryptionAlgorithm ?: "AES/GCM/NoPadding"
-
+    private val asymEncKeysLength = 2048
+    private val asymEncKeysGenAlgorithm = "RSA"
+    private val asymEncAlgorithm = "RSA"
+    private val asymSigKeysLength = 2048
+    private val asymSigKeysGenAlgorithm = "RSA"
+    private val asymSigAlgorithm = "SHA512withRSA"
+    private val symKeyLength = 256
+    private val symKeyAlgorithm = "AES"
+    private val symAuthenticatedEncryptionAlgorithm = "AES/GCM/NoPadding"
 
     /** The length of the block for asymmetric encryption */
     private val encBlockLength = (asymEncKeysLength / 8) - 11
@@ -71,15 +67,39 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         symKeysGenerator.init(symKeyLength)
     }
 
+    /**
+     * This function is invoked each time the cryptographic
+     * provider is initialized, and it should contain the
+     * code to initialize the provider
+     */
+    override fun init() {
+        logger.info { "No action required to initialize the Java crypto" }
+    }
 
-    /** Return a freshly generated asymmetric key pair for encryption */
-    override fun generateAsymEncKeys(): KeyPairCryptoAC {
+    /**
+     * This function is invoked each time the cryptographic
+     * provider is destroyed, and it should contain the
+     * code to de-initialize the provider (e.g., by wiping
+     * secret keys)
+     */
+    override fun deinit() {
+        // TODO wipe secret kets
+    }
+
+    /**
+     * Return a freshly generated asymmetric
+     * key pair with id [keyID] for encryption
+     */
+    override fun generateAsymEncKeys(keyID: String?): KeyPairCryptoAC {
         logger.debug { "Generating encryption asymmetric key pair" }
         return asymEncKeysGenerator.generateKeyPair().toKeyPairJava(AsymKeysType.ENC)
     }
 
-    /** Return a freshly generated asymmetric key pair for signatures */
-    override fun generateAsymSigKeys(): KeyPairCryptoAC {
+    /**
+     * Return a freshly generated asymmetric
+     * key pair with id [keyID] for signatures
+     */
+    override fun generateAsymSigKeys(keyID: String?): KeyPairCryptoAC {
         logger.debug { "Generating signing asymmetric key pair" }
         return asymSigKeysGenerator.generateKeyPair().toKeyPairJava(AsymKeysType.SIG)
     }
@@ -91,23 +111,15 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     }
 
     /**
-     * Return the hash of the given [bytes]. If [bytes]
-     * is empty, throw an IllegalArgumentException
-     */
-    override fun generateDigest(bytes: ByteArray): ByteArray {
-        logger.debug { "Hashing ${bytes.size} bytes" }
-        require(bytes.isNotEmpty()) { "Empty ByteArray for digest" }
-        val digest = MessageDigest.getInstance(hashAlgorithm)
-        return digest.digest((bytes))
-    }
-
-
-    /**
      * Verify the digital [signature] of the [bytes] with the [verifyingKey]
      * If the signature is not valid, throw a SignatureException
      * If either [bytes] or [signature] is empty, throw an IllegalArgumentException
      */
-    override fun verifySignature(signature: ByteArray, bytes: ByteArray, verifyingKey: PublicKeyCryptoAC) {
+    override fun verifySignature(
+        signature: ByteArray,
+        bytes: ByteArray,
+        verifyingKey: PublicKeyCryptoAC
+    ) {
         logger.debug { "Verifying signature of ${signature.size} bytes for ${bytes.size} bytes" }
         require(bytes.isNotEmpty()) { "Empty ByteArray for bytes" }
         require(signature.isNotEmpty()) { "Empty ByteArray for signature" }
@@ -117,8 +129,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         if (!signatureObject.verify(signature)) {
             logger.error { "Invalid signature" }
             throw SignatureException("Invalid signature")
-        }
-        else {
+        } else {
             logger.debug { "Signature successfully verified" }
         }
     }
@@ -127,7 +138,10 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
      * Return a digital signature calculated on the [bytes] with the
      * [signingKey]. If [bytes] is empty, throw an IllegalArgumentException
      */
-    override fun createSignature(bytes: ByteArray, signingKey: PrivateKeyCryptoAC): ByteArray {
+    override fun createSignature(
+        bytes: ByteArray,
+        signingKey: PrivateKeyCryptoAC
+    ): ByteArray {
         logger.debug { "Creating signature for ${bytes.size} bytes" }
         require(bytes.isNotEmpty()) { "Empty ByteArray for bytes to sign" }
 
@@ -136,7 +150,6 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         logger.debug { "Signature successfully created" }
         return signatureObject.sign()
     }
-
 
     /**
      * Encrypt the [asymKeys] of the given [type] with
@@ -152,7 +165,7 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         return EncryptedAsymKeys(
             public = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.public.encoded),
             private = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.private.encoded),
-            keysType = type,
+            keyType = type,
         )
     }
 
@@ -171,8 +184,16 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         logger.debug { "Decrypting asymmetric encryption key pair" }
         return try {
             recreateAsymKeyPair(
-                asymPublicKeyBytes = asymDecrypt(decryptingKey = decryptingKey, encBytes = encryptedAsymEncKeys.public),
-                asymPrivateKeyBytes = asymDecrypt(decryptingKey = decryptingKey, encBytes = encryptedAsymEncKeys.private),
+                asymPublicKeyBytes = asymDecrypt(
+                    encryptingKey = encryptingKey,
+                    decryptingKey = decryptingKey,
+                    encBytes = encryptedAsymEncKeys.public
+                ),
+                asymPrivateKeyBytes = asymDecrypt(
+                    encryptingKey = encryptingKey, decryptingKey
+                    = decryptingKey,
+                    encBytes = encryptedAsymEncKeys.private
+                ),
                 type = AsymKeysType.ENC
             )
         } catch (e: BadPaddingException) {
@@ -198,8 +219,12 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
 
         return try {
             recreateAsymKeyPair(
-                asymPublicKeyBytes = asymDecrypt(decryptingKey = decryptingKey, encBytes = encryptedAsymSigKeys.public),
+                asymPublicKeyBytes = asymDecrypt(
+                    encryptingKey = encryptingKey,
+                    decryptingKey = decryptingKey,
+                    encBytes = encryptedAsymSigKeys.public),
                 asymPrivateKeyBytes = asymDecrypt(
+                    encryptingKey = encryptingKey,
                     decryptingKey = decryptingKey,
                     encBytes = encryptedAsymSigKeys.private
                 ),
@@ -241,8 +266,11 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
 
         return try {
             SecretKeySpec(
-                asymDecrypt(decryptingKey = decryptingKey, encBytes = encryptedSymKey.key),
-                0, symKeyLength / 8, symKeyAlgorithm
+                asymDecrypt(
+                    encryptingKey = encryptingKey,
+                    decryptingKey = decryptingKey,
+                    encBytes = encryptedSymKey.key
+                ), 0, symKeyLength / 8, symKeyAlgorithm
             ).toSymmetricKeyJava()
         } catch (e: BadPaddingException) {
             logger.error { "Exception while decrypting symmetric key" }
@@ -263,7 +291,12 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
      * and then a cipher stream with the [encryptingKey],
      * prepending the initialization vector to the stream
      */
-    override fun encryptStream(encryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream {
+    override fun encryptStream(
+        encryptingKey: SymmetricKeyCryptoAC,
+        stream: InputStream
+    ): InputStream {
+        // TODO sometimes, this throws a "java.lang.IllegalStateException:
+        //  Must use either different key or iv for GCM encryption"
         logger.debug { "Encrypting stream" }
         val iv = Random.nextBytes(tagLength) // TODO check random
         symCipher.init(
@@ -288,7 +321,12 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
      * In this implementation, apply a cipher stream
      * and then a Base64 stream with the [decryptingKey]
      */
-    override fun decryptStream(decryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream {
+    override fun decryptStream(
+        decryptingKey: SymmetricKeyCryptoAC,
+        stream: InputStream
+    ): InputStream {
+        // TODO sometimes, this throws a "java.lang.IllegalStateException:
+        //  Must use either different key or iv for GCM encryption"
         logger.debug { "Decrypting stream" }
         symCipher.init(
             Cipher.DECRYPT_MODE,
@@ -298,17 +336,18 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         return Base64InputStream(CipherInputStream(stream, symCipher), false)
     }
 
-
     /**
      * Return a key pair of the given [type] created from
      * the encoded encryption [asymPublicKeyBytes] and the
-     * encoded encryption [asymPrivateKeyBytes].
+     * encoded encryption [asymPrivateKeyBytes]. Optionally,
+     * specify a [keyID]
      * Also, check the two keys actually form a valid pair
      */
     override fun recreateAsymKeyPair(
         asymPublicKeyBytes: ByteArray,
         asymPrivateKeyBytes: ByteArray,
         type: AsymKeysType,
+        keyID: String?,
     ): KeyPairCryptoAC {
         logger.debug { "Recreating asymmetric $type key pair" }
         val asymPublicKey =
@@ -316,17 +355,25 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         val asymPrivateKey =
             asymEncKeyFactory.generatePrivate(PKCS8EncodedKeySpec(asymPrivateKeyBytes))
         val keyPair = KeyPair(asymPublicKey!!, asymPrivateKey!!).toKeyPairJava(type)
-        checkAsymEncKeys(keyPair)
+
+        if (type == AsymKeysType.ENC) {
+            checkAsymEncKeys(keyPair)
+        } else if (type == AsymKeysType.SIG) {
+            checkAsymSigKeys(keyPair)
+        }
+
         return keyPair
     }
 
     /**
      * Reconstruct a public key of the given [type] from
-     * the encoded encryption [asymPublicKeyBytes]
+     * the encoded encryption [asymPublicKeyBytes]. Optionally,
+     * specify a [keyID]
      */
     override fun recreateAsymPublicKey(
         asymPublicKeyBytes: ByteArray,
         type: AsymKeysType,
+        keyID: String?,
     ): PublicKeyJava {
         logger.debug { "Recreating asymmetric $type public key" }
         val asymPublicKey =
@@ -336,11 +383,13 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
 
     /**
      * Reconstruct a private key of the given [type] from
-     * the encoded encryption [asymPrivateKeyBytes]
+     * the encoded encryption [asymPrivateKeyBytes]. Optionally,
+     * specify a [keyID]
      */
     override fun recreateAsymPrivateKey(
         asymPrivateKeyBytes: ByteArray,
         type: AsymKeysType,
+        keyID: String?,
     ): PrivateKeyJava {
         logger.debug { "Recreating asymmetric $type private key" }
         val asymPrivateKey =
@@ -348,49 +397,57 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
         return PrivateKeyJava(asymPrivateKey)
     }
 
-
-
-
     /**
      * Check that the public and private keys in the
      * encryption [keyPair] form a valid key pair
      */
-    fun checkAsymEncKeys(keyPair: KeyPairCryptoAC) {
+    override fun checkAsymEncKeys(keyPair: KeyPairCryptoAC) {
         logger.debug { "Challenging an encryption key pair" }
+
+        if (keyPair.keyType != AsymKeysType.ENC) {
+            throw InvalidKeyException("Key pair type is not ${AsymKeysType.ENC} but ${keyPair.keyType} ")
+        }
 
         val challenge = "I'm gonna make him an offer he can't refuse"
         val encBytes = asymEncrypt(keyPair.public, challenge.toByteArray())
         try {
-            if (!challenge.toByteArray().contentEquals(asymDecrypt(keyPair.private, encBytes))) {
+            if (!challenge.toByteArray().contentEquals(asymDecrypt(
+                    encryptingKey = keyPair.public,
+                    decryptingKey = keyPair.private,
+                    encBytes = encBytes
+                ))) {
                 logger.error { "Inconsistent encryption key pair" }
                 throw InvalidKeyException("Inconsistent encryption key pair")
             }
-        }
-        catch (e: SignatureException) {
+        } catch (e: SignatureException) {
             logger.error { "Inconsistent encryption key pair" }
             throw InvalidKeyException("Inconsistent encryption key pair")
-        }
-        catch (e: BadPaddingException) {
+        } catch (e: BadPaddingException) {
             logger.error { "Inconsistent encryption key pair" }
             throw InvalidKeyException("Inconsistent encryption key pair")
         }
         logger.debug { "Encryption key pair challenge successful" }
     }
 
-    /** Check that the public and private keys in the signing [keyPair] form a valid key pair */
-    fun checkAsymSigKeys(keyPair: KeyPairCryptoAC) {
+    /**
+     * Check that the public and private keys in
+     * the signing [keyPair] form a valid key pair
+     */
+    override fun checkAsymSigKeys(keyPair: KeyPairCryptoAC) {
         logger.debug { "Challenging a signing key pair" }
+
+        if (keyPair.keyType != AsymKeysType.SIG) {
+            throw InvalidKeyException("Key pair type is not ${AsymKeysType.SIG} but ${keyPair.keyType} ")
+        }
 
         val challenge = "Toto, I've a feeling we're not in Kansas anymore"
         val signature = createSignature(challenge.toByteArray(), keyPair.private)
         try {
             verifySignature(signature, challenge.toByteArray(), keyPair.public)
-        }
-        catch (e: SignatureException) {
+        } catch (e: SignatureException) {
             logger.error { "Inconsistent signing key pair" }
             throw InvalidKeyException("Inconsistent signing key pair")
-        }
-        catch (e: BadPaddingException) {
+        } catch (e: BadPaddingException) {
             logger.error { "Inconsistent signing key pair" }
             throw InvalidKeyException("Inconsistent signing key pair")
         }
@@ -398,7 +455,10 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
     }
 
     /** Encrypt the [bytes] with the [encryptingKey] */
-    fun asymEncrypt(encryptingKey: PublicKey, bytes: ByteArray): ByteArray {
+    override fun asymEncrypt(
+        encryptingKey: PublicKeyCryptoAC,
+        bytes: ByteArray
+    ): ByteArray {
         val bytesSize = bytes.size
         require(bytes.isNotEmpty()) { "Empty ByteArray to encrypt" }
 
@@ -419,32 +479,46 @@ class CryptoJava(private val parameters: CryptoParameters?) : Crypto {
             asymCipher.doFinal(bytes, inputOffset, inputLength, encBytes, outputOffset)
         }
         return encBytes
-
     }
 
-    /** Decrypt the [encBytes] with the [decryptingKey] */
-    fun asymDecrypt(decryptingKey: PrivateKey, encBytes: ByteArray): ByteArray {
-        val encBytesSize = encBytes.size
-        require(encBytes.isNotEmpty()) { "Empty ByteArray to decrypt" }
+    /**
+     * Decrypt the [encBytes] encrypted with the
+     * [encryptingKey] with the [decryptingKey]
+     * If the decryption fails, throw a
+     * CryptographicOperationException
+     */
+    override fun asymDecrypt(
+        encryptingKey: PublicKeyCryptoAC,
+        decryptingKey: PrivateKeyCryptoAC,
+        encBytes: ByteArray
+    ): ByteArray {
+        return try {
+            val encBytesSize = encBytes.size
+            require(encBytes.isNotEmpty()) { "Empty ByteArray to decrypt" }
 
-        asymCipher.init(Cipher.DECRYPT_MODE, (decryptingKey as PrivateKeyJava).private)
+            asymCipher.init(Cipher.DECRYPT_MODE, (decryptingKey as PrivateKeyJava).private)
 
-        val numBlocksToEncrypt = (encBytesSize + decBlockLength - 1) / decBlockLength
-        val bytes = ByteArray(numBlocksToEncrypt * decBlockLength)
-        var decBytes = 0
+            val numBlocksToEncrypt = (encBytesSize + decBlockLength - 1) / decBlockLength
+            val bytes = ByteArray(numBlocksToEncrypt * decBlockLength)
+            var decBytes = 0
 
-        for (i in 0 until numBlocksToEncrypt) {
-            val inputOffset = i * decBlockLength
-            val outputOffset = i * encBlockLength
-            var inputLength = decBlockLength
+            for (i in 0 until numBlocksToEncrypt) {
+                val inputOffset = i * decBlockLength
+                val outputOffset = i * encBlockLength
+                var inputLength = decBlockLength
 
-            /** If true, this is the last block to encrypt */
-            if (i == numBlocksToEncrypt - 1) {
-                inputLength = encBytesSize - inputOffset
+                /** If true, this is the last block to encrypt */
+                if (i == numBlocksToEncrypt - 1) {
+                    inputLength = encBytesSize - inputOffset
+                }
+                decBytes = asymCipher.doFinal(encBytes, inputOffset, inputLength, bytes, outputOffset)
             }
-            decBytes = asymCipher.doFinal(encBytes, inputOffset, inputLength, bytes, outputOffset)
+            /** eliminate the last padding bytes */
+            bytes.sliceArray(0 until decBytes + (numBlocksToEncrypt - 1) * encBlockLength)
+        } catch (e: BadPaddingException) {
+            logger.error { "Exception while asymmetric decryption" }
+            logger.error { e }
+            throw CryptographicOperationException(e.localizedMessage)
         }
-        /** eliminate the last padding bytes */
-        return bytes.sliceArray(0 until decBytes + (numBlocksToEncrypt - 1) * encBlockLength)
     }
 }

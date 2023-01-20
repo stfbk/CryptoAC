@@ -1,0 +1,11 @@
+{
+  "name": "kotlin-browser",
+  "version": "0.0.1-pre.382",
+  "customFields": {},
+  "main": "kotlin-browser.js",
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

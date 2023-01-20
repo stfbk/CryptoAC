@@ -1,0 +1,5 @@
+FROM openpolicyagent/opa:latest
+
+COPY privateOPA.key /privateOPA.key
+
+COPY publicOPA.crt /publicOPA.crt

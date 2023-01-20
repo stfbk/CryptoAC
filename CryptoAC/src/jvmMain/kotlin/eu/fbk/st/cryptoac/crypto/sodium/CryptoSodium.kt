@@ -5,7 +5,6 @@ import com.ionspin.kotlin.crypto.box.Box
 import com.ionspin.kotlin.crypto.box.Box.seal
 import com.ionspin.kotlin.crypto.box.Box.sealOpen
 import com.ionspin.kotlin.crypto.box.BoxCorruptedOrTamperedDataException
-import com.ionspin.kotlin.crypto.generichash.GenericHash.genericHash
 import com.ionspin.kotlin.crypto.secretstream.SecretStream
 import com.ionspin.kotlin.crypto.secretstream.crypto_secretstream_xchacha20poly1305_HEADERBYTES
 import com.ionspin.kotlin.crypto.signature.InvalidSignatureException
@@ -19,19 +18,15 @@ import org.apache.commons.codec.binary.Base64InputStream
 import java.io.InputStream
 import java.security.*
 import java.security.spec.InvalidKeySpecException
-import java.util.stream.Stream
 import javax.crypto.BadPaddingException
 
 private val logger = KotlinLogging.logger {}
 
 /**
- * Implementation of the Crypto interface with Sodium library (https://libsodium.gitbook.io/).
- * As Sodium has built-in algorithms, the [parameters] are not used, except for the length of
- * the hashes
+ * Implementation of the Crypto provider with
+ * Sodium library (https://libsodium.gitbook.io/)
  */
-class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
-
-    private val hashLength = parameters?.hashLength ?: (512/8)
+class CryptoSodium : CryptoPKE, CryptoSKE {
 
     init {
         runBlocking {
@@ -39,13 +34,13 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
                 if (LibsodiumInitializer.isInitialized()) {
                     logger.warn {
                         "Receive request to initialize the Sodium " +
-                        "library, but it was already initialized"
+                            "library, but it was already initialized"
                     }
                 } else {
                     logger.info { "Initializing the Sodium library" }
                     LibsodiumInitializer.initialize()
                 }
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 logger.error { "Unable to initialize the Sodium library (${e.localizedMessage})" }
                 logger.error { e }
                 throw e
@@ -53,15 +48,39 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
         }
     }
 
+    /**
+     * This function is invoked each time the cryptographic
+     * provider is initialized, and it should contain the
+     * code to initialize the provider
+     */
+    override fun init() {
+        logger.info { "No action required to initialize the Sodium crypto" }
+    }
 
-    /** Return a freshly generated asymmetric key pair for encryption */
-    override fun generateAsymEncKeys(): KeyPairCryptoAC {
+    /**
+     * This function is invoked each time the cryptographic
+     * provider is destroyed, and it should contain the
+     * code to de-initialize the provider (e.g., by wiping
+     * secret keys)
+     */
+    override fun deinit() {
+        // TODO wipe secret kets
+    }
+
+    /**
+     * Return a freshly generated asymmetric
+     * key pair with id [keyID] for encryption
+     */
+    override fun generateAsymEncKeys(keyID: String?): KeyPairCryptoAC {
         logger.debug { "Generating encryption asymmetric key pair" }
         return Box.keypair().toKeyPairSodium()
     }
 
-    /** Return a freshly generated asymmetric key pair for signatures */
-    override fun generateAsymSigKeys(): KeyPairCryptoAC {
+    /**
+     * Return a freshly generated asymmetric
+     * key pair with id [keyID] for signatures
+     */
+    override fun generateAsymSigKeys(keyID: String?): KeyPairCryptoAC {
         logger.debug { "Generating signing asymmetric key pair" }
         return Signature.keypair().toKeyPairSodium()
     }
@@ -73,23 +92,17 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
     }
 
     /**
-     * Return the hash of the given [bytes]. If [bytes]
-     * is empty, throw an IllegalArgumentException
-     */
-    override fun generateDigest(bytes: ByteArray): ByteArray {
-        logger.debug { "Hashing ${bytes.size} bytes" }
-        require(bytes.isNotEmpty()) { "Empty ByteArray for digest" }
-        return genericHash(bytes.toUByteArray(), hashLength, null).toByteArray()
-    }
-
-    /**
      * Verify the digital [signature] of the [bytes] with the [verifyingKey]
      * If the signature is not valid, throw a SignatureException
      * If either [bytes] or [signature] is empty, throw an IllegalArgumentException
      *
      * In this implementation, Sodium uses the Ed25519 (EdDSA) algorithm
      */
-    override fun verifySignature(signature: ByteArray, bytes: ByteArray, verifyingKey: PublicKeyCryptoAC) {
+    override fun verifySignature(
+        signature: ByteArray,
+        bytes: ByteArray,
+        verifyingKey: PublicKeyCryptoAC
+    ) {
         logger.debug { "Verifying signature of ${signature.size} bytes for ${bytes.size} bytes" }
         require(bytes.isNotEmpty()) { "Empty ByteArray for bytes" }
         require(signature.isNotEmpty()) { "Empty ByteArray for signature" }
@@ -113,7 +126,10 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
      *
      * In this implementation, Sodium uses the Ed25519 (EdDSA) algorithm
      */
-    override fun createSignature(bytes: ByteArray, signingKey: PrivateKeyCryptoAC): ByteArray {
+    override fun createSignature(
+        bytes: ByteArray,
+        signingKey: PrivateKeyCryptoAC
+    ): ByteArray {
         logger.debug { "Creating signature for ${bytes.size} bytes" }
         require(bytes.isNotEmpty()) { "Empty ByteArray for bytes to sign" }
 
@@ -137,7 +153,7 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
         return EncryptedAsymKeys(
             public = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.public.encoded),
             private = asymEncrypt(encryptingKey = encryptingKey, bytes = asymKeys.private.encoded),
-            keysType = type,
+            keyType = type,
         )
     }
 
@@ -230,7 +246,10 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
     ): EncryptedSymKey {
         logger.debug { "Encrypting symmetric key" }
         return EncryptedSymKey(
-            asymEncrypt(encryptingKey = encryptingKey, bytes = symKey.secretKey.encoded)
+            asymEncrypt(
+                encryptingKey = encryptingKey,
+                bytes = symKey.secretKey.encoded
+            )
         )
     }
 
@@ -249,8 +268,8 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
 
         return try {
             SymmetricKeySodium(
-                SecretKeySodium(
-                    asymDecrypt(
+                secretKey = SecretKeySodium(
+                    secretKey = asymDecrypt(
                         encryptingKey = encryptingKey,
                         decryptingKey = decryptingKey,
                         encBytes = encryptedSymKey.key
@@ -263,7 +282,6 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
             throw CryptographicOperationException(e.localizedMessage)
         }
     }
-
 
     /**
      * Encrypt the content of the [stream] with
@@ -281,7 +299,10 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
      * the ChaCha20 stream cipher and the Poly1305 universal
      * hash function
      */
-    override fun encryptStream(encryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream {
+    override fun encryptStream(
+        encryptingKey: SymmetricKeyCryptoAC,
+        stream: InputStream
+    ): InputStream {
         logger.debug { "Encrypting stream" }
         val stateAndHeader = SecretStream.xChaCha20Poly1305InitPush(
             encryptingKey.secretKey.encoded.toUByteArray()
@@ -309,38 +330,46 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
      * the ChaCha20 stream cipher and the Poly1305 universal
      * hash function
      */
-    override fun decryptStream(decryptingKey: SymmetricKeyCryptoAC, stream: InputStream): InputStream {
+    override fun decryptStream(
+        decryptingKey: SymmetricKeyCryptoAC,
+        stream: InputStream
+    ): InputStream {
         logger.debug { "Decrypting stream" }
         val header = stream.readNBytes(crypto_secretstream_xchacha20poly1305_HEADERBYTES)
         val stateAndHeader = SecretStream.xChaCha20Poly1305InitPull(
             key = decryptingKey.secretKey.encoded.toUByteArray(),
             header = header.toUByteArray()
         )
-        return Base64InputStream(SodiumCipherInputStream(
-            inputStream = stream,
-            stateAndHeader = stateAndHeader,
-            mode = SodiumCipherInputStream.DECRYPT_MODE,
-        ), false)
+        return Base64InputStream(
+            SodiumCipherInputStream(
+                inputStream = stream,
+                stateAndHeader = stateAndHeader,
+                mode = SodiumCipherInputStream.DECRYPT_MODE,
+            ),
+            false
+        )
     }
 
     /**
      * Return a key pair of the given [type] created from
      * the encoded encryption [asymPublicKeyBytes] and the
-     * encoded encryption [asymPrivateKeyBytes].
+     * encoded encryption [asymPrivateKeyBytes]. Optionally,
+     * specify a [keyID]
      * Also, check the two keys actually form a valid pair
      */
     override fun recreateAsymKeyPair(
         asymPublicKeyBytes: ByteArray,
         asymPrivateKeyBytes: ByteArray,
-        type: AsymKeysType
+        type: AsymKeysType,
+        keyID: String?
     ): KeyPairCryptoAC {
         logger.debug { "Recreating asymmetric $type key pair" }
 
         if (asymPublicKeyBytes.isEmpty()) {
-            throw InvalidKeySpecException("Empty public ket")
+            throw InvalidKeySpecException("Empty public key")
         }
         if (asymPrivateKeyBytes.isEmpty()) {
-            throw InvalidKeySpecException("Empty public ket")
+            throw InvalidKeySpecException("Empty private key")
         }
         val keyPair = KeyPairSodium(
             public = PublicKeySodium(asymPublicKeyBytes.toUByteArray()),
@@ -358,76 +387,94 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
 
     /**
      * Reconstruct a public key of the given [type] from
-     * the encoded encryption [asymPublicKeyBytes]
+     * the encoded encryption [asymPublicKeyBytes]. Optionally,
+     * specify a [keyID]
      */
     override fun recreateAsymPublicKey(
         asymPublicKeyBytes: ByteArray,
-        type: AsymKeysType
+        type: AsymKeysType,
+        keyID: String?
     ): PublicKeyCryptoAC {
         logger.debug { "Recreating asymmetric $type public key" }
 
         if (asymPublicKeyBytes.isEmpty()) {
-            throw InvalidKeySpecException("Empty public ket")
+            throw InvalidKeySpecException("Empty public key")
         }
         return PublicKeySodium(asymPublicKeyBytes.toUByteArray())
     }
 
     /**
      * Reconstruct a private key of the given [type] from
-     * the encoded encryption [asymPrivateKeyBytes]
+     * the encoded encryption [asymPrivateKeyBytes]. Optionally,
+     * specify a [keyID]
      */
-    override fun recreateAsymPrivateKey(asymPrivateKeyBytes: ByteArray, type: AsymKeysType): PrivateKeyCryptoAC {
+    override fun recreateAsymPrivateKey(
+        asymPrivateKeyBytes: ByteArray,
+        type: AsymKeysType,
+        keyID: String?
+    ): PrivateKeyCryptoAC {
         logger.debug { "Recreating asymmetric $type public key" }
 
         if (asymPrivateKeyBytes.isEmpty()) {
-            throw InvalidKeySpecException("Empty public ket")
+            throw InvalidKeySpecException("Empty private key")
         }
         return PrivateKeySodium(asymPrivateKeyBytes.toUByteArray())
     }
-
 
     /**
      * Check that the public and private keys in the
      * encryption [keyPair] form a valid key pair
      */
-    fun checkAsymEncKeys(keyPair: KeyPairCryptoAC) {
+    override fun checkAsymEncKeys(
+        keyPair: KeyPairCryptoAC
+    ) {
         logger.debug { "Challenging an encryption key pair" }
+
+        if (keyPair.keyType != AsymKeysType.ENC) {
+            throw InvalidKeyException("Key pair type is not ${AsymKeysType.ENC} but ${keyPair.keyType} ")
+        }
 
         val challenge = "Frankly, my dear, I don't give a damn"
         val encBytes = asymEncrypt(keyPair.public, challenge.toByteArray())
         try {
             if (!challenge.toByteArray().contentEquals(
-                    asymDecrypt(keyPair.public, keyPair.private, encBytes))
+                    asymDecrypt(keyPair.public, keyPair.private, encBytes)
+                )
             ) {
                 logger.error { "Inconsistent encryption key pair" }
                 throw InvalidKeyException("Inconsistent encryption key pair")
             }
-        }
-        catch (e: SignatureException) {
+        } catch (e: SignatureException) {
             logger.error { "Inconsistent encryption key pair" }
             throw InvalidKeyException("Inconsistent encryption key pair")
-        }
-        catch (e: BoxCorruptedOrTamperedDataException) {
+        } catch (e: BoxCorruptedOrTamperedDataException) {
             logger.error { "Inconsistent encryption key pair" }
             throw InvalidKeyException("Inconsistent encryption key pair")
         }
         logger.debug { "Encryption key pair challenge successful" }
     }
 
-    /** Check that the public and private keys in the signing [keyPair] form a valid key pair */
-    fun checkAsymSigKeys(keyPair: KeyPairCryptoAC) {
-         logger.debug { "Challenging a signing key pair" }
+    /**
+     * Check that the public and private keys in
+     * the signing [keyPair] form a valid key pair
+     */
+    override fun checkAsymSigKeys(
+        keyPair: KeyPairCryptoAC
+    ) {
+        logger.debug { "Challenging a signing key pair" }
+
+        if (keyPair.keyType != AsymKeysType.SIG) {
+            throw InvalidKeyException("Key pair type is not ${AsymKeysType.SIG} but ${keyPair.keyType} ")
+        }
 
         val challenge = "Here's looking at you, kid"
         val signature = createSignature(challenge.toByteArray(), keyPair.private)
         try {
             verifySignature(signature, challenge.toByteArray(), keyPair.public)
-        }
-        catch (e: SignatureException) {
+        } catch (e: SignatureException) {
             logger.error { "Inconsistent signing key pair" }
             throw InvalidKeyException("Inconsistent signing key pair")
-        }
-        catch (e: BadPaddingException) {
+        } catch (e: BadPaddingException) {
             logger.error { "Inconsistent signing key pair" }
             throw InvalidKeyException("Inconsistent signing key pair")
         }
@@ -443,11 +490,10 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
      * stream cipher (with XSalsa20 192-bit nonce extension) and the Poly1305
      * universal hash function, which acts as a message authentication code.
      */
-    fun asymEncrypt(
+    override fun asymEncrypt(
         encryptingKey: PublicKeyCryptoAC,
         bytes: ByteArray
     ): ByteArray {
-        val bytesSize = bytes.size
         require(bytes.isNotEmpty()) { "Empty ByteArray to encrypt" }
         return seal(
             message = bytes.toUByteArray(),
@@ -456,24 +502,32 @@ class CryptoSodium(private val parameters: CryptoParameters?) : Crypto {
     }
 
     /**
-     * Decrypt the [encBytes] with the [decryptingKey]
+     * Decrypt the [encBytes] encrypted with the
+     * [encryptingKey] with the [decryptingKey]
+     * If the decryption fails, throw a
+     * CryptographicOperationException
      *
      * In this implementation, Sodium uses Elliptic Curves Diffie-Hellman
      * (ECDH), X25519, to derive a symmetric key and then the Salsa20 symmetric
      * stream cipher (with XSalsa20 192-bit nonce extension) and the Poly1305
      * universal hash function, which acts as a message authentication code.
      */
-    fun asymDecrypt(
+    override fun asymDecrypt(
         encryptingKey: PublicKeyCryptoAC,
         decryptingKey: PrivateKeyCryptoAC,
         encBytes: ByteArray
     ): ByteArray {
-        val encBytesSize = encBytes.size
         require(encBytes.isNotEmpty()) { "Empty ByteArray to decrypt" }
-        return sealOpen(
-            ciphertext = encBytes.toUByteArray(),
-            recipientsPublicKey = (encryptingKey as PublicKeySodium).public,
-            recipientsSecretKey = (decryptingKey as PrivateKeySodium).private,
-        ).toByteArray()
+        return try {
+            sealOpen(
+                ciphertext = encBytes.toUByteArray(),
+                recipientsPublicKey = (encryptingKey as PublicKeySodium).public,
+                recipientsSecretKey = (decryptingKey as PrivateKeySodium).private,
+            ).toByteArray()
+        } catch (e: BoxCorruptedOrTamperedDataException) {
+            logger.error { "Exception while asymmetric decryption" }
+            logger.error { e }
+            throw CryptographicOperationException(e.localizedMessage)
+        }
     }
 }
