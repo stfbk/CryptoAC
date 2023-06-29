@@ -16,6 +16,7 @@ import eu.fbk.st.cryptoac.mm.MMFactory
 import eu.fbk.st.cryptoac.mm.MMServiceRBAC
 import eu.fbk.st.cryptoac.model.CodeResource
 import eu.fbk.st.cryptoac.model.CodeSymmetricKeyRBAC
+import eu.fbk.st.cryptoac.model.tuple.PermissionType
 import eu.fbk.st.cryptoac.rm.RMServiceRBAC
 import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
@@ -87,6 +88,7 @@ class CoreRBACMQTT(
     /** Mutex to synchronize the message pub/sub procedure */
     private val messageMutex = Mutex()
 
+    // TODO shouldn't we clear the hash map below sometimes (e.g., when disconnect/deinit)?
     /** A map of subscribed topics with the cached key and messages to send to the client */
     val subscribedTopicsKeysAndMessages = hashMapOf<String, SymmetricKeysAndCachedMessages?>()
 
@@ -156,17 +158,59 @@ class CoreRBACMQTT(
     }
 
     /**
+     * Revoke the user [username] from the
+     * role [roleName] from the policy.
+     * Finally, return the outcome code
+     */
+    override fun revokeUserFromRole(
+        username: String,
+        roleName: String
+    ): OutcomeCode {
+        return super.revokeUserFromRole(username, roleName)
+        // TODO BISOGNEREBBE COPIARE IL CODICE DALLA SUPERCLASSE
+        //  AGGIUNGENDO PERO' ANCHE L'INVIO DI UN NUOVO RETAINED
+        //  MESSAGE PER OGNI RISORSA AFFETTA DALL'OPERAZIONE: FACCIAMOLO
+        //  DOPO AVER UNIFORMATO IL CORE RBAC A QUELLO ABE-BASED, I.E.,
+        //  PERMETTENDO PIÙ PERMISSION TUPLE PER OGNI RISORSA
+    }
+
+    /**
+     * Revoke the [permission] from the role [roleName] over
+     * the resource [resourceName] in the policy. Finally,
+     * return the outcome code
+     */
+    override fun revokePermissionFromRole(
+        roleName: String,
+        resourceName: String,
+        permission: PermissionType
+    ): OutcomeCode {
+        return super.revokePermissionFromRole(roleName, resourceName, permission)
+        // TODO BISOGNEREBBE COPIARE IL CODICE DALLA SUPERCLASSE
+        //  AGGIUNGENDO PERO' ANCHE L'INVIO DI UN NUOVO RETAINED
+        //  MESSAGE PER LA RISORSA AFFETTA DALL'OPERAZIONE: FACCIAMOLO
+        //  DOPO AVER UNIFORMATO IL CORE RBAC A QUELLO ABE-BASED, I.E.,
+        //  PERMETTENDO PIÙ PERMISSION TUPLE PER OGNI RISORSA
+    }
+
+    /**
      * Download, decrypt and check the signature of
      * the content of the resource [resourceName]
      * and return it along with the outcome code (if an
      * error occurred, the content of the resource will
      * be null)
      *
-     * In this implementation, just subscribe to the topic
-     * with the given [resourceName]
+     * In this implementation, the first invocation of
+     * this function allows subscribing to the topic with
+     * the given [resourceName], while subsequent invocations
+     * allow retrieving the latest messages -- i.e., the messages
+     * still to be downloaded by the user -- published in the
+     * topic with the given [resourceName]
      */
     override fun readResource(resourceName: String): CodeResource {
-        logger.info { "User ${user.name} is asking to subscribe to topic $resourceName" }
+        logger.info {
+            "User ${user.name} is asking to subscribe " +
+            "or read messages published to topic $resourceName"
+        }
 
         /** Guard clauses */
         if (resourceName.isBlank()) {
@@ -180,16 +224,34 @@ class CoreRBACMQTT(
             return CodeResource(code)
         }
 
-        /** Send anyway the subscribe request in case of policy updates */
-        dm.readResource(resourceName)
-        return CodeResource(
-            code = endOfMethod(
-                code = CODE_000_SUCCESS,
-                mmLocked = false,
-                acLocked = false
-            ),
-            stream = null
-        )
+        // TODO here we should also match MQTT topic wildcards (i.e., '+' and '#')
+        // TODO we should test this behaviour (i.e., the download of MQTT messages through the READ RESOURCE api)
+        return if (subscribedTopicsKeysAndMessages.containsKey(resourceName)) {
+            val stringMessages = myJson.encodeToString(
+                value = subscribedTopicsKeysAndMessages[resourceName]!!.messages
+            ).inputStream()
+            subscribedTopicsKeysAndMessages[resourceName]!!.messages.clear()
+            CodeResource(
+                code = endOfMethod(
+                    code = CODE_000_SUCCESS,
+                    mmLocked = false,
+                    acLocked = false
+                ),
+                stream = stringMessages
+            )
+        } else {
+            val readCode = dm.readResource(resourceName)
+            CodeResource(
+                code = endOfMethod(
+                    code = readCode.code,
+                    mmLocked = false,
+                    acLocked = false
+                ),
+                stream = myJson.encodeToString(
+                    value = listOf<MQTTMessage>()
+                ).inputStream()
+            )
+        }
     }
 
     /**
@@ -266,6 +328,17 @@ class CoreRBACMQTT(
                     resource.enforcement
                 }
 
+                // TODO == BELOW == added for DBSEC EXP, remove
+                val resourceContent2 = (coreParameters.user.name
+                        + "_"
+                        + System.currentTimeMillis().toString()
+                        + "_"
+                        + generateRandomString()
+                        + "_" + resourceContent
+                    ).inputStream()
+                // TODO == ABOVE == added for DBSEC EXP, remove
+
+
                 return@withLock when (enforcement) {
                     /** MQTT messages should not be encrypted, i.e., just publish it */
                     EnforcementType.TRADITIONAL -> {
@@ -276,7 +349,7 @@ class CoreRBACMQTT(
                                     name = resourceName,
                                     enforcement = enforcement
                                 ),
-                                content = resourceContent
+                                content = resourceContent2
                             ),
                             acLocked = false
                         )
@@ -303,7 +376,7 @@ class CoreRBACMQTT(
                         } else {
                             val messageStream = cryptoSKE.encryptStream(
                                 encryptingKey = codeAndKey.key!!,
-                                stream = resourceContent
+                                stream = resourceContent2
                             )
                             endOfMethod(
                                 code = dm.writeResource(
@@ -409,7 +482,7 @@ class CoreRBACMQTT(
                                 val enforcement = resource.enforcement
                                 logger.info {
                                     "Retained message (versionNumber " +
-                                            "$versionNumber, enforcement $enforcement)"
+                                    "$versionNumber, enforcement $enforcement)"
                                 }
 
                                 when (enforcement) {
@@ -621,8 +694,29 @@ class CoreRBACMQTT(
                                         }
                                     }
                                 }
+
+                                // TODO == BELOW == added for DBSEC EXP, remove
+                                val timestampNow = System.currentTimeMillis().toString()
+                                val splitMessageContent = String(messageContent).split("_")
+                                val senderUser = splitMessageContent[0]
+                                val timestampSent = splitMessageContent[1]
+                                val messageID = splitMessageContent[2]
+                                val useridts1ts2 = senderUser +
+                                        "_" +
+                                        coreParameters.user.name +
+                                        "_" +
+                                        topic +
+                                        "_" +
+                                        messageID +
+                                        "_" +
+                                        timestampSent +
+                                        "_" +
+                                        timestampNow
+                                // TODO == ABOVE == added for DBSEC EXP, remove
+
+
                                 val receivedMessage = MQTTMessage(
-                                    message = String(messageContent),
+                                    message = useridts1ts2, // String(messageContent),
                                     topic = topic,
                                     error = false
                                 )

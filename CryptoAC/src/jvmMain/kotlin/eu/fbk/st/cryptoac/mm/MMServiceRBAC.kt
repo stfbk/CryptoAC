@@ -111,18 +111,16 @@ interface MMServiceRBAC : MMService {
 
     /**
      * Retrieve the permission tuples matching the [roleName] and/or
-     * the [resourceName] and not matching the [roleNameToExclude], if
-     * given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit] and with the (possibly) relevant
-     * information of whether the user invoking this function [isAdmin].
-     * If no permission tuples are found, return an empty set. This
-     * method should support invocations by non-admin users
+     * the [resourceName], starting from the [offset] limiting the number
+     * of tuples to return to the given [limit] and with the (possibly)
+     * relevant information of whether the user invoking this function
+     * [isAdmin]. If no permission tuples are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
-    // TODO remove the limitation that at least one is required
+    // TODO test this method when giving neither the role name nor the resource name
     fun getPermissionTuples(
         roleName: String? = null,
         resourceName: String? = null,
-        roleNameToExclude: String? = null,
         isAdmin: Boolean = true,
         offset: Int = DEFAULT_OFFSET,
         limit: Int = DEFAULT_LIMIT,

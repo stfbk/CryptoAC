@@ -162,11 +162,18 @@ class CoreABACMQTT(
      * error occurred, the content of the resource will
      * be null)
      *
-     * In this implementation, just subscribe to the topic
-     * with the given [resourceName]
+     * In this implementation, the first invocation of
+     * this function allows subscribing to the topic with
+     * the given [resourceName], while subsequent invocations
+     * allow retrieving the latest messages -- i.e., the messages
+     * still to be downloaded by the user -- published in the
+     * topic with the given [resourceName]
      */
     override fun readResource(resourceName: String): CodeResource {
-        logger.info { "User ${user.name} is asking to subscribe to topic $resourceName" }
+        logger.info {
+            "User ${user.name} is asking to subscribe " +
+            "or read messages published to topic $resourceName"
+        }
 
         /** Guard clauses */
         if (resourceName.isBlank()) {
@@ -175,24 +182,39 @@ class CoreABACMQTT(
         }
 
         /** Lock the status of the services */
-        val code = startOfMethod(
-            mmLock = false,
-            acLock = false
-        )
+        val code = startOfMethod(mmLock = false, acLock = false)
         if (code != CODE_000_SUCCESS) {
             return CodeResource(code)
         }
 
-        /** Send anyway the subscribe request in case of policy updates */
-        dm.readResource(resourceName)
-        return CodeResource(
-            code = endOfMethod(
-                code = CODE_000_SUCCESS,
-                mmLocked = false,
-                acLocked = false
-            ),
-            stream = null
-        )
+        // TODO here we should also match MQTT topic wildcards (i.e., '+' and '#')
+        // TODO we should test this behaviour (i.e., the download of MQTT messages through the READ RESOURCE api)
+        return if (subscribedTopicsKeysAndMessages.containsKey(resourceName)) {
+            val stringMessages = myJson.encodeToString(
+                value = subscribedTopicsKeysAndMessages[resourceName]!!.messages
+            ).inputStream()
+            subscribedTopicsKeysAndMessages[resourceName]!!.messages.clear()
+            CodeResource(
+                code = endOfMethod(
+                    code = CODE_000_SUCCESS,
+                    mmLocked = false,
+                    acLocked = false
+                ),
+                stream = stringMessages
+            )
+        } else {
+            val readCode = dm.readResource(resourceName)
+            CodeResource(
+                code = endOfMethod(
+                    code = readCode.code,
+                    mmLocked = false,
+                    acLocked = false
+                ),
+                stream = myJson.encodeToString(
+                    value = listOf<MQTTMessage>()
+                ).inputStream()
+            )
+        }
     }
 
 
@@ -335,10 +357,10 @@ class CoreABACMQTT(
      */
     private fun cacheOrSendMessage(topic: String, message: MQTTMessage) {
         if (wss == null) {
-            logger.info {(
-                    "User ${user.name} is not connected "
-                            + "through WSS, caching the message"
-                    )}
+            logger.info {
+                "User ${user.name} is not connected " +
+                "through WSS, caching the message"
+            }
             subscribedTopicsKeysAndMessages[topic]!!.messages.add(message)
             // TODO we cached the message, now check for reconnection
             //  from the WSS to then send to it the messages

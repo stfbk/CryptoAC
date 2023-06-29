@@ -15,7 +15,7 @@ external interface TablePaginationProps : Props {
     var count: Int
     var rowsPerPage: Int
     var page: Int
-    var onChangePage: (Event, Int) -> Unit
-    var onChangeRowsPerPage: (Event) -> Unit
+    var onPageChange: (Event, Int) -> Unit
+    var onRowsPerPageChange: (Event) -> Unit
     var labelRowsPerPage: String
 }

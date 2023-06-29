@@ -575,7 +575,7 @@ abstract class CoreRBACTuples(
 
         /** Guard clauses */
         if (resourceName.isBlank()) {
-            logger.warn { "Topic name is blank" }
+            logger.warn { "Resource name is blank" }
             return CODE_020_INVALID_PARAMETER
         }
 
@@ -612,7 +612,7 @@ abstract class CoreRBACTuples(
                 val adminAsymEncPublicKeyBytes = mm.getPublicKey(
                     token = ADMIN,
                     elementType = RBACUnitElementTypeWithKeys.USER,
-                    asymKeyType = AsymKeysType.ENC
+                    asymKeyType = AsymKeysType.ENC,
                 )
                 val adminAsymEncPublicKey = cryptoPKE.recreateAsymPublicKey(
                     asymPublicKeyBytes = adminAsymEncPublicKeyBytes!!,
@@ -936,27 +936,36 @@ abstract class CoreRBACTuples(
             limit = NO_LIMIT
         )
 
-        /** Get the RoleTuple of [username] and [roleName] */
-        val userRoleTuple = roleRoleTuples.firstOrNull {
-            it.username == username
-        }
-        if (userRoleTuple == null) {
+        /** Check whether the role tuple to delete exists */
+        if (!roleRoleTuples.any { it.username == username }) {
             logger.warn { "Role tuple of user $username and role $roleName not found" }
             return endOfMethod(
                 code = CODE_007_ROLETUPLE_NOT_FOUND,
                 dmLocked = false
             )
         }
-        verifyTupleSignature(userRoleTuple)
-
-        /** Get the role tuple of the admin and [roleName] */
-        val adminRoleTuple = roleRoleTuples.first { it.username == ADMIN }
 
         /**
-         * Verify the signature of the
-         * admin's role tuple for [roleName]
+         * Get the role tuple of the admin and [roleName]
+         * so we can get the role's old asymmetric encryption
+         * keys, which we need later on.
+         * We verify the signature of the admin role tuple in
+         * the for loop below
          */
+        val adminRoleTuple = roleRoleTuples.first { it.username == ADMIN }
         verifyTupleSignature(adminRoleTuple)
+
+        /** Get the (now old) asymmetric encryption private keys of the [roleName] */
+        val oldAsymEncKeys = cryptoPKE.decryptAsymEncKeys(
+            encryptingKey = asymEncKeyPair.public,
+            decryptingKey = asymEncKeyPair.private,
+            encryptedAsymEncKeys = EncryptedAsymKeys(
+                private = adminRoleTuple.encryptedAsymEncKeys!!.private,
+                public = adminRoleTuple.encryptedAsymEncKeys.public,
+                keyType = AsymKeysType.ENC,
+            )
+        )
+
 
         /**
          * Update the version number and provide new keys
@@ -966,7 +975,7 @@ abstract class CoreRBACTuples(
         val newAsymEncKeys = cryptoPKE.generateAsymEncKeys()
         val newAsymSigKeys = cryptoPKE.generateAsymSigKeys()
         val newRoleTuples = HashSet<RoleTuple>()
-        val oldRoleVersionNumber = userRoleTuple.roleVersionNumber
+        val oldRoleVersionNumber = roleObject.versionNumber
         val newRoleVersionNumber = oldRoleVersionNumber + 1
         for (currentRoleTuple in roleRoleTuples.filter { it.username != username }) {
 
@@ -1051,10 +1060,15 @@ abstract class CoreRBACTuples(
             )
         }
 
+        /** Generate here the new role token */
         val newRoleToken = UnitElement.generateRandomTokenForAdmin(
             name = roleName
         )
 
+        /**
+         * Currently, there can be one permission
+         * tuple only for each role-resource pair
+         */
         logger.debug { "Getting the permissions tuples to update" }
         val permissionTuples = mm.getPermissionTuples(
             roleName = roleName,
@@ -1097,35 +1111,59 @@ abstract class CoreRBACTuples(
                     throw IllegalStateException(message)
                 }
 
-                /**
-                 * Which one is the symmetric key to use to decrypt the resource
-                 * later on? If the decryption and encryption version numbers
-                 * are the same, then there are two possibilities:
-                 * - the decryption and encryption symmetric keys are the same
-                 * as well (e.g., the resource was just created). In this case,
-                 * pick any of the two keys as the decryption key.
-                 * - the decryption and encryption symmetric keys are different,
-                 * even though they should be equal (as the version numbers are
-                 * the same). In this case, the decryption key should be the
-                 * encryption key.
-                 *
-                 * If the decryption and encryption version numbers are different,
-                 * it means that, previously, the admin renewed the key and no
-                 * user wrote on the resource since (otherwise, the version numbers
-                 * would be the same). In this case, pick the decryption key
-                 */
-                val newDecryptingSymKey = if (resource.symDecKeyVersionNumber == resource.symEncKeyVersionNumber) {
-                    currentPermissionTuple.encryptingSymKey
-                } else {
-                    currentPermissionTuple.decryptingSymKey
+                val newSymKey: SymmetricKeyCryptoAC?
+                val newEncryptingSymKey: EncryptedSymKey
+                val newDecryptingSymKey: EncryptedSymKey
+
+                /** Do cryptographic operations only if the enforcement is cryptographic */
+                when (resource.enforcement) {
+                    EnforcementType.TRADITIONAL -> {
+                        newSymKey = null
+                        newEncryptingSymKey = EncryptedSymKey("null".toByteArray())
+                        newDecryptingSymKey = EncryptedSymKey("null".toByteArray())
+                    }
+                    EnforcementType.COMBINED -> {
+                        newSymKey = cryptoSKE.generateSymKey()
+                        newEncryptingSymKey = cryptoPKE.encryptSymKey(
+                            encryptingKey = newAsymEncKeys.public,
+                            symKey = newSymKey
+                        )
+                        /**
+                         * Which one is the symmetric key to use to decrypt the resource
+                         * later on? If the decryption and encryption version numbers
+                         * are the same, then there are two possibilities:
+                         * - the decryption and encryption symmetric keys are the same
+                         * as well (e.g., the resource was just created). In this case,
+                         * pick any of the two keys as the decryption key.
+                         * - the decryption and encryption symmetric keys are different,
+                         * even though they should be equal (as the version numbers are
+                         * the same). In this case, the decryption key should be the
+                         * encryption key.
+                         *
+                         * If the decryption and encryption version numbers are different,
+                         * it means that, previously, the admin renewed the key and no
+                         * user wrote on the resource since (otherwise, the version numbers
+                         * would be the same). In this case, pick the decryption key
+                         */
+                        val newEncryptedDecryptingSymKey =
+                            if (resource.symDecKeyVersionNumber == resource.symEncKeyVersionNumber) {
+                                currentPermissionTuple.encryptingSymKey
+                            } else {
+                                currentPermissionTuple.decryptingSymKey
+                            }
+
+                        newDecryptingSymKey = cryptoPKE.encryptSymKey(
+                            encryptingKey = newAsymEncKeys.public,
+                            symKey = cryptoPKE.decryptSymKey(
+                                encryptingKey = oldAsymEncKeys.public,
+                                decryptingKey = oldAsymEncKeys.private,
+                                encryptedSymKey = newEncryptedDecryptingSymKey!!
+                            )
+                        )
+                    }
                 }
 
                 /** Update the PermissionTuples of the [roleName] */
-                val newSymKey = cryptoSKE.generateSymKey()
-                val newEncryptingKey = cryptoPKE.encryptSymKey(
-                        encryptingKey = newAsymEncKeys.public,
-                        symKey = newSymKey
-                    )
                 val newResourceToken = UnitElement.generateRandomToken()
                 val newResourceEncKeyVersionNumber = currentPermissionTuple.symKeyVersionNumber + 1
                 val newRolePermissionTuple = PermissionTuple(
@@ -1136,7 +1174,7 @@ abstract class CoreRBACTuples(
                     roleVersionNumber = newRoleVersionNumber,
                     symKeyVersionNumber = newResourceEncKeyVersionNumber,
                     permission = currentPermissionTuple.permission,
-                    encryptingSymKey = newEncryptingKey,
+                    encryptingSymKey = newEncryptingSymKey,
                     decryptingSymKey = newDecryptingSymKey,
                 )
                 val roleSignature = cryptoPKE.createSignature(
@@ -1156,10 +1194,14 @@ abstract class CoreRBACTuples(
                  */
                 val othersPermissionTuples = mm.getPermissionTuples(
                     resourceName = resourceName,
-                    roleNameToExclude = roleName,
                     offset = 0,
                     limit = NO_LIMIT
                 )
+                othersPermissionTuples.retainAll {
+                    (it.roleName != roleName)
+                }
+
+
 
                 for (currentOtherRolePermissionTuple in othersPermissionTuples) {
                     verifyTupleSignature(currentOtherRolePermissionTuple)
@@ -1173,7 +1215,20 @@ abstract class CoreRBACTuples(
                         asymPublicKeyBytes = roleAsymEncPublicKeyBytes!!,
                         type = AsymKeysType.ENC
                     )
-                    val newEncryptingSymKeyOtherRole = cryptoPKE.encryptSymKey(roleAsymEncPublicKey, newSymKey)
+
+                    /** Do cryptographic operations only if the enforcement is cryptographic */
+                    val newEncryptingSymKeyOtherRole: EncryptedSymKey = when (resource.enforcement) {
+                        EnforcementType.COMBINED -> {
+                            cryptoPKE.encryptSymKey(
+                                encryptingKey = roleAsymEncPublicKey,
+                                symKey = newSymKey!!
+                            )
+                        }
+
+                        EnforcementType.TRADITIONAL -> {
+                            EncryptedSymKey("null".toByteArray())
+                        }
+                    }
 
                     /**
                      * Which one is the symmetric key to use to decrypt the resource
@@ -1438,7 +1493,7 @@ abstract class CoreRBACTuples(
         } else {
             logger.debug {
                 "Previous permission tuple does not exist" +
-                 " for role $roleName over topic $resourceName"
+                 " for role $roleName over resource $resourceName"
             }
 
             /** Check the enforcement type */
@@ -1480,7 +1535,7 @@ abstract class CoreRBACTuples(
                     )
                 }
                 EnforcementType.TRADITIONAL -> {
-                    logger.debug { "Enforcement for topic $resourceName is traditional" }
+                    logger.debug { "Enforcement for resource $resourceName is traditional" }
                     encryptingKey = adminPermissionTuple.encryptingSymKey
                     decryptingKey = adminPermissionTuple.decryptingSymKey
                 }
@@ -1665,10 +1720,11 @@ abstract class CoreRBACTuples(
                 val resourceToken = resource.token
                 val resourceEncVersionNumber = resource.symEncKeyVersionNumber
 
-                val resourcePermissionTuples = mm.getPermissionTuples(
+                val roleResourcePermissionTuple = mm.getPermissionTuples(
+                    roleName = roleName,
                     resourceName = resourceName,
-                )
-                if (resourcePermissionTuples.none { it.roleName == roleName }) {
+                ).firstOrNull()
+                if (roleResourcePermissionTuple == null) {
                     logger.warn {
                         "Role $roleName does not have any " +
                         "permission over resource $resourceName"
@@ -1683,10 +1739,13 @@ abstract class CoreRBACTuples(
                     "Getting the permission tuple " +
                     "of the admin over $resourceName"
                 }
-                val adminPermissionTuple = resourcePermissionTuples.first {
-                    it.roleName == ADMIN
-                }
+
+                val adminPermissionTuple = mm.getPermissionTuples(
+                    roleName = ADMIN,
+                    resourceName = resourceName,
+                ).first()
                 verifyTupleSignature(adminPermissionTuple)
+
                 val newResourceEncKeyVersionNumber = adminPermissionTuple.symKeyVersionNumber + 1
 
                 /** Consistency checks on resource token */
@@ -1707,35 +1766,55 @@ abstract class CoreRBACTuples(
                     throw IllegalStateException(message)
                 }
 
-                logger.debug { "Generating new key and token for resource $resourceName" }
-                val newSymKey = cryptoSKE.generateSymKey()
+                /** Do cryptographic operations only if the enforcement is cryptographic */
+                val newSymKey: SymmetricKeyCryptoAC? = when (resource.enforcement) {
+                    EnforcementType.TRADITIONAL -> {
+                        null
+                    }
+                    EnforcementType.COMBINED -> {
+                        logger.debug { "Generating new key for resource $resourceName" }
+                        cryptoSKE.generateSymKey()
+                    }
+                }
+
+                logger.debug { "Generating new token for resource $resourceName" }
                 val newResourceToken = UnitElement.generateRandomToken()
 
                 logger.debug { "Updating permission tuples of other roles over resource $resourceName" }
                 val permissionTuplesOfOtherRoles = mm.getPermissionTuples(
                     resourceName = resourceName,
-                    roleNameToExclude = roleName,
                     offset = 0,
                     limit = NO_LIMIT
                 )
+                permissionTuplesOfOtherRoles.retainAll {
+                    (it.roleName != roleName)
+                }
 
                 val newPermissionTuples = HashSet<PermissionTuple>()
                 for (permissionTupleOfOtherRole in permissionTuplesOfOtherRoles) {
                     verifyTupleSignature(permissionTupleOfOtherRole)
 
-                    val roleEncPublicKeyBytes = mm.getPublicKey(
-                        name = permissionTupleOfOtherRole.roleName,
-                        elementType = RBACUnitElementTypeWithKeys.ROLE,
-                        asymKeyType = AsymKeysType.ENC
-                    )
-                    val roleEncPublicKey = cryptoPKE.recreateAsymPublicKey(
-                        asymPublicKeyBytes = roleEncPublicKeyBytes!!,
-                        type = AsymKeysType.ENC
-                    )
-                    val encryptedNewSymKey = cryptoPKE.encryptSymKey(
-                        encryptingKey = roleEncPublicKey,
-                        symKey = newSymKey
-                    )
+                    /** Do cryptographic operations only if the enforcement is cryptographic */
+                    val newEncryptingSymKeyOtherRole = when (resource.enforcement) {
+                        EnforcementType.TRADITIONAL -> {
+                            EncryptedSymKey("null".toByteArray())
+                        }
+                        EnforcementType.COMBINED -> {
+                            val roleEncPublicKeyBytes = mm.getPublicKey(
+                                name = permissionTupleOfOtherRole.roleName,
+                                elementType = RBACUnitElementTypeWithKeys.ROLE,
+                                asymKeyType = AsymKeysType.ENC
+                            )
+                            val roleEncPublicKey = cryptoPKE.recreateAsymPublicKey(
+                                asymPublicKeyBytes = roleEncPublicKeyBytes!!,
+                                type = AsymKeysType.ENC
+                            )
+                            cryptoPKE.encryptSymKey(
+                                encryptingKey = roleEncPublicKey,
+                                symKey = newSymKey!!
+                            )
+                        }
+                    }
 
                     /**
                      * Which one is the symmetric key to use to decrypt the resource
@@ -1754,7 +1833,7 @@ abstract class CoreRBACTuples(
                      * user wrote on the resource since (otherwise, the version numbers
                      * would be the same). In this case, pick the decryption key
                      */
-                    val decryptingSymKey = if (resource.symDecKeyVersionNumber == resource.symEncKeyVersionNumber) {
+                    val newDecryptingSymKeyOtherRole = if (resource.symDecKeyVersionNumber == resource.symEncKeyVersionNumber) {
                         permissionTupleOfOtherRole.encryptingSymKey
                     } else {
                         permissionTupleOfOtherRole.decryptingSymKey
@@ -1769,8 +1848,8 @@ abstract class CoreRBACTuples(
                         roleVersionNumber = permissionTupleOfOtherRole.roleVersionNumber,
                         symKeyVersionNumber = permissionTupleOfOtherRole.symKeyVersionNumber + 1,
                         permission = permissionTupleOfOtherRole.permission,
-                        encryptingSymKey = encryptedNewSymKey,
-                        decryptingSymKey = decryptingSymKey,
+                        encryptingSymKey = newEncryptingSymKeyOtherRole,
+                        decryptingSymKey = newDecryptingSymKeyOtherRole,
                     )
                     val signature = cryptoPKE.createSignature(
                         bytes = newPermissionTuple.getBytesForSignature(),
@@ -2004,7 +2083,7 @@ abstract class CoreRBACTuples(
      * set of users will be null)
      */
     override fun getResources(): CodeResources {
-        logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting topics" }
+        logger.info { "User ${user.name} (is admin = ${user.isAdmin}) is getting resources" }
 
         /** Lock the status of the services */
         val code = startOfMethod(
@@ -2155,7 +2234,10 @@ abstract class CoreRBACTuples(
      * or the decrypting key
      * Finally, return the key along with an outcome code
      */
-    private fun getSymmetricKey(
+    // TODO == BELOW == added for DBSEC EXP, remove
+    // TODO => make "getSymmetricKey" a private function again
+    // TODO == ABOVE == added for DBSEC EXP, remove
+    public fun getSymmetricKey(
         resource: Resource,
         encryptingKey: Boolean,
     ): CodeSymmetricKeyRBAC {

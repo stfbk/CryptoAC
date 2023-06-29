@@ -1,17 +1,22 @@
 package eu.fbk.st.cryptoac.view.sidebar
 
-import eu.fbk.st.cryptoac.view.components.prosidebar.proSidebarContent
+import csstype.number
+import emotion.react.css
 import react.*
+import react.dom.html.ReactHTML
 
 /**
  * The React component containing the
  * forms for invoking CryptoAC APIs;
  */
-class Evaluation : RComponent<Props, State>() {
-    override fun RBuilder.render() {
-        proSidebarContent {
+val Evaluation = FC<Props> {
+    ReactHTML.div {
+        css {
+            flex = number(1.0)
+            flexGrow = number(1.0)
+        }
 
-            // TODO first implement this evaluation
+        // TODO first implement this evaluation
 //            child(cryptoACScore {
 //                label = "Throughput"
 //                min = 0
@@ -53,15 +58,5 @@ class Evaluation : RComponent<Props, State>() {
 //                max = 100
 //                value = 100
 //            })
-        }
     }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun evaluation(handler: Props.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(Evaluation::class) {
-            this.attrs(handler)
-        }
-    }!!
 }

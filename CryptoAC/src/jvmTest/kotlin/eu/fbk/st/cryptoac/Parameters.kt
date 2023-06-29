@@ -172,9 +172,16 @@ object Parameters {
     )
 
     /** MQTT Parameters */
-    val dmServiceMQTTParameters = DMServiceMQTTParameters(
+    val dmServiceMQTTWithACParameters = DMServiceMQTTParameters(
         port = 1883,
         url = "10.1.0.8",
+        password = "password",
+        username = ADMIN,
+        tls = false,
+    )
+    val dmServiceMQTTNoACParameters = DMServiceMQTTParameters(
+        port = 1884,
+        url = "10.1.0.10",
         password = "password",
         username = ADMIN,
         tls = false,
@@ -193,7 +200,7 @@ object Parameters {
         coreType = CoreType.RBAC_MQTT,
         cryptoType = cryptoType,
         mmServiceParameters = mmServiceRBACRedisParameters,
-        dmServiceParameters = dmServiceMQTTParameters,
+        dmServiceParameters = dmServiceMQTTWithACParameters,
         acServiceParameters = acServiceRBACDynSecParameters,
         rmServiceParameters = null
     )
@@ -204,7 +211,7 @@ object Parameters {
         cryptoABEType = cryptoABEType,
         cryptoType = cryptoType,
         mmServiceParameters = mmServiceABACMySQLParameters,
-        dmServiceParameters = dmServiceMQTTParameters,
+        dmServiceParameters = dmServiceMQTTNoACParameters,
         acServiceParameters = null,
         abePublicParameters = abePublicParameters
     )

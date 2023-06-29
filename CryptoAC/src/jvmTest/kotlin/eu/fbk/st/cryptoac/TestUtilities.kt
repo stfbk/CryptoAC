@@ -68,7 +68,7 @@ private val logger = KotlinLogging.logger {}
 class TestUtilities {
     companion object {
 
-        val dir = File("../Documentation/Installation/")
+        val dir = File("../docs/source/gettingstarted/installation/")
 
         fun deleteLocalCryptoACUsersProfiles() {
             logger.warn { "Resetting Local CryptoAC" }
@@ -131,7 +131,6 @@ class TestUtilities {
             ) as ACServiceRBACDynSec
         ) {
             logger.warn { "Resetting AC Service RBAC DynSec" }
-            ac as ACServiceRBACDynSec
 
             val mm = MMServiceRBACRedis(mmServiceRBACRedisParameters)
             assert(mm.lock() == CODE_000_SUCCESS)
@@ -151,23 +150,25 @@ class TestUtilities {
             }
             assert(mm.unlock() == CODE_000_SUCCESS)
 
-            assert(ac.lock() == CODE_000_SUCCESS)
-            roles.forEach {
-                val currentRoleName = it.name
-                if (currentRoleName != ADMIN) {
-                    logger.warn { "Deleting role $currentRoleName from the AC" }
-                    ac.deleteRole(currentRoleName)
+            if (ac != null) {
+                assert(ac.lock() == CODE_000_SUCCESS)
+                roles.forEach {
+                    val currentRoleName = it.name
+                    if (currentRoleName != ADMIN) {
+                        logger.warn { "Deleting role $currentRoleName from the AC" }
+                        ac.deleteRole(currentRoleName)
+                    }
                 }
-            }
 
-            users.forEach {
-                val currentUsername = it.name
-                if (currentUsername != ADMIN) {
-                    logger.warn { "Deleting user $currentUsername from the AC" }
-                    ac.deleteUser(currentUsername)
+                users.forEach {
+                    val currentUsername = it.name
+                    if (currentUsername != ADMIN) {
+                        logger.warn { "Deleting user $currentUsername from the AC" }
+                        ac.deleteUser(currentUsername)
+                    }
                 }
+                assert(ac.unlock() == CODE_000_SUCCESS)
             }
-            assert(ac.unlock() == CODE_000_SUCCESS)
         }
 
         fun resetDMServiceRBACMQTT(

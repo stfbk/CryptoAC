@@ -1,0 +1,10 @@
+builtins_platform=JS
+unique_name=org.jetbrains.kotlin-wrappers\:kotlin-react
+compiler_version=1.8.20
+depends=org.jetbrains.kotlin-wrappers\:kotlin-react-core org.jetbrains.kotlin-wrappers\:kotlin-csstype org.jetbrains.kotlin-wrappers\:kotlin-browser org.jetbrains.kotlin-wrappers\:kotlin-web org.jetbrains.kotlin-wrappers\:kotlin-js org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu kotlin org.jetbrains.kotlin\:kotlinx-atomicfu-runtime
+serializedKlibFingerprint=1ynyc57gjzo0f.ijbhxy6kzo89
+serializedIrFileFingerprints=SerializedIrFileFingerprint(fileFingerprint\=litmdzxt563t.2y7mtc0wq9qt9) SerializedIrFileFingerprint(fileFingerprint\=o2o5qaq2l9pa.15wgwjs3ers20) SerializedIrFileFingerprint(fileFingerprint\=14dc1cfug0y6c.3tmphb24e4te4) SerializedIrFileFingerprint(fileFingerprint\=3poxi06dee4hr.g1juxdcx1uh4) SerializedIrFileFingerprint(fileFingerprint\=2cbbebvmxqrx6.y7303es2r7zl) SerializedIrFileFingerprint(fileFingerprint\=15so5imwgjlx9.198bymgdoeat3)
+jsOutputName=kotlin-react
+abi_version=1.7.0
+metadata_version=1.4.1
+ir_version=1.0.0

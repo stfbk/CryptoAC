@@ -1,0 +1,10 @@
+builtins_platform=JS
+unique_name=org.jetbrains.kotlin-wrappers\:kotlin-styled
+compiler_version=1.8.20
+depends=org.jetbrains.kotlin-wrappers\:kotlin-react-dom-legacy org.jetbrains.kotlin-wrappers\:kotlin-react-legacy org.jetbrains.kotlin-wrappers\:kotlin-extensions org.jetbrains.kotlin-wrappers\:kotlin-react-dom org.jetbrains.kotlin-wrappers\:kotlin-react-core org.jetbrains.kotlin-wrappers\:kotlin-csstype org.jetbrains.kotlin-wrappers\:kotlin-browser org.jetbrains.kotlin-wrappers\:kotlin-web org.jetbrains.kotlin-wrappers\:kotlin-js org.jetbrains.kotlin-wrappers\:kotlin-css org.jetbrains.kotlinx\:kotlinx-html org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu kotlin org.jetbrains.kotlin\:kotlinx-atomicfu-runtime
+serializedKlibFingerprint=20adjyszvy970.53h35pmqqy67
+serializedIrFileFingerprints=SerializedIrFileFingerprint(fileFingerprint\=3197kqk2k7ph4.1hjavzhamxhiy) SerializedIrFileFingerprint(fileFingerprint\=i0er3jvaqvg1.2u6y2ewdjcvsb) SerializedIrFileFingerprint(fileFingerprint\=3vneagyhh458i.r8qsms0p4ftt) SerializedIrFileFingerprint(fileFingerprint\=27rpbnum3gf6p.1o3v6keusslmu) SerializedIrFileFingerprint(fileFingerprint\=3r40vbspt3cuc.2r847m3r23lcl) SerializedIrFileFingerprint(fileFingerprint\=37x58pehqn45t.1jju0qrlqbdda) SerializedIrFileFingerprint(fileFingerprint\=216kq193m64sm.jptlgyj14f8b) SerializedIrFileFingerprint(fileFingerprint\=3ict7bkjmuz2k.3s69higuwyj29) SerializedIrFileFingerprint(fileFingerprint\=15xjbp7om62zf.i73tv1q22wgs) SerializedIrFileFingerprint(fileFingerprint\=1okikqf7yyx13.23ypg8qs8cz1u)
+jsOutputName=kotlin-styled
+abi_version=1.7.0
+metadata_version=1.4.1
+ir_version=1.0.0

@@ -1,137 +1,117 @@
 package eu.fbk.st.cryptoac.view.sidebar
 
-import eu.fbk.st.cryptoac.view.components.custom.cryptoACSelect
+import csstype.Padding
+import csstype.number
+import csstype.px
+import emotion.react.css
+import eu.fbk.st.cryptoac.view.components.custom.CryptoACSelect
 import eu.fbk.st.cryptoac.view.components.materialui.grid
-import eu.fbk.st.cryptoac.view.components.prosidebar.proSidebarContent
 import eu.fbk.st.cryptoac.view.content.tradeoffboard.Algorithm
-import eu.fbk.st.cryptoac.view.content.tradeoffboard.Metric
+import eu.fbk.st.cryptoac.view.content.tradeoffboard.Objective
 import eu.fbk.st.cryptoac.view.content.tradeoffboard.Scenario
-import kotlinx.css.*
 import react.*
-import styled.css
-import styled.styledDiv
-import styled.styledP
+import react.dom.html.ReactHTML.div
 
 external interface ConfigurationProps : Props {
-    var handleChangeScenario: (Scenario) -> Unit
-    var handleChangeAlgorithm: (Algorithm) -> Unit
-    var handleChangeMetric: (Metric) -> Unit
-    var currentScenario: Scenario
-    var currentAlgorithm: Algorithm
-    var currentMetric: Metric
+    // TODO doc
+    var handleChangeScenarioProp: (Scenario) -> Unit
+    var handleChangeAlgorithmProp: (Algorithm) -> Unit
+    var handleChangeObjectiveProp: (Objective) -> Unit
+    var currentScenarioProp: Scenario
+    var currentAlgorithmProp: Algorithm
+    var currentObjectiveProp: Objective
 }
 
 /**
  * The React component containing the
  * options for selecting scenario,
- * algorithm and metric;
+ * algorithm and objective;
  */
-class Configuration : RComponent<ConfigurationProps, State>() {
+val Configuration = FC<ConfigurationProps> { props ->
 
-    override fun RBuilder.render() {
+    div {
+        css {
+            flex = number(1.0)
+            flexGrow = number(1.0)
+        }
 
-        proSidebarContent {
+        /** May not be useful after all */
+//        p {
+//            css {
+//                textAlign = TextAlign.center
+//                marginBottom = 50.px
+//            }
+//            +"Configure TradeOffBoard"
+//        }
 
-            styledP {
-                css {
-                    textAlign = TextAlign.center
-                    marginBottom = 50.px
-                }
-                +"Configure TradeOffBoard"
+        div {
+            css {
+                padding = Padding(20.px, 20.px)
             }
-
-            styledDiv {
-                css {
-                    padding = "20px"
+            grid {
+                container = true
+                spacing = 6
+                grid {
+                    item = true
+                    xs = 12
+                    xl = 12
+                    CryptoACSelect {
+                        nameProp = "scenario"
+                        idProp = "scenario"
+                        labelProp = "Scenario"
+                        labelIdProp = "scenario-label"
+                        autoWidthProp = true
+                        selectStyleProp = JSON.parse(
+                            """{
+                        "width": "100%"
+                    }""".trimMargin()
+                        )
+                        optionsProp = Scenario.values().map { it.toString() }
+                        defaultValueProp = props.currentScenarioProp.toString()
+                        onChangeProp = { it -> props.handleChangeScenarioProp(Scenario.valueOf(it)) }
+                    }
                 }
                 grid {
-                    attrs {
-                        container = true
-                        spacing = 6
-                    }
-                    grid {
-                        attrs {
-                            item = true
-                            xs = 12
-                            xl = 12
-                        }
-                        child(
-                            cryptoACSelect {
-                                name = "scenario"
-                                id = "scenario"
-                                label = "Scenario"
-                                labelId = "scenario-label"
-                                autoWidth = true
-                                selectStyle = JSON.parse(
-                                    """{
-                                "width": "100%"
-                            }""".trimMargin()
-                                )
-                                options = Scenario.values().map { it.toString() }
-                                defaultValue = props.currentScenario.toString()
-                                onChange = { it -> props.handleChangeScenario(Scenario.valueOf(it)) }
-                            }
+                    item = true
+                    xs = 12
+                    xl = 12
+                    CryptoACSelect {
+                        nameProp = "algorithm"
+                        idProp = "algorithm"
+                        labelProp = "Algorithm"
+                        labelIdProp = "algorithm-label"
+                        autoWidthProp = true
+                        selectStyleProp = JSON.parse(
+                            """{
+                        "width": "100%"
+                    }""".trimMargin()
                         )
+                        optionsProp = Algorithm.values().map { it.toString() }
+                        defaultValueProp = props.currentAlgorithmProp.toString()
+                        onChangeProp = { it -> props.handleChangeAlgorithmProp(Algorithm.valueOf(it)) }
                     }
-                    grid {
-                        attrs {
-                            item = true
-                            xs = 12
-                            xl = 12
-                        }
-                        child(
-                            cryptoACSelect {
-                                name = "algorithm"
-                                id = "algorithm"
-                                label = "Algorithm"
-                                labelId = "algorithm-label"
-                                autoWidth = true
-                                selectStyle = JSON.parse(
-                                    """{
-                                "width": "100%"
-                            }""".trimMargin()
-                                )
-                                options = Algorithm.values().map { it.toString() }
-                                defaultValue = props.currentAlgorithm.toString()
-                                onChange = { it -> props.handleChangeAlgorithm(Algorithm.valueOf(it)) }
-                            }
+                }
+                grid {
+                    item = true
+                    xs = 12
+                    xl = 12
+                    CryptoACSelect {
+                        nameProp = "objective"
+                        idProp = "objective"
+                        labelProp = "Objective"
+                        labelIdProp = "objective-label"
+                        autoWidthProp = true
+                        selectStyleProp = JSON.parse(
+                            """{
+                        "width": "100%"
+                    }""".trimMargin()
                         )
-                    }
-                    grid {
-                        attrs {
-                            item = true
-                            xs = 12
-                            xl = 12
-                        }
-                        child(
-                            cryptoACSelect {
-                                name = "metric"
-                                id = "metric"
-                                label = "Metric"
-                                labelId = "metric-label"
-                                autoWidth = true
-                                selectStyle = JSON.parse(
-                                    """{
-                                "width": "100%"
-                            }""".trimMargin()
-                                )
-                                options = Metric.values().map { it.toString() }
-                                defaultValue = props.currentMetric.toString()
-                                onChange = { it -> props.handleChangeMetric(Metric.valueOf(it)) }
-                            }
-                        )
+                        optionsProp = Objective.values().map { it.toString() }
+                        defaultValueProp = props.currentObjectiveProp.toString()
+                        onChangeProp = { it -> props.handleChangeObjectiveProp(Objective.valueOf(it)) }
                     }
                 }
             }
         }
     }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun configuration(handler: ConfigurationProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(Configuration::class) {
-            this.attrs(handler)
-        }
-    }!!
 }

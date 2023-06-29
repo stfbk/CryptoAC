@@ -3,7 +3,7 @@
 
 package eu.fbk.st.cryptoac.view.components.icons
 
-import kotlinx.js.Object
+import js.core.Object
 import react.*
 
 @JsName("FaShoppingCart")

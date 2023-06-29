@@ -1,11 +1,13 @@
 
 package eu.fbk.st.cryptoac.view
 
-import kotlinx.browser.document
 import kotlinx.browser.window
 import mu.KotlinLoggingConfiguration
 import mu.KotlinLoggingLevel
-import react.dom.render
+import react.create
+import react.dom.client.createRoot
+import web.dom.document
+
 
 /**
  * The base URL to which send APIs
@@ -22,14 +24,17 @@ fun main() {
      * Add here dependencies on SASS files added in the
      * "./build/js/packages/CryptoAC/kotlin-dce-dev" directory
      */
-    kotlinext.js.require("prosidebar.scss")
+    // COMMENTED, AS Prosidebar V1.0.0-alpha.1 "Removed scss in favor of css-in-js(styled component)"
+    // SEE https://github.com/azouaoui-med/react-pro-sidebar/releases/tag/v1.0.0-alpha.1
+    //kotlinext.js.require("./prosidebar.scss")
+
+    kotlinext.js.require("./prosidebar.css")
 
     /** Render the app */
-    render(document.getElementById("root")!!) {
-        child(App::class) { }
-    }
-}
-
-inline fun <reified T : Enum<T>> enumContains(name: String): Boolean {
-    return enumValues<T>().any { it.name == name }
+    val container = document.getElementById("root")!!
+    createRoot(
+        container = container
+    ).render(
+        children = App.create()
+    )
 }

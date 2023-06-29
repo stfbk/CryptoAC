@@ -1,0 +1,4 @@
+package benchmarks.generated;
+public class CoreRBACMQTTCommunicationSetupBenchmarkTLS_jmhType extends CoreRBACMQTTCommunicationSetupBenchmarkTLS_jmhType_B3 {
+}
+

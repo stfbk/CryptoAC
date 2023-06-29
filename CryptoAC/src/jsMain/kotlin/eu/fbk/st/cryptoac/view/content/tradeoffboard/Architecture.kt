@@ -1,30 +1,11 @@
 package eu.fbk.st.cryptoac.view.content.tradeoffboard
 
-class Architecture(val arcs: HashMap<Domains, MutableList<Entities>>, val hybrid: Boolean) {
+class Architecture(val assignments: List<Assignment>) {
 
-    var arrayRequirementsScore: HashMap<String, Int> = hashMapOf()
-    var requirementsScore: Int = 0
-
-    companion object {
-        fun architectureFromAssignments(assignments: List<Assignment>): Architecture {
-            val arcs: HashMap<Domains, MutableList<Entities>> = hashMapOf()
-            var hybrid = false
-            val entitiesAlreadyPresent: HashSet<Entities> = hashSetOf()
-            assignments.forEach {
-                arcs.getOrPut(it.domain) {
-                    mutableListOf()
-                }.add(it.entity)
-                if (entitiesAlreadyPresent.contains(it.entity)) {
-                    hybrid = true
-                } else {
-                    entitiesAlreadyPresent.add(it.entity)
-                }
-            }
-            return Architecture(arcs, hybrid)
-        }
-    }
+    var arrayObjectivesScore: LinkedHashMap<String, Int> = linkedMapOf()
+    var objectivesWeightedScore: Int = 0
 
     override fun toString(): String {
-        return "Architecture(arcs=$arcs, hybrid=$hybrid)"
+        return "Architecture(${assignments.joinToString { ", " }})"
     }
 }

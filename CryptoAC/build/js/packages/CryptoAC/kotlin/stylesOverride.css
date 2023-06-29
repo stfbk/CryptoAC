@@ -1,0 +1,83 @@
+/*.MuiFormLabel-root {
+  color: #ecf0f1 !important;
+}*/
+
+.darkTextField .MuiFormLabel-root {
+  color: #2c3e50 !important;
+}
+
+.darkTextField .MuiInputBase-input {
+  color: #2c3e50 !important;
+}
+
+.greyTextField .MuiInputBase-input {
+  color: #bdc3c7 !important;
+}
+
+
+.pro-inner-list-item {
+  padding-left: 25px !important;
+}
+
+/*.pro-sidebar.collapsed .pro-menu > ul > .pro-menu-item.pro-sub-menu > .pro-inner-list-item > .popper-inner {
+  background-color: black !important;
+}*/
+
+.pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item:hover {
+  color: #34495e !important;
+}
+
+.pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item:focus {
+  color: #34495e !important;
+}
+
+.MuiFilledInput-root {
+  background-color: rgba(200, 200, 200, 0.09) !important
+}
+
+.MuiFormControl-root {
+  width: 100% !important;
+}
+
+.MuiContainer-maxWidthLg {
+  height: 100% !important;
+  max-width: 100% !important;
+}
+
+.MuiGrid-container {
+  height: 100% !important;
+}
+
+.MuiGrid-spacing-xs-1 {
+  width: 100% !important;
+  margin: 0px !important;
+}
+
+/*.MuiInputBase-root {
+  color: white !important;
+}*/
+
+.MuiSelect-select.MuiSelect-select {
+  color: black !important;
+}
+
+div.MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded {
+  height: 100%;
+  position: relative;
+}
+
+div.MuiTablePagination-root {
+  bottom: 0px;
+}
+
+.MuiTableRow-root:nth-of-type(even) {
+  background-color: #f6fafb;
+}
+
+tr:nth-child(even) {
+  background-color: #f6fafb;
+}
+
+.MuiTableContainer-root {
+  height: 100% !important;
+}

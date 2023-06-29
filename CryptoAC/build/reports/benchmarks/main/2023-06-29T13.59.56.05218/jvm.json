@@ -1,0 +1,157 @@
+[
+    {
+        "jmhVersion" : "1.21",
+        "benchmark" : "benchmarks.CoreRBACMQTTCommunicationSetupBenchmarkBaseline.connectToTheBroker",
+        "mode" : "ss",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=US",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "11.0.19",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "11.0.19+7-post-Ubuntu-0ubuntu120.04.1",
+        "warmupIterations" : 1,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 308.580942,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 308.580942,
+                "50.0" : 308.580942,
+                "90.0" : 308.580942,
+                "95.0" : 308.580942,
+                "99.0" : 308.580942,
+                "99.9" : 308.580942,
+                "99.99" : 308.580942,
+                "99.999" : 308.580942,
+                "99.9999" : 308.580942,
+                "100.0" : 308.580942
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    308.580942
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.21",
+        "benchmark" : "benchmarks.CoreRBACMQTTCommunicationSetupBenchmarkCryptoAC.connectToTheBroker",
+        "mode" : "ss",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=US",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "11.0.19",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "11.0.19+7-post-Ubuntu-0ubuntu120.04.1",
+        "warmupIterations" : 1,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 313.145518,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 313.145518,
+                "50.0" : 313.145518,
+                "90.0" : 313.145518,
+                "95.0" : 313.145518,
+                "99.0" : 313.145518,
+                "99.9" : 313.145518,
+                "99.99" : 313.145518,
+                "99.999" : 313.145518,
+                "99.9999" : 313.145518,
+                "100.0" : 313.145518
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    313.145518
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.21",
+        "benchmark" : "benchmarks.CoreRBACMQTTCommunicationSetupBenchmarkTLS.connectToTheBroker",
+        "mode" : "ss",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=US",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "11.0.19",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "11.0.19+7-post-Ubuntu-0ubuntu120.04.1",
+        "warmupIterations" : 1,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 405.16359,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 405.16359,
+                "50.0" : 405.16359,
+                "90.0" : 405.16359,
+                "95.0" : 405.16359,
+                "99.0" : 405.16359,
+                "99.9" : 405.16359,
+                "99.99" : 405.16359,
+                "99.999" : 405.16359,
+                "99.9999" : 405.16359,
+                "100.0" : 405.16359
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    405.16359
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

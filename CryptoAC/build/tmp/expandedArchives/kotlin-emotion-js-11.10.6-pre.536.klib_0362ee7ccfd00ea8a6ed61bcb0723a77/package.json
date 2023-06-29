@@ -1,0 +1,15 @@
+{
+  "name": "kotlin-emotion",
+  "version": "11.10.6-pre.536",
+  "main": "kotlin-emotion.js",
+  "types": "kotlin-emotion.d.ts",
+  "devDependencies": {},
+  "dependencies": {
+    "@emotion/css": "^11.10.6",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

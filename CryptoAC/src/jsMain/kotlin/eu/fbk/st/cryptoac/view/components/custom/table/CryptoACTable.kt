@@ -1,184 +1,210 @@
 package eu.fbk.st.cryptoac.view.components.custom.table
 
+import csstype.*
+import emotion.react.css
 import eu.fbk.st.cryptoac.view.components.icons.*
 import eu.fbk.st.cryptoac.view.components.materialui.*
-import kotlinx.browser.document
-import kotlinx.css.*
-import kotlinx.css.properties.LineHeight
-import org.w3c.dom.events.Event
+import web.dom.document
 import react.*
-import react.dom.p
-import styled.css
-import styled.styledDiv
+import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.p
+import org.w3c.dom.events.Event
 
 external interface CryptoACTableProps : Props {
     // TODO e doc
-    var elements: List<Array<String>>
-    var tableColumns: Array<CryptoACTableColumn>
-    var title: String
-    var onRefresh: (Event) -> Unit
-    var onClose: (Event) -> Unit
-    var onElementClick: (Array<String>) -> Unit
+    var elementsProp: List<Array<String>>
+    var tableColumnsProp: Array<CryptoACTableColumn>
+    var titleProp: String
+    var onRefreshProp: (Event) -> Unit
+    var onCloseProp: (Event) -> Unit
+    var onElementClickProp: (Array<String>) -> Unit
 }
 
-external interface CryptoACTableState : State {
+data class CryptoACTableState(
     // TODO e doc
-    var rowsPerPage: Int
-    var page: Int
+    var rowsPerPageState: Int = 10,
+    var pageState: Int = 0
+) : State
+
+fun fromIndex(rowsPerPageState: Int, pageState: Int, elementsPropSize: Int): Int {
+    val fromIndex = rowsPerPageState * (pageState)
+    return if (fromIndex >= elementsPropSize) {
+        elementsPropSize
+    } else {
+        if (fromIndex < 0) {
+            0
+        } else {
+            fromIndex
+        }
+    }
+}
+
+fun toIndex(rowsPerPageState: Int, pageState: Int, elementsPropSize: Int): Int {
+    val toIndex = fromIndex(rowsPerPageState, pageState, elementsPropSize) + rowsPerPageState
+    return if (toIndex >= elementsPropSize) {
+        elementsPropSize
+    } else {
+        toIndex
+    }
 }
 
 /** A table component */
-class CryptoACTable : RComponent<CryptoACTableProps, CryptoACTableState>() {
-    override fun RBuilder.render() {
+val CryptoACTable = FC<CryptoACTableProps> { props ->
 
-        paper {
-            toolbar {
-                typography {
-                    attrs {
-                        variant = "h6"
-                        id = "tableTitle"
-                        component = "div"
-                    }
-                    +props.title
-                }
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACTableState] for details
+     */
+    var state by useState(CryptoACTableState())
 
-                styledDiv {
-                    css {
-                        marginLeft = LinearDimension.auto
-                        marginRight = 0.px
-                    }
-                    if (props.onClose != undefined) {
-                        styledDiv {
-                            css {
-                                marginLeft = 5.px
-                                float = Float.left
-                            }
-                            tooltip {
-                                attrs.title = "Close"
-                                iconButton {
-                                    attrs {
-                                        size = "small"
-                                        label = "close"
-                                        onClick = { event -> props.onClose(event) }
-                                    }
-                                    child(createElement<Props> { faTimes { } }!!)
-                                }
-                            }
-                        }
-                    }
-                    styledDiv {
-                        css {
-                            marginLeft = 5.px
-                            float = Float.left
-                        }
-                        tooltip {
-                            attrs.title = "Download as CSV"
-                            iconButton {
-                                attrs {
-                                    size = "small"
-                                    label = "download data"
-                                    onClick = {
-                                        val csv = StringBuilder()
-                                        var prefix = ""
-                                        props.tableColumns.forEach {
-                                            csv.append(prefix)
-                                            prefix = ","
-                                            csv.append(it.field)
-                                        }
-                                        /** "%0A" is "\n" */
-                                        csv.append("%0A")
-                                        props.elements.forEach { array ->
-                                            prefix = ""
-                                            array.forEach {
-                                                csv.append(prefix)
-                                                prefix = ","
-                                                csv.append(it)
-                                            }
-                                            /** "%0A" is "\n" */
-                                            csv.append("%0A")
-                                        }
-                                        val element = document.createElement("a")
-                                        // TODO this may not work with > 2KB of data (?)
-                                        element.setAttribute("href", "data:text/csv;charset=utf-8,$csv")
-                                        element.setAttribute("download", "${props.title}.csv")
-                                        element.setAttribute("display", "none")
-                                        document.body!!.appendChild(element)
-                                        element.asDynamic().click()
-                                        document.body!!.removeChild(element)
-                                    }
-                                    child(createElement<Props> { faDownload { } }!!)
-                                }
-                            }
-                        }
-                    }
-                    styledDiv {
-                        css {
-                            marginLeft = 5.px
-                            float = Float.left
-                        }
-                        tooltip {
-                            attrs.title = "Refresh"
-                            iconButton {
-                                attrs {
-                                    size = "small"
-                                    label = "refresh"
-                                    onClick = { event -> props.onRefresh(event) }
-                                }
-                                child(createElement<Props> { faUndoAlt { } }!!)
-                            }
-                        }
-                    }
-                }
+    paper {
+        toolbar {
+            typography {
+                variant = "h6"
+                id = "tableTitle"
+                component = "div"
+                +props.titleProp
             }
-            styledDiv {
+
+            div {
                 css {
-                    height = 330.px
-                    paddingLeft = 5.px
-                    paddingRight = 5.px
+                    marginLeft = Auto.auto
+                    marginRight = 0.px
                 }
-                tableContainer {
-                    if (props.elements.isEmpty()) {
-                        styledDiv {
-                            css {
-                                background = "url(blackhole.svg) no-repeat center center"
-                                backgroundSize = "150px"
-                                lineHeight = LineHeight("75px")
-                                textAlign = TextAlign.center
-                                height = 90.pct
-                            }
-                            p {
-                                +"No items in this table yet"
+                if (props.onCloseProp != undefined) {
+                    div {
+                        css {
+                            marginLeft = 5.px
+                            float = Float.left
+                        }
+                        tooltip {
+                            title = "Close"
+                            iconButton {
+                                size = "small"
+                                label = "close"
+                                onClick = { event: Event -> props.onCloseProp(event) }
+                                faTimes { }
                             }
                         }
-                    } else {
-                        table {
-                            tableHead {
+                    }
+                }
+                div {
+                    css {
+                        marginLeft = 5.px
+                        float = Float.left
+                    }
+                    tooltip {
+                        title = "Download as CSV"
+                        iconButton {
+                            size = "small"
+                            label = "download data"
+                            onClick = {
+                                val csv = StringBuilder()
+                                var prefix = ""
+                                props.tableColumnsProp.forEach {
+                                    csv.append(prefix)
+                                    prefix = ","
+                                    csv.append(it.field)
+                                }
+                                /** "%0A" is "\n" */
+                                csv.append("%0A")
+                                props.elementsProp.forEach { array ->
+                                    prefix = ""
+                                    array.forEach {
+                                        csv.append(prefix)
+                                        prefix = ","
+                                        csv.append(it)
+                                    }
+                                    /** "%0A" is "\n" */
+                                    csv.append("%0A")
+                                }
+                                val element = document.createElement("a")
+                                // TODO this may not work with > 2KB of data (?)
+                                element.setAttribute("href", "data:text/csv;charset=utf-8,$csv")
+                                element.setAttribute("download", "${props.titleProp}.csv")
+                                element.setAttribute("display", "none")
+                                document.body.appendChild(element)
+                                element.asDynamic().click()
+                                document.body.removeChild(element)
+                            }
+                            faDownload { }
+                        }
+                    }
+                }
+                div {
+                    css {
+                        marginLeft = 5.px
+                        float = csstype.Float.left
+                    }
+                    tooltip {
+                        title = "Refresh"
+                        iconButton {
+                                size = "small"
+                                label = "refresh"
+                                onClick = { event: Event -> props.onRefreshProp(event) }
+                            faUndoAlt { }
+                        }
+                    }
+                }
+            }
+        }
+        div {
+            css {
+                height = 330.px
+                paddingLeft = 5.px
+                paddingRight = 5.px
+            }
+            tableContainer {
+                if (props.elementsProp.isEmpty()) {
+                    div {
+                        css {
+                            backgroundImage = url("blackhole.svg")
+                            backgroundRepeat = BackgroundRepeat.noRepeat
+                            backgroundPositionX = BackgroundPositionX.center
+                            backgroundPositionY = BackgroundPositionY.center
+                            backgroundSize = 150.px
+                            lineHeight = 75.px
+                            textAlign = TextAlign.center
+                            height = 90.pct
+                        }
+                        p {
+                            +"No items in this table yet"
+                        }
+                    }
+                } else {
+                    table {
+                        tableHead {
+                            tableRow {
+                                props.tableColumnsProp.forEach {
+                                    tableCell {
+                                        key = it.field
+                                        align = "center"
+                                        +it.headerName
+                                    }
+                                }
+                            }
+                        }
+                        tableBody {
+                            props.elementsProp.subList(fromIndex(
+                                rowsPerPageState = state.rowsPerPageState,
+                                pageState = state.pageState,
+                                elementsPropSize = props.elementsProp.size,
+                            ), toIndex(
+                                rowsPerPageState = state.rowsPerPageState,
+                                pageState = state.pageState,
+                                elementsPropSize = props.elementsProp.size,
+                            )).forEach {
                                 tableRow {
-                                    props.tableColumns.forEach {
+                                    key = it.joinToString("")
+                                    hover = true
+                                    selected = false
+                                    onClick = { _ : Event -> props.onElementClickProp(it) }
+                                    it.forEach {
                                         tableCell {
-                                            key = it.field
-                                            attrs {
-                                                align = "center"
-                                            }
-                                            +it.headerName
-                                        }
-                                    }
-                                }
-                            }
-                            tableBody {
-                                props.elements.subList(fromIndex(), toIndex()).forEach {
-                                    tableRow {
-                                        key = it.joinToString("")
-                                        attrs {
-                                            hover = true
-                                            selected = false
-                                            onClick = { _ -> props.onElementClick(it) }
-                                        }
-                                        it.forEach {
-                                            tableCell {
-                                                attrs.align = "center"
-                                                +it
-                                            }
+                                            align = "center"
+                                            +it
                                         }
                                     }
                                 }
@@ -187,65 +213,23 @@ class CryptoACTable : RComponent<CryptoACTableProps, CryptoACTableState>() {
                     }
                 }
             }
-            tablePagination {
-                attrs {
-                    rowsPerPageOptions = arrayOf(5, 10, 25, 50)
-                    component = "div"
-                    count = props.elements.size
-                    rowsPerPage = state.rowsPerPage
-                    page = state.page
-                    labelRowsPerPage = "Rows:"
-                    onChangePage = { _: Event, newPage: Int ->
-                        setState {
-                            page = newPage
-                        }
-                    }
-                    onChangeRowsPerPage = { event: Event ->
-                        setState {
-                            rowsPerPage = event.target.asDynamic().value as Int
-                            page = 0
-                        }
-                    }
-                }
+        }
+        tablePagination {
+            rowsPerPageOptions = arrayOf(5, 10, 25, 50)
+            component = "div"
+            count = props.elementsProp.size
+            rowsPerPage = state.rowsPerPageState
+            page = state.pageState
+            labelRowsPerPage = "Rows:"
+            onPageChange = { _: Event, newPage: Int ->
+                state = state.copy(pageState = newPage)
+            }
+            onRowsPerPageChange = { event: Event ->
+                state = state.copy(
+                    pageState = 0,
+                    rowsPerPageState = event.target.asDynamic().value as Int
+                )
             }
         }
     }
-
-    private fun toIndex(): Int {
-        val toIndex = fromIndex() + state.rowsPerPage
-        val maxIndex = props.elements.size
-        return if (toIndex >= maxIndex) {
-            maxIndex
-        } else {
-            toIndex
-        }
-    }
-
-    private fun fromIndex(): Int {
-        val fromIndex = state.rowsPerPage * (state.page)
-        val maxIndex = props.elements.size
-        return if (fromIndex >= maxIndex) {
-            maxIndex
-        } else {
-            if (fromIndex < 0) {
-                0
-            } else {
-                fromIndex
-            }
-        }
-    }
-
-    override fun CryptoACTableState.init() {
-        page = 0
-        rowsPerPage = 10
-    }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACTable(handler: CryptoACTableProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACTable::class) {
-            this.attrs(handler)
-        }
-    }!!
 }

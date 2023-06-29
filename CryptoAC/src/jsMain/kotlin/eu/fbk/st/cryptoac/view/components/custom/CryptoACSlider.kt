@@ -1,113 +1,139 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
+import csstype.Padding
+import csstype.px
+import emotion.react.css
 import eu.fbk.st.cryptoac.view.components.materialui.slider
-import kotlinx.css.padding
-import org.w3c.dom.get
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemProps
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemState
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.p
 import styled.css
-import styled.styledDiv
 
 external interface CryptoACSliderProps : Props {
     /** Label to add above the slider */
-    var label: String
+    var labelProps: String
 
     /** minimum value of the slider */
-    var min: Int
+    var minProps: Int
 
     /** maximum value of the slider */
-    var max: Int
+    var maxProps: Int
 
     /** "primary" or "secondary" color */
-    var color: String
+    var colorProps: String
 
     /** the default value of the slider (if single value) */
-    var defaultValue: Int
+    var defaultValueProps: Int
 
     /** the default values of the slider (if range values) */
-    var defaultValues: Array<Int>
+    var defaultValuesProps: Array<Int>
 
     /** Whether the slider is a range selection */
-    var range: Boolean
+    var rangeProps: Boolean
 
     /** Invoked when the slider changes value */
-    var onChange: (Any) -> Unit
+    var onChangeProps: (Any) -> Unit
 }
 
-external interface CryptoACSliderState : State {
+data class CryptoACSliderState(
     /** The value of the slider (if single value) */
-    var value: Int
+    var valueState: Int = 0,
 
     /** The value of the slider (if range values) */
-    var values: Array<Int>
+    var valuesState: Array<Int> = arrayOf(),
 
     /** Whether the component was just mounted */
-    var justMounted: Boolean
+    var justMountedState: Boolean = true
+) : State {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CryptoACSliderState) return false
+
+        if (valueState != other.valueState) return false
+        if (!valuesState.contentEquals(other.valuesState)) return false
+        return justMountedState == other.justMountedState
+    }
+
+    override fun hashCode(): Int {
+        var result = valueState
+        result = 31 * result + valuesState.contentHashCode()
+        result = 31 * result + justMountedState.hashCode()
+        return result
+    }
+}
+
+// TODO doc
+fun getStateFromProps(
+    props: CryptoACSliderProps,
+    oldState: CryptoACSliderState = CryptoACSliderState(),
+): CryptoACSliderState {
+    var copy = false
+    if (oldState.justMountedState) {
+        if (props.rangeProps) {
+            oldState.valuesState = props.defaultValuesProps
+        }
+        if (!props.rangeProps) {
+            oldState.valueState = props.defaultValueProps
+        }
+        copy = true
+    }
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A custom component for a radio group */
-class CryptoACSlider : RComponent<CryptoACSliderProps, CryptoACSliderState>() {
-    override fun RBuilder.render() {
+val CryptoACSlider = FC<CryptoACSliderProps> { props ->
 
-        div {
-            if (props.label != undefined) {
-                p {
-                    +props.label
-                }
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACSliderState] for details
+     */
+    var state by useState(getStateFromProps(props))
+
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
+    }
+
+    div {
+        if (props.labelProps != undefined) {
+            p {
+                +props.labelProps
             }
-            styledDiv {
-                css {
-                    padding = "20px"
-                }
+        }
+        div {
+            css {
+                padding = Padding(20.px, 20.px)
+            }
 
-                slider {
-                    attrs {
-                        min = props.min
-                        max = props.max
-                        value = if (props.range) { state.values } else { state.value }
-                        color = props.color
-                        valueLabelDisplay = "auto"
-                        onChange = { _, newValue ->
-                            if (props.range) {
-                                setState { values = newValue as Array<Int> }
-                            } else {
-                                setState { value = newValue as Int }
-                            }
+            slider {
+                min = props.minProps
+                max = props.maxProps
+                value = if (props.rangeProps) { state.valuesState } else { state.valueState }
+                color = props.colorProps
+                valueLabelDisplay = "auto"
+                onChange = { _: Event, newValue ->
+                    state = if (props.rangeProps) {
+                        state.copy(
+                            valuesState = newValue as Array<Int>
+                        )
+                    } else {
+                        state.copy(
+                            valueState = newValue as Int
+                        )
+                    }
 
-                            if (props.onChange != undefined) {
-                                props.onChange(newValue)
-                            }
-                        }
+                    if (props.onChangeProps != undefined) {
+                        props.onChangeProps(newValue)
                     }
                 }
             }
         }
     }
-
-    override fun CryptoACSliderState.init() {
-        justMounted = true
-
-        /** Execute before the render in both the Mounting and Updating lifecycle phases */
-        CryptoACSlider::class.js.asDynamic().getDerivedStateFromProps = {
-            props: CryptoACSliderProps, state: CryptoACSliderState ->
-            if (state.justMounted) {
-                if (props.range) {
-                    state.values = props.defaultValues
-                } else {
-                    state.value = props.defaultValue
-                }
-            }
-            state.justMounted = false
-        }
-    }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACSlider(handler: CryptoACSliderProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACSlider::class) {
-            attrs(handler)
-        }
-    }!!
 }

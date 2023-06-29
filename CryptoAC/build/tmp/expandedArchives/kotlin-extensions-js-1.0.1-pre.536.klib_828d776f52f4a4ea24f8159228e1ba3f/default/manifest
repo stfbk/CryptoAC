@@ -1,0 +1,10 @@
+builtins_platform=JS
+unique_name=org.jetbrains.kotlin-wrappers\:kotlin-extensions
+compiler_version=1.8.20
+depends=org.jetbrains.kotlin-wrappers\:kotlin-js kotlin
+serializedKlibFingerprint=2adz8xqf64xy8.pmlz37lajwm7
+serializedIrFileFingerprints=SerializedIrFileFingerprint(fileFingerprint\=o0gufo17dsz0.2gtgfoh2kp3ra) SerializedIrFileFingerprint(fileFingerprint\=mgxzdwokiwld.1nzzqyuidvo4b) SerializedIrFileFingerprint(fileFingerprint\=15tev8gycowoh.3fxzy87bp3yku) SerializedIrFileFingerprint(fileFingerprint\=2l0rvxflc1669.36l9c3j84q5z1)
+jsOutputName=kotlin-extensions
+abi_version=1.7.0
+metadata_version=1.4.1
+ir_version=1.0.0

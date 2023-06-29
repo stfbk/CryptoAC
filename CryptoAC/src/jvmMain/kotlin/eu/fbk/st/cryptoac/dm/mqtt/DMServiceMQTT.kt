@@ -219,7 +219,7 @@ class DMServiceMQTT(
 
         /** Publish the retained message */
         val retainedMessage = MqttMessage(myJson.encodeToString(newResource).toByteArray())
-        retainedMessage.qos = 1
+        retainedMessage.qos = 2
         retainedMessage.isRetained = true
         val code = client.myPublish(
             topic = newResource.name,
@@ -234,6 +234,7 @@ class DMServiceMQTT(
         val optionalMessage = content.readAllBytes()
         return if (optionalMessage.isNotEmpty()) {
             val message = MqttMessage(optionalMessage)
+            // TODO allow to select the QoS
             message.qos = 1
             message.isRetained = false
             // TODO if this second publish fails, how to rollback?
@@ -266,10 +267,9 @@ class DMServiceMQTT(
         }
 
         logger.info { "Subscribing to the topic $resourceName" }
-        // TODO allow to select the QoS
         return CodeInputStream(code = client.mySubscribe(
             topicFilter = resourceName,
-            qos = 1,
+            qos = 2,
             isTheDM = true,
         ))
     }
@@ -327,8 +327,7 @@ class DMServiceMQTT(
         logger.info { "Deleting topic $resourceName from the MQTT broker" }
 
         val message = MqttMessage(byteArrayOf())
-        // TODO allow to select the QoS
-        message.qos = 1
+        message.qos = 2
         message.isRetained = true
         return client.myPublish(
             topic = resourceName,

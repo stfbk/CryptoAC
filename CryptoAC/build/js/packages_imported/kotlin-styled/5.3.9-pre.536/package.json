@@ -1,0 +1,15 @@
+{
+  "name": "kotlin-styled",
+  "version": "5.3.9-pre.536",
+  "main": "kotlin-styled.js",
+  "types": "kotlin-styled.d.ts",
+  "devDependencies": {},
+  "dependencies": {
+    "css-in-js-utils": "^3.1.0",
+    "inline-style-prefixer": "^7.0.0",
+    "styled-components": "^5.3.9"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

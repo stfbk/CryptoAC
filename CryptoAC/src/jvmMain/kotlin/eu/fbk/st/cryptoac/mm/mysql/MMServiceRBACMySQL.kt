@@ -376,6 +376,7 @@ class MMServiceRBACMySQL(
         newUser: User
     ): CodeServiceParameters {
         val username = newUser.name
+        val userToken = newUser.token
 
         /** Guard clauses */
         if (username.isBlank()) {
@@ -399,11 +400,14 @@ class MMServiceRBACMySQL(
         Random().nextBytes(passwordBytes)
         val newPassword = passwordBytes.encodeBase64()
 
-        /** Add the user in the metadata. Keys and Token will be set by the user */
+        /**
+         * Add the user in the metadata, keys and
+         * token will be set by the user
+         */
         logger.debug { "Adding the user in the metadata" }
         val adminUserValues = arrayListOf<Any?>(
             username,
-            username,
+            userToken,
             "mock",
             "mock",
             UnitElementStatus.INCOMPLETE
@@ -1252,17 +1256,15 @@ class MMServiceRBACMySQL(
 
     /**
      * Retrieve the permission tuples matching the [roleName] and/or
-     * the [resourceName] and not matching the [roleNameToExclude], if
-     * given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit] and with the (possibly) relevant
-     * information of whether the user invoking this function [isAdmin].
-     * If no permission tuples are found, return an empty set. This
-     * method should support invocations by non-admin users
+     * the [resourceName], starting from the [offset] limiting the number
+     * of tuples to return to the given [limit] and with the (possibly)
+     * relevant information of whether the user invoking this function
+     * [isAdmin]. If no permission tuples are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     override fun getPermissionTuples(
         roleName: String?,
         resourceName: String?,
-        roleNameToExclude: String?,
         isAdmin: Boolean,
         offset: Int,
         limit: Int,
@@ -1282,18 +1284,11 @@ class MMServiceRBACMySQL(
             logger.info { "Not filtering for role or resource name" }
         }
 
-        val whereNotParameters = LinkedHashMap<String, Any?>()
-        if (!roleNameToExclude.isNullOrBlank()) {
-            logger.info { "Filtering by not matching role name $roleNameToExclude" }
-            whereNotParameters[roleNameColumn] = roleNameToExclude
-        }
-
         val permissionTuples = HashSet<PermissionTuple>()
 
         createSelectStatement(
             table = if (isAdmin) permissionTuplesTable else permissionTuplesView,
             whereParameters = whereParameters,
-            whereNotParameters = whereNotParameters,
             limit = limit,
             offset = offset,
             connection = connection!!,

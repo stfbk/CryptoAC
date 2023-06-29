@@ -28,7 +28,7 @@ internal class DMServiceRBACCryptoACTest : DMServiceRBACTest() {
         "./cleanAllAndBuild.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
         processDocker = "./startCryptoAC_ALL.sh \"cryptoac_dm\"".runCommand(
             workingDir = dir,
-            endStrings = hashSetOf("Started ServerConnector")
+            endStrings = hashSetOf("Routes were registered, CryptoAC is up")
         )
     }
 

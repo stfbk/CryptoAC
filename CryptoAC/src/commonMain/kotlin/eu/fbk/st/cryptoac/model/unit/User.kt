@@ -38,9 +38,7 @@ class User(
         if (asymEncKeys != other.asymEncKeys) return false
         if (asymSigKeys != other.asymSigKeys) return false
         if (isAdmin != other.isAdmin) return false
-        if (token != other.token) return false
-
-        return true
+        return token == other.token
     }
 
     override fun hashCode(): Int {

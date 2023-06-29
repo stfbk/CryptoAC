@@ -1,113 +1,121 @@
 package eu.fbk.st.cryptoac.view.content.tradeoffboard
 
+import csstype.Color
+import csstype.Display
+import csstype.px
+import emotion.react.css
+import eu.fbk.st.cryptoac.view.components.custom.CryptoACRadioGroup
 import eu.fbk.st.cryptoac.view.components.custom.CryptoACRadioOption
-import eu.fbk.st.cryptoac.view.components.custom.cryptoACRadioGroup
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.css.*
 import org.w3c.dom.HTMLInputElement
 import react.*
-import react.dom.td
-import styled.css
-import styled.styledDiv
-import styled.styledTd
+import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.td
 
 external interface TrustAssumptionsLikelihoodProps : Props {
     /** The default value of the likelihood */
-    var defaultValue: Likelihood
+    var defaultLikelihoodProp: Likelihood
 
     /** The domain related to the attacker */
-    var domain: DomainsWithChannels
+    var domainProp: PointsOfAttack
 
     /** The attacker */
-    var attacker: Attackers
+    var attackerProp: Attackers
 
     /** Change likelihood for the attacker in the given domain */
-    var handleChangeLikelihood: (DomainsWithChannels, Attackers, Likelihood) -> Unit
+    var handleChangeLikelihoodProp: (PointsOfAttack, Attackers, Likelihood) -> Unit
 
     /** Is this the last element */
-    var last: Boolean
+    var lastProp: Boolean
 }
 
-external interface TrustAssumptionsLikelihoodState : State {
+data class TrustAssumptionsLikelihoodState(
     /** The current likelihood for the attacker */
-    var currentLikelihood: Likelihood
+    var currentLikelihoodState: Likelihood = Likelihood.High,
+
+    /** Whether the component was just mounted */
+    var justMountedState: Boolean = true,
+
+    /** Whether to render the value on change by user */
+    var changedByUserState: Boolean = false,
+) : State
+
+// TODO doc
+fun getStateFromProps(
+    props: TrustAssumptionsLikelihoodProps,
+    oldState: TrustAssumptionsLikelihoodState = TrustAssumptionsLikelihoodState(props.defaultLikelihoodProp),
+): TrustAssumptionsLikelihoodState {
+    var copy = false
+    if (oldState.justMountedState || !oldState.changedByUserState) {
+        oldState.currentLikelihoodState = props.defaultLikelihoodProp
+        copy = true
+    }
+    oldState.changedByUserState = false
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A trust assumptions likelihood component with a radio group */
-class TrustAssumptionsLikelihood : RComponent<TrustAssumptionsLikelihoodProps, TrustAssumptionsLikelihoodState>() {
-    override fun RBuilder.render() {
-        td {
-            +props.attacker.toString()
+val TrustAssumptionsLikelihood = FC<TrustAssumptionsLikelihoodProps> { props ->
+
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [TrustAssumptionsLikelihoodState] for details
+     */
+    var state by useState(getStateFromProps(props))
+
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
+    }
+
+    td {
+        +props.attackerProp.toString()
+    }
+    td {
+        css {
+            color = Color(
+                when (state.currentLikelihoodState) {
+                    Likelihood.High -> "#c0392b"
+                    Likelihood.Medium -> "#f39c12"
+                    Likelihood.Low -> "#27ae60"
+                    Likelihood.None -> "#bdc3c7"
+                }
+            )
+            width = 100.px
         }
-        styledTd {
-            css {
-                color = Color(
-                    when (state.currentLikelihood) {
-                        Likelihood.High -> "#c0392b"
-                        Likelihood.Medium -> "#f39c12"
-                        Likelihood.Low -> "#27ae60"
-                        Likelihood.None -> "#bdc3c7"
-                    }
-                )
-                width = 100.px
+        +state.currentLikelihoodState.toString()
+    }
+    td {
+        css {
+            if (props.lastProp) {
+                borderBottomRightRadius = 15.px
             }
-            +state.currentLikelihood.toString()
         }
-        styledTd {
+        div {
+
+            key = props.domainProp.toString()
+
             css {
-                if (props.last) {
-                    borderBottomRightRadius = 15.px
+                display = Display.block
+            }
+            CryptoACRadioGroup {
+                rowProp = true
+                defaultValueProp = props.defaultLikelihoodProp.toString()
+                optionsProp = Likelihood.values().map {
+                    CryptoACRadioOption("", it.toString(), "primary")
+                }
+                onChangeProp = { event ->
+                    state.changedByUserState = true
+                    val newLikelihood = Likelihood.valueOf((event.target as HTMLInputElement).value)
+                    state = state.copy(
+                        currentLikelihoodState = newLikelihood
+                    )
+                    props.handleChangeLikelihoodProp(props.domainProp, props.attackerProp, newLikelihood)
+                    true
                 }
             }
-            styledDiv {
-
-                key = props.domain.toString()
-
-                css {
-                    display = Display.block
-                }
-                child(
-                    cryptoACRadioGroup {
-                        row = true
-                        defaultValue = props.defaultValue.toString()
-                        options = Likelihood.values().map {
-                            CryptoACRadioOption("", it.toString(), "primary")
-                        }
-                        onChange = { event ->
-                            val newLikelihood = Likelihood.valueOf((event.target as HTMLInputElement).value)
-                            setState {
-                                currentLikelihood = newLikelihood
-                            }
-                            props.handleChangeLikelihood(props.domain, props.attacker, newLikelihood)
-                            true
-                        }
-                    }
-                )
-            }
         }
     }
-
-    override fun TrustAssumptionsLikelihoodState.init() {
-        currentLikelihood = Likelihood.High
-        MainScope().launch {
-            setState {
-                currentLikelihood = props.defaultValue
-            }
-        }
-    }
-
-    /** Re-render only if the default value is different from the previous default value */
-    override fun shouldComponentUpdate(nextProps: TrustAssumptionsLikelihoodProps, nextState: TrustAssumptionsLikelihoodState): Boolean {
-        return (nextProps.defaultValue != props.defaultValue || nextState.currentLikelihood != state.currentLikelihood)
-    }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun trustAssumptionsLikelihood(handler: TrustAssumptionsLikelihoodProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(TrustAssumptionsLikelihood::class) {
-            this.attrs(handler)
-        }
-    }!!
 }

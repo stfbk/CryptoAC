@@ -1,74 +1,76 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
 import eu.fbk.st.cryptoac.view.components.materialui.switch
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemProps
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemState
 import react.*
 
 external interface CryptoACSwitchProps : Props {
     /** The size of the switch */
-    var size: String
+    var sizeProp: String
 
     /** Default value for the input */
-    var defaultValue: Boolean
+    var defaultValueProp: Boolean
 
     /** "primary" or "secondary" color */
-    var color: String
+    var colorProp: String
 
     /** Invoked when the field changes value */
-    var onChange: (Boolean) -> Unit
+    var onChangeProp: (Boolean) -> Unit
 }
 
-external interface CryptoACSwitchState : State {
+data class CryptoACSwitchState(
     /** The value of the switch */
-    var value: Boolean
+    var valueState: Boolean = false,
 
     /** Whether to render the value on change by user */
-    var changedByUser: Boolean
+    var changedByUserState: Boolean = false,
 
     /** Whether the component was just mounted */
-    var justMounted: Boolean
+    var justMountedState: Boolean = true
+) : State
+
+// TODO doc
+fun getStateFromProps(
+    props: CryptoACSwitchProps,
+    oldState: CryptoACSwitchState = CryptoACSwitchState(),
+): CryptoACSwitchState {
+    var copy = false
+    if (oldState.justMountedState || !oldState.changedByUserState) {
+        oldState.valueState = props.defaultValueProp
+        copy = true
+    }
+    oldState.changedByUserState = false
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A custom component for a radio group */
-class CryptoACSwitch : RComponent<CryptoACSwitchProps, CryptoACSwitchState>() {
-    override fun RBuilder.render() {
+val CryptoACSwitch = FC<CryptoACSwitchProps> { props ->
 
-        switch {
-            attrs {
-                checked = state.value
-                color = props.color
-                size = props.size
-                onChange = {
-                    props.onChange(!state.value)
-                    setState {
-                        changedByUser = true
-                        value = !value
-                    }
-                }
-            }
-        }
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACSwitchState] for details
+     */
+    var state by useState(getStateFromProps(props))
+
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
     }
 
-    override fun CryptoACSwitchState.init() {
-        justMounted = true
-        changedByUser = false
-
-        /** Execute before the render in both the Mounting and Updating lifecycle phases */
-        CryptoACSwitch::class.js.asDynamic().getDerivedStateFromProps = {
-            props: CryptoACSwitchProps, state: CryptoACSwitchState ->
-            if (state.justMounted || !state.changedByUser) {
-                state.value = if (props.defaultValue == undefined) false else props.defaultValue
-            }
-            state.changedByUser = false
-            state.justMounted = false
+    switch {
+        checked = state.valueState
+        color = props.colorProp
+        size = props.sizeProp
+        onChange = {
+            props.onChangeProp(!state.valueState)
+            state = state.copy(
+                changedByUserState = true,
+                valueState = !state.valueState
+            )
         }
     }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACSwitch(handler: CryptoACSwitchProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACSwitch::class) {
-            this.attrs(handler)
-        }
-    }!!
 }

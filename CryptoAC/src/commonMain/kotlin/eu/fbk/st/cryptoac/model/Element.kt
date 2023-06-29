@@ -31,8 +31,7 @@ abstract class Element {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        return true
+        return !(other == null || this::class != other::class)
     }
 
     override fun hashCode(): Int {

@@ -1249,8 +1249,7 @@ class ACServiceRBACXACMLAuthzForce(
      * it in [domainCryptoACID]. Return the
      * ID or the eventual error code
      */
-    fun getDomainCryptoACID(
-    ): CodeString {
+    fun getDomainCryptoACID(): CodeString {
         return runBlocking {
             val xacmlDomainsURL = "${HTTPS}${xacmlBaseAPI}${API.XACML_AUTHZFORCE}?externalId=${externalDomainCryptoACID}"
             logger.debug { "Get CryptoAC domain ID sending a GET request to $xacmlDomainsURL" }

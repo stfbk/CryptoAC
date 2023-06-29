@@ -20,9 +20,7 @@ abstract class UnitElementWithKeys : UnitElement() {
         other as UnitElementWithKeys
 
         if (asymEncKeys != other.asymEncKeys) return false
-        if (asymSigKeys != other.asymSigKeys) return false
-
-        return true
+        return asymSigKeys == other.asymSigKeys
     }
 
     override fun hashCode(): Int {

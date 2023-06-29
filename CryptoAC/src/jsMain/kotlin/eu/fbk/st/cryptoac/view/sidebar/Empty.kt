@@ -1,23 +1,22 @@
 package eu.fbk.st.cryptoac.view.sidebar
 
-import eu.fbk.st.cryptoac.view.components.prosidebar.proSidebarContent
-import react.*
+import csstype.FlexGrow
+import csstype.number
+import emotion.react.css
+import react.FC
+import react.Props
+import react.dom.html.ReactHTML.div
+
 
 /**
  * The React component containing the
  * forms for invoking CryptoAC APIs;
  */
-class Empty : RComponent<Props, State>() {
-    override fun RBuilder.render() {
-        proSidebarContent { }
-    }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun empty(handler: Props.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(Empty::class) {
-            this.attrs(handler)
+val Empty = FC<Props> {
+    div {
+        css {
+            flex = number(1.0)
+            flexGrow = number(1.0)
         }
-    }!!
+    }
 }

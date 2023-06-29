@@ -26,7 +26,7 @@
 //            workingDir = dir,
 //            endStrings = hashSetOf(
 //                "port: 3306  MySQL Community Server - GPL",
-//                "Started ServerConnector",
+//                "Routes were registered, CryptoAC is up",
 //                "This will be made the default in later OPA releases."
 //            )
 //        )

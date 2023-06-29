@@ -32,7 +32,7 @@ internal open class CoreRBACMQTTTest : CoreRBACTest() {
         processDocker = "./startCryptoAC_ALL.sh \"cryptoac_redis cryptoac_proxy cryptoac_mosquitto_dynsec\"".runCommand(
             dir,
             hashSetOf(
-                "Started ServerConnector",
+                "Routes were registered, CryptoAC is up",
                 "Server initialized",
                 "mosquitto version 2.0.14 running",
             )
@@ -48,7 +48,7 @@ internal open class CoreRBACMQTTTest : CoreRBACTest() {
     @AfterEach
     override fun tearDown() {
         core.subscribedTopicsKeysAndMessages.clear()
-        TestUtilities.resetACServiceRBACDynSEC(core.ac as ACServiceRBACDynSec?)
+        TestUtilities.resetACServiceRBACDynSEC(core.ac)
         TestUtilities.resetDMServiceRBACMQTT(core.dm)
         TestUtilities.resetMMServiceRBACRedis()
     }

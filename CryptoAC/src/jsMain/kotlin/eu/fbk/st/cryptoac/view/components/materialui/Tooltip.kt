@@ -10,5 +10,5 @@ external val tooltip: ComponentClass<TooltipProps>
 
 external interface TooltipProps : Props {
     var title: String
-    var children: ReactElement<Props>
+    var children: ReactElement<*>
 }

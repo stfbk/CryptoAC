@@ -424,14 +424,14 @@ internal class AccessStructureTest {
                 getAttributes()
             )
         }
-        
+
         parseAccessStructure("(Bob and Luca) or Alice").apply {
             assertEquals(
                 hashSetOf("Bob", "Luca", "Alice"),
                 getAttributes()
             )
         }
-        
+
         parseAccessStructure("(Alice or Bob) and (Carl or Denise)").apply {
             assertEquals(
                 hashSetOf("Bob", "Carl", "Alice", "Denise"),

@@ -1,97 +1,92 @@
 package eu.fbk.st.cryptoac.view.content.tradeoffboard
 
+import csstype.Display
+import emotion.react.css
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.materialui.grid
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.css.*
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemProps
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemState
 import org.w3c.dom.HTMLInputElement
 import react.*
-import styled.css
-import styled.styledDiv
+import react.dom.html.ReactHTML.div
 
 external interface ConfigurationItemProps : Props {
     /** The name of this configuration item */
-    var name: String
+    var nameProp: String
 
     /** Whether the item should be disabled */
-    var disabled: Boolean
+    var disabledProp: Boolean
 
     /** Whether the radio options should be in the same row */
-    var optionsInRow: Boolean
+    var optionsInRowProp: Boolean
 
     /** The values for this configuration item */
-    var values: List<String>
+    var valuesProp: List<String>
 
     /** The default value for this configuration item */
-    var defaultValue: String
+    var defaultValueProp: String
 
     /** Change configuration for this item */
-    var handleChangeChoice: (String) -> Unit
+    var handleChangeChoiceProp: (String) -> Unit
 }
 
-external interface ConfigurationItemState : State {
+data class ConfigurationItemState(
     /** The current choice for this item */
-    var currentChoice: String
+    var currentChoiceState: String
+) : State
+
+// TODO doc
+fun getStateFromProps(
+    props: ConfigurationItemProps,
+    oldState: ConfigurationItemState = ConfigurationItemState(props.defaultValueProp),
+): ConfigurationItemState {
+    oldState.currentChoiceState = props.defaultValueProp
+    val copy = true
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A configuration item component with a radio group */
-class ConfigurationItem : RComponent<ConfigurationItemProps, ConfigurationItemState>() {
-    override fun RBuilder.render() {
+val ConfigurationItem = FC<ConfigurationItemProps> { props ->
 
-        grid {
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [ConfigurationItemState] for details
+     */
+    var state by useState(getStateFromProps(props))
 
-            attrs {
-                item = true
-                xs = 12
-                sm = 4
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
+    }
+
+    grid {
+        item = true
+        xs = 12
+        sm = 4
+        div {
+            css {
+                display = Display.inlineFlex
             }
-            styledDiv {
-                css {
-                    display = Display.inlineFlex
+            CryptoACRadioGroup {
+                nameProp = props.nameProp
+                disabledProp = props.disabledProp
+                rowProp = props.optionsInRowProp
+                defaultValueProp = props.defaultValueProp
+                onChangeProp = { event ->
+                    props.handleChangeChoiceProp((event.target as HTMLInputElement).value)
+                    true
                 }
-                child(
-                    cryptoACRadioGroup {
-                        name = props.name
-                        disabled = props.disabled
-                        row = props.optionsInRow
-                        defaultValue = props.defaultValue
-                        onChange = { event ->
-                            props.handleChangeChoice((event.target as HTMLInputElement).value)
-                            true
-                        }
-                        options = props.values.map {
-                            CryptoACRadioOption(
-                                label = it,
-                                name = it,
-                                color = "primary"
-                            )
-                        }
-                    }
-                )
+                optionsProp = props.valuesProp.map {
+                    CryptoACRadioOption(
+                        label = it,
+                        name = it,
+                        color = "primary"
+                    )
+                }
             }
         }
     }
-
-    override fun ConfigurationItemState.init() {
-        MainScope().launch {
-            setState {
-                currentChoice = props.defaultValue
-            }
-        }
-    }
-
-    /** Re-render only if the default value is different from the previous default value */
-    override fun shouldComponentUpdate(nextProps: ConfigurationItemProps, nextState: ConfigurationItemState): Boolean {
-        return (nextProps.defaultValue != props.defaultValue)
-    }
 }
 
-/** Extend RBuilder for easier use of this React component */
-fun configurationItem(handler: ConfigurationItemProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(ConfigurationItem::class) {
-            this.attrs(handler)
-        }
-    }!!
-}

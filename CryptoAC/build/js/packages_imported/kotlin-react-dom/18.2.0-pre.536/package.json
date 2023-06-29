@@ -1,0 +1,13 @@
+{
+  "name": "kotlin-react-dom",
+  "version": "18.2.0-pre.536",
+  "main": "kotlin-react-dom.js",
+  "types": "kotlin-react-dom.d.ts",
+  "devDependencies": {},
+  "dependencies": {
+    "react-dom": "^18.2.0"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

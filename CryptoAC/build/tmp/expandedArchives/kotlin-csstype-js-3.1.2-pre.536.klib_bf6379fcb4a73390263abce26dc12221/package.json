@@ -1,0 +1,13 @@
+{
+  "name": "kotlin-csstype",
+  "version": "3.1.2-pre.536",
+  "main": "kotlin-csstype.js",
+  "types": "kotlin-csstype.d.ts",
+  "devDependencies": {
+    "csstype": "^3.1.2"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

@@ -11,39 +11,26 @@ enum class CryptoACAlertSeverity {
 }
 
 external interface CryptoACAlertProps : Props {
-    var severity: CryptoACAlertSeverity
-    var message: String
-    var open: Boolean
-    var handleClose: (Event) -> Unit
+    // TODO doc
+    var severityProp: CryptoACAlertSeverity
+    var messageProp: String
+    var openProp: Boolean
+    var handleCloseProp: (Event) -> Unit
 }
 
 /** A custom component for an alert */
-class CryptoACAlert : RComponent<CryptoACAlertProps, State>() {
-    override fun RBuilder.render() {
-        snackbar {
-            attrs {
-                open = props.open
-                autoHideDuration = if (props.severity == CryptoACAlertSeverity.SUCCESS) 4000 else null
-                onClose = { event: Event, _: String ->
-                    props.handleClose(event)
-                }
-            }
-            alert {
-                attrs {
-                    severity = props.severity.toString().lowercase()
-                    onClose = { event -> props.handleClose(event) }
-                }
-                +props.message
-            }
+val CryptoACAlert = FC<CryptoACAlertProps> { props ->
+
+    snackbar {
+        open = props.openProp
+        autoHideDuration = if (props.severityProp == CryptoACAlertSeverity.SUCCESS) 4000 else null
+        onClose = { event: Event, _: String ->
+            props.handleCloseProp(event)
+        }
+        alert {
+            severity = props.severityProp.toString().lowercase()
+            onClose = { event: Event -> props.handleCloseProp(event) }
+            +props.messageProp
         }
     }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACAlert(handler: CryptoACAlertProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACAlert::class) {
-            this.attrs(handler)
-        }
-    }!!
 }

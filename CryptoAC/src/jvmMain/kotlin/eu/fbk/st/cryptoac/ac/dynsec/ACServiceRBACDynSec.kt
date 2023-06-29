@@ -122,7 +122,7 @@ class ACServiceRBACDynSec(
         val initCode = if (acServiceParameters.username == ADMIN) {
             client.mySubscribe(
                 topicFilter = dynsecTopicResponse,
-                qos = 1,
+                qos = 2,
                 isTheDM = false,
             )
         } else {
@@ -1154,7 +1154,7 @@ class ACServiceRBACDynSec(
                 CODE_019_MISSING_PARAMETERS
             } else {
                 val messageMQTT = MqttMessage(message.toByteArray())
-                messageMQTT.qos = 1
+                messageMQTT.qos = 2
 
                 try {
                     client.myPublish(

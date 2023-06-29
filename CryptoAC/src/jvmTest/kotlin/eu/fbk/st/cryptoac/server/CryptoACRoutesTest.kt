@@ -24,7 +24,7 @@ internal class CryptoACRoutesTest {
     fun setUpAll() {
         "./cleanAllAndBuild.sh".runCommand(dir, hashSetOf("built_all_end_of_script"))
         processDocker = "./startCryptoAC_ALL.sh \"cryptoac_redis cryptoac_proxy cryptoac_mosquitto_dynsec\"".runCommand(dir, hashSetOf(
-            "Started ServerConnector",
+            "Routes were registered, CryptoAC is up",
             "Server initialized",
             "mosquitto version 2.0.14 running",
         ))

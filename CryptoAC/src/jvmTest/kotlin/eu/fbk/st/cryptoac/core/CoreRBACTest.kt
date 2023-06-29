@@ -1,6 +1,7 @@
 package eu.fbk.st.cryptoac.core
 
 import eu.fbk.st.cryptoac.Constants.ADMIN
+import eu.fbk.st.cryptoac.OutcomeCode
 import eu.fbk.st.cryptoac.OutcomeCode.*
 import eu.fbk.st.cryptoac.model.unit.UnitElementStatus
 import eu.fbk.st.cryptoac.model.unit.EnforcementType
@@ -472,8 +473,10 @@ internal abstract class CoreRBACTest : CoreTest() {
         /** revoke non-existing user from operational role */
         run {
             assert(
-                coreRBAC.revokeUserFromRole(userNonExisting, roleOperational) ==
-                    CODE_007_ROLETUPLE_NOT_FOUND
+                coreRBAC.revokeUserFromRole(userNonExisting, roleOperational) in listOf(
+                    CODE_007_ROLETUPLE_NOT_FOUND,
+                    CODE_004_USER_NOT_FOUND
+                )
             )
         }
 

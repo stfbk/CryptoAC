@@ -300,6 +300,7 @@ fun Application.module() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             logger.error { "Request to ${call.request.uri} resulted in exception: ${cause.message}" }
+            cause.printStackTrace()
             logger.error { cause }
 
             // TODO "ScopeCoroutine was cancelled" is the message in the exception thrown
@@ -342,6 +343,8 @@ fun Application.module() {
             registerDMRoutes()
         }
     }
+
+    logger.warn { "Routes were registered, CryptoAC is up" }
 }
 
 

@@ -2,6 +2,8 @@ package eu.fbk.st.cryptoac.view.components.custom
 
 import eu.fbk.st.cryptoac.view.components.materialui.checkbox
 import eu.fbk.st.cryptoac.view.components.materialui.formControlLabel
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemProps
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemState
 import react.*
 
 // TODO document
@@ -9,78 +11,78 @@ const val divider = "4%&£$5"
 
 external interface CryptoACCheckboxProps : Props {
     /** Whether the field is disabled */
-    var disabled: Boolean
+    var disabledProp: Boolean
 
     /** Default value for the input */
-    var defaultValue: String
+    var defaultValueProp: String
 
     /** The label/placeholder for this field */
-    var label: String
+    var labelProp: String
 }
 
-external interface CryptoACCheckboxState : State {
+data class CryptoACCheckboxState(
     /** The value of the checkbox */
-    var value: String
+    var valueState: String = "",
 
     /** Whether to render the value on change by user */
-    var changedByUser: Boolean
+    var changedByUserState: Boolean = false,
 
     /** Whether the component was just mounted */
-    var justMounted: Boolean
+    var justMountedState: Boolean = true
+) : State
+
+// TODO doc
+fun getStateFromProps(
+    props: CryptoACCheckboxProps,
+    oldState: CryptoACCheckboxState = CryptoACCheckboxState(),
+): CryptoACCheckboxState {
+    var copy = false
+    if (oldState.justMountedState || !oldState.changedByUserState) {
+        oldState.valueState = "${props.defaultValueProp}$divider${props.labelProp}"
+        copy = true
+    }
+    oldState.changedByUserState = false
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A custom component for a radio group */
-class CryptoACCheckbox : RComponent<CryptoACCheckboxProps, CryptoACCheckboxState>() {
-    override fun RBuilder.render() {
+val CryptoACCheckbox = FC<CryptoACCheckboxProps> {props ->
 
-        formControlLabel {
-            attrs {
-                control = createElement<Props> {
-                    checkbox {
-                        attrs {
-                            disabled = props.disabled
-                            value = state.value
-                            checked = state.value.split(divider)[0].toBoolean()
-                            onChange = {
-                                setState {
-                                    changedByUser = true
-                                    value = if (state.value == "true$divider${props.label}")
-                                        "false$divider${props.label}"
-                                    else
-                                        "true$divider${props.label}"
-                                }
-                            }
-                        }
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACCheckboxState] for details
+     */
+    var state by useState(getStateFromProps(props))
+
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
+    }
+
+    formControlLabel {
+        control = createElement {
+            checkbox {
+                attrs {
+                    disabled = props.disabledProp
+                    value = state.valueState
+                    checked = state.valueState.split(divider)[0].toBoolean()
+                    onChange = {
+                        state = state.copy(
+                            changedByUserState = true,
+                            valueState = if (state.valueState == "true$divider${props.labelProp}")
+                                    "false$divider${props.labelProp}"
+                                else
+                                    "true$divider${props.labelProp}"
+                        )
                     }
-                }!!
-                label = props.label
-                value = props.label
-                labelPlacement = "start"
+                }
             }
-        }
+        }!!
+        label = props.labelProp
+        value = props.labelProp
+        labelPlacement = "start"
     }
-
-    override fun CryptoACCheckboxState.init() {
-        justMounted = true
-        changedByUser = false
-
-        /** Execute before the render in both the Mounting and Updating lifecycle phases */
-        CryptoACCheckbox::class.js.asDynamic().getDerivedStateFromProps = {
-            props: CryptoACCheckboxProps, state: CryptoACCheckboxState ->
-            if (state.justMounted || !state.changedByUser) {
-                state.value = "${props.defaultValue}$divider${props.label}"
-            }
-            state.changedByUser = false
-            state.justMounted = false
-        }
-    }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACCheckbox(handler: CryptoACCheckboxProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACCheckbox::class) {
-            this.attrs(handler)
-        }
-    }!!
 }

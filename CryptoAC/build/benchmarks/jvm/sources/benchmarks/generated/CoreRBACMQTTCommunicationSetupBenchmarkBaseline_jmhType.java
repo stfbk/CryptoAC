@@ -1,0 +1,4 @@
+package benchmarks.generated;
+public class CoreRBACMQTTCommunicationSetupBenchmarkBaseline_jmhType extends CoreRBACMQTTCommunicationSetupBenchmarkBaseline_jmhType_B3 {
+}
+

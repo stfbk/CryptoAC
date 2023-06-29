@@ -1,5 +1,5 @@
 let config = {
-  mode: 'production',
+  mode: 'development',
   resolve: {
     modules: [
       "node_modules"
@@ -13,11 +13,11 @@ let config = {
 
 // entry
 config.entry = {
-    main: ["/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce/CryptoAC.js"]
+    main: [require('path').resolve(__dirname, "kotlin/CryptoAC.js")]
 };
 
 config.output = {
-    path: "/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/distributions",
+    path: require('path').resolve(__dirname, "../../../developmentExecutable"),
     filename: (chunkData) => {
         return chunkData.chunk.name === 'main'
             ? "CryptoAC.js"
@@ -28,16 +28,13 @@ config.output = {
     globalObject: "this"
 };
 
-// resolve modules
-config.resolve.modules.unshift("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js/packages/CryptoAC/kotlin-dce")
-
 // source maps
 config.module.rules.push({
         test: /\.js$/,
         use: ["source-map-loader"],
         enforce: "pre"
 });
-config.devtool = 'source-map';
+config.devtool = 'eval-source-map';
 config.ignoreWarnings = [/Failed to parse source map/]
 
 // Report progress to console
@@ -47,36 +44,28 @@ config.ignoreWarnings = [/Failed to parse source map/]
     const handler = (percentage, message, ...args) => {
         const p = percentage * 100;
         let msg = `${Math.trunc(p / 10)}${Math.trunc(p % 10)}% ${message} ${args.join(' ')}`;
-        msg = msg.replace("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/js", '');;
+        msg = msg.replace(require('path').resolve(__dirname, "../.."), '');;
         console.log(msg);
     };
 
     config.plugins.push(new webpack.ProgressPlugin(handler))
 })(config);
 
-// css settings
+// KotlinWebpackCssRule[css]
 ;(function(config) {
-    ;(function(config) {
-       const use = [
-           {
-               loader: 'css-loader',
-               options: {},
-           }
-       ]
-       use.unshift({
-           loader: 'style-loader',
-           options: {}
-       })
-       
-       config.module.rules.push({
-           test: /\.css$/,
-           use: use,
-           
-           
-       })
-
-   })(config);
-            
+            const use = [{
+    loader: 'style-loader',
+    options: {}
+},{
+    loader: 'css-loader',
+    options: {}
+}]
+config.module.rules.push({
+    test: /\.css$/,
+    use: use,
+    exclude: undefined,
+    include: undefined,
+})
 })(config);
 
 // noinspection JSUnnecessarySemicolon
@@ -112,13 +101,5 @@ config.module.rules.push({
     ],
 });
 
-
-// save evaluated config file
-;(function(config) {
-    const util = require('util');
-    const fs = require('fs');
-    const evaluatedConfig = util.inspect(config, {showHidden: false, depth: null, compact: false});
-    fs.writeFile("/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/build/reports/webpack/CryptoAC/webpack.config.evaluated.js", evaluatedConfig, function (err) {});
-})(config);
 
 module.exports = config

@@ -172,6 +172,11 @@ class CoreRBACryptoAC(
             newSigner = user.token,
         )
 
+        /**
+         * Below, do not add the resource as it is, but
+         * instead invoke the RM to validate the operation
+         */
+
         /** Add the resource in the DM */
         code = dm.addResource(
             newResource = newResource,
@@ -244,13 +249,13 @@ class CoreRBACryptoAC(
             return code
         }
 
-        val resource = mm.getResources(
+        val resourceObject = mm.getResources(
             resourceName = resourceName,
             isAdmin = user.isAdmin,
             offset = 0,
             limit = 1
         ).firstOrNull()
-        if (resource == null) {
+        if (resourceObject == null) {
             logger.warn {
                 "Resource not found. Either user ${user.name} does not have " +
                 "access to resource $resourceName or resource does not exist"
@@ -262,12 +267,12 @@ class CoreRBACryptoAC(
         }
 
         val resourceStream: InputStream
-        val latestResourceVersionNumber = resource.symEncKeyVersionNumber
+        val latestResourceVersionNumber = resourceObject.symEncKeyVersionNumber
         val roleAssumed: String
 
-        when (resource.enforcement) {
+        when (resourceObject.enforcement) {
             EnforcementType.COMBINED -> {
-                val symKeyCode = getEncSymmetricKey(resource)
+                val symKeyCode = getEncSymmetricKey(resourceObject)
                 if (symKeyCode.code != CODE_000_SUCCESS) {
                     return endOfMethod(
                         code = symKeyCode.code,
@@ -291,9 +296,9 @@ class CoreRBACryptoAC(
             name = resourceName,
             symDecKeyVersionNumber = latestResourceVersionNumber,
             symEncKeyVersionNumber = latestResourceVersionNumber,
-            enforcement = resource.enforcement
+            enforcement = resourceObject.enforcement
         )
-        newResource.token = resource.token
+        newResource.token = resourceObject.token
 
         code = dm.addResource(
             newResource = newResource,

@@ -10,8 +10,8 @@ import react.*
 external val proSidebarSubMenu: ComponentClass<SubMenuProps>
 
 external interface SubMenuProps : Props {
-    /** Title for the submenu */
-    var title: String
+    /** Label for the submenu */
+    var label: String
 
     /** Icon for submenu */
     var icon: ReactElement<Props>

@@ -1511,17 +1511,15 @@ class MMServiceRBACRedis(
 
     /**
      * Retrieve the permission tuples matching the [roleName] and/or
-     * the [resourceName] and not matching the [roleNameToExclude], if
-     * given, starting from the [offset] limiting the number of tuples
-     * to return to the given [limit] and with the (possibly) relevant
-     * information of whether the user invoking this function [isAdmin].
-     * If no permission tuples are found, return an empty set. This
-     * method should support invocations by non-admin users
+     * the [resourceName], starting from the [offset] limiting the number
+     * of tuples to return to the given [limit] and with the (possibly)
+     * relevant information of whether the user invoking this function
+     * [isAdmin]. If no permission tuples are found, return an empty set.
+     * This method should support invocations by non-admin users
      */
     override fun getPermissionTuples(
         roleName: String?,
         resourceName: String?,
-        roleNameToExclude: String?,
         isAdmin: Boolean,
         offset: Int,
         limit: Int,
@@ -1713,11 +1711,6 @@ class MMServiceRBACRedis(
                     )
                 }
             )
-        }
-
-        /** Filter by remaining parameters */
-        permissionTuples.retainAll {
-            (roleNameToExclude == null || it.roleName != roleNameToExclude)
         }
 
         logger.debug { "Found ${permissionTuples.size} permission tuples" }
@@ -2387,10 +2380,10 @@ class MMServiceRBACRedis(
 
                             val oldRoleTupleObjectKey =
                                 roleTupleObjectPrefix + byUserAndRoleTokenKeyPrefix +
-                                currentUsername + dl + oldRoleToken
+                                currentUserToken + dl + oldRoleToken
                             val newRoleTupleObjectKey =
                                 roleTupleObjectPrefix + byUserAndRoleTokenKeyPrefix +
-                                currentUsername + dl + newRoleToken
+                                currentUserToken + dl + newRoleToken
                             logger.debug {
                                 "Rename the key of the role tuple object from " +
                                 "$oldRoleTupleObjectKey to $newRoleTupleObjectKey"

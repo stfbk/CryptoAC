@@ -54,9 +54,7 @@ abstract class UnitElement : Element() {
 
         if (name != other.name) return false
         if (status != other.status) return false
-        if (token != other.token) return false
-
-        return true
+        return token == other.token
     }
 
     override fun hashCode(): Int {

@@ -11,6 +11,7 @@ import org.eclipse.paho.mqttv5.client.MqttClientPersistence
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions
 import org.eclipse.paho.mqttv5.common.MqttMessage
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.security.KeyStore
 import javax.net.SocketFactory
@@ -157,7 +158,11 @@ class CryptoACMQTTClient(
     // TODO comment and todo
     private fun getTruststoreFactory(): SocketFactory? {
         val trustStore = KeyStore.getInstance("JKS")
-        val myis: InputStream = FileInputStream("/mosquittoCACertificate.jks")
+        val myis: InputStream = try {
+            FileInputStream("/mosquittoCACertificate.jks")
+        } catch(e: FileNotFoundException) {
+            CryptoACMQTTClient::class.java.classLoader.getResourceAsStream("cryptoac/Mosquitto/mosquittoCACertificate.jks")!!
+        }
         trustStore.load(myis, "password".toCharArray())
         val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
         tmf.init(trustStore)

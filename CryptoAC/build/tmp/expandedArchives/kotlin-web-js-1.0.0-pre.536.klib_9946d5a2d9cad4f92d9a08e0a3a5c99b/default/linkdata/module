@@ -1,0 +1,7 @@
+
+*<org.jetbrains.kotlin-wrappers:kotlin-web>:	web.abort:
+web.buffer:web.console:
+web.crypto:web.debugger:web.encoding:
+web.errors:
+web.events:web.http:web.messaging:web.performance:web.streams:
+web.timers:web.url:webassembly

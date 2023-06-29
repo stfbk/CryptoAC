@@ -1,43 +1,34 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
-import kotlinx.css.*
+import csstype.*
+import emotion.react.css
 import react.*
-import styled.css
-import styled.styledDiv
+import react.dom.html.ReactHTML.div
 
 external interface CryptoACDividerProps : Props {
     /** The width of this divider */
-    var width: LinearDimension
+    var widthProp: Width
 
     /** The padding at the top of this divider */
-    var marginTop: LinearDimension
+    var marginTopProp: MarginTop
 
     /** The margin at the bottom of this divider */
-    var marginBottom: LinearDimension
+    var marginBottomProp: MarginBottom
 }
 
 /** A custom component for a divider (a single pixel solid line) */
-class CryptoACDivider : RComponent<CryptoACDividerProps, State>() {
-    override fun RBuilder.render() {
+val CryptoACDivider = FC<CryptoACDividerProps> { props ->
 
-        styledDiv {
-            css {
-                width = props.width
-                marginTop = props.marginTop
-                marginBottom = props.marginBottom
-                marginLeft = LinearDimension.auto
-                marginRight = LinearDimension.auto
-                borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
-            }
+    div {
+        css {
+            width = props.widthProp
+            marginTop = props.marginTopProp
+            marginBottom = props.marginBottomProp
+            marginLeft = Auto.auto
+            marginRight = Auto.auto
+            borderBottomColor = Color("rgba(173, 173, 173, 0.2)")
+            borderBottomWidth = 1.px
+            borderBottomStyle = LineStyle.solid
         }
     }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACDivider(handler: CryptoACDividerProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACDivider::class) {
-            attrs(handler)
-        }
-    }!!
 }

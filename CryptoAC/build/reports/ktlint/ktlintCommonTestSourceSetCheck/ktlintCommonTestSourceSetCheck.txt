@@ -1,8 +1,0 @@
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m96[90m:1:[0m Needless blank line(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m134[90m:1:[0m Needless blank line(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m172[90m:1:[0m Needless blank line(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m237[90m:1:[0m Needless blank line(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m275[90m:1:[0m Needless blank line(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m304[90m:1:[0m Needless blank line(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m439[90m:1:[0m Trailing space(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/src/commonTest/kotlin/eu/fbk/st/cryptoac/model/tuple/[0mAccessStructureTest.kt[90m:[0m446[90m:1:[0m Trailing space(s)

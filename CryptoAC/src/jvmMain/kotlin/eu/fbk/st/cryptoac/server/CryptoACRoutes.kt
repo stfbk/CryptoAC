@@ -223,10 +223,13 @@ fun Route.profileRouting() {
 
         /**
          * Create and save a profile for a user checking
-         * the consistency of the given data and possibly
-         * generating cryptographic keys. If the user has
-         * yet to be initialized, call the initialization
-         * function
+         * the consistency of the given data. If the user
+         * has yet to be initialized, call the initialization
+         * function, generating new cryptographic keys. Keep
+         * the token in the profile as the token of the user
+         * (the token in the profile may have been used by
+         * the administrator to set up the user's accounts
+         * and services or in the access control policy)
          */
         post {
 
@@ -247,8 +250,7 @@ fun Route.profileRouting() {
             val requestedUsername = coreParameters.user.name
             val requestedCore = coreParameters.coreType
 
-            if (
-                loggedUser == requestedUsername ||
+            if (loggedUser == requestedUsername ||
                 (loggedUser == ADMIN && loggedUserParams?.user?.isAdmin == true)
             ) {
 
@@ -276,8 +278,9 @@ fun Route.profileRouting() {
                 /**
                  * We generate cryptographic keys and invoke the
                  * initialization function only if the user has
-                 * an incomplete status, otherwise we just save
-                 * the profile
+                 * an incomplete status, otherwise (it means that
+                 * the user already exists in the access control
+                 * policy, thus) we just save the user's profile
                  */
                 if (coreParameters.user.status == UnitElementStatus.INCOMPLETE) {
 
@@ -330,6 +333,8 @@ fun Route.profileRouting() {
                  * If the user is logged-in and with a
                  * profile, store the core for the user
                  */
+                // TODO what if the admin modifies the profile of
+                //  another logged user? is this possible?
                 if (requestedUsername == loggedUser) {
                     setUserCore(loggedUser, CoreFactory.getCore(coreParameters))
                 }

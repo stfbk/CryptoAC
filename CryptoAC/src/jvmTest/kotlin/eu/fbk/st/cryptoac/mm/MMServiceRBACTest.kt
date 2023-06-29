@@ -384,7 +384,7 @@ internal abstract class MMServiceRBACTest : MMServiceTest() {
     }
 
     @Test
-    open fun `get permission tuples by role or resource name or excluding role name works`() {
+    open fun `get permission tuples by role or resource name works`() {
         val roleEmployee = addRole("employee")
         val roleStudent = addRole("student")
 
@@ -399,15 +399,6 @@ internal abstract class MMServiceRBACTest : MMServiceTest() {
             assert(examPermissionTuplesByName.size == 2)
             assert(examPermissionTuplesByName.filter { it.roleName == roleEmployee.name }.size == 1)
             assert(examPermissionTuplesByName.filter { it.roleName == roleStudent.name }.size == 1)
-        }
-
-        /** get permission tuples excluding role name */
-        myRun {
-            val examPermissionTuplesByName = mm.getPermissionTuples(
-                resourceName = resourceExam.name, roleNameToExclude = roleStudent.name
-            )
-            assert(examPermissionTuplesByName.size == 1)
-            assert(examPermissionTuplesByName.filter { it.roleName == roleEmployee.name }.size == 1)
         }
     }
 

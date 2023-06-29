@@ -1,0 +1,15 @@
+
+.<org.jetbrains.kotlin-wrappers:kotlin-browser>:web.animations:web.aria:	web.audio:web.authentication:web.broadcast:
+web.buffer:	web.cache:
+web.canvas:web.clipboard:
+web.codecs:web.credentials:web.csp:	web.cssom:web.data:
+web.device:web.dom:web.dom.observers:web.dom.parsing:
+web.errors:
+web.events:web.file:web.filesystem:	web.fonts:web.fullscreen:web.gamepad:web.geolocation:web.geometry:web.history:web.html:web.idb:web.keyboard:web.location:	web.locks:
+web.mathml:web.media.capabilities:web.media.devices:web.media.key:web.media.recorder:web.media.session:web.media.source:web.media.streams:web.midi:web.navigator:web.notifications:web.payment:web.permissions:web.prompts:web.push:web.remoteplayback:
+web.screen:
+web.scroll:web.selection:web.serviceworker:	web.share:
+web.speech:web.sse:web.storage:web.svg:
+web.timers:web.uievents:web.url:web.useractivation:web.vibration:web.viewport:web.wakelock:
+web.window:web.workers:web.worklets:web.xhr:web.xml:	web.xpath:webgl:webrtc:
+websockets:webvtt

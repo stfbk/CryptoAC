@@ -2,85 +2,85 @@ package eu.fbk.st.cryptoac.view.components.custom
 
 import mu.KotlinLogging
 import react.*
-import react.dom.div
+import react.dom.html.ReactHTML.div
 
 private val logger = KotlinLogging.logger {}
 
 external interface CryptoACButtonAndIconGroupProps : Props {
     /** The default selected button (0-indexed) */
-    var defaultSelectedButton: Int
+    var defaultSelectedButtonProp: Int
 
     /** The list of button and icon elements of this group */
-    var buttons: List<CryptoACButtonAndIconData>
+    var buttonsProp: List<CryptoACButtonAndIconData>
+}
+fun CryptoACButtonAndIconGroupProps.calculateHashCode(): Int {
+    var result = defaultSelectedButtonProp.hashCode()
+    buttonsProp.forEach {
+        result = 31 * result + it.hashCode()
+    }
+    return result
 }
 
-external interface CryptoACButtonAndIconGroupState : State {
+data class CryptoACButtonAndIconGroupState(
     /** The current selected button (0-indexed) */
-    var selectedButton: Int
+    var selectedButtonState: Int = 0,
 
     /** Whether the component was just mounted */
-    var justMounted: Boolean
+    var justMountedState: Boolean = true,
+
+    /** Hash of last props received */
+    var propsHashState: Int = 0
+): State
+
+// TODO doc
+fun getStateFromProps(
+    props: CryptoACButtonAndIconGroupProps,
+    oldState: CryptoACButtonAndIconGroupState = CryptoACButtonAndIconGroupState(),
+): CryptoACButtonAndIconGroupState {
+    var copy = false
+    val propsHash = props.calculateHashCode()
+    if (oldState.justMountedState || oldState.propsHashState != propsHash) {
+        oldState.propsHashState = propsHash
+        oldState.selectedButtonState = props.defaultSelectedButtonProp
+        copy = true
+    }
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A custom component for a group of button and icon elements */
-class CryptoACButtonAndIconGroup : RComponent<CryptoACButtonAndIconGroupProps, CryptoACButtonAndIconGroupState>() {
-
-    override fun RBuilder.render() {
-
-        div {
-            props.buttons.forEachIndexed { index, it ->
-
-                key = it.text
-
-                child(
-                    cryptoACButtonAndIcon {
-                        icon = it.icon
-                        text = it.text
-                        showText = it.showText
-                        onClick = { event ->
-                            changeSelectedButton(index)
-                            it.onClick(event)
-                        }
-                        highlighted = state.selectedButton == index
-                    }
-                )
-            }
-        }
-    }
-
-    override fun CryptoACButtonAndIconGroupState.init() {
-        justMounted = true
-        selectedButton = 0
-
-        /** Execute before the render in both the Mounting and Updating lifecycle phases */
-        CryptoACButtonAndIconGroup::class.js.asDynamic().getDerivedStateFromProps = {
-            newProps: CryptoACButtonAndIconGroupProps, state: CryptoACButtonAndIconGroupState ->
-            if (
-                state.justMounted ||
-                newProps.defaultSelectedButton != props.defaultSelectedButton ||
-                newProps.buttons.size != props.buttons.size
-            ) {
-                state.selectedButton = newProps.defaultSelectedButton
-            }
-            state.justMounted = false
-        }
-    }
+val CryptoACButtonAndIconGroup = FC<CryptoACButtonAndIconGroupProps> { props ->
 
     /**
-     * Change the value of the 'selectedButton'
-     * state to the [newSelectedButton]
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACButtonAndIconGroupState] for details
      */
-    private fun changeSelectedButton(newSelectedButton: Int) {
-        logger.info { "Setting the 'selectedButton' state to $newSelectedButton" }
-        setState { selectedButton = newSelectedButton }
-    }
-}
+    var state by useState(getStateFromProps(props))
 
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACButtonAndIconGroup(handler: CryptoACButtonAndIconGroupProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACButtonAndIconGroup::class) {
-            attrs(handler)
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
+    }
+
+    div {
+        props.buttonsProp.forEachIndexed { index, it ->
+            key = it.text
+
+            CryptoACButtonAndIcon {
+                iconProp = it.icon
+                textProp = it.text
+                showTextProp = it.showText
+                onClickProp = { event ->
+                    logger.info { "Setting the 'selectedButton' state to $index" }
+                    state = state.copy(
+                        selectedButtonState = index
+                    )
+                    it.onClick(event)
+                }
+                highlightedProp = state.selectedButtonState == index
+            }
         }
-    }!!
+    }
 }

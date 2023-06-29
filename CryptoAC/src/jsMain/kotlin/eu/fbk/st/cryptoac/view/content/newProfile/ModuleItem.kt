@@ -1,205 +1,187 @@
 package eu.fbk.st.cryptoac.view.content.newProfile
 
+import csstype.*
+import emotion.react.css
+import eu.fbk.st.cryptoac.core.CoreType
 import eu.fbk.st.cryptoac.view.Themes.plainPaperTitleStyle
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.materialui.grid
-import kotlinx.css.*
 import mu.KotlinLogging
 import react.*
-import react.dom.attrs
-import styled.css
-import styled.styledImg
-import styled.styledP
+import react.dom.html.ReactHTML.img
+import react.dom.html.ReactHTML.p
 import kotlin.random.Random
 
 private val logger = KotlinLogging.logger {}
 
 external interface ModuleItemProps : Props {
     /** The title to display of this module item */
-    var title: String
+    var titleProp: String
 
     /** The name of this module item */
-    var name: String
+    var nameProp: String
 
     /** The default value for this module item */
-    var defaultValue: String?
+    var defaultValueProp: String?
 
     /** The list of options for this module item */
-    var options: List<String>
+    var optionsProp: List<String>
 
     /** Change selected value for this item */
-    var handleChangeChoice: (String) -> Unit
+    var handleChangeChoiceProp: (String) -> Unit
 }
 
-external interface ModuleItemState : State {
+data class ModuleItemState(
     /** Whether to render the value on change by user */
-    var changedByUser: Boolean
+    var changedByUserState: Boolean = false,
 
     /** Whether the component was just mounted */
-    var justMounted: Boolean
+    var justMountedState: Boolean = false,
 
     /** The current choice for this item */
-    var currentChoice: String
+    var currentChoiceState: String = ""
+) : State
+
+// TODO doc
+fun getStateFromProps(
+    props: ModuleItemProps,
+    oldState: ModuleItemState = ModuleItemState(),
+): ModuleItemState {
+    var copy = false
+    if (oldState.justMountedState || !oldState.changedByUserState) {
+        oldState.currentChoiceState = if (props.defaultValueProp != null) props.defaultValueProp!! else ""
+        copy = true
+    }
+    oldState.changedByUserState = false
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A module item component with a single radio group */
-class ModuleItem : RComponent<ModuleItemProps, ModuleItemState>() {
-    override fun RBuilder.render() {
+val ModuleItem = FC<ModuleItemProps> {props ->
 
-        child(
-            cryptoACPaper {
-                titleStyle = plainPaperTitleStyle
-                titleText = props.title
-                titleVariant = "subtitle1"
-                setDivider = true
-                dividerWidth = 95.pct
-                child = createElement {
-                    if (props.options.isEmpty()) {
-                        styledP {
-                            css {
-                                marginTop = 35.pct
-                            }
-                            +"No option available"
-                        }
-                    } else {
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [ModuleItemState] for details
+     */
+    var state by useState(getStateFromProps(props))
+
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
+    }
+
+    CryptoACPaper {
+        titleStyleProp = plainPaperTitleStyle
+        titleTextProp = props.titleProp
+        titleVariantProp = "subtitle1"
+        setDividerProp = true
+        dividerWidthProp = 95.pct
+        childProp = FC<Props> {
+            if (props.optionsProp.isEmpty()) {
+                p {
+                    css {
+                        marginTop = 35.pct
+                    }
+                    +"No option available"
+                }
+            } else {
+                grid {
+                    container = true
+                    spacing = 1
+                    grid {
+                        item = true
+                        xs = 4
                         grid {
-                            attrs {
-                                container = true
-                                spacing = 1
-                            }
+                            container = true
+                            spacing = 1
                             grid {
-                                attrs {
-                                    item = true
-                                    xs = 4
-                                }
-                                grid {
-                                    attrs {
-                                        container = true
-                                        spacing = 1
-                                    }
-                                    grid {
-                                        attrs {
-                                            item = true
-                                            xs = 12
-                                        }
-                                        styledImg {
-                                            css {
-                                                verticalAlign = VerticalAlign.middle
-                                                padding = "3px"
-                                                marginTop = 25.pct
-                                                maxWidth = 50.pct
-                                                maxHeight = 50.pct
-                                                width = LinearDimension.auto
-                                                height = LinearDimension.auto
-                                            }
-                                            attrs {
-                                                src = getImageFromModuleImplementation(state.currentChoice)
-                                            }
-                                        }
-                                    }
-                                    grid {
-                                        attrs {
-                                            child(
-                                                cryptoACSelect {
-                                                    name = props.name
-                                                    label = "Label"
-                                                    defaultValue = state.currentChoice
-                                                    onChange = { newChoice ->
-                                                        setState {
-                                                            changedByUser = true
-                                                            currentChoice = newChoice
-                                                        }
-                                                        props.handleChangeChoice(newChoice)
-                                                    }
-                                                    options = props.options
-                                                }
-                                            )
-                                            item = true
-                                            xs = 12
-                                        }
-                                    }
-                                }
-                            }
-                            grid {
-                                // TODO implement the evaluation
-                            attrs {
                                 item = true
-                                xs = 8
+                                xs = 12
+                                img {
+                                    css {
+                                        verticalAlign = VerticalAlign.middle
+                                        padding = Padding(3.px, 3.px)
+                                        marginTop = 25.pct
+                                        maxWidth = 50.pct
+                                        maxHeight = 50.pct
+                                        width = Auto.auto
+                                        height = Auto.auto
+                                    }
+                                    src = getImageFromModuleImplementation(state.currentChoiceState)
+                                }
                             }
-                            child(cryptoACScore {
-                                label = "Throughput"
-                                min = 0
-                                max = 100
-                                value = Random.nextInt(0, 100)
-                            })
-
-                            child(cryptoACScore {
-                                label = "Scalability"
-                                min = 0
-                                max = 100
-                                value = Random.nextInt(0, 100)
-                            })
-
-                            child(cryptoACScore {
-                                label = "Reliability"
-                                min = 0
-                                max = 100
-                                value = Random.nextInt(0, 100)
-                            })
-
-                            child(cryptoACScore {
-                                label = "Redundancy"
-                                min = 0
-                                max = 100
-                                value = Random.nextInt(0, 100)
-                            })
-
-                            child(cryptoACScore {
-                                label = "Latency"
-                                min = 0
-                                max = 100
-                                value = Random.nextInt(0, 100)
-                            })
-
-                            child(cryptoACScore {
-                                label = "CSP Lock-in"
-                                min = 0
-                                max = 100
-                                value = Random.nextInt(0, 100)
-                            })
+                            grid {
+                                CryptoACSelect {
+                                    nameProp = props.nameProp
+                                    labelProp = "Label"
+                                    defaultValueProp = state.currentChoiceState
+                                    onChangeProp = { newChoice ->
+                                        state = state.copy(
+                                            changedByUserState = true,
+                                            currentChoiceState = newChoice
+                                        )
+                                        props.handleChangeChoiceProp(newChoice)
+                                    }
+                                    optionsProp = props.optionsProp
+                                }
+                                item = true
+                                xs = 12
                             }
                         }
                     }
-                }!!
-            }
-        )
-    }
+                    grid {
+                        // TODO implement the evaluation
+                    item = true
+                    xs = 8
+                    CryptoACScore {
+                        labelProp = "Throughput"
+                        minProp = 0
+                        maxProp = 100
+                        valueProp = Random.nextInt(0, 100)
+                    }
 
-    override fun ModuleItemState.init() {
-        justMounted = true
-        changedByUser = false
+                    CryptoACScore {
+                        labelProp = "Scalability"
+                        minProp = 0
+                        maxProp = 100
+                        valueProp = Random.nextInt(0, 100)
+                    }
 
-        /** Execute before the render in both the Mounting and Updating lifecycle phases */
-        ModuleItem::class.js.asDynamic().getDerivedStateFromProps = {
-            props: ModuleItemProps, state: ModuleItemState ->
-            if (state.justMounted || !state.changedByUser) {
-                if (props.defaultValue != null) {
-                    state.currentChoice = props.defaultValue!!
+                    CryptoACScore {
+                        labelProp = "Reliability"
+                        minProp = 0
+                        maxProp = 100
+                        valueProp = Random.nextInt(0, 100)
+                    }
+
+                    CryptoACScore {
+                        labelProp = "Redundancy"
+                        minProp = 0
+                        maxProp = 100
+                        valueProp = Random.nextInt(0, 100)
+                    }
+
+                    CryptoACScore {
+                        labelProp = "Latency"
+                        minProp = 0
+                        maxProp = 100
+                        valueProp = Random.nextInt(0, 100)
+                    }
+
+                    CryptoACScore {
+                        labelProp = "CSP Lock-in"
+                        minProp = 0
+                        maxProp = 100
+                        valueProp = Random.nextInt(0, 100)
+                    }
+                    }
                 }
             }
-            state.changedByUser = false
-            state.justMounted = false
-        }
+        }.create()
     }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun moduleItem(handler: ModuleItemProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(ModuleItem::class) {
-            this.attrs(handler)
-        }
-    }!!
 }
 
 fun getImageFromModuleImplementation(choice: String) = when (choice) {
@@ -207,7 +189,7 @@ fun getImageFromModuleImplementation(choice: String) = when (choice) {
     "MOSQUITTO" -> { "mosquitto.png" }
     "RBAC_MYSQL", "ABAC_MYSQL" -> { "mysql.png" }
     "RBAC_REDIS" -> { "redis.png" }
-    "NONE" -> { "none.png" }
+    "NONE", "" -> { "none.png" }
     "MQTT" -> { "mqtt.png" }
     "RBAC_OPA" -> { "opa.png" }
     "RBAC_XACML_AUTHZFORCE" -> { "xacmlauthzforce.png" }

@@ -3,7 +3,7 @@
 
 package eu.fbk.st.cryptoac.view.components.materialui
 
-import kotlinx.js.Object
+import js.core.Object
 import react.*
 
 @JsName("Box")

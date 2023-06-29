@@ -132,6 +132,7 @@ class SessionController {
                 logger.info { "Creating core of type $coreType for user $username" }
                 val newCore = CoreFactory.getCore(parameters)
                 setUserCore(username, newCore)
+                newCore.initCore()
                 newCore
             }
 
@@ -151,8 +152,6 @@ class SessionController {
                     }
                 }
             }
-
-            core.initCore()
 
             return core
         }

@@ -24,12 +24,6 @@ class PermissionTuple(
     val symKeyVersionNumber: Int = 1,
 ) : Tuple() {
 
-    // TODO PERCHE QUI ABBIAMO LA ENCRYPTING E LA DECRYPTING KEY INSIEME?
-    //    E' PERCHE' ABBIAMO UNA SOLA PERMISSION TUPLE PER OGNI RISORSA?
-    //        E' UNA COSA BUONA?'
-    //        NON PUO ESSERE CHE ABBIAMO BISOGNO DI MANTENERE PIU CHIAVI VECCHIE, COME FACCIAMO PER ABE?
-    //    E IL "symKeyVersionNumber" A COSA FA RIFERIMENTO ALLORA? MEGLIO RINOMINARLO PER ESSERE PIU' CHIARI?'
-
     init {
         requirePositiveNumber(roleVersionNumber)
         requirePositiveNumber(symKeyVersionNumber)

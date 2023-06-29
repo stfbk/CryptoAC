@@ -1,0 +1,2 @@
+
+ <io.ktor:ktor-client-websockets>:&io.ktor.client.plugins.websocket.empty

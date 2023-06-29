@@ -1,611 +1,609 @@
 package eu.fbk.st.cryptoac.view.content.tradeoffboard
 
-/**
-TODO in "TradeOffBoard", devi controllare le funzioni
-- computePossibleArchitectures
-- computeScoresArray
-- getProtectionLevel
-- orderArchitectures
-- dominates
- */
-
+import csstype.*
+import emotion.react.css
 import eu.fbk.st.cryptoac.view.Themes.plainPaperTitleStyle
 import eu.fbk.st.cryptoac.view.components.custom.*
 import eu.fbk.st.cryptoac.view.components.icons.faUndoAlt
 import eu.fbk.st.cryptoac.view.components.materialui.grid
 import eu.fbk.st.cryptoac.view.components.materialui.iconButton
 import eu.fbk.st.cryptoac.view.components.materialui.tooltip
-import eu.fbk.st.cryptoac.view.enumContains
-import kotlinx.css.*
 import mu.KotlinLogging
 import react.*
-import react.dom.*
-import styled.*
+import react.dom.html.ReactHTML.br
+import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.span
+import react.dom.html.ReactHTML.table
+import react.dom.html.ReactHTML.tbody
+import react.dom.html.ReactHTML.td
+import react.dom.html.ReactHTML.thead
+import react.dom.html.ReactHTML.tr
 
 private val logger = KotlinLogging.logger {}
 
-external interface TradeOffBoardState : State {
-    /** The possible assignments of domain-(list of entities) */
-    var assignments: HashMap<Domains, MutableList<Entities>>
+// TODO doc
+external interface TradeOffBoardProps : Props {
+    var handleChangeCircularProgressValueProp: (Int) -> Unit
+    var handleChangeBackdropIsOpenProp: (Boolean) -> Unit
+    var scenarioProp: Scenario
+    var algorithmProp: Algorithm
+    var objectiveProp: Objective
+}
 
-    /** The min-max number of instances for each entity */
-    var numberOfInstances: HashMap<Entities, Array<Int>>
+
+data class TradeOffBoardState(
+    /** The entity-domain assignments to be excluded from architectures  */
+    var prefiltersState: MutableList<Assignment> = mutableListOf(),
+
+    /** The minimum and maximum number of domains an entity can be assigned to in the same architecture */
+    var replicationIntervalState: LinkedHashMap<Entities, Pair<Int, Int>> = LinkedHashMap(
+        Entities.values().associateWith { (1 to 1) }
+    ),
 
     /** The candidate architectures */
-    var architectures: List<Architecture>
+    var optimalArchitecturesState: List<Architecture> = listOf(),
 
-    /** The weight, threshold (type and value) and penalty for performance requirements */
-    var performanceRequirementsInputs: List<Requirement>
+    /** The weight, threshold (type and value) and penalty criteria for performance goals */
+    var performanceGoalsInputsState: List<Criteria> = PerformanceGoals.values().map {
+        Criteria(it.toString())
+                                                                                                     },
+    /** The weight, threshold (type and value) and penalty criteria for security properties */
+    var securityPropertyInputsState: List<Criteria> = SecurityProperties.values().map {
+        Criteria(it.toString())
+                                                                                               },
+    /** The attackers for the scenarios */
+    var attackersByScenarioInputState: LinkedHashMap<Scenario, LinkedHashMap<PointsOfAttack, List<Attacker>>> = linkedMapOf(
+        Scenario.Generic to linkedMapOf(
+            PointsOfAttack.Client to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.Edge to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.OnPremise to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.Cloud to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.Client_Edge to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.Client_OnPremise to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.Client_Cloud to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.Edge_OnPremise to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.Edge_Cloud to listOf(Attacker(Attackers.Generic)),
+            PointsOfAttack.OnPremise_Cloud to listOf(Attacker(Attackers.Generic)),
+        )
+    ) ,
 
-    /** The weight, threshold (type and value) and penalty for security requirements */
-    var securityRequirementsInputs: List<Requirement>
+    /** The list of domains */
+    var domainsState: List<Domains> = Domains.values().toMutableList(),
 
-    /** The attackers of the current scenario */
-    var attackersInput: LinkedHashMap<DomainsWithChannels, List<Attacker>>
+    /** The list of entities */
+    var entitiesState: List<Entities> = Entities.values().toMutableList(),
+) : State
 
-    /** The domains of the current scenario */
-    var domains: List<Domains>
+/** Power set of the given set */
+fun <T> Collection<T>.powerSet(): Set<Set<T>> =
+    powerSet(this, setOf(emptySet()))
+private tailrec fun <T> powerSet(left: Collection<T>, acc: Set<Set<T>>): Set<Set<T>> =
+    if (left.isEmpty()) acc
+    else powerSet(left.drop(1), acc + acc.map { it + left.first() })
 
-    /** The entities of the current scenario */
-    var entities: List<Entities>
+/** Cross product of two sets */
+fun <T, R> Collection<T>.crossProduct(other: Collection<R>): List<Pair<T, R>> {
+    return this.flatMap { element1 ->
+        other.map { element2 ->
+            element1 to element2
+        }
+    }
 }
 
-external interface TradeOffBoardProps : Props {
-    var handleChangeCircularProgressValue: (Int) -> Unit
-    var handleChangeBackdropIsOpen: (Boolean) -> Unit
-    var scenario: Scenario
-    var algorithm: Algorithm
-    var metric: Metric
+
+private fun getCriteria(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState
+): List<Criteria> {
+    return when (props.objectiveProp) {
+        Objective.Performance -> state.performanceGoalsInputsState
+        Objective.Security -> state.securityPropertyInputsState
+        Objective.Both -> state.performanceGoalsInputsState + state.securityPropertyInputsState
+    }
 }
 
-/** The TradeOffBoard React component */
-class TradeOffBoard : RComponent<TradeOffBoardProps, TradeOffBoardState>() {
+/**
+ * Change the number of instances possible
+ * for [entity] to the given [newNumberOfInstances]
+ */
+private fun changeNumberOfInstances(
+    state: TradeOffBoardState,
+    entity: Entities,
+    newNumberOfInstances: Pair<Int, Int>
+) {
+    logger.info { "changeNumberOfInstances, entity $entity, newNumberOfInstances $newNumberOfInstances" }
+    state.replicationIntervalState[entity] = newNumberOfInstances
+}
 
-    override fun RBuilder.render() {
-        styledDiv {
-            css {
-                textAlign = TextAlign.center
-                paddingTop = 10.px
-                paddingBottom = 10.px
-            }
+/**
+ * Change the penalty value of the
+ * [objective] to the given [penalty]
+ */
+private fun changePenaltyValue(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState,
+    objective: String,
+    penalty: Int
+) {
+    logger.info { "changePenalty, objective $objective, penalty $penalty" }
+    getCriteria(
+        props = props,
+        state = state
+    ).first { it.name == objective }.penalty = penalty
+}
 
-            grid {
-                attrs {
-                    container = true
-                    spacing = 3
+/**
+ * Change the threshold value of the
+ * [objective] to the given [value]
+ */
+private fun changeThresholdValue(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState,
+    objective: String,
+    value: Int
+) {
+    logger.info { "changeThresholdValue, objective $objective, value $value" }
+    getCriteria(
+        props = props,
+        state = state
+    ).first { it.name == objective }.thresholdValue = value
+}
+
+/**
+ * Change the threshold type of the
+ * [objective] to the given [threshold]
+ */
+private fun changeThresholdType(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState,
+    objective: String,
+    threshold: Threshold
+) {
+    logger.info { "changeThresholdType, objective $objective, threshold $threshold" }
+    getCriteria(
+        props = props,
+        state = state
+    ).first { it.name == objective }.thresholdType = threshold
+}
+
+/**
+ * Change the weight value of the
+ * [objective] to the given [weight]
+ */
+private fun changeWeightValue(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState,
+    objective: String,
+    weight: Int
+) {
+    logger.info { "changeWeight, objective $objective, weight $weight" }
+    getCriteria(
+        props = props,
+        state = state
+    ).first { it.name == objective }.weight = weight
+}
+
+/**
+ * Change the likelihood of the [attacker] threatening
+ * the given [pointOfAttack] to the given [newLikelihood]
+ */
+private fun changeLikelihood(
+    state: TradeOffBoardState,
+    pointOfAttack: PointsOfAttack,
+    attacker: Attackers,
+    newLikelihood: Likelihood,
+    scenario: Scenario
+) {
+    logger.info { "ChangeLikelihood, point of attack $pointOfAttack, attacker $attacker, newLikelihood $newLikelihood" }
+    state.attackersByScenarioInputState[scenario]!![pointOfAttack]!!.first {
+        it.attacker == attacker
+    }.likelihood = newLikelihood
+}
+
+/**
+ * Toggle the assignment of the [entity]
+ * to the [domain] to the given value [accepted] */
+private fun toggleAssignment(
+    state: TradeOffBoardState,
+    entity: Entities,
+    domain: Domains,
+    accepted: Boolean
+) {
+    logger.info { "ToggleAssignment, entity $entity, domain $domain, accepted $accepted" }
+    if (accepted) {
+        state.prefiltersState.remove(Assignment(entity, domain))
+    } else {
+        state.prefiltersState.add(Assignment(entity, domain))
+    }
+}
+
+/**
+ * Compute the list of possible architectures based on
+ * the thresholds and pre-filters given, and evaluate
+ * them (either MOCOP or SOOP)
+ */
+private fun computePossibleArchitectures(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState,
+): List<Architecture> {
+
+    if (state == undefined) { return listOf() }
+
+    logger.info { "Derive the list of possible assignments" }
+    val possibleAssignments = Entities.values().toSet().crossProduct(Domains.values().toSet()).map {
+        Assignment(it.first, it.second)
+    }.filter {
+        it !in state.prefiltersState
+    }
+    props.handleChangeCircularProgressValueProp(25)
+
+    val possibleArchitectures = possibleAssignments.powerSet().map {
+        Architecture(it.toList())
+    }.filter { architecture ->
+        Entities.values().all { entity ->
+            ((architecture.assignments.count { it.entity == entity }) >= state.replicationIntervalState[entity]!!.first)
+                &&
+            ((architecture.assignments.count { it.entity == entity }) <= state.replicationIntervalState[entity]!!.second)
+        }
+    }
+    props.handleChangeCircularProgressValueProp(50)
+
+    val candidateArchitectures = mutableListOf<Architecture>()
+    if (possibleArchitectures.isNotEmpty()) {
+        logger.info { "For each architecture, compute the scores array" }
+        possibleArchitectures.forEach { currentArchitecture ->
+
+            /** e.g., {redundancy:+1, scalability:0, ...} */
+            val scoresMap = computeScoresArray(
+                props = props,
+                state = state,
+                assignments = currentArchitecture.assignments
+            )
+            
+            when (props.algorithmProp) {
+                Algorithm.MOCOP -> {
+                    currentArchitecture.arrayObjectivesScore = scoresMap
+                    candidateArchitectures.add(currentArchitecture)
                 }
+                Algorithm.SOOP -> {
+                    var finalScore = 0
+                    var exclude = false
 
-                grid {
-                    attrs {
-                        item = true
-                        sm = 12
-                        md = 12
-                        lg = 12
-                        xl = 12
-                    }
-                    /** Allow users to define how many instances of each entity to have */
-                    child(
-                        cryptoACPaper {
-                            titleStyle = plainPaperTitleStyle
-                            titleText = "Replication of Entities"
-                            titleVariant = "subtitle1"
-                            setDivider = false
-                            dividerWidth = 95.pct
-                            child = createElement {
+                    scoresMap.forEach { entry ->
+                        val objectiveName = entry.key
+                        var score = entry.value
 
-                                styledTable {
-                                    css {
-                                        borderCollapse = BorderCollapse.collapse
-                                        width = 100.pct
-                                    }
-                                    /** The first row contains the titles */
-                                    styledThead {
-                                        css {
-                                            borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
-                                        }
-                                        tr {
-                                            state.entities.forEach {
-                                                styledTd {
-                                                    css {
-                                                        padding = "4px"
-                                                    }
-                                                    +it.toString()
-                                                }
-                                            }
-                                        }
-                                    }
+                        val criteria = getCriteria(
+                            props = props,
+                            state = state
+                        ).first { it.name == objectiveName }
 
-                                    /** The rows are for the sliders */
-                                    tbody {
-                                        tr {
-                                            state.entities.forEachIndexed { index, entity ->
-                                                styledTd {
-                                                    css {
-                                                        if (index == 0) {
-                                                            paddingTop = 3.px
-                                                        } else if (index == state.entities.size - 1) {
-                                                            paddingBottom = 3.px
-                                                        }
-                                                        if (index == state.entities.size - 1 && index == state.entities.size - 1) {
-                                                            borderBottomRightRadius = 15.px
-                                                        }
-                                                    }
-
-                                                    child(
-                                                        cryptoACSlider {
-                                                            label = ""
-                                                            min = 0
-                                                            max = state.domains.size
-                                                            defaultValues = arrayOf(0, Domains.values().size)
-                                                            color = "primary"
-                                                            range = true
-                                                            onChange = { newNumberOfInstances ->
-                                                                changeNumberOfInstances(
-                                                                    entity,
-                                                                    newNumberOfInstances as Array<Int>
-                                                                )
-                                                            }
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }!!
-                        }
-                    )
-                }
-
-                grid {
-                    attrs {
-                        item = true
-                        sm = 12
-                        md = 12
-                        lg = 12
-                        xl = 12
-                    }
-                    /** Allow users to set pre-filters */
-                    child(
-                        cryptoACPaper {
-                            titleStyle = plainPaperTitleStyle
-                            titleText = "Pre-filters"
-                            titleVariant = "subtitle1"
-                            setDivider = false
-                            dividerWidth = 95.pct
-                            child = createElement {
-
-                                styledTable {
-                                    css {
-                                        borderCollapse = BorderCollapse.collapse
-                                        width = 100.pct
-                                    }
-                                    /** The first row contains the entities */
-                                    styledThead {
-                                        css {
-                                            borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
-                                        }
-                                        tr {
-                                            styledTd {
-                                                css {
-                                                    padding = "4px"
-                                                }
-                                            }
-                                            state.entities.forEach {
-                                                styledTd {
-                                                    css {
-                                                        padding = "4px"
-                                                    }
-                                                    +it.toString()
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    /** The rows are for the domains */
-                                    tbody {
-                                        state.domains.forEachIndexed { index, domain ->
-                                            tr {
-                                                styledTd {
-                                                    css {
-                                                        paddingLeft = 10.px
-                                                        width = 160.px
-                                                        textAlign = TextAlign.left
-                                                        if (index == state.domains.size - 1) {
-                                                            borderBottomLeftRadius = 15.px
-                                                        }
-                                                    }
-                                                    +domain.toString()
-                                                }
-                                                state.entities.forEachIndexed { entityIndex, entity ->
-                                                    styledTd {
-                                                        css {
-                                                            if (index == 0) {
-                                                                paddingTop = 3.px
-                                                            } else if (index == state.domains.size - 1) {
-                                                                paddingBottom = 3.px
-                                                            }
-                                                            if (index == state.domains.size - 1 && entityIndex == state.entities.size - 1) {
-                                                                borderBottomRightRadius = 15.px
-                                                            }
-                                                        }
-                                                        child(
-                                                            entityIcon {
-                                                                key = state.domains.toString() + state.entities.toString()
-                                                                src = getImageFromEntity(entity)
-                                                                onClick = { entity, domain, assignment ->
-                                                                    toggleAssignment(entity, domain, assignment)
-                                                                }
-                                                                this.entity = entity
-                                                                this.domain = domain
-                                                            }
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }!!
-                        }
-                    )
-                }
-                grid {
-                    attrs {
-                        item = true
-                        sm = 12
-                        md = 12
-                        lg = 12
-                        xl = 12
-                    }
-                    /** Allow users to input trust assumptions */
-                    child(
-                        cryptoACPaper {
-                            titleStyle = plainPaperTitleStyle
-                            titleText = "Trust Assumptions"
-                            titleVariant = "subtitle1"
-                            setDivider = false
-                            dividerWidth = 95.pct
-                            child = createElement {
-                                styledTable {
-                                    css {
-                                        borderCollapse = BorderCollapse.collapse
-                                        width = 100.pct
-                                    }
-
-                                    /** The first row contains the headers */
-                                    styledThead {
-                                        css {
-                                            borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
-                                        }
-                                        tr {
-                                            styledTd {
-                                                css {
-                                                    padding = "4px"
-                                                }
-                                                +"Domain or Channel"
-                                            }
-                                            styledTd {
-                                                css {
-                                                    padding = "4px"
-                                                }
-                                                +"Attacker"
-                                            }
-                                            styledTd {
-                                                css {
-                                                    padding = "4px"
-                                                }
-                                                attrs {
-                                                    colSpan = "2"
-                                                }
-                                                +"Likelihood"
-                                            }
-                                        }
-                                    }
-
-                                    /** Each row contains the attackers and likelihoods */
-                                    tbody {
-                                        val iterator = state.attackersInput.iterator()
-                                        while (iterator.hasNext()) {
-                                            val entry = iterator.next()
-                                            val domain = entry.key
-                                            val attackers = entry.value
-                                            tr {
-                                                styledTd {
-                                                    css {
-                                                        paddingLeft = 10.px
-                                                        width = 160.px
-                                                        textAlign = TextAlign.left
-                                                        if (!iterator.hasNext()) {
-                                                            borderBottomLeftRadius = 15.px
-                                                        }
-                                                    }
-                                                    attrs {
-                                                        rowSpan = attackers.size.toString()
-                                                    }
-                                                    +domain.toString()
-                                                }
-                                                child(
-                                                    trustAssumptionsLikelihood {
-                                                        this.defaultValue = Likelihood.High
-                                                        this.last = attackers.size == 1 && !iterator.hasNext()
-                                                        this.domain = domain
-                                                        this.attacker = attackers.first().attacker
-                                                        this.handleChangeLikelihood = { domain, attacker, newLikelihood ->
-                                                            changeLikelihood(domain, attacker, newLikelihood)
-                                                        }
-                                                    }
-                                                )
-                                            }
-                                            attackers.forEachIndexed { index, attacker ->
-                                                if (index != 0) {
-                                                    tr {
-                                                        child(
-                                                            trustAssumptionsLikelihood {
-                                                                this.defaultValue = Likelihood.High
-                                                                this.last = index == attackers.size - 1 && !iterator.hasNext()
-                                                                this.domain = domain
-                                                                this.attacker = attacker.attacker
-                                                                this.handleChangeLikelihood = { domain, attacker, newLikelihood ->
-                                                                    changeLikelihood(domain, attacker, newLikelihood)
-                                                                }
-                                                            }
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }!!
-                        }
-                    )
-                }
-
-                if (props.algorithm == Algorithm.AdHoc) {
-
-                    grid {
-                        attrs {
-                            item = true
-                            sm = 12
-                            md = 12
-                            lg = 12
-                            xl = 12
-                        }
-                        /** Allow users to input weights and constraints for requirements */
-                        child(
-                            cryptoACPaper {
-                                titleStyle = plainPaperTitleStyle
-                                titleText = when (props.metric) {
-                                    Metric.Protection -> "Security Requirements"
-                                    Metric.Goals -> "Scenario Requirements"
-                                }
-                                titleVariant = "subtitle1"
-                                setDivider = false
-                                dividerWidth = 95.pct
-                                child = createElement {
-                                    styledTable {
-                                        css {
-                                            borderCollapse = BorderCollapse.collapse
-                                            width = 100.pct
-                                        }
-
-                                        /** The first row contains the headers */
-                                        styledThead {
-                                            css {
-                                                borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
-                                            }
-                                            tr {
-                                                styledTd {
-                                                    css {
-                                                        padding = "4px"
-                                                    }
-                                                }
-                                                styledTd {
-                                                    css {
-                                                        padding = "4px"
-                                                    }
-                                                    +"Weight"
-                                                }
-                                                styledTd {
-                                                    css {
-                                                        padding = "4px"
-                                                    }
-                                                    +"Threshold"
-                                                }
-                                                styledTd {
-                                                    css {
-                                                        padding = "4px"
-                                                    }
-                                                    +"Threshold Value"
-                                                }
-                                                styledTd {
-                                                    css {
-                                                        padding = "4px"
-                                                    }
-                                                    +"Penalty"
-                                                }
-                                            }
-                                        }
-
-                                        /** Each row contains the attackers and likelihoods */
-                                        tbody {
-
-                                            val requirements = when (props.metric) {
-                                                Metric.Goals -> state.performanceRequirementsInputs
-                                                Metric.Protection -> state.securityRequirementsInputs
-                                            }
-
-                                            requirements.forEachIndexed { index, req ->
-                                                key = req.name
-                                                tr {
-                                                    child(
-                                                        requirementItem {
-                                                            defaultValue = when (props.metric) {
-                                                                Metric.Goals -> state.performanceRequirementsInputs
-                                                                Metric.Protection -> state.securityRequirementsInputs
-                                                            }.first { it.name == req.name }
-                                                            last = index == requirements.size - 1
-                                                            requirement = req
-                                                            handleChangeWeightValue = { weight ->
-                                                                changeWeightValue(req.name, weight)
-                                                            }
-                                                            handleChangeThresholdType = { type ->
-                                                                changeThresholdType(req.name, type)
-                                                            }
-                                                            handleChangeThresholdValue = { threshold ->
-                                                                changeThresholdValue(req.name, threshold)
-                                                            }
-                                                            handleChangePenaltyValue = { penalty ->
-                                                                changePenaltyValue(req.name, penalty)
-                                                            }
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }!!
+                        when (criteria.thresholdType) {
+                            Threshold.None -> { }
+                            Threshold.Soft -> if (score < criteria.thresholdValue) {
+                                score -= criteria.penalty
                             }
+                            Threshold.Hard -> if (score < criteria.thresholdValue) {
+                                exclude = true
+                            }
+                        }
+                        finalScore += score * criteria.weight
+                    }
+                    if (!exclude) {
+                        currentArchitecture.objectivesWeightedScore = finalScore
+                        candidateArchitectures.add(currentArchitecture)
+                    }
+                }
+            }
+        }
+    }
+
+    logger.info { "There are ${candidateArchitectures.size} candidate architectures" }
+
+    return if (candidateArchitectures.size != 0) {
+        orderArchitectures(
+            props = props,
+            candidateArchitectures = candidateArchitectures)
+    } else {
+
+        candidateArchitectures
+    }
+}
+
+// TODO DOC
+private fun computePerformanceScoresArray(
+    assignments: List<Assignment>
+): LinkedHashMap<String, Int> {
+    val scoresArray: LinkedHashMap<String, Int> = linkedMapOf()
+    performanceGoalsScores.forEach { performanceGoalScores ->
+        val performanceGoal = performanceGoalScores.key.toString()
+        var score = 0
+        val assignmentsAndScore = performanceGoalScores.value
+        assignments.forEach { assignment ->
+            score += assignmentsAndScore[assignment]!!
+        }
+        scoresArray[performanceGoal] = score
+    }
+    return scoresArray
+}
+
+// TODO DOC
+private fun computeSecurityScoresArray(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState,
+    assignments: List<Assignment>
+): LinkedHashMap<String, Int> {
+    val scoresArray: LinkedHashMap<String, Int> = linkedMapOf()
+    securityPropertiesImpact.forEach { securityPropertyImpact ->
+        val securityProperty = securityPropertyImpact.key.toString()
+        var score = getProtectionLevel(impact = Impact.None, likelihood = Likelihood.None)
+        val targetsAndImpact = securityPropertyImpact.value
+
+        /** For each point of attack */
+        state.attackersByScenarioInputState[props.scenarioProp]!!.forEach { attackersPerPointOfAttack ->
+            val pointOfAttack = attackersPerPointOfAttack.key
+            val pointOfAttackString = pointOfAttack.toString()
+            val attackers = attackersPerPointOfAttack.value
+
+            /** For each attacker in that point of attack */
+            attackers.forEach { attacker ->
+
+                /** The attacker operates in a point of attack which is a single domain */
+                if (pointOfAttackString in enumValues<Domains>().map { it.toString() }) {
+
+                    /** For each target in that domain */
+                    val domain = Domains.valueOf(pointOfAttackString)
+                    assignments.filter { it.domain == domain }.forEach {
+                        val target = Targets.valueOf(it.entity.toString())
+
+                        /** The attacker threatens that entity (keep lowest protection level) */
+                        score = minOf(
+                            score,
+                            getProtectionLevel(targetsAndImpact[target]!!, attacker.likelihood)
                         )
                     }
                 }
-            }
+                /**
+                 * The attacker operates in a point of attack which
+                 * is a communication link between the two domains
+                 */
+                else {
+                    val firstDomainString = pointOfAttackString.split("_")[0]
+                    val secondDomainString = pointOfAttackString.split("_")[1]
+                    val firstDomain = Domains.valueOf(firstDomainString)
+                    val secondDomain = Domains.valueOf(secondDomainString)
 
-            br { }
+                    val entitiesInFirstDomain = mutableListOf<Entities>()
+                    val entitiesInSecondDomain = mutableListOf<Entities>()
+                    assignments.forEach {
+                        if (it.domain == firstDomain) {
+                            entitiesInFirstDomain.add(it.entity)
+                        } else if (it.domain == secondDomain) {
+                            entitiesInSecondDomain.add(it.entity)
+                        }
+                    }
 
-            /** The ranking of architectures */
-            child(
-                cryptoACPaper {
-                    titleStyle = plainPaperTitleStyle
-                    titleText = "Best Architectures"
-                    titleVariant = "subtitle1"
-                    setDivider = false
-                    dividerWidth = 95.pct
-                    child = createElement {
-                        styledDiv {
-                            css {
-                                float = Float.right
+                    entitiesInFirstDomain.forEach { firstEntity ->
+                        entitiesInSecondDomain.forEach { secondEntity ->
+
+                            val listOfTargetsStrings = Targets.values().map { it.toString() }
+                            val targetString = if ("${firstEntity}_$secondEntity" in listOfTargetsStrings) {
+                                "${firstEntity}_$secondEntity"
+                            } else if ("${secondEntity}_$firstEntity" in listOfTargetsStrings) {
+                                "${secondEntity}_$firstEntity"
+                            } else {
+                                null
                             }
-                            iconButton {
-                                attrs {
-                                    size = "small"
-                                    label = "refresh"
-                                    color = "secondary"
-                                    onClick = {
-                                        // TODO the backdrop does not work => I think
-                                        //  "computePossibleArchitectures" takes too
-                                        //  much CPU resources and thus React does not
-                                        //  render
-                                        props.handleChangeBackdropIsOpen(true)
-                                        val newArchitectures = computePossibleArchitectures()
-                                        props.handleChangeBackdropIsOpen(false)
-                                        setState {
-                                            architectures = newArchitectures
-                                        }
-                                    }
+
+                            if (targetString != null) {
+                                val target = Targets.valueOf(targetString)
+                                targetsAndImpact[target]?.let {
+                                    /** The attacker threatens the data flow between the two entities */
+                                    score = minOf(
+                                        score,
+                                        getProtectionLevel(it, attacker.likelihood)
+                                    )
                                 }
-                                child(createElement<Props> { faUndoAlt { } }!!)
                             }
                         }
+                    }
+                }
+            }
+        }
+        scoresArray[securityProperty] = score
+    }
+    return scoresArray
+}
 
-                        styledTable {
+private fun computeScoresArray(
+    props: TradeOffBoardProps,
+    state: TradeOffBoardState,
+    assignments: List<Assignment>
+): LinkedHashMap<String, Int> {
+    val scoresArray: LinkedHashMap<String, Int> = linkedMapOf()
+
+    when (props.objectiveProp) {
+        Objective.Performance -> {
+            scoresArray.putAll(computePerformanceScoresArray(
+                assignments = assignments
+            ))
+        }
+        Objective.Security -> {
+            scoresArray.putAll(computeSecurityScoresArray(
+                props = props,
+                state = state,
+                assignments = assignments
+            ))
+        }
+        Objective.Both -> {
+            scoresArray.putAll(computePerformanceScoresArray(
+                assignments = assignments
+            ))
+            scoresArray.putAll(computeSecurityScoresArray(
+                props = props,
+                state = state,
+                assignments = assignments
+            ))
+        }
+    }
+
+    return scoresArray
+}
+
+private fun orderArchitectures(
+    props: TradeOffBoardProps,
+    candidateArchitectures: MutableList<Architecture>
+): MutableList<Architecture> {
+
+    logger.info { "${candidateArchitectures.size} architectures are being ordered" }
+
+    return when (props.algorithmProp) {
+        Algorithm.SOOP -> {
+            candidateArchitectures.sortedByDescending { it.objectivesWeightedScore }.toMutableList()
+        }
+        Algorithm.MOCOP -> {
+
+            /** Find the optimal */
+            var currentOptimal = candidateArchitectures.first()
+            candidateArchitectures.forEach { currentArchitecture ->
+                if (dominates(currentArchitecture.arrayObjectivesScore, currentOptimal.arrayObjectivesScore)) {
+                    currentOptimal = currentArchitecture
+                }
+            }
+
+            /** Remove dominated architectures */
+            val iterator = candidateArchitectures.iterator()
+            while (iterator.hasNext()) {
+                val currentArchitecture = iterator.next()
+                if (dominates(currentOptimal.arrayObjectivesScore, currentArchitecture.arrayObjectivesScore)) {
+                    iterator.remove()
+                }
+            }
+            logger.info { "${candidateArchitectures.size} architectures are optimal" }
+            candidateArchitectures
+        }
+    }
+}
+
+private fun dominates(dominator: LinkedHashMap<String, Int>, dominatee: LinkedHashMap<String, Int>): Boolean {
+    var dominate = true
+    var majorInAtLeastOne = false
+    dominator.forEach {
+        if (dominatee[it.key]!! > it.value) {
+            dominate = false
+        }
+        if (it.value > dominatee[it.key]!!) {
+            majorInAtLeastOne = true
+        }
+    }
+    return dominate && majorInAtLeastOne
+}
+
+// TODO doc
+private fun getProtectionLevel(impact: Impact, likelihood: Likelihood): Int {
+    return if (impact == Impact.None || likelihood == Likelihood.None) {
+        3
+    } else if (impact == Impact.Low || likelihood == Likelihood.Low) {
+        2
+    } else if (impact == Impact.Medium || likelihood == Likelihood.Medium) {
+        1
+    } else {
+        0
+    }
+}
+
+/** The TradeOffBoard React component */
+val TradeOffBoard = FC<TradeOffBoardProps> {props ->
+
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [TradeOffBoardState] for details
+     */
+    var state by useState(TradeOffBoardState())
+
+    div {
+        css {
+            textAlign = TextAlign.center
+            paddingTop = 10.px
+            paddingBottom = 10.px
+        }
+
+        grid {
+            container = true
+            spacing = 3
+
+            /** Allow users to define how many instances of each entity to have */
+            grid {
+                item = true
+                sm = 12
+                md = 12
+                lg = 12
+                xl = 12
+                CryptoACPaper {
+                    titleStyleProp = plainPaperTitleStyle
+                    titleTextProp = "Replication Interval"
+                    titleVariantProp = "subtitle1"
+                    setDividerProp = false
+                    dividerWidthProp = 95.pct
+                    childProp = FC<Props> {
+                        table {
                             css {
                                 borderCollapse = BorderCollapse.collapse
                                 width = 100.pct
                             }
-                            /** The first row contains the domains */
-                            styledThead {
+                            /** The first row contains the titles */
+                            thead {
                                 css {
-                                    borderBottom = "1px solid rgba(173, 173, 173, 0.2)"
+                                    borderBottomColor = Color("rgba(173, 173, 173, 0.2)")
+                                    borderBottomWidth = 1.px
+                                    borderBottomStyle = LineStyle.solid
                                 }
                                 tr {
-                                    state.domains.forEach {
-                                        styledTd {
+                                    state.entitiesState.forEach {
+                                        td {
                                             css {
-                                                padding = "4px"
+                                                padding = Padding(4.px, 4.px)
                                             }
                                             +it.toString()
                                         }
                                     }
-                                    styledTd {
-                                        css {
-                                            padding = "4px"
-                                        }
-                                        +"Score"
-                                    }
                                 }
                             }
 
+                            /** The rows are for the sliders */
                             tbody {
-                                val architecturesToShow = state.architectures
-                                logger.info { "Showing ${architecturesToShow.size} architectures" }
-                                architecturesToShow.forEachIndexed { architectureIndex, architecture ->
-                                    tr {
-                                        state.domains.forEachIndexed { domainIndex, domain ->
-                                            val entitiesInDomain = architecture.arcs[domain] ?: listOf()
-                                            styledTd {
-                                                css {
-                                                    if (architectureIndex == 0) {
-                                                        paddingTop = 3.px
-                                                    } else if (architectureIndex == architecturesToShow.size - 1) {
-                                                        paddingBottom = 3.px
-                                                        if (domainIndex == 0) {
-                                                            borderBottomLeftRadius = 15.px
-                                                        }
-                                                    }
-                                                }
-                                                entitiesInDomain.forEach { entity ->
-                                                    child(
-                                                        entityIcon {
-                                                            src = getImageFromEntity(entity)
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                        }
-
-                                        styledTd {
+                                tr {
+                                    state.entitiesState.forEachIndexed { index, entity ->
+                                        td {
                                             css {
-                                                if (architectureIndex == 0) {
+                                                if (index == 0) {
                                                     paddingTop = 3.px
-                                                } else if (architectureIndex == architecturesToShow.size - 1) {
+                                                } else if (index == state.entitiesState.size - 1) {
                                                     paddingBottom = 3.px
+                                                }
+                                                if (index == state.entitiesState.size - 1 && index == state.entitiesState.size - 1) {
                                                     borderBottomRightRadius = 15.px
                                                 }
                                             }
-                                            if (props.algorithm == Algorithm.AdHoc) {
-                                                +architecture.requirementsScore.toString()
-                                            } else if (props.algorithm == Algorithm.Best) {
-                                                architecture.arrayRequirementsScore.forEach {
-
-                                                    val score = it.value
-
-                                                    tooltip {
-                                                        attrs {
-                                                            title = it.key.replace("_", "-")
-                                                        }
-                                                        child(
-                                                            createElement<Props> {
-                                                                styledSpan {
-                                                                    css {
-                                                                        marginRight = 0.5.em
-                                                                        fontFamily = "Courier"
-                                                                        color = Color(
-                                                                            if (score < 0) {
-                                                                                "#c0392b"
-                                                                            } else if (score == 0) {
-                                                                                "black"
-                                                                            } else {
-                                                                                "#27ae60"
-                                                                            }
-                                                                        )
-                                                                    }
-                                                                    +"${(if (score >= 0) { "+" } else { "" })}$score"
-                                                                }
-                                                            }!!
-                                                        )
-                                                    }
+                                            CryptoACSlider {
+                                                labelProps = ""
+                                                minProps = 0
+                                                maxProps = state.domainsState.size
+                                                defaultValuesProps = arrayOf(1, 1) // arrayOf(0, Domains.values().size)
+                                                colorProps = "primary"
+                                                rangeProps = true
+                                                onChangeProps = { newNumberOfInstances ->
+                                                    val newNumberOfInstancesArray = newNumberOfInstances as Array<Int>
+                                                    val newNumberOfInstancesPair = (newNumberOfInstancesArray[0] to newNumberOfInstancesArray[1])
+                                                    changeNumberOfInstances(
+                                                        state = state,
+                                                        entity = entity,
+                                                        newNumberOfInstances = newNumberOfInstancesPair
+                                                    )
+                                                    /** do not trigger the re-render */
+                                                    //state = state.copy()
                                                 }
                                             }
                                         }
@@ -613,423 +611,541 @@ class TradeOffBoard : RComponent<TradeOffBoardProps, TradeOffBoardState>() {
                                 }
                             }
                         }
-                    }!!
-                }
-            )
-        }
-    }
-
-    /**
-     * Change the number of instances possible
-     * for [entity] to the given [newNumberOfInstances]
-     */
-    private fun changeNumberOfInstances(entity: Entities, newNumberOfInstances: Array<Int>) {
-        logger.info { "changeNumberOfInstances, entity $entity, newNumberOfInstances $newNumberOfInstances" }
-        setState { numberOfInstances[entity] = newNumberOfInstances }
-    }
-
-    /**
-     * Change the penalty value of the
-     * [requirement] to the given [penalty]
-     */
-    private fun changePenaltyValue(requirement: String, penalty: Int) {
-        logger.info { "changePenalty, requirement $requirement, penalty $penalty" }
-        setState {
-            when (props.metric) {
-                Metric.Goals -> state.performanceRequirementsInputs
-                Metric.Protection -> state.securityRequirementsInputs
-            }.first { it.name == requirement }.penalty = penalty
-        }
-    }
-
-    /**
-     * Change the threshold value of the
-     * [requirement] to the given [value]
-     */
-    private fun changeThresholdValue(requirement: String, value: Int) {
-        logger.info { "changeThresholdValue, requirement $requirement, value $value" }
-        setState {
-            when (props.metric) {
-                Metric.Goals -> state.performanceRequirementsInputs
-                Metric.Protection -> state.securityRequirementsInputs
-            }.first { it.name == requirement }.thresholdValue = value
-        }
-    }
-
-    /**
-     * Change the threshold type of the
-     * [requirement] to the given [threshold]
-     */
-    private fun changeThresholdType(requirement: String, threshold: Threshold) {
-        logger.info { "changeThresholdType, requirement $requirement, threshold $threshold" }
-        setState {
-            when (props.metric) {
-                Metric.Goals -> state.performanceRequirementsInputs
-                Metric.Protection -> state.securityRequirementsInputs
-            }.first { it.name == requirement }.thresholdType = threshold
-        }
-    }
-
-    /**
-     * Change the weight value of the
-     * [requirement] to the given [weight]
-     */
-    private fun changeWeightValue(requirement: String, weight: Int) {
-        logger.info { "changeWeight, requirement $requirement, weight $weight" }
-        setState {
-            when (props.metric) {
-                Metric.Goals -> state.performanceRequirementsInputs
-                Metric.Protection -> state.securityRequirementsInputs
-            }.first { it.name == requirement }.weight = weight
-        }
-    }
-
-    /**
-     * Change the likelihood of the [attacker] threatening
-     * the given [domain] to the given [newLikelihood]
-     */
-    private fun changeLikelihood(domain: DomainsWithChannels, attacker: Attackers, newLikelihood: Likelihood) {
-        logger.info { "ChangeLikelihood, domain $domain, attacker $attacker, newLikelihood $newLikelihood" }
-        setState {
-            attackersInput[domain]!!.first { it.attacker == attacker }.likelihood = newLikelihood
-        }
-    }
-
-    /**
-     * Toggle the assignment of the [entity]
-     * to the [domain] to the given value [accepted] */
-    private fun toggleAssignment(entity: Entities, domain: Domains, accepted: Boolean) {
-        logger.info { "ToggleAssignment, entity $entity, domain $domain, accepted $accepted" }
-        setState {
-            if (accepted) {
-                assignments[domain]!!.add(entity)
-            } else {
-                assignments[domain]!!.remove(entity)
-            }
-        }
-    }
-
-    /**
-     * Compute the list of possible architectures based on
-     * the thresholds and pre-filters given, and evaluate
-     * them (either Best or AdHoc)
-     */
-    private fun computePossibleArchitectures(): List<Architecture> {
-
-        if (state == undefined) { return listOf() }
-
-        logger.info { "Derive the list of possible assignments in the form of <domain, entity> tuples" }
-        val possibleAssignments: MutableList<Assignment> = mutableListOf()
-        state.assignments.forEach { entry ->
-            val domain = entry.key
-            entry.value.forEach { entity ->
-                possibleAssignments.add(Assignment(domain, entity))
-            }
-        }
-
-        props.handleChangeCircularProgressValue(50)
-
-        logger.info { "Compute the power set of possible assignments, so to have all possible architectures" }
-        val assignmentsPowerSet = possibleAssignments.powerSet()
-
-        props.handleChangeCircularProgressValue(90)
-
-        logger.info { "Compute the score of each architecture for each (security or performance) requirement" }
-        val architectures: MutableList<Architecture> = mutableListOf()
-        assignmentsPowerSet.forEach { currentArchitecture ->
-
-            /** Count the number of entities in this architecture */
-            val numberOfEntities: HashMap<Entities, Int> = hashMapOf()
-            state.entities.forEach {
-                numberOfEntities[it] = 0
-            }
-            currentArchitecture.forEach {
-                numberOfEntities[it.entity] = numberOfEntities[it.entity]!! + 1
-            }
-
-            /** Check whether the architecture respects the limits of entities */
-            var discardArchitecture = false
-            state.numberOfInstances.forEach {
-                val numberOfEntity = numberOfEntities[it.key]!!
-                val minNumberOfEntity = it.value[0]
-                val maxNumberOfEntity = it.value[1]
-                if (numberOfEntity < minNumberOfEntity || numberOfEntity > maxNumberOfEntity) {
-                    discardArchitecture = true
+                    }.create()
                 }
             }
 
-            /** If the architecture respects the limits of entities */
-            if (!discardArchitecture) {
-
-                val architecture = Architecture.architectureFromAssignments(currentArchitecture.toList())
-                val scoresArray = computeScoresArray(currentArchitecture)
-
-                var excludeArchitecture = false
-                if (props.algorithm == Algorithm.AdHoc) {
-                    // logger.info { "As algorithm is AdHoc, apply the weights, thresholds and penalty" }
-                    var finalScore = 0
-
-                    scoresArray.forEach { entry ->
-                        val requirementName = entry.key
-                        // logger.info { "Requirement is $requirementName" }
-                        var tempScore = entry.value
-
-                        val requirement = when (props.metric) {
-                            Metric.Goals -> state.performanceRequirementsInputs
-                            Metric.Protection -> state.securityRequirementsInputs
-                        }.first { it.name == requirementName }
-
-                        when (requirement.thresholdType) {
-                            Threshold.None -> { }
-                            Threshold.Soft -> if (tempScore < requirement.thresholdValue) {
-                                tempScore -= requirement.penalty
+            /** Allow users to set pre-filters */
+            grid {
+                item = true
+                sm = 12
+                md = 12
+                lg = 12
+                xl = 12
+                CryptoACPaper {
+                    titleStyleProp = plainPaperTitleStyle
+                    titleTextProp = "Pre-filters"
+                    titleVariantProp = "subtitle1"
+                    setDividerProp = false
+                    dividerWidthProp = 95.pct
+                    childProp = FC<Props> {
+                        table {
+                            css {
+                                borderCollapse = BorderCollapse.collapse
+                                width = 100.pct
                             }
-                            Threshold.Hard -> if (tempScore < requirement.thresholdValue) {
-                                excludeArchitecture = true
+                            /** The first row contains the entities */
+                            thead {
+                                css {
+                                    borderBottomColor = Color("rgba(173, 173, 173, 0.2)")
+                                    borderBottomWidth = 1.px
+                                    borderBottomStyle = LineStyle.solid
+                                }
+                                tr {
+                                    td {
+                                        css {
+                                            padding = Padding(4.px, 4.px)
+                                        }
+                                    }
+                                    state.entitiesState.forEach {
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            +it.toString()
+                                        }
+                                    }
+                                }
+                            }
+
+                            /** The rows are for the domains */
+                            tbody {
+                                state.domainsState.forEachIndexed { index, domain ->
+                                    tr {
+                                        td {
+                                            css {
+                                                paddingLeft = 10.px
+                                                width = 160.px
+                                                textAlign = TextAlign.left
+                                                if (index == state.domainsState.size - 1) {
+                                                    borderBottomLeftRadius = 15.px
+                                                }
+                                            }
+                                            +domain.toString()
+                                        }
+                                        state.entitiesState.forEachIndexed { entityIndex, entity ->
+                                            td {
+                                                css {
+                                                    if (index == 0) {
+                                                        paddingTop = 3.px
+                                                    } else if (index == state.domainsState.size - 1) {
+                                                        paddingBottom = 3.px
+                                                    }
+                                                    if (index == state.domainsState.size - 1 && entityIndex == state.entitiesState.size - 1) {
+                                                        borderBottomRightRadius = 15.px
+                                                    }
+                                                }
+                                                EntityIcon {
+                                                    key = domain.toString() + entity.toString()
+                                                    srcProp = getImageFromEntity(entity)
+                                                    defaultSelectedProp = !state.prefiltersState.contains(Assignment(entity, domain))
+                                                    onClickProp = { entity, domain, assignment ->
+                                                        toggleAssignment(
+                                                            state = state,
+                                                            entity = entity,
+                                                            domain = domain,
+                                                            accepted = assignment
+                                                        )
+                                                        /** do not trigger the re-render */
+                                                        //state = state.copy()
+                                                    }
+                                                    entityProp = entity
+                                                    domainProp = domain
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-                        finalScore += tempScore
-                    }
-                    architecture.requirementsScore = finalScore
-                } else if (props.algorithm == Algorithm.Best) {
-                    architecture.arrayRequirementsScore = scoresArray
+                    }.create()
                 }
+            }
 
-                if (!excludeArchitecture) {
-                    architectures.add(architecture)
+            /** Allow users to input trust assumptions */
+            if (props.objectiveProp == Objective.Security || props.objectiveProp == Objective.Both) {
+                grid {
+                    item = true
+                    sm = 12
+                    md = 12
+                    lg = 12
+                    xl = 12
+                    CryptoACPaper {
+                        titleStyleProp = plainPaperTitleStyle
+                        titleTextProp = "Trust Assumptions"
+                        titleVariantProp = "subtitle1"
+                        setDividerProp = false
+                        dividerWidthProp = 95.pct
+                        childProp = FC<Props> {
+                            table {
+                                css {
+                                    borderCollapse = BorderCollapse.collapse
+                                    width = 100.pct
+                                }
+
+                                /** The first row contains the headers */
+                                thead {
+                                    css {
+                                        borderBottomColor = Color("rgba(173, 173, 173, 0.2)")
+                                        borderBottomWidth = 1.px
+                                        borderBottomStyle = LineStyle.solid
+                                    }
+                                    tr {
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            +"Point of Attack"
+                                        }
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            +"Attacker"
+                                        }
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            colSpan = 2
+                                            +"Likelihood"
+                                        }
+                                    }
+                                }
+
+                                /** Each row contains the attackers and likelihoods */
+                                tbody {
+                                    val iterator = state.attackersByScenarioInputState[props.scenarioProp]!!.iterator()
+                                    while (iterator.hasNext()) {
+                                        val entry = iterator.next()
+                                        val domain = entry.key
+                                        val attackers = entry.value
+                                        tr {
+                                            td {
+                                                css {
+                                                    paddingLeft = 10.px
+                                                    width = 160.px
+                                                    textAlign = TextAlign.left
+                                                    if (!iterator.hasNext()) {
+                                                        borderBottomLeftRadius = 15.px
+                                                    }
+                                                }
+                                                rowSpan = attackers.size
+                                                +domain.toString().replace("_", "-")
+                                            }
+                                            TrustAssumptionsLikelihood {
+                                                defaultLikelihoodProp = Likelihood.High
+                                                lastProp = attackers.size == 1 && !iterator.hasNext()
+                                                defaultLikelihoodProp = state.attackersByScenarioInputState[props.scenarioProp]!![domain]!!.first {
+                                                    it.attacker == attackers.first().attacker
+                                                }.likelihood
+                                                domainProp = domain
+                                                attackerProp = attackers.first().attacker
+                                                handleChangeLikelihoodProp = { domain, attacker, newLikelihood ->
+                                                    changeLikelihood(
+                                                        state = state,
+                                                        pointOfAttack = domain,
+                                                        attacker = attacker,
+                                                        newLikelihood = newLikelihood,
+                                                        scenario = props.scenarioProp
+                                                    )
+                                                    /** do not trigger the re-render */
+                                                    //state = state.copy()
+                                                }
+                                            }
+                                        }
+                                        attackers.forEachIndexed { index, attacker ->
+                                            if (index != 0) {
+                                                tr {
+                                                    TrustAssumptionsLikelihood {
+                                                        defaultLikelihoodProp = Likelihood.High
+                                                        lastProp = index == attackers.size - 1 && !iterator.hasNext()
+                                                        defaultLikelihoodProp = state.attackersByScenarioInputState[props.scenarioProp]!![domain]!!.first {
+                                                            it.attacker == attacker.attacker
+                                                        }.likelihood
+                                                        domainProp = domain
+                                                        attackerProp = attacker.attacker
+                                                        handleChangeLikelihoodProp =
+                                                            { domain, attacker, newLikelihood ->
+                                                                changeLikelihood(
+                                                                    state = state,
+                                                                    pointOfAttack = domain,
+                                                                    attacker = attacker,
+                                                                    newLikelihood = newLikelihood,
+                                                                    scenario = props.scenarioProp
+                                                                )
+                                                                /** do not trigger the re-render */
+                                                                //state = state.copy()
+                                                            }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }.create()
+                    }
+                }
+            }
+
+            if (props.algorithmProp == Algorithm.SOOP) {
+
+                /** Allow users to input weights and constraints for objectives */
+                grid {
+                    item = true
+                    sm = 12
+                    md = 12
+                    lg = 12
+                    xl = 12
+                    CryptoACPaper {
+                        titleStyleProp = plainPaperTitleStyle
+                        titleTextProp = when (props.objectiveProp) {
+                            Objective.Security -> "Security Properties"
+                            Objective.Performance -> "Performance Goals"
+                            Objective.Both -> "Performance Goals and Security Properties"
+                        }
+                        titleVariantProp = "subtitle1"
+                        setDividerProp = false
+                        dividerWidthProp = 95.pct
+                        childProp = FC<Props> {
+                            table {
+                                css {
+                                    borderCollapse = BorderCollapse.collapse
+                                    width = 100.pct
+                                }
+
+                                /** The first row contains the headers */
+                                thead {
+                                    css {
+                                        borderBottomColor = Color("rgba(173, 173, 173, 0.2)")
+                                        borderBottomWidth = 1.px
+                                        borderBottomStyle = LineStyle.solid
+                                    }
+                                    tr {
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                        }
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            +"Weight"
+                                        }
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            +"Threshold"
+                                        }
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            +"Threshold Value"
+                                        }
+                                        td {
+                                            css {
+                                                padding = Padding(4.px, 4.px)
+                                            }
+                                            +"Penalty"
+                                        }
+                                    }
+                                }
+
+                                /** Each row contains the attackers and likelihoods */
+                                tbody {
+
+                                    val criterias = getCriteria(
+                                        props = props,
+                                        state = state
+                                    )
+
+                                    criterias.forEachIndexed { index, req ->
+                                        key = req.name
+                                        tr {
+                                            ObjectiveItem {
+                                                defaultValueProp = getCriteria(
+                                                    props = props,
+                                                    state = state
+                                                ).first { it.name == req.name }
+                                                lastProp = index == criterias.size - 1
+                                                criteriaProp = req
+                                                handleChangeWeightValueProp = { weight ->
+                                                    changeWeightValue(
+                                                        props = props,
+                                                        state = state,
+                                                        objective = req.name,
+                                                        weight = weight
+                                                    )
+                                                    /** do not trigger the re-render */
+                                                    //state = state.copy()
+                                                }
+                                                handleChangeThresholdTypeProp = { type ->
+                                                    changeThresholdType(
+                                                        props = props,
+                                                        state = state,
+                                                        objective = req.name,
+                                                        threshold = type
+                                                    )
+                                                    /** do not trigger the re-render */
+                                                    state = state.copy()
+                                                }
+                                                handleChangeThresholdValueProp = { threshold ->
+                                                    changeThresholdValue(
+                                                        props = props,
+                                                        state = state,
+                                                        objective = req.name,
+                                                        value = threshold
+                                                    )
+                                                    /** do not trigger the re-render */
+                                                    //state = state.copy()
+                                                }
+                                                handleChangePenaltyValueProp = { penalty ->
+                                                    changePenaltyValue(
+                                                        props = props,
+                                                        state = state,
+                                                        objective = req.name,
+                                                        penalty = penalty
+                                                    )
+                                                    /** do not trigger the re-render */
+                                                    //state = state.copy()
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }.create()
+                    }
                 }
             }
         }
 
-        logger.info { "There are ${architectures.size} architectures" }
+        br { }
 
-        return if (architectures.size != 0) {
-            orderArchitectures(architectures)
-        } else {
-            architectures
-        }
-    }
-
-    private fun computeScoresArray(currentArchitecture: Set<Assignment>): HashMap<String, Int> {
-        val scoresArray: HashMap<String, Int> = hashMapOf()
-
-        if (props.metric == Metric.Goals) {
-
-            performanceRequirementsImpact.forEach { entry ->
-
-                val requirementName = entry.key
-                // logger.info { "Requirement is $requirementName" }
-                var score = 0
-                val assignmentsAndImpact = entry.value
-                currentArchitecture.forEach { assignment ->
-                    // logger.info { "Assignment is $assignment" }
-
-                    val requirement = state.performanceRequirementsInputs.first { it.name == requirementName.name }
-
-                    score += (
-                        assignmentsAndImpact[assignment]!! * (
-                            if (props.algorithm == Algorithm.AdHoc) {
-                                requirement.weight
-                            } else {
-                                1
-                            }
+        /** The ranking of architectures */
+        CryptoACPaper {
+            titleStyleProp = plainPaperTitleStyle
+            titleTextProp = "Optimal Architectures"
+            titleVariantProp = "subtitle1"
+            setDividerProp = false
+            dividerWidthProp = 95.pct
+            childProp = FC<Props> {
+                div {
+                    css {
+                        float = Float.right
+                    }
+                    iconButton {
+                        size = "small"
+                        label = "refresh"
+                        color = "secondary"
+                        onClick = {
+                            // TODO the backdrop does not work => I think
+                            //  "computePossibleArchitectures" takes too
+                            //  much CPU resources and thus React does not
+                            //  render
+                            //  Wrapping "computePossibleArchitectures" around "MainScope().launch" does not work
+                            props.handleChangeBackdropIsOpenProp(true)
+                            val newArchitectures = computePossibleArchitectures(
+                                props = props,
+                                state = state
                             )
-                        )
-                }
-                scoresArray[requirementName.toString()] = score
-            }
-        } else if (props.metric == Metric.Protection) {
-            securityRequirementsImpact.forEach { securityRequirementImpact ->
-                val requirementName = securityRequirementImpact.key.toString()
-                // logger.info { "Requirement is $requirementName" }
-                var score = 3
-                val targetAndImpact = securityRequirementImpact.value
-                state.attackersInput.forEach { domainsAndAttackers ->
-                    val domain = domainsAndAttackers.key
-                    val attackers = domainsAndAttackers.value
-
-                    attackers.forEach { attacker ->
-
-                        /** The attackers operate in a single domain */
-                        if (enumContains<Domains>(domain.toString())) {
-                            /** For each entity in that domain */
-                            val convertedDomain = Domains.valueOf(domain.toString())
-                            currentArchitecture.filter { it.domain == convertedDomain }.forEach {
-                                val entityInDomain = it.entity
-                                val convertedEntity = EntitiesWithChannels.valueOf(entityInDomain.toString())
-
-                                /** The attacker threatens that entity */
-                                score = minOf(
-                                    score,
-                                    getProtectionLevel(targetAndImpact[convertedEntity]!!, attacker.likelihood)
-                                )
-                            }
+                            state = state.copy(optimalArchitecturesState = newArchitectures)
+                            props.handleChangeBackdropIsOpenProp(false)
                         }
-                        /** The attackers operate in a communication channel between two domains */
-                        else {
-                            val firstDomainString = domain.toString().split("_")[0]
-                            val secondDomainString = domain.toString().split("_")[1]
-                            val firstDomain = Domains.valueOf(firstDomainString)
-                            val secondDomain = Domains.valueOf(secondDomainString)
+                        faUndoAlt { }
+                    }
+                }
 
-                            val entitiesInFirstDomain = mutableListOf<Entities>()
-                            val entitiesInSecondDomain = mutableListOf<Entities>()
-                            currentArchitecture.forEach {
-                                if (it.domain == firstDomain) {
-                                    entitiesInFirstDomain.add(it.entity)
-                                } else if (it.domain == secondDomain) {
-                                    entitiesInSecondDomain.add(it.entity)
+                table {
+                    css {
+                        borderCollapse = BorderCollapse.collapse
+                        width = 100.pct
+                    }
+                    /** The first row contains the domains */
+                    thead {
+                        css {
+                            borderBottomColor = Color("rgba(173, 173, 173, 0.2)")
+                            borderBottomWidth = 1.px
+                            borderBottomStyle = LineStyle.solid
+                        }
+                        tr {
+                            state.domainsState.forEach {
+                                td {
+                                    css {
+                                        padding = Padding(4.px, 4.px)
+                                    }
+                                    +it.toString()
                                 }
                             }
-
-                            entitiesInFirstDomain.forEach { firstEntity ->
-                                entitiesInSecondDomain.forEach { secondEntity ->
-
-                                    val entityWithChannel = EntitiesWithChannels.valueOf("${firstEntity}_$secondEntity")
-                                    val entityWithChannelReverse = EntitiesWithChannels.valueOf("${secondEntity}_$firstEntity")
-
-                                    var eventualImpact = targetAndImpact[entityWithChannel]
-                                    if (eventualImpact == null) {
-                                        eventualImpact = targetAndImpact[entityWithChannelReverse]
-                                    }
-
-                                    if (eventualImpact != null) {
-                                        /** The attacker threatens the communication channel between the two entities */
-                                        score = minOf(
-                                            score,
-                                            getProtectionLevel(eventualImpact, attacker.likelihood)
-                                        )
-                                    }
+                            td {
+                                css {
+                                    padding = Padding(4.px, 4.px)
                                 }
+                                +"Score"
                             }
                         }
                     }
-                }
-                scoresArray[requirementName] = score * (
-                    if (props.algorithm == Algorithm.AdHoc) {
-                        when (props.metric) {
-                            Metric.Goals -> state.performanceRequirementsInputs
-                            Metric.Protection -> state.securityRequirementsInputs
-                        }.first { it.name == requirementName }.weight
-                    } else {
-                        1
+
+                    tbody {
+                        val architecturesToShow = state.optimalArchitecturesState
+                        logger.info { "Showing ${architecturesToShow.size} architectures" }
+                        architecturesToShow.forEachIndexed { architectureIndex, architecture ->
+                            tr {
+                                state.domainsState.forEachIndexed { domainIndex, domain ->
+                                    val entitiesInDomain = architecture.assignments.filter {
+                                        it.domain == domain
+                                    }.map { it.entity }
+                                    td {
+                                        css {
+                                            if (architectureIndex == 0) {
+                                                paddingTop = 3.px
+                                            } else if (architectureIndex == architecturesToShow.size - 1) {
+                                                paddingBottom = 3.px
+                                                if (domainIndex == 0) {
+                                                    borderBottomLeftRadius = 15.px
+                                                }
+                                            }
+                                        }
+                                        entitiesInDomain.forEach { entity ->
+                                            EntityIcon {
+                                                srcProp = getImageFromEntity(entity)
+                                                defaultSelectedProp = true
+                                            }
+                                        }
+                                    }
+                                }
+
+                                td {
+                                    css {
+                                        if (architectureIndex == 0) {
+                                            paddingTop = 3.px
+                                        } else if (architectureIndex == architecturesToShow.size - 1) {
+                                            paddingBottom = 3.px
+                                            borderBottomRightRadius = 15.px
+                                        }
+                                        display = Display.flex
+                                        justifyContent = JustifyContent.center
+                                        fontSize = 80.pct
+                                        transform = translatey(50.pct)
+                                    }
+                                    if (props.algorithmProp == Algorithm.SOOP) {
+                                        +architecture.objectivesWeightedScore.toString()
+                                    } else if (props.algorithmProp == Algorithm.MOCOP) {
+                                        architecture.arrayObjectivesScore.forEach {
+
+                                            val score = it.value
+
+                                            tooltip {
+                                                title = it.key.replace("_", "-")
+                                                div {
+                                                    child(FC<Props> {
+                                                        span {
+                                                            css {
+                                                                marginRight = 0.5.em
+                                                                fontFamily = FontFamily.monospace
+                                                                color = Color(
+                                                                    if (score < 0) {
+                                                                        "#c0392b"
+                                                                    } else if (score == 0) {
+                                                                        "black"
+                                                                    } else {
+                                                                        "#27ae60"
+                                                                    }
+                                                                )
+                                                            }
+                                                            +"${
+                                                                (if (score >= 0) {
+                                                                    "+"
+                                                                } else {
+                                                                    ""
+                                                                })
+                                                            }$score"
+                                                        }
+                                                    }.create())
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    )
-            }
-        }
-
-        return scoresArray
-    }
-
-    private fun getProtectionLevel(impact: Impact, likelihood: Likelihood): Int {
-        return if (impact == Impact.None || likelihood == Likelihood.None) {
-            3
-        } else if (impact == Impact.Low || likelihood == Likelihood.Low) {
-            2
-        } else if (impact == Impact.Medium || likelihood == Likelihood.Medium) {
-            1
-        } else {
-            0
-        }
-    }
-
-    private fun orderArchitectures(possibleArchitectures: MutableList<Architecture>): MutableList<Architecture> {
-
-        logger.info { "${possibleArchitectures.size} architectures are being ordered" }
-
-        return when (props.algorithm) {
-            Algorithm.AdHoc -> {
-                possibleArchitectures.sortedByDescending { it.requirementsScore }.toMutableList()
-            }
-            Algorithm.Best -> {
-
-                /** Find the optimal */
-                var currentOptimal = possibleArchitectures.first()
-                possibleArchitectures.forEach { currentArchitecture ->
-                    if (dominates(currentArchitecture.arrayRequirementsScore, currentOptimal.arrayRequirementsScore)) {
-                        currentOptimal = currentArchitecture
-                    }
                 }
-
-                /** Remove dominated architectures */
-                val iterator = possibleArchitectures.iterator()
-                while (iterator.hasNext()) {
-                    val currentArchitecture = iterator.next()
-                    if (dominates(currentOptimal.arrayRequirementsScore, currentArchitecture.arrayRequirementsScore)) {
-                        iterator.remove()
-                    }
-                }
-                logger.info { "${possibleArchitectures.size} architectures are optimal" }
-                possibleArchitectures
-            }
+            }.create()
         }
     }
-
-    private fun dominates(dominator: HashMap<String, Int>, dominatee: HashMap<String, Int>): Boolean {
-        var dominate = true
-        var majorInAtLeastOne = false
-        dominator.forEach {
-            if (dominatee[it.key]!! > it.value) {
-                dominate = false
-            }
-            if (it.value > dominatee[it.key]!!) {
-                majorInAtLeastOne = true
-            }
-        }
-        return dominate && majorInAtLeastOne
-    }
-
-    override fun TradeOffBoardState.init() {
-        logger.info { "Initializing the state of the TradeOffBoard component" }
-        domains = Domains.values().toMutableList()
-        entities = Entities.values().toMutableList()
-        performanceRequirementsInputs = PerformanceRequirements.values().map { Requirement(it.toString()) }
-        securityRequirementsInputs = SecurityRequirements.values().map { Requirement(it.toString()) }
-        attackersInput = linkedMapOf(
-            DomainsWithChannels.Client to listOf(Attacker(Attackers.MatD)),
-            DomainsWithChannels.ESP to listOf(Attacker(Attackers.Insider)),
-            DomainsWithChannels.OnPremise to listOf(Attacker(Attackers.Insider)),
-            DomainsWithChannels.CSP to listOf(Attacker(Attackers.Insider)),
-            DomainsWithChannels.Client_ESP to listOf(Attacker(Attackers.MitM)),
-            DomainsWithChannels.Client_OnPremise to listOf(Attacker(Attackers.MitM)),
-            DomainsWithChannels.Client_CSP to listOf(Attacker(Attackers.MitM)),
-            DomainsWithChannels.ESP_OnPremise to listOf(Attacker(Attackers.MitM)),
-            DomainsWithChannels.ESP_CSP to listOf(Attacker(Attackers.MitM)),
-            DomainsWithChannels.OnPremise_CSP to listOf(Attacker(Attackers.MitM)),
-        )
-        numberOfInstances = HashMap()
-        Entities.values().forEach { numberOfInstances[it] = arrayOf(0, Domains.values().size) }
-
-        assignments = HashMap()
-        Domains.values().forEach { assignments[it] = Entities.values().toMutableList() }
-        architectures = listOf()
-    }
-}
-
-fun tradeOffBoard(handler: TradeOffBoardProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(TradeOffBoard::class) {
-            this.attrs(handler)
-        }
-    }!!
 }
 
 // TODO doc below
-enum class Scenario { CryptoAC, MQTT }
+enum class Scenario { Generic }
 
-enum class Algorithm { Best, AdHoc }
+enum class Algorithm { MOCOP, SOOP }
 
-enum class Metric { Goals, Protection }
+enum class Objective { Performance, Security, Both }
 
-enum class Domains { Client, ESP, OnPremise, CSP }
+enum class Domains { Client, OnPremise, Edge, Cloud }
 
-enum class DomainsWithChannels { Client, ESP, OnPremise, CSP, Client_ESP, Client_OnPremise, Client_CSP, ESP_OnPremise, ESP_CSP, OnPremise_CSP }
+enum class PointsOfAttack { Client, OnPremise, Edge, Cloud, Client_Edge, Client_OnPremise, Client_Cloud, Edge_OnPremise, Edge_Cloud, OnPremise_Cloud }
 
-enum class Entities { CryptoAC, RM, MM, DM }
+enum class Entities { PR, RM, MM, DM }
 
-enum class EntitiesWithChannels { CryptoAC, RM, MM, DM, CryptoAC_RM, CryptoAC_DM, CryptoAC_MM, RM_MM, RM_DM, MM_DM }
+enum class Targets { PR, RM, MM, DM, PR_RM, PR_DM, PR_MM, RM_MM, RM_DM, MM_DM }
 
-enum class Attackers { MitM, Insider, MatD }
+enum class Attackers { Generic }
 
 enum class Likelihood { High, Medium, Low, None }
 
@@ -1037,367 +1153,367 @@ enum class Impact { High, Medium, Low, None }
 
 enum class Threshold { None, Soft, Hard }
 
-enum class SecurityRequirements { Confidentiality, Integrity, Availability }
+enum class SecurityProperties { Confidentiality, Integrity, Availability }
 
-enum class PerformanceRequirements {
+enum class PerformanceGoals {
     Redundancy,
     Scalability,
     Reliability,
     Maintenance,
     DoS_Resilience,
-    CSP_Vendor_Lock_in,
+    Cloud_Vendor_Lock_in,
     On_premise_Savings,
-    CSP_Savings,
+    Cloud_Savings,
+    Bandwidth,
     Latency,
-    Throughput,
     Computational_Power,
-    Storage_capacity,
-    ESP_Vendor_Lock_in,
-    ESP_Savings,
+    Memory,
+    Edge_Vendor_Lock_in,
+    Edge_Savings,
 }
 
 fun getImageFromEntity(entity: Entities) = when (entity) {
-    Entities.CryptoAC -> "proxy.png"
+    Entities.PR -> "proxy.png"
     Entities.RM -> "rm.png"
     Entities.MM -> "mm.png"
     Entities.DM -> "dm.png"
 }
 
-/** The impact of assignments on each performance requirement of the current scenario */
-var performanceRequirementsImpact: HashMap<PerformanceRequirements, HashMap<Assignment, Int>> = hashMapOf(
-    PerformanceRequirements.Redundancy to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+/** The impact of assignments on each performance goal of the current scenario */
+var performanceGoalsScores: LinkedHashMap<PerformanceGoals, LinkedHashMap<Assignment, Int>> = linkedMapOf(
+    PerformanceGoals.Redundancy to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to 0,
+        Assignment(Entities.RM, Domains.Client) to 0,
+        Assignment(Entities.MM, Domains.Client) to 0,
+        Assignment(Entities.DM, Domains.Client) to 0,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to -1,
+        Assignment(Entities.RM, Domains.Edge) to -1,
+        Assignment(Entities.MM, Domains.Edge) to -1,
+        Assignment(Entities.DM, Domains.Edge) to -1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.Scalability to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Scalability to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to +1,
+        Assignment(Entities.RM, Domains.Client) to +1,
+        Assignment(Entities.MM, Domains.Client) to +1,
+        Assignment(Entities.DM, Domains.Client) to +1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to 0,
+        Assignment(Entities.RM, Domains.Edge) to 0,
+        Assignment(Entities.MM, Domains.Edge) to 0,
+        Assignment(Entities.DM, Domains.Edge) to 0,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to 0,
+        Assignment(Entities.RM, Domains.Cloud) to 0,
+        Assignment(Entities.MM, Domains.Cloud) to 0,
+        Assignment(Entities.DM, Domains.Cloud) to 0,
     ),
-    PerformanceRequirements.Reliability to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Reliability to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to 0,
+        Assignment(Entities.RM, Domains.Client) to 0,
+        Assignment(Entities.MM, Domains.Client) to 0,
+        Assignment(Entities.DM, Domains.Client) to 0,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to -1,
+        Assignment(Entities.RM, Domains.Edge) to -1,
+        Assignment(Entities.MM, Domains.Edge) to -1,
+        Assignment(Entities.DM, Domains.Edge) to -1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.Maintenance to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Maintenance to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to 0,
+        Assignment(Entities.RM, Domains.Client) to 0,
+        Assignment(Entities.MM, Domains.Client) to 0,
+        Assignment(Entities.DM, Domains.Client) to 0,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to +1,
+        Assignment(Entities.RM, Domains.Edge) to +1,
+        Assignment(Entities.MM, Domains.Edge) to +1,
+        Assignment(Entities.DM, Domains.Edge) to +1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.DoS_Resilience to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.DoS_Resilience to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to +1,
+        Assignment(Entities.RM, Domains.Client) to +1,
+        Assignment(Entities.MM, Domains.Client) to +1,
+        Assignment(Entities.DM, Domains.Client) to +1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to 0,
+        Assignment(Entities.RM, Domains.Edge) to 0,
+        Assignment(Entities.MM, Domains.Edge) to 0,
+        Assignment(Entities.DM, Domains.Edge) to 0,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.On_premise_Savings to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Cloud_Vendor_Lock_in to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to +1,
+        Assignment(Entities.RM, Domains.Client) to +1,
+        Assignment(Entities.MM, Domains.Client) to +1,
+        Assignment(Entities.DM, Domains.Client) to +1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to +1,
+        Assignment(Entities.RM, Domains.OnPremise) to +1,
+        Assignment(Entities.MM, Domains.OnPremise) to +1,
+        Assignment(Entities.DM, Domains.OnPremise) to +1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to +1,
+        Assignment(Entities.RM, Domains.Edge) to +1,
+        Assignment(Entities.MM, Domains.Edge) to +1,
+        Assignment(Entities.DM, Domains.Edge) to +1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to -1,
+        Assignment(Entities.RM, Domains.Cloud) to -1,
+        Assignment(Entities.MM, Domains.Cloud) to -1,
+        Assignment(Entities.DM, Domains.Cloud) to -1,
     ),
-    PerformanceRequirements.CSP_Vendor_Lock_in to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.On_premise_Savings to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to +1,
+        Assignment(Entities.RM, Domains.Client) to +1,
+        Assignment(Entities.MM, Domains.Client) to +1,
+        Assignment(Entities.DM, Domains.Client) to +1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to +1,
+        Assignment(Entities.RM, Domains.Edge) to +1,
+        Assignment(Entities.MM, Domains.Edge) to +1,
+        Assignment(Entities.DM, Domains.Edge) to +1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.CSP_Savings to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Cloud_Savings to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to +1,
+        Assignment(Entities.RM, Domains.Client) to +1,
+        Assignment(Entities.MM, Domains.Client) to +1,
+        Assignment(Entities.DM, Domains.Client) to +1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to +1,
+        Assignment(Entities.RM, Domains.OnPremise) to +1,
+        Assignment(Entities.MM, Domains.OnPremise) to +1,
+        Assignment(Entities.DM, Domains.OnPremise) to +1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to +1,
+        Assignment(Entities.RM, Domains.Edge) to +1,
+        Assignment(Entities.MM, Domains.Edge) to +1,
+        Assignment(Entities.DM, Domains.Edge) to +1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to -1,
+        Assignment(Entities.RM, Domains.Cloud) to -1,
+        Assignment(Entities.MM, Domains.Cloud) to -1,
+        Assignment(Entities.DM, Domains.Cloud) to -1,
     ),
 
-    PerformanceRequirements.Latency to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Bandwidth to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to -1,
+        Assignment(Entities.RM, Domains.Client) to -1,
+        Assignment(Entities.MM, Domains.Client) to -1,
+        Assignment(Entities.DM, Domains.Client) to -1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to 0,
+        Assignment(Entities.RM, Domains.Edge) to 0,
+        Assignment(Entities.MM, Domains.Edge) to 0,
+        Assignment(Entities.DM, Domains.Edge) to 0,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.Throughput to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Latency to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to 0,
+        Assignment(Entities.RM, Domains.Client) to 0,
+        Assignment(Entities.MM, Domains.Client) to 0,
+        Assignment(Entities.DM, Domains.Client) to 0,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to 0,
+        Assignment(Entities.RM, Domains.OnPremise) to 0,
+        Assignment(Entities.MM, Domains.OnPremise) to 0,
+        Assignment(Entities.DM, Domains.OnPremise) to 0,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to +1,
+        Assignment(Entities.RM, Domains.Edge) to +1,
+        Assignment(Entities.MM, Domains.Edge) to +1,
+        Assignment(Entities.DM, Domains.Edge) to +1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to -1,
+        Assignment(Entities.RM, Domains.Cloud) to -1,
+        Assignment(Entities.MM, Domains.Cloud) to -1,
+        Assignment(Entities.DM, Domains.Cloud) to -1,
     ),
-    PerformanceRequirements.Computational_Power to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Computational_Power to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to -1,
+        Assignment(Entities.RM, Domains.Client) to -1,
+        Assignment(Entities.MM, Domains.Client) to -1,
+        Assignment(Entities.DM, Domains.Client) to -1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to 0,
+        Assignment(Entities.RM, Domains.Edge) to 0,
+        Assignment(Entities.MM, Domains.Edge) to 0,
+        Assignment(Entities.DM, Domains.Edge) to 0,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.Storage_capacity to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Memory to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to -1,
+        Assignment(Entities.RM, Domains.Client) to -1,
+        Assignment(Entities.MM, Domains.Client) to -1,
+        Assignment(Entities.DM, Domains.Client) to -1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to -1,
+        Assignment(Entities.RM, Domains.OnPremise) to -1,
+        Assignment(Entities.MM, Domains.OnPremise) to -1,
+        Assignment(Entities.DM, Domains.OnPremise) to -1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to -1,
+        Assignment(Entities.RM, Domains.Edge) to -1,
+        Assignment(Entities.MM, Domains.Edge) to -1,
+        Assignment(Entities.DM, Domains.Edge) to -1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.ESP_Vendor_Lock_in to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Edge_Vendor_Lock_in to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to +1,
+        Assignment(Entities.RM, Domains.Client) to +1,
+        Assignment(Entities.MM, Domains.Client) to +1,
+        Assignment(Entities.DM, Domains.Client) to +1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to +1,
+        Assignment(Entities.RM, Domains.OnPremise) to +1,
+        Assignment(Entities.MM, Domains.OnPremise) to +1,
+        Assignment(Entities.DM, Domains.OnPremise) to +1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to -1,
+        Assignment(Entities.RM, Domains.Edge) to -1,
+        Assignment(Entities.MM, Domains.Edge) to -1,
+        Assignment(Entities.DM, Domains.Edge) to -1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
-    PerformanceRequirements.ESP_Savings to hashMapOf(
-        Assignment(Domains.Client, Entities.CryptoAC) to 0,
-        Assignment(Domains.Client, Entities.RM) to 0,
-        Assignment(Domains.Client, Entities.MM) to 0,
-        Assignment(Domains.Client, Entities.DM) to 0,
+    PerformanceGoals.Edge_Savings to linkedMapOf(
+        Assignment(Entities.PR, Domains.Client) to +1,
+        Assignment(Entities.RM, Domains.Client) to +1,
+        Assignment(Entities.MM, Domains.Client) to +1,
+        Assignment(Entities.DM, Domains.Client) to +1,
 
-        Assignment(Domains.OnPremise, Entities.CryptoAC) to 0,
-        Assignment(Domains.OnPremise, Entities.RM) to -1,
-        Assignment(Domains.OnPremise, Entities.MM) to -1,
-        Assignment(Domains.OnPremise, Entities.DM) to -1,
+        Assignment(Entities.PR, Domains.OnPremise) to +1,
+        Assignment(Entities.RM, Domains.OnPremise) to +1,
+        Assignment(Entities.MM, Domains.OnPremise) to +1,
+        Assignment(Entities.DM, Domains.OnPremise) to +1,
 
-        Assignment(Domains.ESP, Entities.CryptoAC) to 0,
-        Assignment(Domains.ESP, Entities.RM) to 0,
-        Assignment(Domains.ESP, Entities.MM) to 0,
-        Assignment(Domains.ESP, Entities.DM) to 0,
+        Assignment(Entities.PR, Domains.Edge) to -1,
+        Assignment(Entities.RM, Domains.Edge) to -1,
+        Assignment(Entities.MM, Domains.Edge) to -1,
+        Assignment(Entities.DM, Domains.Edge) to -1,
 
-        Assignment(Domains.CSP, Entities.CryptoAC) to 0,
-        Assignment(Domains.CSP, Entities.RM) to +1,
-        Assignment(Domains.CSP, Entities.MM) to +1,
-        Assignment(Domains.CSP, Entities.DM) to +1,
+        Assignment(Entities.PR, Domains.Cloud) to +1,
+        Assignment(Entities.RM, Domains.Cloud) to +1,
+        Assignment(Entities.MM, Domains.Cloud) to +1,
+        Assignment(Entities.DM, Domains.Cloud) to +1,
     ),
 )
 
 /** The impact of targets on each security requirement of the current scenario */
-var securityRequirementsImpact: HashMap<SecurityRequirements, HashMap<EntitiesWithChannels, Impact>> = hashMapOf(
-    SecurityRequirements.Confidentiality to hashMapOf(
-        EntitiesWithChannels.CryptoAC to Impact.High,
-        EntitiesWithChannels.RM to Impact.None,
-        EntitiesWithChannels.MM to Impact.None,
-        EntitiesWithChannels.DM to Impact.None,
-        EntitiesWithChannels.CryptoAC_RM to Impact.None,
-        EntitiesWithChannels.CryptoAC_DM to Impact.None,
-        EntitiesWithChannels.CryptoAC_MM to Impact.None,
-        EntitiesWithChannels.RM_MM to Impact.None,
-        EntitiesWithChannels.RM_DM to Impact.None,
-        EntitiesWithChannels.MM_DM to Impact.None,
+var securityPropertiesImpact: LinkedHashMap<SecurityProperties, LinkedHashMap<Targets, Impact>> = linkedMapOf(
+    SecurityProperties.Confidentiality to linkedMapOf(
+        Targets.PR to Impact.High,
+        Targets.RM to Impact.None,
+        Targets.MM to Impact.None,
+        Targets.DM to Impact.Low,
+        Targets.PR_RM to Impact.None,
+        Targets.PR_DM to Impact.None,
+        Targets.PR_MM to Impact.None,
+        Targets.RM_MM to Impact.None,
+        Targets.RM_DM to Impact.None,
+        Targets.MM_DM to Impact.None,
     ),
-    SecurityRequirements.Integrity to hashMapOf(
-        EntitiesWithChannels.CryptoAC to Impact.High,
-        EntitiesWithChannels.RM to Impact.None,
-        EntitiesWithChannels.MM to Impact.None,
-        EntitiesWithChannels.DM to Impact.None,
-        EntitiesWithChannels.CryptoAC_RM to Impact.None,
-        EntitiesWithChannels.CryptoAC_DM to Impact.None,
-        EntitiesWithChannels.CryptoAC_MM to Impact.None,
-        EntitiesWithChannels.RM_MM to Impact.None,
-        EntitiesWithChannels.RM_DM to Impact.None,
-        EntitiesWithChannels.MM_DM to Impact.None,
+    SecurityProperties.Integrity to linkedMapOf(
+        Targets.PR to Impact.None,
+        Targets.RM to Impact.None,
+        Targets.MM to Impact.None,
+        Targets.DM to Impact.None,
+        Targets.PR_RM to Impact.None,
+        Targets.PR_DM to Impact.None,
+        Targets.PR_MM to Impact.None,
+        Targets.RM_MM to Impact.None,
+        Targets.RM_DM to Impact.None,
+        Targets.MM_DM to Impact.None,
     ),
-    SecurityRequirements.Availability to hashMapOf(
-        EntitiesWithChannels.CryptoAC to Impact.High,
-        EntitiesWithChannels.RM to Impact.None,
-        EntitiesWithChannels.MM to Impact.None,
-        EntitiesWithChannels.DM to Impact.None,
-        EntitiesWithChannels.CryptoAC_RM to Impact.None,
-        EntitiesWithChannels.CryptoAC_DM to Impact.None,
-        EntitiesWithChannels.CryptoAC_MM to Impact.None,
-        EntitiesWithChannels.RM_MM to Impact.None,
-        EntitiesWithChannels.RM_DM to Impact.None,
-        EntitiesWithChannels.MM_DM to Impact.None,
+    SecurityProperties.Availability to linkedMapOf(
+        Targets.PR to Impact.High,
+        Targets.RM to Impact.High,
+        Targets.MM to Impact.High,
+        Targets.DM to Impact.Low,
+        Targets.PR_RM to Impact.None,
+        Targets.PR_DM to Impact.Low,
+        Targets.PR_MM to Impact.High,
+        Targets.RM_MM to Impact.High,
+        Targets.RM_DM to Impact.Low,
+        Targets.MM_DM to Impact.None,
     ),
 )

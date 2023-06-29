@@ -1,2 +1,0 @@
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/[0mbuild.gradle.kts[90m:[0m102[90m:110:[0m Unnecessary space(s)
-[90m/home/sberlato/Documents/gitlab/coercive/CryptoAC/CryptoAC/[0mbuild.gradle.kts[90m:[0m270[90m:1:[0m Needless blank line(s)

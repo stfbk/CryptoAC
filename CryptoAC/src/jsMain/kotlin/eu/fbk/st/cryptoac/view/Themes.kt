@@ -1,6 +1,6 @@
 package eu.fbk.st.cryptoac.view
 
-import kotlinx.js.Object
+import js.core.Object
 
 object Themes {
     /** Light grey color hex code */

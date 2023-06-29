@@ -382,6 +382,7 @@ class MMServiceABACMySQL(
         newUser: User
     ): CodeServiceParameters {
         val username = newUser.name
+        val userToken = newUser.token
 
         /** Guard clauses */
         if (username.isBlank()) {
@@ -405,11 +406,14 @@ class MMServiceABACMySQL(
         Random().nextBytes(passwordBytes)
         val newPassword = passwordBytes.encodeBase64()
 
-        /** Add the user in the metadata. Keys and Token will be set by the user */
+        /**
+         * Add the user in the metadata, keys and
+         * token will be set by the user
+         */
         logger.debug { "Adding the user in the metadata" }
         val adminUserValues = arrayListOf<Any?>(
             username,
-            username,
+            userToken,
             "mock",
             "mock",
             "mock",

@@ -1,17 +1,18 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
+import csstype.Width
+import csstype.px
 import eu.fbk.st.cryptoac.view.components.materialui.paper
 import eu.fbk.st.cryptoac.view.components.materialui.typography
-import kotlinx.css.*
-import kotlinx.js.Object
+import js.core.Object
 import react.*
 
 external interface CryptoACPaperProps : Props {
     /** CSS style for the title */
-    var titleStyle: Object
+    var titleStyleProp: Object
 
     /** Text for the title of the paper */
-    var titleText: String
+    var titleTextProp: String
 
     /** The variant for the title of the paper
      * (i.e., either "h1","h2","h3","h4","h5",
@@ -19,65 +20,54 @@ external interface CryptoACPaperProps : Props {
      * "body2","caption","button","overline",
      * "srOnly" or "inherit")
      */
-    var titleVariant: String
+    var titleVariantProp: String
 
     /** The content of the paper */
-    var child: ReactElement<Props>
+    var childProp: ReactElement<*>
 
     /** Whether to add a divider between the title and the content */
-    var setDivider: Boolean
+    var setDividerProp: Boolean
 
     /** The CSS width property of the divider */
-    var dividerWidth: LinearDimension
+    var dividerWidthProp: Width
 
     /** Whether the paper is collapsable or not */
     var collapsable: Boolean
 }
 
-external interface CryptoACPaperState : State {
+data class CryptoACPaperState(
     /** Is the paper collapsed? */
-    var collapsed: Boolean
-}
+    var collapsedState: Boolean = false
+) : State
 
 /** A custom component for a paper */
-class CryptoACPaper : RComponent<CryptoACPaperProps, CryptoACPaperState>() {
-    override fun RBuilder.render() {
+val CryptoACPaper = FC<CryptoACPaperProps> { props ->
 
-        paper {
-            typography {
-                attrs {
-                    style = props.titleStyle
-                    variant = props.titleVariant
-                    id = "login"
-                    component = "div"
-                }
-                +props.titleText
-            }
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACPaperState] for details
+     */
+    var state by useState(CryptoACPaperState())
 
-            if (props.setDivider) {
-                child(
-                    cryptoACDivider {
-                        width = props.dividerWidth
-                        marginTop = 0.px
-                        marginBottom = 0.px
-                    }
-                )
-            }
-
-            child(props.child)
+    paper {
+        typography {
+            style = props.titleStyleProp
+            variant = props.titleVariantProp
+            id = "login"
+            component = "div"
+            +props.titleTextProp
         }
-    }
 
-    override fun CryptoACPaperState.init() {
-        collapsed = false
-    }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACPaper(handler: CryptoACPaperProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACPaper::class) {
-            attrs(handler)
+        if (props.setDividerProp) {
+            CryptoACDivider {
+                widthProp = props.dividerWidthProp
+                marginTopProp = 0.px
+                marginBottomProp = 0.px
+            }
         }
-    }!!
+
+        child(props.childProp)
+    }
 }

@@ -1,100 +1,105 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
 import eu.fbk.st.cryptoac.view.components.materialui.textField
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemProps
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemState
+import kotlinext.js.asJsObject
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.Event
 import react.*
 
 external interface CryptoACTextFieldProps : Props {
     /** Additional CCS class name */
-    var className: String
+    var classNameProp: String
 
     /** The name of the radio group */
-    var name: String
+    var nameProp: String
 
     /** The type of input to be provided */
-    var type: String
+    var typeProp: String
 
     /** Whether the field is disabled */
-    var disabled: Boolean
+    var disabledProp: Boolean
 
     /** The label/placeholder for this field */
-    var label: String
+    var labelProp: String
 
     /** Text field variant among "standard", "filled" and "outlined" */
-    var variant: String
+    var variantProp: String
 
     /** Default value for the input */
-    var defaultValue: String
+    var defaultValueProp: String
 
     /** "primary" or "secondary" color */
-    var color: String
+    var colorProp: String
 
     /** Invoked when the field changes value */
-    var onChange: (String) -> Unit
+    var onChangeProp: (String) -> Unit
 }
 
-external interface CryptoACTextFieldState : State {
+
+data class CryptoACTextFieldState(
     /** The value of the text field */
-    var value: String
+    var valueState: String = "",
 
     /** Whether to render the value on change by user */
-    var changedByUser: Boolean
+    var changedByUserState: Boolean = false,
 
     /** Whether the component was just mounted */
-    var justMounted: Boolean
+    var justMountedState: Boolean = true
+) : State
+
+// TODO doc
+fun getStateFromProps(
+    props: CryptoACTextFieldProps,
+    oldState: CryptoACTextFieldState = CryptoACTextFieldState(),
+): CryptoACTextFieldState {
+    var copy = false
+    if (oldState.justMountedState || !oldState.changedByUserState) {
+        oldState.valueState = props.defaultValueProp
+        copy = true
+    }
+    oldState.changedByUserState = false
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
 
 /** A custom component for a radio group */
-class CryptoACTextField : RComponent<CryptoACTextFieldProps, CryptoACTextFieldState>() {
-    override fun RBuilder.render() {
+val CryptoACTextField = FC<CryptoACTextFieldProps> {props ->
 
-        textField {
-            attrs {
-                className = props.className
-                value = state.value
-                name = props.name
-                label = props.label
-                type = props.type
-                variant = props.variant
-                color = props.color
-                autoComplete = "off"
-                required = true
-                disabled = props.disabled
-                onChange = { event ->
-                    val newValue = (event.target as HTMLInputElement).value
-                    if (props.onChange != undefined) {
-                        props.onChange(newValue)
-                    }
-                    setState {
-                        changedByUser = true
-                        value = newValue
-                    }
-                }
-            }
-        }
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACTextFieldState] for details
+     */
+    var state by useState(getStateFromProps(props))
+
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
     }
 
-    override fun CryptoACTextFieldState.init() {
-        justMounted = true
-        changedByUser = false
-
-        /** Execute before the render in both the Mounting and Updating lifecycle phases */
-        CryptoACTextField::class.js.asDynamic().getDerivedStateFromProps = {
-            props: CryptoACTextFieldProps, state: CryptoACTextFieldState ->
-            if (state.justMounted || !state.changedByUser) {
-                state.value = props.defaultValue
+    textField {
+        className = props.classNameProp
+        value = state.valueState
+        name = props.nameProp
+        label = props.labelProp
+        type = props.typeProp
+        variant = props.variantProp
+        color = props.colorProp
+        autoComplete = "off"
+        required = true
+        disabled = props.disabledProp
+        onChange = { event: Event ->
+            val newValue = (event.target as HTMLInputElement).value
+            if (props.onChangeProp != undefined) {
+                props.onChangeProp(newValue)
             }
-            state.changedByUser = false
-            state.justMounted = false
+            state = state.copy(
+                changedByUserState = true,
+                valueState = newValue
+            )
         }
     }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACTextField(handler: CryptoACTextFieldProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACTextField::class) {
-            attrs(handler)
-        }
-    }!!
 }

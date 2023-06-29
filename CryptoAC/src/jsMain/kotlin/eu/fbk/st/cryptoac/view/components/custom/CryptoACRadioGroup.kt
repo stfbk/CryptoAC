@@ -1,127 +1,131 @@
 package eu.fbk.st.cryptoac.view.components.custom
 
+import csstype.Display
+import csstype.pct
+import emotion.react.css
 import eu.fbk.st.cryptoac.view.components.materialui.formControlLabel
 import eu.fbk.st.cryptoac.view.components.materialui.radio
 import eu.fbk.st.cryptoac.view.components.materialui.radioGroup
-import kotlinx.css.Display
-import kotlinx.css.display
-import kotlinx.css.pct
-import kotlinx.css.width
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemProps
+import eu.fbk.st.cryptoac.view.content.newProfile.ModuleItemState
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.*
-import styled.css
-import styled.styledDiv
+import react.dom.html.ReactHTML.div
 
 external interface CryptoACRadioGroupProps : Props {
     /** The name of the radio group */
-    var name: String
+    var nameProp: String
 
     /** Whether the item should be disabled */
-    var disabled: Boolean
+    var disabledProp: Boolean
 
     /** Whether to display the radio options in a single row */
-    var row: Boolean
+    var rowProp: Boolean
 
     /** The default value of the radio group */
-    var defaultValue: String
+    var defaultValueProp: String
 
     /** Handle on change values */
-    var onChange: (Event) -> Boolean
+    var onChangeProp: (Event) -> Boolean
 
     /** The list of radio options */
-    var options: List<CryptoACRadioOption>
+    var optionsProp: List<CryptoACRadioOption>
 }
 
-external interface CryptoACRadioGroupState : State {
+data class CryptoACRadioGroupState(
     /** The value of the CryptoAC radio group */
-    var value: String
+    var valueState: String = "",
 
     /** Whether to render the value on change by user */
-    var changedByUser: Boolean
+    var changedByUserState: Boolean = false,
 
     /** Whether the component was just mounted */
-    var justMounted: Boolean
+    var justMountedState: Boolean = true
+) : State
+
+// TODO doc
+fun getStateFromProps(
+    props: CryptoACRadioGroupProps,
+    oldState: CryptoACRadioGroupState = CryptoACRadioGroupState(),
+): CryptoACRadioGroupState {
+    var copy = false
+    if (oldState.justMountedState || !oldState.changedByUserState) {
+        oldState.valueState = props.defaultValueProp
+        copy = true
+    }
+    oldState.changedByUserState = false
+    oldState.justMountedState = false
+    return if (copy) oldState.copy() else oldState
 }
+
 
 /** A custom component for a radio group */
-class CryptoACRadioGroup : RComponent<CryptoACRadioGroupProps, CryptoACRadioGroupState>() {
-    override fun RBuilder.render() {
-        radioGroup {
-            attrs {
-                value = state.value
-                name = props.name
-                row = props.row
-                onChange = { event ->
-                    var changeValue = false
-                    if (props.onChange != undefined) {
-                        changeValue = props.onChange(event)
-                    }
-                    if (changeValue) {
-                        setState {
-                            changedByUser = true
-                            value = (event.target as HTMLInputElement).value
+val CryptoACRadioGroup = FC<CryptoACRadioGroupProps> { props ->
+
+    /**
+     *  Always declare the state variables as the first variables in the
+     *  function. Doing so ensures the variables are available for the
+     *  rest of the code within the function.
+     *  See [CryptoACRadioGroupState] for details
+     */
+    var state by useState(getStateFromProps(props))
+
+    /** When the props change */
+    useEffect(props) {
+        state = getStateFromProps(props, state)
+    }
+
+    radioGroup {
+        value = state.valueState
+        name = props.nameProp
+        row = props.rowProp
+        onChange = { event: Event ->
+            var changeValue = false
+            if (props.onChangeProp != undefined) {
+                changeValue = props.onChangeProp(event)
+            }
+            if (changeValue) {
+                state = state.copy(
+                    changedByUserState = true,
+                    valueState = (event.target as HTMLInputElement).value
+                )
+            }
+        }
+        div {
+            css {
+                display = Display.block
+                width = 100.pct
+            }
+            props.optionsProp.forEach {
+
+                formControlLabel {
+                    label = it.label
+                    value = it.name
+                    control = createElement<Props> {
+                        radio {
+                            attrs {
+                                disabled = props.disabledProp
+                                color = it.color
+                                /** check the radio element only if the current value is the same as the name of the element */
+                                checked = state.valueState == it.name
+                                size = "small"
+                            }
                         }
-                    }
+                    }!!
                 }
             }
-            styledDiv {
-                css {
-                    display = Display.block
-                    width = 100.pct
-                }
-                props.options.forEach {
 
-                    formControlLabel {
-                        attrs {
-                            label = it.label
-                            value = it.name
-                            control = createElement<Props> {
-                                radio {
-                                    attrs {
-                                        disabled = props.disabled
-                                        color = it.color
-                                        /** check the radio element only if the current value is the same as the name of the element */
-                                        checked = state.value == it.name
-                                        size = "small"
-                                    }
-                                }
-                            }!!
-                        }
-                    }
-                }
-
-                if (props.options.isEmpty()) {
-                    +"No option available"
-                }
+            if (props.optionsProp.isEmpty()) {
+                +"No option available"
             }
         }
     }
-
-    override fun CryptoACRadioGroupState.init() {
-        justMounted = true
-        changedByUser = false
-
-        /** Execute before the render in both the Mounting and Updating lifecycle phases */
-        CryptoACRadioGroup::class.js.asDynamic().getDerivedStateFromProps = {
-            props: CryptoACRadioGroupProps, state: CryptoACRadioGroupState ->
-            if (state.justMounted || !state.changedByUser) {
-                state.value = props.defaultValue
-            }
-            state.changedByUser = false
-            state.justMounted = false
-        }
-    }
-}
-
-/** Extend RBuilder for easier use of this React component */
-fun cryptoACRadioGroup(handler: CryptoACRadioGroupProps.() -> Unit): ReactElement<Props> {
-    return createElement {
-        child(CryptoACRadioGroup::class) {
-            this.attrs(handler)
-        }
-    }!!
 }
 
 /** Represents an option for a radio group */
-data class CryptoACRadioOption(val label: String, val name: String, val color: String)
+data class CryptoACRadioOption(
+    val label: String,
+    val name: String,
+    val color: String
+)
