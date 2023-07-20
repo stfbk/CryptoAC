@@ -2672,11 +2672,11 @@ class MMServiceRBACRedis(
                     }
                 } else {
                     /** A lock has been set but not released */
-                    logger.warn { "A lock has been set but not released" }
-                    jTransaction?.discard()
-                    closeAndNullRedis()
-                    locks = 0
-                    CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+                    logger.info { "Connection already established" }
+                    jTransaction = transaction!!.multi()
+                    transactionToExec = false
+                    locks++
+                    CODE_000_SUCCESS
                 }
             } catch (e: JedisConnectionException) {
                 closeAndNullRedis()
@@ -2776,14 +2776,9 @@ class MMServiceRBACRedis(
                 if (transactionToExec) {
                     transactionToExec = false
                     jTransaction!!.incr(lockUnlockRollbackKey)
-                    val responses = jTransaction!!.exec()
+                    jTransaction!!.exec()
                     closeAndNullRedis()
-                    if (responses == null) {
-                        logger.warn { "Could not execute the transaction" }
-                        CODE_034_UNLOCK_FAILED
-                    } else {
-                        CODE_000_SUCCESS
-                    }
+                    CODE_000_SUCCESS
                 } else {
                     closeAndNullRedis()
                     CODE_000_SUCCESS
@@ -2812,12 +2807,12 @@ class MMServiceRBACRedis(
      * Redis and null the references
      */
     private fun closeAndNullRedis() {
-        transaction?.close()
+//        transaction?.close()
         jTransaction?.close()
-        jQuery?.close()
-        transaction = null
+//        jQuery?.close()
+//        transaction = null
         jTransaction = null
-        jQuery = null
+//        jQuery = null
     }
 
     /**

@@ -44,7 +44,7 @@ abstract class CoreRBACTuples(
     /** Asymmetric signature key pair */
     protected abstract val asymSigKeyPair: KeyPairCryptoAC
 
-
+    var assignedRoleTuple: RoleTuple? = null
 
     /**
      * This function is invoked by the admin, and
@@ -2240,17 +2240,22 @@ abstract class CoreRBACTuples(
     ): CodeSymmetricKeyRBAC {
         logger.info {"Getting the symmetric key for resource ${resource.name}"}
 
-        val assignedRoleTuples = mm.getRoleTuples(
-            username = user.name,
-            isAdmin = user.isAdmin,
-            offset = 0, limit = 1,
-        )
+        val assignedRoleTuples = if (assignedRoleTuple == null) {
+            mm.getRoleTuples(
+                username = user.name,
+                isAdmin = user.isAdmin,
+                offset = 0, limit = 1,
+            )
+        } else {
+            hashSetOf(assignedRoleTuple!!)
+        }
 
         if (assignedRoleTuples.isEmpty()) {
             return (CodeSymmetricKeyRBAC(
                 code = CODE_006_RESOURCE_NOT_FOUND
             ))
         }
+        assignedRoleTuple = assignedRoleTuples.first()
 
         var roleTupleOfResource: RoleTuple? = null
         var permissionTupleOfResource: PermissionTuple? = null

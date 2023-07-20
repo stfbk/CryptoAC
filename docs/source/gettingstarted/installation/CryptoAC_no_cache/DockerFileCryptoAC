@@ -1,9 +1,0 @@
-FROM eclipse-temurin:11-jre-focal 
-
-WORKDIR /cryptoac
-
-COPY ./CryptoAC-0.0.1-SNAPSHOT/ /cryptoac
-
-COPY ./mosquittoCACertificate.jks /mosquittoCACertificate.jks
-
-ENTRYPOINT ["/cryptoac/bin/CryptoAC"]

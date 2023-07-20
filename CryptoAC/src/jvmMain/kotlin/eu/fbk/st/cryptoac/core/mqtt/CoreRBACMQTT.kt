@@ -293,20 +293,10 @@ class CoreRBACMQTT(
                     return@withLock code
                 }
 
-                val resource = mm.getResources(
-                    resourceName = resourceName,
-                    isAdmin = user.isAdmin
-                ).firstOrNull()
-                if (resource == null) {
-                    logger.warn {
-                        "Resource not found. Either user ${user.name} does not have " +
-                        "access to topic $resourceName or topic does not exist"
-                    }
-                    return@withLock endOfMethod(
-                        code = CODE_006_RESOURCE_NOT_FOUND,
-                        acLocked = false
-                    )
-                }
+                val resource = Resource(
+                    name = resourceName,
+                    enforcement = EnforcementType.COMBINED
+                )
 
                 val enforcement = if (subscribedTopicsKeysAndMessages.containsKey(resourceName)) {
                     /**
