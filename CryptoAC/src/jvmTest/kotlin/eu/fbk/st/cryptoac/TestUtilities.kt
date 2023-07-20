@@ -173,7 +173,7 @@ class TestUtilities {
 
         fun resetDMServiceRBACMQTT(
             dm: DMServiceMQTT? = getDM(
-                dmParameters = Parameters.dmServiceMQTTParameters
+                dmParameters = Parameters.dmServiceMQTTNoACParameters
             ) as DMServiceMQTT,
         ) {
             logger.warn { "Resetting DM Service RBAC MQTT" }
@@ -195,7 +195,7 @@ class TestUtilities {
 
         fun resetDMServiceABACMQTT(
             dm: DMServiceMQTT? = getDM(
-                dmParameters = Parameters.dmServiceMQTTParameters
+                dmParameters = Parameters.dmServiceMQTTNoACParameters
             ) as DMServiceMQTT,
             mm: MMServiceABAC = getMM(
                 mmParameters = mmServiceABACMySQLParameters

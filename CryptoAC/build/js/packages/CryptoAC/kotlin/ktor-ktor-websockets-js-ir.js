@@ -78,10 +78,10 @@
   var cancel = kotlin_org_jetbrains_kotlinx_kotlinx_coroutines_core.$_$.q1;
   var KtorSimpleLogger = kotlin_io_ktor_ktor_utils.$_$.m;
   var SuspendFunction1 = kotlin_kotlin.$_$.x9;
+  var readShort = kotlin_io_ktor_ktor_io.$_$.h1;
+  var DisposableHandle = kotlin_org_jetbrains_kotlinx_kotlinx_coroutines_core.$_$.j1;
   var Charsets_getInstance = kotlin_io_ktor_ktor_io.$_$.k;
   var decode = kotlin_io_ktor_ktor_io.$_$.o;
-  var DisposableHandle = kotlin_org_jetbrains_kotlinx_kotlinx_coroutines_core.$_$.j1;
-  var readShort = kotlin_io_ktor_ktor_io.$_$.h1;
   var Exception = kotlin_kotlin.$_$.vf;
   var Exception_init_$Init$ = kotlin_kotlin.$_$.k1;
   var captureStack = kotlin_kotlin.$_$.ea;
@@ -1501,6 +1501,49 @@
       NORMAL_CLOSE = CloseReason_init_$Create$(Codes_NORMAL_getInstance(), 'OK');
     }
   }
+  function readReason(_this__u8e3s4) {
+    if (_this__u8e3s4.get_data_wokkxf_k$().length < 2) {
+      return null;
+    }
+    var tmp$ret$0;
+    $l$block: {
+      // Inline function 'io.ktor.utils.io.core.buildPacket' call
+      // Inline function 'kotlin.contracts.contract' call
+      var builder = new BytePacketBuilder();
+      try {
+        // Inline function 'io.ktor.websocket.readReason.<anonymous>' call
+        writeFully(builder, _this__u8e3s4.get_data_wokkxf_k$());
+        tmp$ret$0 = builder.build_1k0s4u_k$();
+        break $l$block;
+      } catch ($p) {
+        if ($p instanceof Error) {
+          var t = $p;
+          builder.release_wtm6d2_k$();
+          throw t;
+        } else {
+          throw $p;
+        }
+      }
+    }
+    var packet = tmp$ret$0;
+    var code = readShort(packet);
+    var message = packet.readText$default_z6dvkm_k$();
+    return new CloseReason(code, message);
+  }
+  function NonDisposableHandle() {
+    NonDisposableHandle_instance = this;
+  }
+  protoOf(NonDisposableHandle).dispose_3n44we_k$ = function () {
+  };
+  protoOf(NonDisposableHandle).toString = function () {
+    return 'NonDisposableHandle';
+  };
+  var NonDisposableHandle_instance;
+  function NonDisposableHandle_getInstance() {
+    if (NonDisposableHandle_instance == null)
+      new NonDisposableHandle();
+    return NonDisposableHandle_instance;
+  }
   function readText(_this__u8e3s4) {
     // Inline function 'kotlin.require' call
     var tmp0_require = _this__u8e3s4.get_fin_18j5um_k$();
@@ -1534,49 +1577,6 @@
       }
     }
     return decode(tmp, tmp$ret$1);
-  }
-  function NonDisposableHandle() {
-    NonDisposableHandle_instance = this;
-  }
-  protoOf(NonDisposableHandle).dispose_3n44we_k$ = function () {
-  };
-  protoOf(NonDisposableHandle).toString = function () {
-    return 'NonDisposableHandle';
-  };
-  var NonDisposableHandle_instance;
-  function NonDisposableHandle_getInstance() {
-    if (NonDisposableHandle_instance == null)
-      new NonDisposableHandle();
-    return NonDisposableHandle_instance;
-  }
-  function readReason(_this__u8e3s4) {
-    if (_this__u8e3s4.get_data_wokkxf_k$().length < 2) {
-      return null;
-    }
-    var tmp$ret$0;
-    $l$block: {
-      // Inline function 'io.ktor.utils.io.core.buildPacket' call
-      // Inline function 'kotlin.contracts.contract' call
-      var builder = new BytePacketBuilder();
-      try {
-        // Inline function 'io.ktor.websocket.readReason.<anonymous>' call
-        writeFully(builder, _this__u8e3s4.get_data_wokkxf_k$());
-        tmp$ret$0 = builder.build_1k0s4u_k$();
-        break $l$block;
-      } catch ($p) {
-        if ($p instanceof Error) {
-          var t = $p;
-          builder.release_wtm6d2_k$();
-          throw t;
-        } else {
-          throw $p;
-        }
-      }
-    }
-    var packet = tmp$ret$0;
-    var code = readShort(packet);
-    var message = packet.readText$default_z6dvkm_k$();
-    return new CloseReason(code, message);
   }
   function FrameTooBigException(frameSize) {
     Exception_init_$Init$(this);

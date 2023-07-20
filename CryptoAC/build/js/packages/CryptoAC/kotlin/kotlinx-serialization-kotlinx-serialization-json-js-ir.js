@@ -1,28 +1,22 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
-    define(['exports', './kotlinx-serialization-kotlinx-serialization-core-js-ir.js', './kotlin-kotlin-stdlib-js-ir.js'], factory);
+    define(['exports', './kotlin-kotlin-stdlib-js-ir.js', './kotlinx-serialization-kotlinx-serialization-core-js-ir.js'], factory);
   else if (typeof exports === 'object')
-    factory(module.exports, require('./kotlinx-serialization-kotlinx-serialization-core-js-ir.js'), require('./kotlin-kotlin-stdlib-js-ir.js'));
+    factory(module.exports, require('./kotlin-kotlin-stdlib-js-ir.js'), require('./kotlinx-serialization-kotlinx-serialization-core-js-ir.js'));
   else {
-    if (typeof this['kotlinx-serialization-kotlinx-serialization-core-js-ir'] === 'undefined') {
-      throw new Error("Error loading module 'kotlinx-serialization-kotlinx-serialization-json-js-ir'. Its dependency 'kotlinx-serialization-kotlinx-serialization-core-js-ir' was not found. Please, check whether 'kotlinx-serialization-kotlinx-serialization-core-js-ir' is loaded prior to 'kotlinx-serialization-kotlinx-serialization-json-js-ir'.");
-    }
     if (typeof this['kotlin-kotlin-stdlib-js-ir'] === 'undefined') {
       throw new Error("Error loading module 'kotlinx-serialization-kotlinx-serialization-json-js-ir'. Its dependency 'kotlin-kotlin-stdlib-js-ir' was not found. Please, check whether 'kotlin-kotlin-stdlib-js-ir' is loaded prior to 'kotlinx-serialization-kotlinx-serialization-json-js-ir'.");
     }
-    root['kotlinx-serialization-kotlinx-serialization-json-js-ir'] = factory(typeof this['kotlinx-serialization-kotlinx-serialization-json-js-ir'] === 'undefined' ? {} : this['kotlinx-serialization-kotlinx-serialization-json-js-ir'], this['kotlinx-serialization-kotlinx-serialization-core-js-ir'], this['kotlin-kotlin-stdlib-js-ir']);
+    if (typeof this['kotlinx-serialization-kotlinx-serialization-core-js-ir'] === 'undefined') {
+      throw new Error("Error loading module 'kotlinx-serialization-kotlinx-serialization-json-js-ir'. Its dependency 'kotlinx-serialization-kotlinx-serialization-core-js-ir' was not found. Please, check whether 'kotlinx-serialization-kotlinx-serialization-core-js-ir' is loaded prior to 'kotlinx-serialization-kotlinx-serialization-json-js-ir'.");
+    }
+    root['kotlinx-serialization-kotlinx-serialization-json-js-ir'] = factory(typeof this['kotlinx-serialization-kotlinx-serialization-json-js-ir'] === 'undefined' ? {} : this['kotlinx-serialization-kotlinx-serialization-json-js-ir'], this['kotlin-kotlin-stdlib-js-ir'], this['kotlinx-serialization-kotlinx-serialization-core-js-ir']);
   }
-}(this, function (_, kotlin_org_jetbrains_kotlinx_kotlinx_serialization_core, kotlin_kotlin) {
+}(this, function (_, kotlin_kotlin, kotlin_org_jetbrains_kotlinx_kotlinx_serialization_core) {
   'use strict';
   //region block: imports
   var imul = Math.imul;
-  var EmptySerializersModule = kotlin_org_jetbrains_kotlinx_kotlinx_serialization_core.$_$.r2;
   var protoOf = kotlin_kotlin.$_$.sb;
-  var objectMeta = kotlin_kotlin.$_$.rb;
-  var VOID = kotlin_kotlin.$_$.lh;
-  var setMetadataFor = kotlin_kotlin.$_$.tb;
-  var StringFormat = kotlin_org_jetbrains_kotlinx_kotlinx_serialization_core.$_$.d3;
-  var classMeta = kotlin_kotlin.$_$.ka;
   var Unit_getInstance = kotlin_kotlin.$_$.a5;
   var toString = kotlin_kotlin.$_$.xb;
   var IllegalArgumentException_init_$Create$ = kotlin_kotlin.$_$.s1;
@@ -30,6 +24,12 @@
   var Char = kotlin_kotlin.$_$.of;
   var _Char___init__impl__6a9atx = kotlin_kotlin.$_$.k2;
   var equals = kotlin_kotlin.$_$.na;
+  var classMeta = kotlin_kotlin.$_$.ka;
+  var VOID = kotlin_kotlin.$_$.lh;
+  var setMetadataFor = kotlin_kotlin.$_$.tb;
+  var EmptySerializersModule = kotlin_org_jetbrains_kotlinx_kotlinx_serialization_core.$_$.r2;
+  var objectMeta = kotlin_kotlin.$_$.rb;
+  var StringFormat = kotlin_org_jetbrains_kotlinx_kotlinx_serialization_core.$_$.d3;
   var THROW_CCE = kotlin_kotlin.$_$.fg;
   var getStringHashCode = kotlin_kotlin.$_$.ta;
   var Annotation = kotlin_kotlin.$_$.mf;
@@ -202,9 +202,9 @@
   var HashMap_init_$Create$ = kotlin_kotlin.$_$.n;
   //endregion
   //region block: pre-declaration
+  setMetadataFor(JsonBuilder, 'JsonBuilder', classMeta);
   setMetadataFor(Json, 'Json', classMeta, VOID, [StringFormat]);
   setMetadataFor(Default, 'Default', objectMeta, Json);
-  setMetadataFor(JsonBuilder, 'JsonBuilder', classMeta);
   setMetadataFor(JsonImpl, 'JsonImpl', classMeta, Json);
   setMetadataFor(JsonClassDiscriminator, 'JsonClassDiscriminator', classMeta, VOID, [Annotation]);
   setMetadataFor(JsonNames, 'JsonNames', classMeta, VOID, [Annotation]);
@@ -273,63 +273,6 @@
   setMetadataFor(StringJsonLexer, 'StringJsonLexer', classMeta, AbstractJsonLexer);
   setMetadataFor(JsonToStringWriter, 'JsonToStringWriter', classMeta, VOID, [JsonWriter]);
   //endregion
-  function Default() {
-    Default_instance = this;
-    Json.call(this, new JsonConfiguration(), EmptySerializersModule());
-  }
-  var Default_instance;
-  function Default_getInstance() {
-    if (Default_instance == null)
-      new Default();
-    return Default_instance;
-  }
-  function Json(configuration, serializersModule) {
-    Default_getInstance();
-    this.configuration_1 = configuration;
-    this.serializersModule_1 = serializersModule;
-    this._schemaCache_1 = new DescriptorSchemaCache();
-  }
-  protoOf(Json).get_configuration_uqypjh_k$ = function () {
-    return this.configuration_1;
-  };
-  protoOf(Json).get_serializersModule_piitvg_k$ = function () {
-    return this.serializersModule_1;
-  };
-  protoOf(Json).get__schemaCache_mw4zkl_k$ = function () {
-    return this._schemaCache_1;
-  };
-  protoOf(Json).encodeToString_bhi5ce_k$ = function (serializer, value) {
-    var result = new JsonToStringWriter();
-    try {
-      encodeByWriter(this, result, serializer, value);
-      return result.toString();
-    }finally {
-      result.release_wtm6d2_k$();
-    }
-  };
-  protoOf(Json).decodeFromString_d9fce8_k$ = function (deserializer, string) {
-    var lexer = new StringJsonLexer(string);
-    var input = new StreamingJsonDecoder(this, WriteMode_OBJ_getInstance(), lexer, deserializer.get_descriptor_wjt6a0_k$(), null);
-    var result = input.decodeSerializableValue_6v83lo_k$(deserializer);
-    lexer.expectEof_2xcy36_k$();
-    return result;
-  };
-  protoOf(Json).encodeToJsonElement_lfuu27_k$ = function (serializer, value) {
-    return writeJson(this, value, serializer);
-  };
-  protoOf(Json).decodeFromJsonElement_b9lc7m_k$ = function (deserializer, element) {
-    return readJson(this, element, deserializer);
-  };
-  protoOf(Json).parseToJsonElement_lw2h4r_k$ = function (string) {
-    return this.decodeFromString_d9fce8_k$(JsonElementSerializer_getInstance(), string);
-  };
-  function Json_0(from, builderAction) {
-    from = from === VOID ? Default_getInstance() : from;
-    var builder = new JsonBuilder(from);
-    builderAction(builder);
-    var conf = builder.build_1k0s4u_k$();
-    return new JsonImpl(conf, builder.serializersModule_1);
-  }
   function JsonBuilder(json) {
     this.encodeDefaults_1 = json.configuration_1.get_encodeDefaults_m8plkf_k$();
     this.explicitNulls_1 = json.configuration_1.get_explicitNulls_ppiuof_k$();
@@ -488,6 +431,71 @@
     }
     return new JsonConfiguration(this.encodeDefaults_1, this.ignoreUnknownKeys_1, this.isLenient_1, this.allowStructuredMapKeys_1, this.prettyPrint_1, this.explicitNulls_1, this.prettyPrintIndent_1, this.coerceInputValues_1, this.useArrayPolymorphism_1, this.classDiscriminator_1, this.allowSpecialFloatingPointValues_1, this.useAlternativeNames_1, this.namingStrategy_1);
   };
+  function Default() {
+    Default_instance = this;
+    Json.call(this, new JsonConfiguration(), EmptySerializersModule());
+  }
+  var Default_instance;
+  function Default_getInstance() {
+    if (Default_instance == null)
+      new Default();
+    return Default_instance;
+  }
+  function Json(configuration, serializersModule) {
+    Default_getInstance();
+    this.configuration_1 = configuration;
+    this.serializersModule_1 = serializersModule;
+    this._schemaCache_1 = new DescriptorSchemaCache();
+  }
+  protoOf(Json).get_configuration_uqypjh_k$ = function () {
+    return this.configuration_1;
+  };
+  protoOf(Json).get_serializersModule_piitvg_k$ = function () {
+    return this.serializersModule_1;
+  };
+  protoOf(Json).get__schemaCache_mw4zkl_k$ = function () {
+    return this._schemaCache_1;
+  };
+  protoOf(Json).encodeToString_bhi5ce_k$ = function (serializer, value) {
+    var result = new JsonToStringWriter();
+    try {
+      encodeByWriter(this, result, serializer, value);
+      return result.toString();
+    }finally {
+      result.release_wtm6d2_k$();
+    }
+  };
+  protoOf(Json).decodeFromString_d9fce8_k$ = function (deserializer, string) {
+    var lexer = new StringJsonLexer(string);
+    var input = new StreamingJsonDecoder(this, WriteMode_OBJ_getInstance(), lexer, deserializer.get_descriptor_wjt6a0_k$(), null);
+    var result = input.decodeSerializableValue_6v83lo_k$(deserializer);
+    lexer.expectEof_2xcy36_k$();
+    return result;
+  };
+  protoOf(Json).encodeToJsonElement_lfuu27_k$ = function (serializer, value) {
+    return writeJson(this, value, serializer);
+  };
+  protoOf(Json).decodeFromJsonElement_b9lc7m_k$ = function (deserializer, element) {
+    return readJson(this, element, deserializer);
+  };
+  protoOf(Json).parseToJsonElement_lw2h4r_k$ = function (string) {
+    return this.decodeFromString_d9fce8_k$(JsonElementSerializer_getInstance(), string);
+  };
+  function Json_0(from, builderAction) {
+    from = from === VOID ? Default_getInstance() : from;
+    var builder = new JsonBuilder(from);
+    builderAction(builder);
+    var conf = builder.build_1k0s4u_k$();
+    return new JsonImpl(conf, builder.serializersModule_1);
+  }
+  function get_defaultDiscriminator() {
+    return defaultDiscriminator;
+  }
+  var defaultDiscriminator;
+  function get_defaultIndent() {
+    return defaultIndent;
+  }
+  var defaultIndent;
   function validateConfiguration($this) {
     if (equals($this.get_serializersModule_piitvg_k$(), EmptySerializersModule()))
       return Unit_getInstance();
@@ -498,14 +506,6 @@
     Json.call(this, configuration, module_0);
     validateConfiguration(this);
   }
-  function get_defaultDiscriminator() {
-    return defaultDiscriminator;
-  }
-  var defaultDiscriminator;
-  function get_defaultIndent() {
-    return defaultIndent;
-  }
-  var defaultIndent;
   function JsonClassDiscriminator(discriminator) {
     this.discriminator_1 = discriminator;
   }

@@ -236,9 +236,9 @@
   setMetadataFor(HeaderValue, 'HeaderValue', classMeta);
   setMetadataFor(sam$kotlin_Comparator$0, 'sam$kotlin_Comparator$0', classMeta, VOID, [Comparator]);
   setMetadataFor(HttpHeaders, 'HttpHeaders', objectMeta);
+  setMetadataFor(UnsafeHeaderException, 'UnsafeHeaderException', classMeta, IllegalArgumentException);
   setMetadataFor(IllegalHeaderNameException, 'IllegalHeaderNameException', classMeta, IllegalArgumentException);
   setMetadataFor(IllegalHeaderValueException, 'IllegalHeaderValueException', classMeta, IllegalArgumentException);
-  setMetadataFor(UnsafeHeaderException, 'UnsafeHeaderException', classMeta, IllegalArgumentException);
   setMetadataFor(HttpMessage, 'HttpMessage', interfaceMeta);
   setMetadataFor(HttpMessageBuilder, 'HttpMessageBuilder', interfaceMeta);
   setMetadataFor(Companion_3, 'Companion', objectMeta);
@@ -250,8 +250,8 @@
   setMetadataFor(ParametersBuilder, 'ParametersBuilder', interfaceMeta, VOID, [StringValuesBuilder]);
   setMetadataFor(Companion_6, 'Companion', objectMeta);
   setMetadataFor(Parameters_0, 'Parameters', interfaceMeta, VOID, [StringValues]);
-  setMetadataFor(EmptyParameters, 'EmptyParameters', objectMeta, VOID, [Parameters_0]);
   setMetadataFor(ParametersBuilderImpl, 'ParametersBuilderImpl', classMeta, StringValuesBuilderImpl, [StringValuesBuilderImpl, ParametersBuilder]);
+  setMetadataFor(EmptyParameters, 'EmptyParameters', objectMeta, VOID, [Parameters_0]);
   setMetadataFor(ParametersImpl, 'ParametersImpl', classMeta, StringValuesImpl, [Parameters_0, StringValuesImpl]);
   setMetadataFor(Companion_7, 'Companion', objectMeta);
   setMetadataFor(URLBuilder, 'URLBuilder', classMeta);
@@ -1687,10 +1687,6 @@
     result = result + imul(31, hashCode(this.get_parameters_cl4rkd_k$())) | 0;
     return result;
   };
-  function BadContentTypeFormatException(value) {
-    Exception_init_$Init$('Bad Content-Type format: ' + value, this);
-    captureStack(this, BadContentTypeFormatException);
-  }
   function charset(_this__u8e3s4) {
     var tmp0_safe_receiver = _this__u8e3s4.parameter_rthy20_k$('charset');
     var tmp;
@@ -1739,6 +1735,10 @@
       tmp = _this__u8e3s4.withParameter_2ym9mp_k$('charset', get_name(charset));
     }
     return tmp;
+  }
+  function BadContentTypeFormatException(value) {
+    Exception_init_$Init$('Bad Content-Type format: ' + value, this);
+    captureStack(this, BadContentTypeFormatException);
   }
   function get_loweredPartNames() {
     _init_properties_Cookie_kt__ya8qpo();
@@ -4309,6 +4309,10 @@
       new HttpHeaders();
     return HttpHeaders_instance;
   }
+  function UnsafeHeaderException(header) {
+    IllegalArgumentException_init_$Init$('Header(s) ' + header + ' are controlled by the engine and ' + 'cannot be set explicitly', this);
+    captureStack(this, UnsafeHeaderException);
+  }
   function isDelimiter_0(ch) {
     return contains('"(),/:;<=>?@[\\]{}', ch);
   }
@@ -4346,13 +4350,13 @@
   protoOf(IllegalHeaderValueException).get_position_jfponi_k$ = function () {
     return this.position_1;
   };
-  function UnsafeHeaderException(header) {
-    IllegalArgumentException_init_$Init$('Header(s) ' + header + ' are controlled by the engine and ' + 'cannot be set explicitly', this);
-    captureStack(this, UnsafeHeaderException);
-  }
   function HttpMessage() {
   }
   function HttpMessageBuilder() {
+  }
+  function charset_0(_this__u8e3s4) {
+    var tmp0_safe_receiver = contentType_0(_this__u8e3s4);
+    return tmp0_safe_receiver == null ? null : charset(tmp0_safe_receiver);
   }
   function contentType(_this__u8e3s4) {
     var tmp0_safe_receiver = _this__u8e3s4.get_headers_ef25jx_k$().get_4u8u51_k$(HttpHeaders_getInstance().get_ContentType_z1j0sq_k$());
@@ -4375,14 +4379,7 @@
     var tmp0_safe_receiver = _this__u8e3s4.get_headers_ef25jx_k$().get_4u8u51_k$(HttpHeaders_getInstance().get_ContentLength_3209rq_k$());
     return tmp0_safe_receiver == null ? null : toLong(tmp0_safe_receiver);
   }
-  function charset_0(_this__u8e3s4) {
-    var tmp0_safe_receiver = contentType_1(_this__u8e3s4);
-    return tmp0_safe_receiver == null ? null : charset(tmp0_safe_receiver);
-  }
-  function contentType_0(_this__u8e3s4, type) {
-    return _this__u8e3s4.get_headers_ef25jx_k$().set_vj6ab5_k$(HttpHeaders_getInstance().get_ContentType_z1j0sq_k$(), type.toString());
-  }
-  function contentType_1(_this__u8e3s4) {
+  function contentType_0(_this__u8e3s4) {
     var tmp0_safe_receiver = _this__u8e3s4.get_headers_ef25jx_k$().get_4u8u51_k$(HttpHeaders_getInstance().get_ContentType_z1j0sq_k$());
     var tmp;
     if (tmp0_safe_receiver == null) {
@@ -4398,6 +4395,9 @@
       tmp = tmp$ret$1;
     }
     return tmp;
+  }
+  function contentType_1(_this__u8e3s4, type) {
+    return _this__u8e3s4.get_headers_ef25jx_k$().set_vj6ab5_k$(HttpHeaders_getInstance().get_ContentType_z1j0sq_k$(), type.toString());
   }
   function setCookie(_this__u8e3s4) {
     var tmp0_safe_receiver = _this__u8e3s4.get_headers_ef25jx_k$().getAll_9rlpue_k$(HttpHeaders_getInstance().get_SetCookie_ra2wrn_k$());
@@ -5165,6 +5165,10 @@
   }
   function ParametersBuilder() {
   }
+  function ParametersBuilder_0(size) {
+    size = size === VOID ? 8 : size;
+    return new ParametersBuilderImpl(size);
+  }
   function Companion_6() {
     Companion_instance_6 = this;
     this.Empty_1 = EmptyParameters_getInstance();
@@ -5189,10 +5193,13 @@
   }
   function Parameters_0() {
   }
-  function ParametersBuilder_0(size) {
+  function ParametersBuilderImpl(size) {
     size = size === VOID ? 8 : size;
-    return new ParametersBuilderImpl(size);
+    StringValuesBuilderImpl.call(this, true, size);
   }
+  protoOf(ParametersBuilderImpl).build_1k0s4u_k$ = function () {
+    return new ParametersImpl(this.get_values_ksazhn_k$());
+  };
   function EmptyParameters() {
     EmptyParameters_instance = this;
   }
@@ -5229,13 +5236,6 @@
       new EmptyParameters();
     return EmptyParameters_instance;
   }
-  function ParametersBuilderImpl(size) {
-    size = size === VOID ? 8 : size;
-    StringValuesBuilderImpl.call(this, true, size);
-  }
-  protoOf(ParametersBuilderImpl).build_1k0s4u_k$ = function () {
-    return new ParametersImpl(this.get_values_ksazhn_k$());
-  };
   function ParametersImpl(values) {
     values = values === VOID ? emptyMap() : values;
     StringValuesImpl.call(this, true, values);
@@ -7997,8 +7997,8 @@
   _.$_$.l1 = clone;
   _.$_$.m1 = contentLength;
   _.$_$.n1 = contentType;
-  _.$_$.o1 = contentType_0;
-  _.$_$.p1 = contentType_1;
+  _.$_$.o1 = contentType_1;
+  _.$_$.p1 = contentType_0;
   _.$_$.q1 = escapeIfNeeded;
   _.$_$.r1 = formUrlEncode;
   _.$_$.s1 = hostIsIp;

@@ -143,11 +143,11 @@ object Parameters {
         port = 8181, url = "10.1.0.6"
     )
     val acServiceRBACDynSecParameters = ACServiceRBACDynSecParameters(
-        port = 1883,
+        port = 1884,
         url = "10.1.0.8",
         password = "password",
         username = ADMIN,
-        tls = false,
+        tls = true,
     )
     val acServiceRBACXACMLAuthzForceParameters = ACServiceRBACXACMLAuthzForceParameters(
         port = 8443, url = "10.1.0.9"
@@ -173,18 +173,18 @@ object Parameters {
 
     /** MQTT Parameters */
     val dmServiceMQTTWithACParameters = DMServiceMQTTParameters(
-        port = 1883,
+        port = 1884,
         url = "10.1.0.8",
         password = "password",
         username = ADMIN,
-        tls = false,
+        tls = true,
     )
     val dmServiceMQTTNoACParameters = DMServiceMQTTParameters(
         port = 1884,
         url = "10.1.0.10",
         password = "password",
         username = ADMIN,
-        tls = false,
+        tls = true,
     )
     val mmServiceRBACRedisParameters = MMServiceRedisParameters(
         port = 6379,
@@ -253,18 +253,18 @@ object Parameters {
             mmType = MMType.RBAC_REDIS
         ),
         dmServiceParameters = DMServiceMQTTParameters(
-            port = 1883,
+            port = 1884,
             url = "10.1.0.8",
             password = "alicePassword",
             username = aliceName,
-            tls = false,
+            tls = true,
         ),
         acServiceParameters = ACServiceRBACDynSecParameters(
-            port = 1883,
+            port = 1884,
             url = "10.1.0.8",
             password = "alicePassword",
             username = aliceName,
-            tls = false,
+            tls = true,
         ),
         rmServiceParameters = null
     )
@@ -303,18 +303,18 @@ object Parameters {
             mmType = MMType.RBAC_REDIS
         ),
         dmServiceParameters = DMServiceMQTTParameters(
-            port = 1883,
+            port = 1884,
             url = "10.1.0.8",
             password = "bobPassword",
             username = bobName,
-            tls = false,
+            tls = true,
         ),
         acServiceParameters = ACServiceRBACDynSecParameters(
-            port = 1883,
+            port = 1884,
             url = "10.1.0.8",
             password = "bobPassword",
             username = bobName,
-            tls = false,
+            tls = true,
         ),
         rmServiceParameters = null
     )
