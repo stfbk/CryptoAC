@@ -428,10 +428,10 @@
   setMetadataFor(Config_3, 'Config', classMeta);
   setMetadataFor(Companion_3, 'Companion', objectMeta, VOID, [HttpClientPlugin]);
   setMetadataFor(HttpCookies$initializer$slambda, 'HttpCookies$initializer$slambda', classMeta, CoroutineImpl, [CoroutineImpl], VOID, VOID, [1]);
-  setMetadataFor($getCOROUTINE$11, '$getCOROUTINE$11', classMeta, CoroutineImpl);
-  setMetadataFor($captureHeaderCookiesCOROUTINE$12, '$captureHeaderCookiesCOROUTINE$12', classMeta, CoroutineImpl);
-  setMetadataFor($sendCookiesWithCOROUTINE$13, '$sendCookiesWithCOROUTINE$13', classMeta, CoroutineImpl);
-  setMetadataFor($saveCookiesFromCOROUTINE$14, '$saveCookiesFromCOROUTINE$14', classMeta, CoroutineImpl);
+  setMetadataFor($getCOROUTINE$3, '$getCOROUTINE$3', classMeta, CoroutineImpl);
+  setMetadataFor($captureHeaderCookiesCOROUTINE$4, '$captureHeaderCookiesCOROUTINE$4', classMeta, CoroutineImpl);
+  setMetadataFor($sendCookiesWithCOROUTINE$5, '$sendCookiesWithCOROUTINE$5', classMeta, CoroutineImpl);
+  setMetadataFor($saveCookiesFromCOROUTINE$6, '$saveCookiesFromCOROUTINE$6', classMeta, CoroutineImpl);
   setMetadataFor(HttpCookies, 'HttpCookies', classMeta, VOID, [Closeable], VOID, VOID, [1]);
   setMetadataFor(DelegatedResponse, 'DelegatedResponse', classMeta, HttpResponse);
   setMetadataFor(ClientWebSocketSession, 'ClientWebSocketSession', interfaceMeta, VOID, [WebSocketSession], VOID, VOID, [1, 0]);
@@ -439,45 +439,45 @@
   setMetadataFor(DelegatingClientWebSocketSession, 'DelegatingClientWebSocketSession', classMeta, VOID, [ClientWebSocketSession, WebSocketSession], VOID, VOID, [0, 1]);
   setMetadataFor(ClientUpgradeContent, 'ClientUpgradeContent', classMeta, NoContent, VOID, VOID, VOID, [1]);
   setMetadataFor(WebSocketContent, 'WebSocketContent', classMeta, ClientUpgradeContent, VOID, VOID, VOID, [1]);
+  setMetadataFor(WebSocketCapability, 'WebSocketCapability', objectMeta, VOID, [HttpClientEngineCapability]);
+  setMetadataFor(WebSocketException, 'WebSocketException', classMeta, IllegalStateException);
   setMetadataFor(WebSockets$Plugin$install$slambda, 'WebSockets$Plugin$install$slambda', classMeta, CoroutineImpl, [CoroutineImpl], VOID, VOID, [2]);
   setMetadataFor(WebSockets$Plugin$install$slambda_1, 'WebSockets$Plugin$install$slambda', classMeta, CoroutineImpl, [CoroutineImpl], VOID, VOID, [2]);
   setMetadataFor(Config_4, 'Config', classMeta);
   setMetadataFor(Plugin_6, 'Plugin', objectMeta, VOID, [HttpClientPlugin]);
   setMetadataFor(WebSockets, 'WebSockets', classMeta);
   setMetadataFor(WebSocketExtensionsCapability, 'WebSocketExtensionsCapability', objectMeta, VOID, [HttpClientEngineCapability]);
-  setMetadataFor(WebSocketCapability, 'WebSocketCapability', objectMeta, VOID, [HttpClientEngineCapability]);
-  setMetadataFor(WebSocketException, 'WebSocketException', classMeta, IllegalStateException);
   setMetadataFor(webSocketSession$slambda, 'webSocketSession$slambda', classMeta, CoroutineImpl, [CoroutineImpl], VOID, VOID, [1]);
   setMetadataFor($pipeToCOROUTINE$15, '$pipeToCOROUTINE$15', classMeta, CoroutineImpl);
   setMetadataFor(DefaultHttpRequest, 'DefaultHttpRequest', classMeta, VOID, [HttpRequest_0]);
   setMetadataFor(Companion_4, 'Companion', objectMeta);
   setMetadataFor(HttpRequestBuilder, 'HttpRequestBuilder', classMeta, VOID, [HttpMessageBuilder]);
-  setMetadataFor(HttpRequestData, 'HttpRequestData', classMeta);
   setMetadataFor(HttpResponseData, 'HttpResponseData', classMeta);
+  setMetadataFor(HttpRequestData, 'HttpRequestData', classMeta);
   setMetadataFor(Phases, 'Phases', objectMeta);
   setMetadataFor(HttpRequestPipeline, 'HttpRequestPipeline', classMeta, Pipeline, VOID, VOID, VOID, [2]);
   setMetadataFor(Phases_0, 'Phases', objectMeta);
   setMetadataFor(HttpSendPipeline, 'HttpSendPipeline', classMeta, Pipeline, VOID, VOID, VOID, [2]);
-  setMetadataFor($requestCOROUTINE$16, '$requestCOROUTINE$16', classMeta, CoroutineImpl);
-  setMetadataFor($deleteCOROUTINE$17, '$deleteCOROUTINE$17', classMeta, CoroutineImpl);
-  setMetadataFor($getCOROUTINE$18, '$getCOROUTINE$18', classMeta, CoroutineImpl);
-  setMetadataFor($postCOROUTINE$19, '$postCOROUTINE$19', classMeta, CoroutineImpl);
-  setMetadataFor($patchCOROUTINE$20, '$patchCOROUTINE$20', classMeta, CoroutineImpl);
+  setMetadataFor($requestCOROUTINE$7, '$requestCOROUTINE$7', classMeta, CoroutineImpl);
+  setMetadataFor($deleteCOROUTINE$8, '$deleteCOROUTINE$8', classMeta, CoroutineImpl);
+  setMetadataFor($getCOROUTINE$9_0, '$getCOROUTINE$9', classMeta, CoroutineImpl);
+  setMetadataFor($postCOROUTINE$10, '$postCOROUTINE$10', classMeta, CoroutineImpl);
+  setMetadataFor($patchCOROUTINE$11, '$patchCOROUTINE$11', classMeta, CoroutineImpl);
   setMetadataFor(FormDataContent, 'FormDataContent', classMeta, ByteArrayContent);
-  setMetadataFor($writeToCOROUTINE$21, '$writeToCOROUTINE$21', classMeta, CoroutineImpl);
+  setMetadataFor($writeToCOROUTINE$12, '$writeToCOROUTINE$12', classMeta, CoroutineImpl);
   setMetadataFor(MultiPartFormDataContent, 'MultiPartFormDataContent', classMeta, WriteChannelContent, VOID, VOID, VOID, [1]);
   setMetadataFor(PreparedPart, 'PreparedPart', classMeta);
   setMetadataFor(InputPart, 'InputPart', classMeta, PreparedPart);
   setMetadataFor(ChannelPart, 'ChannelPart', classMeta, PreparedPart);
-  setMetadataFor($copyToCOROUTINE$22, '$copyToCOROUTINE$22', classMeta, CoroutineImpl);
-  setMetadataFor($submitFormCOROUTINE$23, '$submitFormCOROUTINE$23', classMeta, CoroutineImpl);
-  setMetadataFor($submitFormWithBinaryDataCOROUTINE$24, '$submitFormWithBinaryDataCOROUTINE$24', classMeta, CoroutineImpl);
-  setMetadataFor($submitFormWithBinaryDataCOROUTINE$25, '$submitFormWithBinaryDataCOROUTINE$25', classMeta, CoroutineImpl);
+  setMetadataFor($copyToCOROUTINE$13, '$copyToCOROUTINE$13', classMeta, CoroutineImpl);
+  setMetadataFor($submitFormCOROUTINE$14, '$submitFormCOROUTINE$14', classMeta, CoroutineImpl);
+  setMetadataFor($submitFormWithBinaryDataCOROUTINE$15, '$submitFormWithBinaryDataCOROUTINE$15', classMeta, CoroutineImpl);
+  setMetadataFor($submitFormWithBinaryDataCOROUTINE$16, '$submitFormWithBinaryDataCOROUTINE$16', classMeta, CoroutineImpl);
   setMetadataFor(FormPart, 'FormPart', classMeta);
   setMetadataFor(InputProvider, 'InputProvider', classMeta);
   setMetadataFor(ChannelProvider, 'ChannelProvider', classMeta);
   setMetadataFor(DefaultHttpResponse, 'DefaultHttpResponse', classMeta, HttpResponse);
-  setMetadataFor($bodyAsTextCOROUTINE$26, '$bodyAsTextCOROUTINE$26', classMeta, CoroutineImpl);
+  setMetadataFor($bodyAsTextCOROUTINE$17, '$bodyAsTextCOROUTINE$17', classMeta, CoroutineImpl);
   setMetadataFor(Phases_1, 'Phases', objectMeta);
   setMetadataFor(HttpResponsePipeline, 'HttpResponsePipeline', classMeta, Pipeline, VOID, VOID, VOID, [2]);
   setMetadataFor(Phases_2, 'Phases', objectMeta);
@@ -6848,12 +6848,12 @@
     l.$arity = 1;
     return l;
   }
-  function $getCOROUTINE$11(_this__u8e3s4, requestUrl, resultContinuation) {
+  function $getCOROUTINE$3(_this__u8e3s4, requestUrl, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.requestUrl_1 = requestUrl;
   }
-  protoOf($getCOROUTINE$11).doResume_5yljmg_k$ = function () {
+  protoOf($getCOROUTINE$3).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -6892,12 +6892,12 @@
       }
      while (true);
   };
-  function $captureHeaderCookiesCOROUTINE$12(_this__u8e3s4, builder, resultContinuation) {
+  function $captureHeaderCookiesCOROUTINE$4(_this__u8e3s4, builder, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.builder_1 = builder;
   }
-  protoOf($captureHeaderCookiesCOROUTINE$12).doResume_5yljmg_k$ = function () {
+  protoOf($captureHeaderCookiesCOROUTINE$4).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -6976,12 +6976,12 @@
       }
      while (true);
   };
-  function $sendCookiesWithCOROUTINE$13(_this__u8e3s4, builder, resultContinuation) {
+  function $sendCookiesWithCOROUTINE$5(_this__u8e3s4, builder, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.builder_1 = builder;
   }
-  protoOf($sendCookiesWithCOROUTINE$13).doResume_5yljmg_k$ = function () {
+  protoOf($sendCookiesWithCOROUTINE$5).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -7021,12 +7021,12 @@
       }
      while (true);
   };
-  function $saveCookiesFromCOROUTINE$14(_this__u8e3s4, response, resultContinuation) {
+  function $saveCookiesFromCOROUTINE$6(_this__u8e3s4, response, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.response_1 = response;
   }
-  protoOf($saveCookiesFromCOROUTINE$14).doResume_5yljmg_k$ = function () {
+  protoOf($saveCookiesFromCOROUTINE$6).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -7095,25 +7095,25 @@
     tmp.initializer_1 = launch(tmp_0, tmp_1, VOID, HttpCookies$initializer$slambda_0(this, null));
   }
   protoOf(HttpCookies).get_7cbzhw_k$ = function (requestUrl, $completion) {
-    var tmp = new $getCOROUTINE$11(this, requestUrl, $completion);
+    var tmp = new $getCOROUTINE$3(this, requestUrl, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   };
   protoOf(HttpCookies).captureHeaderCookies_5yuvd2_k$ = function (builder, $completion) {
-    var tmp = new $captureHeaderCookiesCOROUTINE$12(this, builder, $completion);
+    var tmp = new $captureHeaderCookiesCOROUTINE$4(this, builder, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   };
   protoOf(HttpCookies).sendCookiesWith_a77n07_k$ = function (builder, $completion) {
-    var tmp = new $sendCookiesWithCOROUTINE$13(this, builder, $completion);
+    var tmp = new $sendCookiesWithCOROUTINE$5(this, builder, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   };
   protoOf(HttpCookies).saveCookiesFrom_af0yxn_k$ = function (response, $completion) {
-    var tmp = new $saveCookiesFromCOROUTINE$14(this, response, $completion);
+    var tmp = new $saveCookiesFromCOROUTINE$6(this, response, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
@@ -7359,6 +7359,22 @@
     return LOGGER_11;
   }
   var LOGGER_11;
+  function WebSocketCapability() {
+    WebSocketCapability_instance = this;
+  }
+  protoOf(WebSocketCapability).toString = function () {
+    return 'WebSocketCapability';
+  };
+  var WebSocketCapability_instance;
+  function WebSocketCapability_getInstance() {
+    if (WebSocketCapability_instance == null)
+      new WebSocketCapability();
+    return WebSocketCapability_instance;
+  }
+  function WebSocketException(message) {
+    IllegalStateException_init_$Init$_0(message, this);
+    captureStack(this, WebSocketException);
+  }
   function WebSockets$Plugin$install$slambda($extensionsSupported, $plugin, resultContinuation) {
     this.$extensionsSupported_1 = $extensionsSupported;
     this.$plugin_1 = $plugin;
@@ -7723,22 +7739,6 @@
     if (WebSocketExtensionsCapability_instance == null)
       new WebSocketExtensionsCapability();
     return WebSocketExtensionsCapability_instance;
-  }
-  function WebSocketCapability() {
-    WebSocketCapability_instance = this;
-  }
-  protoOf(WebSocketCapability).toString = function () {
-    return 'WebSocketCapability';
-  };
-  var WebSocketCapability_instance;
-  function WebSocketCapability_getInstance() {
-    if (WebSocketCapability_instance == null)
-      new WebSocketCapability();
-    return WebSocketCapability_instance;
-  }
-  function WebSocketException(message) {
-    IllegalStateException_init_$Init$_0(message, this);
-    captureStack(this, WebSocketException);
   }
   var properties_initialized_WebSockets_kt_2t2hw2;
   function _init_properties_WebSockets_kt__jaqpbo() {
@@ -8231,6 +8231,43 @@
     var tmp = tmp0_safe_receiver == null ? null : tmp0_safe_receiver.get_1mhr4y_k$(key);
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   };
+  function HttpResponseData(statusCode, requestTime, headers, version, body, callContext) {
+    this.statusCode_1 = statusCode;
+    this.requestTime_1 = requestTime;
+    this.headers_1 = headers;
+    this.version_1 = version;
+    this.body_1 = body;
+    this.callContext_1 = callContext;
+    this.responseTime_1 = GMTDate();
+  }
+  protoOf(HttpResponseData).get_statusCode_g2w4u0_k$ = function () {
+    return this.statusCode_1;
+  };
+  protoOf(HttpResponseData).get_requestTime_wwxhg3_k$ = function () {
+    return this.requestTime_1;
+  };
+  protoOf(HttpResponseData).get_headers_ef25jx_k$ = function () {
+    return this.headers_1;
+  };
+  protoOf(HttpResponseData).get_version_72w4j3_k$ = function () {
+    return this.version_1;
+  };
+  protoOf(HttpResponseData).get_body_wojkyz_k$ = function () {
+    return this.body_1;
+  };
+  protoOf(HttpResponseData).get_callContext_mskb9k_k$ = function () {
+    return this.callContext_1;
+  };
+  protoOf(HttpResponseData).get_responseTime_scfvg7_k$ = function () {
+    return this.responseTime_1;
+  };
+  protoOf(HttpResponseData).toString = function () {
+    return 'HttpResponseData=(statusCode=' + this.statusCode_1 + ')';
+  };
+  function isUpgradeRequest(_this__u8e3s4) {
+    var tmp = _this__u8e3s4.body_1;
+    return tmp instanceof ClientUpgradeContent;
+  }
   function HttpRequestData(url, method, headers, body, executionContext, attributes) {
     this.url_1 = url;
     this.method_1 = method;
@@ -8272,39 +8309,6 @@
   protoOf(HttpRequestData).toString = function () {
     return 'HttpRequestData(url=' + this.url_1 + ', method=' + this.method_1 + ')';
   };
-  function HttpResponseData(statusCode, requestTime, headers, version, body, callContext) {
-    this.statusCode_1 = statusCode;
-    this.requestTime_1 = requestTime;
-    this.headers_1 = headers;
-    this.version_1 = version;
-    this.body_1 = body;
-    this.callContext_1 = callContext;
-    this.responseTime_1 = GMTDate();
-  }
-  protoOf(HttpResponseData).get_statusCode_g2w4u0_k$ = function () {
-    return this.statusCode_1;
-  };
-  protoOf(HttpResponseData).get_requestTime_wwxhg3_k$ = function () {
-    return this.requestTime_1;
-  };
-  protoOf(HttpResponseData).get_headers_ef25jx_k$ = function () {
-    return this.headers_1;
-  };
-  protoOf(HttpResponseData).get_version_72w4j3_k$ = function () {
-    return this.version_1;
-  };
-  protoOf(HttpResponseData).get_body_wojkyz_k$ = function () {
-    return this.body_1;
-  };
-  protoOf(HttpResponseData).get_callContext_mskb9k_k$ = function () {
-    return this.callContext_1;
-  };
-  protoOf(HttpResponseData).get_responseTime_scfvg7_k$ = function () {
-    return this.responseTime_1;
-  };
-  protoOf(HttpResponseData).toString = function () {
-    return 'HttpResponseData=(statusCode=' + this.statusCode_1 + ')';
-  };
   function url(_this__u8e3s4, urlString) {
     takeFrom(_this__u8e3s4.url_1, urlString);
   }
@@ -8321,10 +8325,6 @@
     }
     block = tmp;
     set(_this__u8e3s4.url_1, scheme, host, port, path, block);
-  }
-  function isUpgradeRequest(_this__u8e3s4) {
-    var tmp = _this__u8e3s4.body_1;
-    return tmp instanceof ClientUpgradeContent;
   }
   function url$lambda($this$null) {
     return Unit_getInstance();
@@ -8419,31 +8419,31 @@
     }
   }
   function request(_this__u8e3s4, block, $completion) {
-    var tmp = new $requestCOROUTINE$16(_this__u8e3s4, block, $completion);
+    var tmp = new $requestCOROUTINE$7(_this__u8e3s4, block, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   }
   function delete_0(_this__u8e3s4, block, $completion) {
-    var tmp = new $deleteCOROUTINE$17(_this__u8e3s4, block, $completion);
+    var tmp = new $deleteCOROUTINE$8(_this__u8e3s4, block, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   }
   function get_0(_this__u8e3s4, block, $completion) {
-    var tmp = new $getCOROUTINE$18(_this__u8e3s4, block, $completion);
+    var tmp = new $getCOROUTINE$9_0(_this__u8e3s4, block, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   }
   function post(_this__u8e3s4, block, $completion) {
-    var tmp = new $postCOROUTINE$19(_this__u8e3s4, block, $completion);
+    var tmp = new $postCOROUTINE$10(_this__u8e3s4, block, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   }
   function patch(_this__u8e3s4, block, $completion) {
-    var tmp = new $patchCOROUTINE$20(_this__u8e3s4, block, $completion);
+    var tmp = new $patchCOROUTINE$11(_this__u8e3s4, block, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
@@ -8490,12 +8490,12 @@
     builder = builder === VOID ? new HttpRequestBuilder() : builder;
     return new HttpStatement(builder, _this__u8e3s4);
   }
-  function $requestCOROUTINE$16(_this__u8e3s4, block, resultContinuation) {
+  function $requestCOROUTINE$7(_this__u8e3s4, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.block_1 = block;
   }
-  protoOf($requestCOROUTINE$16).doResume_5yljmg_k$ = function () {
+  protoOf($requestCOROUTINE$7).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -8530,12 +8530,12 @@
       }
      while (true);
   };
-  function $deleteCOROUTINE$17(_this__u8e3s4, block, resultContinuation) {
+  function $deleteCOROUTINE$8(_this__u8e3s4, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.block_1 = block;
   }
-  protoOf($deleteCOROUTINE$17).doResume_5yljmg_k$ = function () {
+  protoOf($deleteCOROUTINE$8).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -8571,12 +8571,12 @@
       }
      while (true);
   };
-  function $getCOROUTINE$18(_this__u8e3s4, block, resultContinuation) {
+  function $getCOROUTINE$9_0(_this__u8e3s4, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.block_1 = block;
   }
-  protoOf($getCOROUTINE$18).doResume_5yljmg_k$ = function () {
+  protoOf($getCOROUTINE$9_0).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -8612,12 +8612,12 @@
       }
      while (true);
   };
-  function $postCOROUTINE$19(_this__u8e3s4, block, resultContinuation) {
+  function $postCOROUTINE$10(_this__u8e3s4, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.block_1 = block;
   }
-  protoOf($postCOROUTINE$19).doResume_5yljmg_k$ = function () {
+  protoOf($postCOROUTINE$10).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -8653,12 +8653,12 @@
       }
      while (true);
   };
-  function $patchCOROUTINE$20(_this__u8e3s4, block, resultContinuation) {
+  function $patchCOROUTINE$11(_this__u8e3s4, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.block_1 = block;
   }
-  protoOf($patchCOROUTINE$20).doResume_5yljmg_k$ = function () {
+  protoOf($patchCOROUTINE$11).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -8773,12 +8773,12 @@
       return tmp$ret$0;
     };
   }
-  function $writeToCOROUTINE$21(_this__u8e3s4, channel, resultContinuation) {
+  function $writeToCOROUTINE$12(_this__u8e3s4, channel, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.channel_1 = channel;
   }
-  protoOf($writeToCOROUTINE$21).doResume_5yljmg_k$ = function () {
+  protoOf($writeToCOROUTINE$12).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -9188,7 +9188,7 @@
     return this.contentLength_1;
   };
   protoOf(MultiPartFormDataContent).writeTo_wvkb45_k$ = function (channel, $completion) {
-    var tmp = new $writeToCOROUTINE$21(this, channel, $completion);
+    var tmp = new $writeToCOROUTINE$12(this, channel, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
@@ -9243,17 +9243,17 @@
     return this.size_1;
   };
   function copyTo_1(_this__u8e3s4, channel, $completion) {
-    var tmp = new $copyToCOROUTINE$22(_this__u8e3s4, channel, $completion);
+    var tmp = new $copyToCOROUTINE$13(_this__u8e3s4, channel, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   }
-  function $copyToCOROUTINE$22(_this__u8e3s4, channel, resultContinuation) {
+  function $copyToCOROUTINE$13(_this__u8e3s4, channel, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.channel_1 = channel;
   }
-  protoOf($copyToCOROUTINE$22).doResume_5yljmg_k$ = function () {
+  protoOf($copyToCOROUTINE$13).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -9407,7 +9407,7 @@
       tmp = block;
     }
     block = tmp;
-    var tmp_0 = new $submitFormCOROUTINE$23(_this__u8e3s4, formParameters, encodeInQuery, block, $completion);
+    var tmp_0 = new $submitFormCOROUTINE$14(_this__u8e3s4, formParameters, encodeInQuery, block, $completion);
     tmp_0.set_result_ximc09_k$(Unit_getInstance());
     tmp_0.set_exception_pwgeox_k$(null);
     return tmp_0.doResume_5yljmg_k$();
@@ -9420,7 +9420,7 @@
       tmp = block;
     }
     block = tmp;
-    var tmp_0 = new $submitFormWithBinaryDataCOROUTINE$24(_this__u8e3s4, url, formData, block, $completion);
+    var tmp_0 = new $submitFormWithBinaryDataCOROUTINE$15(_this__u8e3s4, url, formData, block, $completion);
     tmp_0.set_result_ximc09_k$(Unit_getInstance());
     tmp_0.set_exception_pwgeox_k$(null);
     return tmp_0.doResume_5yljmg_k$();
@@ -9433,7 +9433,7 @@
       tmp = block;
     }
     block = tmp;
-    var tmp_0 = new $submitFormWithBinaryDataCOROUTINE$25(_this__u8e3s4, formData, block, $completion);
+    var tmp_0 = new $submitFormWithBinaryDataCOROUTINE$16(_this__u8e3s4, formData, block, $completion);
     tmp_0.set_result_ximc09_k$(Unit_getInstance());
     tmp_0.set_exception_pwgeox_k$(null);
     return tmp_0.doResume_5yljmg_k$();
@@ -9447,14 +9447,14 @@
   function submitFormWithBinaryData$lambda_0($this$null) {
     return Unit_getInstance();
   }
-  function $submitFormCOROUTINE$23(_this__u8e3s4, formParameters, encodeInQuery, block, resultContinuation) {
+  function $submitFormCOROUTINE$14(_this__u8e3s4, formParameters, encodeInQuery, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.formParameters_1 = formParameters;
     this.encodeInQuery_1 = encodeInQuery;
     this.block_1 = block;
   }
-  protoOf($submitFormCOROUTINE$23).doResume_5yljmg_k$ = function () {
+  protoOf($submitFormCOROUTINE$14).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -9540,14 +9540,14 @@
       }
      while (true);
   };
-  function $submitFormWithBinaryDataCOROUTINE$24(_this__u8e3s4, url, formData, block, resultContinuation) {
+  function $submitFormWithBinaryDataCOROUTINE$15(_this__u8e3s4, url, formData, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.url_1 = url;
     this.formData_1 = formData;
     this.block_1 = block;
   }
-  protoOf($submitFormWithBinaryDataCOROUTINE$24).doResume_5yljmg_k$ = function () {
+  protoOf($submitFormWithBinaryDataCOROUTINE$15).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -9629,13 +9629,13 @@
       }
      while (true);
   };
-  function $submitFormWithBinaryDataCOROUTINE$25(_this__u8e3s4, formData, block, resultContinuation) {
+  function $submitFormWithBinaryDataCOROUTINE$16(_this__u8e3s4, formData, block, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.formData_1 = formData;
     this.block_1 = block;
   }
-  protoOf($submitFormWithBinaryDataCOROUTINE$25).doResume_5yljmg_k$ = function () {
+  protoOf($submitFormWithBinaryDataCOROUTINE$16).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {
@@ -9982,32 +9982,32 @@
   protoOf(DefaultHttpResponse).get_headers_ef25jx_k$ = function () {
     return this.headers_1;
   };
-  function HttpResponse() {
-  }
-  protoOf(HttpResponse).toString = function () {
-    return 'HttpResponse[' + get_request(this).get_url_18iuii_k$() + ', ' + this.get_status_jnf6d7_k$() + ']';
-  };
-  function get_request(_this__u8e3s4) {
-    return _this__u8e3s4.get_call_wojxrb_k$().get_request_jdwg4m_k$();
-  }
   function complete(_this__u8e3s4) {
     var tmp = ensureNotNull(_this__u8e3s4.get_coroutineContext_115oqo_k$().get_j1ktw6_k$(Key_getInstance()));
     var job = isInterface(tmp, CompletableJob) ? tmp : THROW_CCE();
     job.complete_9ww6vb_k$();
   }
+  function HttpResponse() {
+  }
+  protoOf(HttpResponse).toString = function () {
+    return 'HttpResponse[' + get_request(this).get_url_18iuii_k$() + ', ' + this.get_status_jnf6d7_k$() + ']';
+  };
   function bodyAsText(_this__u8e3s4, fallbackCharset, $completion) {
     fallbackCharset = fallbackCharset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : fallbackCharset;
-    var tmp = new $bodyAsTextCOROUTINE$26(_this__u8e3s4, fallbackCharset, $completion);
+    var tmp = new $bodyAsTextCOROUTINE$17(_this__u8e3s4, fallbackCharset, $completion);
     tmp.set_result_ximc09_k$(Unit_getInstance());
     tmp.set_exception_pwgeox_k$(null);
     return tmp.doResume_5yljmg_k$();
   }
-  function $bodyAsTextCOROUTINE$26(_this__u8e3s4, fallbackCharset, resultContinuation) {
+  function get_request(_this__u8e3s4) {
+    return _this__u8e3s4.get_call_wojxrb_k$().get_request_jdwg4m_k$();
+  }
+  function $bodyAsTextCOROUTINE$17(_this__u8e3s4, fallbackCharset, resultContinuation) {
     CoroutineImpl.call(this, resultContinuation);
     this._this__u8e3s4__1 = _this__u8e3s4;
     this.fallbackCharset_1 = fallbackCharset;
   }
-  protoOf($bodyAsTextCOROUTINE$26).doResume_5yljmg_k$ = function () {
+  protoOf($bodyAsTextCOROUTINE$17).doResume_5yljmg_k$ = function () {
     var suspendResult = this.get_result_iyg5d2_k$();
     $sm: do
       try {

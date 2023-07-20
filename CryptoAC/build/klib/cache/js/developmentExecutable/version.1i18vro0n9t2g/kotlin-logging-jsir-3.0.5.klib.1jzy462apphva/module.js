@@ -234,6 +234,9 @@
       new KotlinLoggingConfiguration();
     return KotlinLoggingConfiguration_instance;
   }
+  function isLoggingEnabled(_this__u8e3s4) {
+    return _this__u8e3s4.get_ordinal_ip24qg_k$() >= KotlinLoggingConfiguration_getInstance().get_LOG_LEVEL_ygxsm8_k$().get_ordinal_ip24qg_k$();
+  }
   var KotlinLoggingLevel_TRACE_instance;
   var KotlinLoggingLevel_DEBUG_instance;
   var KotlinLoggingLevel_INFO_instance;
@@ -273,9 +276,6 @@
   }
   function KotlinLoggingLevel(name, ordinal) {
     Enum.call(this, name, ordinal);
-  }
-  function isLoggingEnabled(_this__u8e3s4) {
-    return _this__u8e3s4.get_ordinal_ip24qg_k$() >= KotlinLoggingConfiguration_getInstance().get_LOG_LEVEL_ygxsm8_k$().get_ordinal_ip24qg_k$();
   }
   function KotlinLoggingLevel_TRACE_getInstance() {
     KotlinLoggingLevel_initEntries();

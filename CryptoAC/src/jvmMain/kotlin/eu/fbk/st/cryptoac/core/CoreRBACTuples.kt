@@ -2234,10 +2234,7 @@ abstract class CoreRBACTuples(
      * or the decrypting key
      * Finally, return the key along with an outcome code
      */
-    // TODO == BELOW == added for DBSEC EXP, remove
-    // TODO => make "getSymmetricKey" a private function again
-    // TODO == ABOVE == added for DBSEC EXP, remove
-    public fun getSymmetricKey(
+    private fun getSymmetricKey(
         resource: Resource,
         encryptingKey: Boolean,
     ): CodeSymmetricKeyRBAC {

@@ -48,18 +48,18 @@ internal class DMServiceMQTTTest : DMServiceTest(), MqttCallback {
             endStrings = hashSetOf("mosquitto version 2.0.14 running")
         )
 
-        val brokerBaseAPI = "tcp://${Parameters.dmServiceMQTTParameters.url}:${Parameters.dmServiceMQTTParameters.port}"
+        val brokerBaseAPI = "tcp://${Parameters.dmServiceMQTTNoACParameters.url}:${Parameters.dmServiceMQTTNoACParameters.port}"
         val persistence = MemoryPersistence()
         client = CryptoACMQTTClient(
             serverURI = brokerBaseAPI,
             clientId = generateRandomString(),
             persistence = persistence,
-            tls = Parameters.dmServiceMQTTParameters.tls,
-            username = Parameters.dmServiceMQTTParameters.username,
-            password = Parameters.dmServiceMQTTParameters.password,
+            tls = Parameters.dmServiceMQTTNoACParameters.tls,
+            username = Parameters.dmServiceMQTTNoACParameters.username,
+            password = Parameters.dmServiceMQTTNoACParameters.password,
         )
         client!!.setCallback(this)
-        dm = DMServiceMQTT(Parameters.dmServiceMQTTParameters, client!!)
+        dm = DMServiceMQTT(Parameters.dmServiceMQTTNoACParameters, client!!)
     }
 
     @AfterAll

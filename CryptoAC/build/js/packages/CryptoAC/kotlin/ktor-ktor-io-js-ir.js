@@ -8639,7 +8639,7 @@
     if (value == null) {
       return this.append_tbojcw_k$('null', startIndex, endIndex);
     }
-    writeText(this, value, startIndex, endIndex, Charsets_getInstance().get_UTF_8_ihn39z_k$());
+    writeText_0(this, value, startIndex, endIndex, Charsets_getInstance().get_UTF_8_ihn39z_k$());
     return this;
   };
   protoOf(Output).writePacket_leumkr_k$ = function (packet) {
@@ -8758,7 +8758,7 @@
     }
   };
   protoOf(Output).append_xtkvi3_k$ = function (csq, start, end) {
-    writeText_0(this, csq, start, end, Charsets_getInstance().get_UTF_8_ihn39z_k$());
+    writeText(this, csq, start, end, Charsets_getInstance().get_UTF_8_ihn39z_k$());
     return this;
   };
   protoOf(Output).release_wtm6d2_k$ = function () {
@@ -9282,17 +9282,6 @@
       }
     }
   }
-  function toByteArray(_this__u8e3s4, charset) {
-    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
-    if (charset.equals(Charsets_getInstance().get_UTF_8_ihn39z_k$()))
-      return encodeToByteArray(_this__u8e3s4);
-    return encodeToByteArray_0(charset.newEncoder_gqwcdg_k$(), _this__u8e3s4, 0, _this__u8e3s4.length);
-  }
-  function readText(_this__u8e3s4, charset, max) {
-    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
-    max = max === VOID ? IntCompanionObject_getInstance().get_MAX_VALUE_54a9lf_k$() : max;
-    return decode(charset.newDecoder_zcettw_k$(), _this__u8e3s4, max);
-  }
   function readBytes(_this__u8e3s4, n) {
     var tmp;
     if (n === VOID) {
@@ -9324,23 +9313,21 @@
     }
     return tmp_0;
   }
+  function readText(_this__u8e3s4, charset, max) {
+    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
+    max = max === VOID ? IntCompanionObject_getInstance().get_MAX_VALUE_54a9lf_k$() : max;
+    return decode(charset.newDecoder_zcettw_k$(), _this__u8e3s4, max);
+  }
+  function toByteArray(_this__u8e3s4, charset) {
+    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
+    if (charset.equals(Charsets_getInstance().get_UTF_8_ihn39z_k$()))
+      return encodeToByteArray(_this__u8e3s4);
+    return encodeToByteArray_0(charset.newEncoder_gqwcdg_k$(), _this__u8e3s4, 0, _this__u8e3s4.length);
+  }
   function prematureEndOfStream(size) {
     throw new EOFException('Premature end of stream: expected ' + size + ' bytes');
   }
-  function readTextExactBytes(_this__u8e3s4, bytesCount, charset) {
-    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
-    return decodeExactBytes(charset.newDecoder_zcettw_k$(), _this__u8e3s4, bytesCount);
-  }
   function writeText(_this__u8e3s4, text, fromIndex, toIndex, charset) {
-    fromIndex = fromIndex === VOID ? 0 : fromIndex;
-    toIndex = toIndex === VOID ? charSequenceLength(text) : toIndex;
-    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
-    if (charset === Charsets_getInstance().get_UTF_8_ihn39z_k$()) {
-      return writeTextUtf8(_this__u8e3s4, text, fromIndex, toIndex);
-    }
-    encodeToImpl(charset.newEncoder_gqwcdg_k$(), _this__u8e3s4, text, fromIndex, toIndex);
-  }
-  function writeText_0(_this__u8e3s4, text, fromIndex, toIndex, charset) {
     fromIndex = fromIndex === VOID ? 0 : fromIndex;
     toIndex = toIndex === VOID ? text.length : toIndex;
     charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
@@ -9348,6 +9335,22 @@
       return writeTextUtf8(_this__u8e3s4, new CharArraySequence(text, 0, text.length), fromIndex, toIndex);
     }
     encode(charset.newEncoder_gqwcdg_k$(), text, fromIndex, toIndex, _this__u8e3s4);
+  }
+  function readBytes_0(_this__u8e3s4) {
+    return readBytesOf(_this__u8e3s4);
+  }
+  function readTextExactBytes(_this__u8e3s4, bytesCount, charset) {
+    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
+    return decodeExactBytes(charset.newDecoder_zcettw_k$(), _this__u8e3s4, bytesCount);
+  }
+  function writeText_0(_this__u8e3s4, text, fromIndex, toIndex, charset) {
+    fromIndex = fromIndex === VOID ? 0 : fromIndex;
+    toIndex = toIndex === VOID ? charSequenceLength(text) : toIndex;
+    charset = charset === VOID ? Charsets_getInstance().get_UTF_8_ihn39z_k$() : charset;
+    if (charset === Charsets_getInstance().get_UTF_8_ihn39z_k$()) {
+      return writeTextUtf8(_this__u8e3s4, text, fromIndex, toIndex);
+    }
+    encodeToImpl(charset.newEncoder_gqwcdg_k$(), _this__u8e3s4, text, fromIndex, toIndex);
   }
   function writeTextUtf8(_this__u8e3s4, text, fromIndex, toIndex) {
     var index = fromIndex;
@@ -9402,9 +9405,6 @@
     }finally {
       _this__u8e3s4.afterHeadWrite_dlo0ku_k$();
     }
-  }
-  function readBytes_0(_this__u8e3s4) {
-    return readBytesOf(_this__u8e3s4);
   }
   function readBytesOf(_this__u8e3s4, min, max) {
     min = min === VOID ? 0 : min;
@@ -13751,7 +13751,7 @@
   _.$_$.i1 = readText;
   _.$_$.j1 = writeFully_3;
   _.$_$.k1 = writeShort_0;
-  _.$_$.l1 = writeText;
+  _.$_$.l1 = writeText_0;
   _.$_$.m1 = IOException;
   _.$_$.n1 = get_ByteArrayPool;
   _.$_$.o1 = ByteChannel_0;

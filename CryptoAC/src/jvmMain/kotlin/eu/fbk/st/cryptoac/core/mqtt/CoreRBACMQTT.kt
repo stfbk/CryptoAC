@@ -47,6 +47,8 @@ class CoreRBACMQTT(
     override val coreParameters: CoreParametersRBAC,
 ) : CoreRBACTuples(cryptoPKE, cryptoSKE, coreParameters), MqttCallback {
 
+    var latestResource: Resource? = null
+
     /** The MM service */
     override val mm: MMServiceRBAC = MMFactory.getMM(
         mmParameters = coreParameters.mmServiceParameters
@@ -328,17 +330,6 @@ class CoreRBACMQTT(
                     resource.enforcement
                 }
 
-                // TODO == BELOW == added for DBSEC EXP, remove
-                val resourceContent2 = (coreParameters.user.name
-                        + "_"
-                        + System.currentTimeMillis().toString()
-                        + "_"
-                        + generateRandomString()
-                        + "_" + resourceContent
-                    ).inputStream()
-                // TODO == ABOVE == added for DBSEC EXP, remove
-
-
                 return@withLock when (enforcement) {
                     /** MQTT messages should not be encrypted, i.e., just publish it */
                     EnforcementType.TRADITIONAL -> {
@@ -349,7 +340,7 @@ class CoreRBACMQTT(
                                     name = resourceName,
                                     enforcement = enforcement
                                 ),
-                                content = resourceContent2
+                                content = resourceContent
                             ),
                             acLocked = false
                         )
@@ -358,11 +349,8 @@ class CoreRBACMQTT(
                     EnforcementType.COMBINED -> {
                         logger.debug { "Enforcement is COMBINED, encrypt the message" }
                         val codeAndKey = if (subscribedTopicsKeysAndMessages.containsKey(resourceName)) {
-                            logger.debug { "Getting key from cache" }
-                            CodeSymmetricKeyRBAC(
-                                key = subscribedTopicsKeysAndMessages[resourceName]!!.key,
-                                role = subscribedTopicsKeysAndMessages[resourceName]!!.role
-                            )
+                            logger.debug { "Getting key from MM" }
+                            getEncSymmetricKey(resource = resource)
                         } else {
                             logger.debug { "Getting key from MM" }
                             getEncSymmetricKey(resource = resource)
@@ -376,7 +364,7 @@ class CoreRBACMQTT(
                         } else {
                             val messageStream = cryptoSKE.encryptStream(
                                 encryptingKey = codeAndKey.key!!,
-                                stream = resourceContent2
+                                stream = resourceContent
                             )
                             endOfMethod(
                                 code = dm.writeResource(
@@ -478,6 +466,7 @@ class CoreRBACMQTT(
                                 dm.client.unsubscribe(topic)
                             } else {
                                 val resource = myJson.decodeFromString<Resource>(String(message.payload))
+                                latestResource = resource
                                 val versionNumber = resource.symEncKeyVersionNumber
                                 val enforcement = resource.enforcement
                                 logger.info {
@@ -554,80 +543,6 @@ class CoreRBACMQTT(
                                                 enforcement = enforcement
                                             )
                                         }
-
-                                        /**
-                                         * Lock the MM. If an error occurs, send an
-                                         * error message with the code to the client
-                                         * TODO do what with the key or eventual new messages?
-                                         */
-                                        val lockCode = startOfMethod(
-                                            dmLock = false,
-                                            acLock = false
-                                        )
-                                        if (lockCode != CODE_000_SUCCESS) {
-                                            logger.warn { "Could not lock ($lockCode)" }
-                                            val lockMessage = MQTTMessage(
-                                                message = lockCode.toString(),
-                                                topic = topic,
-                                                error = true
-                                            )
-                                            cacheOrSendMessage(
-                                                topic = topic,
-                                                message = lockMessage
-                                            )
-                                        }
-
-                                        /**
-                                         * Get the key. If an error occurs, send an
-                                         * error message with the code to the client
-                                         * Note that, even for decrypting messages
-                                         * received from the topic, we use the encryption
-                                         * key, as in the MQTT core scheme there is
-                                         * always one key
-                                         * TODO do what with the key or eventual new messages?
-                                         */
-                                        val symKey = getEncSymmetricKey(
-                                            resource = resource
-                                        )
-                                        if (symKey.code != CODE_000_SUCCESS) {
-                                            logger.warn { "Error while retrieving the key (${symKey.code})" }
-                                            subscribedTopicsKeysAndMessages[topic]!!.key = null
-                                            val errorMessage = MQTTMessage(
-                                                message = symKey.code.toString(),
-                                                topic = topic,
-                                                error = true
-                                            )
-                                            cacheOrSendMessage(
-                                                topic = topic,
-                                                message = errorMessage
-                                            )
-                                        } else {
-                                            subscribedTopicsKeysAndMessages[topic]!!.key = symKey.key
-                                        }
-
-                                        /**
-                                         * Unlock the mm. If an error occurs, send an
-                                         * error message with the code to the client
-                                         * TODO do what with the key or eventual new messages?
-                                         */
-                                        val unlockCode = endOfMethod(
-                                            code = symKey.code,
-                                            dmLocked = false,
-                                            acLocked = false
-                                        )
-                                        if (unlockCode != CODE_000_SUCCESS) {
-                                            val unlockMessage = MQTTMessage(
-                                                message = unlockCode.toString(),
-                                                topic = topic,
-                                                error = true
-                                            )
-                                            cacheOrSendMessage(
-                                                topic = topic,
-                                                message = unlockMessage
-                                            )
-                                        } else {
-                                            // TODO delete this else
-                                        }
                                     }
 
                                     EnforcementType.TRADITIONAL -> {
@@ -665,6 +580,80 @@ class CoreRBACMQTT(
                             logger.debug { "The message is not retained" }
                             if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
 
+                                /**
+                                 * Lock the MM. If an error occurs, send an
+                                 * error message with the code to the client
+                                 * TODO do what with the key or eventual new messages?
+                                 */
+                                val lockCode = startOfMethod(
+                                    dmLock = false,
+                                    acLock = false
+                                )
+                                if (lockCode != CODE_000_SUCCESS) {
+                                    logger.warn { "Could not lock ($lockCode)" }
+                                    val lockMessage = MQTTMessage(
+                                        message = lockCode.toString(),
+                                        topic = topic,
+                                        error = true
+                                    )
+                                    cacheOrSendMessage(
+                                        topic = topic,
+                                        message = lockMessage
+                                    )
+                                }
+
+                                /**
+                                 * Get the key. If an error occurs, send an
+                                 * error message with the code to the client
+                                 * Note that, even for decrypting messages
+                                 * received from the topic, we use the encryption
+                                 * key, as in the MQTT core scheme there is
+                                 * always one key
+                                 * TODO do what with the key or eventual new messages?
+                                 */
+                                val symKey = getEncSymmetricKey(
+                                    resource = latestResource!!
+                                )
+                                if (symKey.code != CODE_000_SUCCESS) {
+                                    logger.warn { "Error while retrieving the key (${symKey.code})" }
+                                    subscribedTopicsKeysAndMessages[topic]!!.key = null
+                                    val errorMessage = MQTTMessage(
+                                        message = symKey.code.toString(),
+                                        topic = topic,
+                                        error = true
+                                    )
+                                    cacheOrSendMessage(
+                                        topic = topic,
+                                        message = errorMessage
+                                    )
+                                } else {
+                                    subscribedTopicsKeysAndMessages[topic]!!.key = symKey.key
+                                }
+
+                                /**
+                                 * Unlock the mm. If an error occurs, send an
+                                 * error message with the code to the client
+                                 * TODO do what with the key or eventual new messages?
+                                 */
+                                val unlockCode = endOfMethod(
+                                    code = symKey.code,
+                                    dmLocked = false,
+                                    acLocked = false
+                                )
+                                if (unlockCode != CODE_000_SUCCESS) {
+                                    val unlockMessage = MQTTMessage(
+                                        message = unlockCode.toString(),
+                                        topic = topic,
+                                        error = true
+                                    )
+                                    cacheOrSendMessage(
+                                        topic = topic,
+                                        message = unlockMessage
+                                    )
+                                } else {
+                                    // TODO delete this else
+                                }
+
                                 val topicKey = subscribedTopicsKeysAndMessages[topic]!!
 
                                 val messageContent = when (topicKey.enforcement) {
@@ -695,28 +684,8 @@ class CoreRBACMQTT(
                                     }
                                 }
 
-                                // TODO == BELOW == added for DBSEC EXP, remove
-                                val timestampNow = System.currentTimeMillis().toString()
-                                val splitMessageContent = String(messageContent).split("_")
-                                val senderUser = splitMessageContent[0]
-                                val timestampSent = splitMessageContent[1]
-                                val messageID = splitMessageContent[2]
-                                val useridts1ts2 = senderUser +
-                                        "_" +
-                                        coreParameters.user.name +
-                                        "_" +
-                                        topic +
-                                        "_" +
-                                        messageID +
-                                        "_" +
-                                        timestampSent +
-                                        "_" +
-                                        timestampNow
-                                // TODO == ABOVE == added for DBSEC EXP, remove
-
-
                                 val receivedMessage = MQTTMessage(
-                                    message = useridts1ts2, // String(messageContent),
+                                    message = String(messageContent),
                                     topic = topic,
                                     error = false
                                 )

@@ -106,7 +106,7 @@
     this.unaryPlus_remv6s_k$(createElement(_this__u8e3s4));
   }
   function invoke_0(_this__u8e3s4, block) {
-    this.unaryPlus_remv6s_k$(create_0(_this__u8e3s4, block));
+    this.unaryPlus_remv6s_k$(create(_this__u8e3s4, block));
   }
   function invoke_1(_this__u8e3s4, value, block) {
     var tmp = _this__u8e3s4.Provider;
@@ -164,11 +164,11 @@
     tmp$ret$0 = _this__u8e3s4;
     return tmp$ret$0[get_CHILDREN()];
   }
-  function ChildrenBuilderImpl() {
-  }
   function createChildrenBuilder() {
     _init_properties_ChildrenBuilder_kt__gexuom();
     return new ChildrenBuilderImpl();
+  }
+  function ChildrenBuilderImpl() {
   }
   var properties_initialized_ChildrenBuilder_kt_gby2z0;
   function _init_properties_ChildrenBuilder_kt__gexuom() {
@@ -199,10 +199,7 @@
       return createElementOrNull(FC$lambda$lambda($block, props));
     };
   }
-  function create(_this__u8e3s4) {
-    return createElement(_this__u8e3s4);
-  }
-  function create_0(_this__u8e3s4, block) {
+  function create(_this__u8e3s4, block) {
     var builder = createChildrenBuilder();
     var tmp$ret$2;
     // Inline function 'kotlin.apply' call
@@ -235,6 +232,9 @@
     }
     var children = tmp;
     return createElement.apply(null, [_this__u8e3s4, props].concat([].slice.call(children.slice())));
+  }
+  function create_0(_this__u8e3s4) {
+    return createElement(_this__u8e3s4);
   }
   function createElementOrNull(block) {
     var tmp$ret$2;
@@ -300,7 +300,7 @@
   //region block: exports
   _.$_$ = _.$_$ || {};
   _.$_$.a = FC;
-  _.$_$.b = create;
+  _.$_$.b = create_0;
   //endregion
   return _;
 }));
