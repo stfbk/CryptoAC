@@ -11,13 +11,12 @@
    "versionNumber":1,
    "rmServiceParameters":null,
    "mmServiceParameters":{
-      "type":"eu.fbk.st.cryptoac.mm.redis.MMServiceRedisParameters",
+      "type":"eu.fbk.st.cryptoac.mm.mysql.MMServiceRBACMySQLParameters",
       "username":"admin",
       "password":"password",
-      "port":6379,
-      "url":"10.1.0.7",
-      "token":"admin",
-      "mmType":"RBAC_REDIS"
+      "port":3306,
+      "url":"10.1.0.3",
+      "mmType":"RBAC_MYSQL"
    },
    "dmServiceParameters":{
       "type":"eu.fbk.st.cryptoac.dm.mqtt.DMServiceMQTTParameters",
