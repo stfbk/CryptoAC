@@ -228,18 +228,22 @@ class CoreRBACMQTT(
         // TODO here we should also match MQTT topic wildcards (i.e., '+' and '#')
         // TODO we should test this behaviour (i.e., the download of MQTT messages through the READ RESOURCE api)
         return if (subscribedTopicsKeysAndMessages.containsKey(resourceName)) {
-            val stringMessages = myJson.encodeToString(
-                value = subscribedTopicsKeysAndMessages[resourceName]!!.messages
-            ).inputStream()
-            subscribedTopicsKeysAndMessages[resourceName]!!.messages.clear()
-            CodeResource(
-                code = endOfMethod(
-                    code = CODE_000_SUCCESS,
-                    mmLocked = false,
-                    acLocked = false
-                ),
-                stream = stringMessages
-            )
+            runBlocking {
+                messageMutex.withLock {
+                    val stringMessages = myJson.encodeToString(
+                        value = subscribedTopicsKeysAndMessages[resourceName]!!.messages
+                    ).inputStream()
+                    subscribedTopicsKeysAndMessages[resourceName]!!.messages.clear()
+                    CodeResource(
+                        code = endOfMethod(
+                            code = CODE_000_SUCCESS,
+                            mmLocked = false,
+                            acLocked = false
+                        ),
+                        stream = stringMessages
+                    )
+                }
+            }
         } else {
             val readCode = dm.readResource(resourceName)
             CodeResource(
@@ -409,9 +413,13 @@ class CoreRBACMQTT(
                 "User ${user.name} is not connected "
                 + "through WSS, caching the message"
             )}
-            subscribedTopicsKeysAndMessages[topic]!!.messages.add(message)
-            // TODO we cached the message, now check for reconnection
-            //  from the WSS to then send to it the messages
+            runBlocking {
+                messageMutex.withLock {
+                    subscribedTopicsKeysAndMessages[topic]!!.messages.add(message)
+                    // TODO we cached the message, now check for reconnection
+                    //  from the WSS to then send to it the messages
+                }
+            }
         } else {
             runBlocking {
                 logger.info { "Sending the message to the client through WSS" }
@@ -456,296 +464,292 @@ class CoreRBACMQTT(
          * Synchronize to avoid interference
          * with the writeResource function
          */
-        runBlocking {
-            messageMutex.withLock {
+        try {
+            logger.info { "Topic $topic (user ${user.name}): new message" }
 
-                try {
-                    logger.info { "Topic $topic (user ${user.name}): new message" }
+            if (topic == ACServiceRBACDynSec.dynsecTopicResponse) {
+                ac?.responsesReceivedFromDynSec?.add(String(message.payload))
+            } else {
 
-                    if (topic == ACServiceRBACDynSec.dynsecTopicResponse) {
-                        ac?.responsesReceivedFromDynSec?.add(String(message.payload))
+                /**
+                 * The message is from the admin, and it contains
+                 * the (latest) version number of the symmetric key
+                 */
+                if (message.isRetained) {
+                    logger.debug { "The message is retained" }
+
+                    // TODO verify the signature of the message and that the admin sent it
+                    if (message.payload.isEmpty()) {
+                        logger.info { "The payload is empty (perhaps the topic is being deleted?)" }
+                        dm.client.unsubscribe(topic)
                     } else {
+                        val resource = myJson.decodeFromString<Resource>(String(message.payload))
+                        val versionNumber = resource.symEncKeyVersionNumber
+                        val enforcement = resource.enforcement
+                        logger.info {
+                            "Retained message (versionNumber " +
+                            "$versionNumber, enforcement $enforcement)"
+                        }
 
-                        /**
-                         * The message is from the admin, and it contains
-                         * the (latest) version number of the symmetric key
-                         */
-                        if (message.isRetained) {
-                            logger.debug { "The message is retained" }
+                        when (enforcement) {
+                            EnforcementType.COMBINED -> {
+                                logger.info { "Enforcement is combined" }
 
-                            // TODO verify the signature of the message and that the admin sent it
-                            if (message.payload.isEmpty()) {
-                                logger.info { "The payload is empty (perhaps the topic is being deleted?)" }
-                                dm.client.unsubscribe(topic)
-                            } else {
-                                val resource = myJson.decodeFromString<Resource>(String(message.payload))
-                                val versionNumber = resource.symEncKeyVersionNumber
-                                val enforcement = resource.enforcement
-                                logger.info {
-                                    "Retained message (versionNumber " +
-                                    "$versionNumber, enforcement $enforcement)"
+                                /**
+                                 * This is not the first retained message for this
+                                 * topic that the user receives. Probably, it is
+                                 * an update of the symmetric key. We check that
+                                 * the enforcement type is the same as before (i.e.,
+                                 * [EnforcementType.COMBINED] and that the version
+                                 * number is greater than the previous one.
+                                 */
+                                if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
+                                    logger.info { "Update of cached key" }
+
+                                    val topicEnforcement = subscribedTopicsKeysAndMessages[topic]!!.enforcement
+                                    val topicVersionNumber =
+                                        subscribedTopicsKeysAndMessages[topic]!!.versionNumber
+                                    if (topicEnforcement != EnforcementType.COMBINED) {
+                                        // TODO this is wrong, unless we allow the admin to dynamically
+                                        //  change the security level of a topic
+                                        logger.error {
+                                            """
+                                    this is wrong, unless we allow the admin to dynamically
+                                    change the security level of a topic
+                                    """.trimIndent()
+                                        }
+                                        throw java.lang.Exception("asdfg")
+                                        // TODO decide what to do (in any case, stop here the execution)
+                                    }
+
+                                    if (topicVersionNumber > versionNumber) {
+                                        // TODO this is wrong
+                                        logger.error {
+                                            """
+                                    this is wrong
+                                    """.trimIndent()
+                                        }
+                                        throw java.lang.Exception("asdfghjntr")
+                                        // TODO decide what to do (in any case, stop here the execution)
+                                    }
+
+                                    if (topicVersionNumber == versionNumber) {
+                                        // TODO this is warning (perhaps reconnect?)
+                                        logger.error {
+                                            """
+                                    this is warning (perhaps reconnect)
+                                    """.trimIndent()
+                                        }
+                                        throw java.lang.Exception("aqwertgjtrs")
+                                        // TODO decide what to do (in any case, stop here the execution)
+                                    }
+
+                                    logger.info { "Notification of a new symmetric key" }
+                                }
+                                /**
+                                 * Probably, the user just subscribed to the topic. As
+                                 * such, add the topic in the [subscribedTopicsKeysAndMessages]
+                                 * variable and proceed to get the symmetric key
+                                 */
+                                else {
+                                    logger.info { "Probably just subscribed, fetch the key" }
+                                    subscribedTopicsKeysAndMessages[topic] = SymmetricKeysAndCachedMessages(
+                                        key = null,
+                                        role = null,
+                                        versionNumber = versionNumber,
+                                        enforcement = enforcement
+                                    )
                                 }
 
-                                when (enforcement) {
-                                    EnforcementType.COMBINED -> {
-                                        logger.info { "Enforcement is combined" }
+                                /**
+                                 * Lock the MM. If an error occurs, send an
+                                 * error message with the code to the client
+                                 * TODO do what with the key or eventual new messages?
+                                 */
+                                val lockCode = startOfMethod(
+                                    dmLock = false,
+                                    acLock = false
+                                )
+                                if (lockCode != CODE_000_SUCCESS) {
+                                    logger.warn { "Could not lock ($lockCode)" }
+                                    val lockMessage = MQTTMessage(
+                                        message = lockCode.toString(),
+                                        topic = topic,
+                                        error = true
+                                    )
+                                    cacheOrSendMessage(
+                                        topic = topic,
+                                        message = lockMessage
+                                    )
+                                }
 
-                                        /**
-                                         * This is not the first retained message for this
-                                         * topic that the user receives. Probably, it is
-                                         * an update of the symmetric key. We check that
-                                         * the enforcement type is the same as before (i.e.,
-                                         * [EnforcementType.COMBINED] and that the version
-                                         * number is greater than the previous one.
-                                         */
-                                        if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
-                                            logger.info { "Update of cached key" }
+                                /**
+                                 * Get the key. If an error occurs, send an
+                                 * error message with the code to the client
+                                 * Note that, even for decrypting messages
+                                 * received from the topic, we use the encryption
+                                 * key, as in the MQTT core scheme there is
+                                 * always one key
+                                 * TODO do what with the key or eventual new messages?
+                                 */
+                                val symKey = getEncSymmetricKey(
+                                    resource = resource
+                                )
+                                if (symKey.code != CODE_000_SUCCESS) {
+                                    logger.warn { "Error while retrieving the key (${symKey.code})" }
+                                    subscribedTopicsKeysAndMessages[topic]!!.key = null
+                                    val errorMessage = MQTTMessage(
+                                        message = symKey.code.toString(),
+                                        topic = topic,
+                                        error = true
+                                    )
+                                    cacheOrSendMessage(
+                                        topic = topic,
+                                        message = errorMessage
+                                    )
+                                } else {
+                                    subscribedTopicsKeysAndMessages[topic]!!.key = symKey.key
+                                }
 
-                                            val topicEnforcement = subscribedTopicsKeysAndMessages[topic]!!.enforcement
-                                            val topicVersionNumber =
-                                                subscribedTopicsKeysAndMessages[topic]!!.versionNumber
-                                            if (topicEnforcement != EnforcementType.COMBINED) {
-                                                // TODO this is wrong, unless we allow the admin to dynamically
-                                                //  change the security level of a topic
-                                                logger.error {
-                                                    """
-                                            this is wrong, unless we allow the admin to dynamically
-                                            change the security level of a topic
-                                            """.trimIndent()
-                                                }
-                                                throw java.lang.Exception("asdfg")
-                                                // TODO decide what to do (in any case, stop here the execution)
-                                            }
-
-                                            if (topicVersionNumber > versionNumber) {
-                                                // TODO this is wrong
-                                                logger.error {
-                                                    """
-                                            this is wrong
-                                            """.trimIndent()
-                                                }
-                                                throw java.lang.Exception("asdfghjntr")
-                                                // TODO decide what to do (in any case, stop here the execution)
-                                            }
-
-                                            if (topicVersionNumber == versionNumber) {
-                                                // TODO this is warning (perhaps reconnect?)
-                                                logger.error {
-                                                    """
-                                            this is warning (perhaps reconnect)
-                                            """.trimIndent()
-                                                }
-                                                throw java.lang.Exception("aqwertgjtrs")
-                                                // TODO decide what to do (in any case, stop here the execution)
-                                            }
-
-                                            logger.info { "Notification of a new symmetric key" }
-                                        }
-                                        /**
-                                         * Probably, the user just subscribed to the topic. As
-                                         * such, add the topic in the [subscribedTopicsKeysAndMessages]
-                                         * variable and proceed to get the symmetric key
-                                         */
-                                        else {
-                                            logger.info { "Probably just subscribed, fetch the key" }
-                                            subscribedTopicsKeysAndMessages[topic] = SymmetricKeysAndCachedMessages(
-                                                key = null,
-                                                role = null,
-                                                versionNumber = versionNumber,
-                                                enforcement = enforcement
-                                            )
-                                        }
-
-                                        /**
-                                         * Lock the MM. If an error occurs, send an
-                                         * error message with the code to the client
-                                         * TODO do what with the key or eventual new messages?
-                                         */
-                                        val lockCode = startOfMethod(
-                                            dmLock = false,
-                                            acLock = false
-                                        )
-                                        if (lockCode != CODE_000_SUCCESS) {
-                                            logger.warn { "Could not lock ($lockCode)" }
-                                            val lockMessage = MQTTMessage(
-                                                message = lockCode.toString(),
-                                                topic = topic,
-                                                error = true
-                                            )
-                                            cacheOrSendMessage(
-                                                topic = topic,
-                                                message = lockMessage
-                                            )
-                                        }
-
-                                        /**
-                                         * Get the key. If an error occurs, send an
-                                         * error message with the code to the client
-                                         * Note that, even for decrypting messages
-                                         * received from the topic, we use the encryption
-                                         * key, as in the MQTT core scheme there is
-                                         * always one key
-                                         * TODO do what with the key or eventual new messages?
-                                         */
-                                        val symKey = getEncSymmetricKey(
-                                            resource = resource
-                                        )
-                                        if (symKey.code != CODE_000_SUCCESS) {
-                                            logger.warn { "Error while retrieving the key (${symKey.code})" }
-                                            subscribedTopicsKeysAndMessages[topic]!!.key = null
-                                            val errorMessage = MQTTMessage(
-                                                message = symKey.code.toString(),
-                                                topic = topic,
-                                                error = true
-                                            )
-                                            cacheOrSendMessage(
-                                                topic = topic,
-                                                message = errorMessage
-                                            )
-                                        } else {
-                                            subscribedTopicsKeysAndMessages[topic]!!.key = symKey.key
-                                        }
-
-                                        /**
-                                         * Unlock the mm. If an error occurs, send an
-                                         * error message with the code to the client
-                                         * TODO do what with the key or eventual new messages?
-                                         */
-                                        val unlockCode = endOfMethod(
-                                            code = symKey.code,
-                                            dmLocked = false,
-                                            acLocked = false
-                                        )
-                                        if (unlockCode != CODE_000_SUCCESS) {
-                                            val unlockMessage = MQTTMessage(
-                                                message = unlockCode.toString(),
-                                                topic = topic,
-                                                error = true
-                                            )
-                                            cacheOrSendMessage(
-                                                topic = topic,
-                                                message = unlockMessage
-                                            )
-                                        } else {
-                                            // TODO delete this else
-                                        }
-                                    }
-
-                                    EnforcementType.TRADITIONAL -> {
-                                        logger.info { "Enforcement is traditional" }
-
-                                        /**
-                                         * This is not the first retained message for this
-                                         * topic that the user receives. In a topic with
-                                         * no cryptographic protection, this should not happen
-                                         * TODO not unless we allow the admin to dynamically
-                                         *  change the security level of a topic
-                                         */
-                                        if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
-                                            logger.error {
-                                                """
-                                        This is not the first retained message for this
-                                        topic that the user receives. In a topic with
-                                        no cryptographic protection, this should not happen
-                                        """.trimIndent()
-                                            }
-                                        }
-                                        /** Probably, the user just subscribed to the topic */
-                                        else {
-                                            subscribedTopicsKeysAndMessages[topic] = SymmetricKeysAndCachedMessages(
-                                                key = null,
-                                                role = null,
-                                                versionNumber = -1,
-                                                enforcement = enforcement,
-                                            )
-                                        }
-                                    }
+                                /**
+                                 * Unlock the mm. If an error occurs, send an
+                                 * error message with the code to the client
+                                 * TODO do what with the key or eventual new messages?
+                                 */
+                                val unlockCode = endOfMethod(
+                                    code = symKey.code,
+                                    dmLocked = false,
+                                    acLocked = false
+                                )
+                                if (unlockCode != CODE_000_SUCCESS) {
+                                    val unlockMessage = MQTTMessage(
+                                        message = unlockCode.toString(),
+                                        topic = topic,
+                                        error = true
+                                    )
+                                    cacheOrSendMessage(
+                                        topic = topic,
+                                        message = unlockMessage
+                                    )
+                                } else {
+                                    // TODO delete this else
                                 }
                             }
-                        } else {
-                            logger.debug { "The message is not retained" }
-                            if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
 
-                                val topicKey = subscribedTopicsKeysAndMessages[topic]!!
+                            EnforcementType.TRADITIONAL -> {
+                                logger.info { "Enforcement is traditional" }
 
-                                val messageContent = when (topicKey.enforcement) {
-                                    EnforcementType.TRADITIONAL -> {
-                                        logger.debug { "The message is not encrypted" }
-                                        message.payload
-                                    }
-
-                                    EnforcementType.COMBINED -> {
-                                        logger.debug { "The message is encrypted" }
-                                        if (topicKey.key == null) {
-                                            // TODO key retrieval (see below)
-                                            throw java.lang.Exception(
-                                                """
-                                        it means that the last retrieval of the 
-                                        key went wrong, but in the meantime a message
-                                        arrived. what to do? I'd say either cache it 
-                                        and try to get the key again OR send it to
-                                        the user even if encrypted
-                                        """.trimIndent()
-                                            )
-                                        } else {
-                                            cryptoSKE.decryptStream(
-                                                decryptingKey = topicKey.key!!,
-                                                stream = message.payload.inputStream()
-                                            ).readAllBytes()
-                                        }
+                                /**
+                                 * This is not the first retained message for this
+                                 * topic that the user receives. In a topic with
+                                 * no cryptographic protection, this should not happen
+                                 * TODO not unless we allow the admin to dynamically
+                                 *  change the security level of a topic
+                                 */
+                                if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
+                                    logger.error {
+                                        """
+                                This is not the first retained message for this
+                                topic that the user receives. In a topic with
+                                no cryptographic protection, this should not happen
+                                """.trimIndent()
                                     }
                                 }
-
-                                // TODO == BELOW == added for DBSEC EXP, remove
-                                val timestampNow = System.currentTimeMillis().toString()
-                                val splitMessageContent = String(messageContent).split("_")
-                                val senderUser = splitMessageContent[0]
-                                val timestampSent = splitMessageContent[1]
-                                val messageID = splitMessageContent[2]
-                                val useridts1ts2 = senderUser +
-                                        "_" +
-                                        coreParameters.user.name +
-                                        "_" +
-                                        topic +
-                                        "_" +
-                                        messageID +
-                                        "_" +
-                                        timestampSent +
-                                        "_" +
-                                        timestampNow
-                                // TODO == ABOVE == added for DBSEC EXP, remove
-
-
-                                val receivedMessage = MQTTMessage(
-                                    message = useridts1ts2, // String(messageContent),
-                                    topic = topic,
-                                    error = false
-                                )
-                                cacheOrSendMessage(
-                                    topic = topic,
-                                    message = receivedMessage
-                                )
-                            } else {
-                                // TODO it means that the user subscribed, but no retained
-                                //  message was delivered by the broker... send error to the client
+                                /** Probably, the user just subscribed to the topic */
+                                else {
+                                    subscribedTopicsKeysAndMessages[topic] = SymmetricKeysAndCachedMessages(
+                                        key = null,
+                                        role = null,
+                                        versionNumber = -1,
+                                        enforcement = enforcement,
+                                    )
+                                }
                             }
                         }
                     }
-                } catch (e: Exception) {
-                    logger.error { "Exception in messageArrived MQTT callback function: ${e.localizedMessage}" }
-                    logger.error { e } // TODO delete
-                    val exceptionMessage = MQTTMessage(
-                        message = CODE_049_UNEXPECTED.toString(),
-                        topic = topic,
-                        error = true
-                    )
-                    cacheOrSendMessage(
-                        topic = topic,
-                        message = exceptionMessage
-                    )
-                } // TODO do try catch also in the other functions of the callbacks
+                } else {
+                    logger.debug { "The message is not retained" }
+                    if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
+
+                        val topicKey = subscribedTopicsKeysAndMessages[topic]!!
+
+                        val messageContent = when (topicKey.enforcement) {
+                            EnforcementType.TRADITIONAL -> {
+                                logger.debug { "The message is not encrypted" }
+                                message.payload
+                            }
+
+                            EnforcementType.COMBINED -> {
+                                logger.debug { "The message is encrypted" }
+                                if (topicKey.key == null) {
+                                    // TODO key retrieval (see below)
+                                    throw java.lang.Exception(
+                                        """
+                                it means that the last retrieval of the 
+                                key went wrong, but in the meantime a message
+                                arrived. what to do? I'd say either cache it 
+                                and try to get the key again OR send it to
+                                the user even if encrypted
+                                """.trimIndent()
+                                    )
+                                } else {
+                                    cryptoSKE.decryptStream(
+                                        decryptingKey = topicKey.key!!,
+                                        stream = message.payload.inputStream()
+                                    ).readAllBytes()
+                                }
+                            }
+                        }
+
+                        // TODO == BELOW == added for DBSEC EXP, remove
+                        val timestampNow = System.currentTimeMillis().toString()
+                        val splitMessageContent = String(messageContent).split("_")
+                        val senderUser = splitMessageContent[0]
+                        val timestampSent = splitMessageContent[1]
+                        val messageID = splitMessageContent[2]
+                        val useridts1ts2 = senderUser +
+                                "_" +
+                                coreParameters.user.name +
+                                "_" +
+                                topic +
+                                "_" +
+                                messageID +
+                                "_" +
+                                timestampSent +
+                                "_" +
+                                timestampNow
+                        // TODO == ABOVE == added for DBSEC EXP, remove
+
+
+                        val receivedMessage = MQTTMessage(
+                            message = useridts1ts2, // String(messageContent),
+                            topic = topic,
+                            error = false
+                        )
+                        cacheOrSendMessage(
+                            topic = topic,
+                            message = receivedMessage
+                        )
+                    } else {
+                        // TODO it means that the user subscribed, but no retained
+                        //  message was delivered by the broker... send error to the client
+                    }
+                }
             }
-        }
+        } catch (e: Exception) {
+            logger.error { "Exception in messageArrived MQTT callback function: ${e.localizedMessage}" }
+            logger.error { e } // TODO delete
+            val exceptionMessage = MQTTMessage(
+                message = CODE_049_UNEXPECTED.toString(),
+                topic = topic,
+                error = true
+            )
+            cacheOrSendMessage(
+                topic = topic,
+                message = exceptionMessage
+            )
+        } // TODO do try catch also in the other functions of the callbacks
+
     }
 
     /**
