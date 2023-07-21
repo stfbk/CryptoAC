@@ -5,22 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98c44c6d-7608-4461-96f3-adfe964c8268" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmMain/resources/cryptoac/Mosquitto/mosquittoCACertificate.jks" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/resources/cryptoac/Mosquitto/mosquittoCACertificate.jks" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/Parameters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/Parameters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/TestUtilities.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/TestUtilities.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/dm/mqtt/DMServiceMQTTTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmTest/kotlin/eu/fbk/st/cryptoac/dm/mqtt/DMServiceMQTTTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/CryptoAC/mosquittoCACertificate.jks" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/CryptoAC/mosquittoCACertificate.jks" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.crt" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.crt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.csr" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.csr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.key" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.srl" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/ca.srl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/mosquittoCACertificate.jks" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/mosquittoCACertificate.jks" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server-nopass.key" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server-nopass.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server.crt" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server.crt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server.csr" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server.csr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server.key" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/source/gettingstarted/installation/DMInterfaceMQTT/server.key" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/mqtt/CoreABACMQTT.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/mqtt/CoreABACMQTT.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/mqtt/CoreRBACMQTT.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvmMain/kotlin/eu/fbk/st/cryptoac/core/mqtt/CoreRBACMQTT.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

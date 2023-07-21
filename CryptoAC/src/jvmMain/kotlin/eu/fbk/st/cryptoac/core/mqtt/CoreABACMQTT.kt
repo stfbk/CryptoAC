@@ -30,6 +30,7 @@ import org.eclipse.paho.mqttv5.common.MqttException
 import org.eclipse.paho.mqttv5.common.MqttMessage
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties
 import java.io.InputStream
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.text.String
 
 private val logger = KotlinLogging.logger {}
@@ -101,7 +102,7 @@ class CoreABACMQTT(
     private val messageMutex = Mutex()
 
     /** A map of subscribed topics with the cached key and messages to send to the client */
-    val subscribedTopicsKeysAndMessages = hashMapOf<String, SymmetricKeysAndCachedMessages?>()
+    val subscribedTopicsKeysAndMessages: ConcurrentHashMap<String, SymmetricKeysAndCachedMessages?> = ConcurrentHashMap()
 
     init {
         dm.client.setCallback(this)
