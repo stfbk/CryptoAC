@@ -2137,11 +2137,9 @@ class MMServiceRBACMySQL(
                     CODE_000_SUCCESS
                 } else {
                     /** A lock has been set but not released */
-                    logger.warn { "A lock has been set but not released" }
-                    connection!!.rollback()
-                    connection!!.close()
-                    locks = 0
-                    CODE_031_LOCK_CALLED_IN_INCONSISTENT_STATUS
+                    logger.info { "Connection already established (new version with MySQL)" }
+                    locks++
+                    CODE_000_SUCCESS
                 }
             } catch (e: CommunicationsException) {
                 if ((e.message ?: "").contains("Communications link failure")) {
@@ -2220,7 +2218,7 @@ class MMServiceRBACMySQL(
                     logger.warn { "Commit of MySQL database failed" }
                     CODE_034_UNLOCK_FAILED
                 }
-                connection!!.close()
+                //connection!!.close()
                 CODE_000_SUCCESS
             } else {
                 /** The lock has already been released */

@@ -2687,7 +2687,7 @@ class MMServiceRBACRedis(
                     }
                 } else {
                     /** A lock has been set but not released */
-                    logger.info { "Connection already established" }
+                    logger.info { "Connection already established (new version with MySQL)" }
                     transactionToExec = false
                     locks++
                     CODE_000_SUCCESS
