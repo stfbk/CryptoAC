@@ -9,7 +9,7 @@
             <pattern>[%thread] %-5level - %crlf(%.-10000msg) %n</pattern>
         </encoder>
     </appender>
-    <root level="info">
+    <root level="warn">
         <appender-ref ref="Console" />
     </root>
 </configuration>
