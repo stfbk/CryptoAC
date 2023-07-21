@@ -18,7 +18,7 @@ class Resource(
     val enforcement: EnforcementType,
 ) : UnitElement() {
 
-    override var token = generateRandomToken()
+    override var token = name
 
     init {
         requirePositiveNumber(symEncKeyVersionNumber)

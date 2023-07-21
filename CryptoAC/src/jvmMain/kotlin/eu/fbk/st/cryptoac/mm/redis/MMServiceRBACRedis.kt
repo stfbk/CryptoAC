@@ -1571,8 +1571,14 @@ class MMServiceRBACRedis(
                 val keyOfPermissionTuplesListByUserAndRole =
                     "$permissionTuplesListKeyPrefix$byRoleAndResourceNameKeyPrefix$roleName$dl$resourceName"
                 val resourcesNameAndToken = hashSetOf<String>()
-                jQuery!!.smembersCache(keyOfPermissionTuplesListByUserAndRole)?.let {
-                    resourcesNameAndToken.addAll(it)
+                if (roleName == ADMIN) {
+                    resourcesNameAndToken.add(
+                        "$resourceName:$resourceName"
+                    )
+                } else {
+                    jQuery!!.smembers(keyOfPermissionTuplesListByUserAndRole)?.let {
+                        resourcesNameAndToken.addAll(it)
+                    }
                 }
                 val size = resourcesNameAndToken.size
                 logger.debug { "Found $size permission tuples to retrieve" }
@@ -1595,11 +1601,20 @@ class MMServiceRBACRedis(
                     }
                 } else {
                     resourcesNameAndToken.forEach { resourceNameAndToken ->
-                        val permissionTupleKey = permissionTupleObjectPrefix +
-                                byRoleAndResourceTokenKeyPrefix +
-                                getToken(roleName!!, RBACUnitElementTypeWithStatus.ROLE)!! + // TODO optimize get token once
-                                dl +
-                                getTokenFromElementNameAndToken(resourceNameAndToken)!!
+                        logger.debug { "Considering resourceNameAndToken $resourceNameAndToken" }
+                        val permissionTupleKey = if (roleName == ADMIN) {
+                            permissionTupleObjectPrefix +
+                                    byRoleAndResourceTokenKeyPrefix +
+                                    ADMIN + // TODO optimize get token once
+                                    dl +
+                                    resourceName
+                        } else {
+                            permissionTupleObjectPrefix +
+                                    byRoleAndResourceTokenKeyPrefix +
+                                    getToken(roleName!!, RBACUnitElementTypeWithStatus.ROLE)!! + // TODO optimize get token once
+                                    dl +
+                                    getTokenFromElementNameAndToken(resourceNameAndToken)!!
+                        }
                         keysOfPermissionTuplesToGet.add(permissionTupleKey)
                     }
                 }
@@ -2673,7 +2688,6 @@ class MMServiceRBACRedis(
                 } else {
                     /** A lock has been set but not released */
                     logger.info { "Connection already established" }
-                    jTransaction = transaction!!.multi()
                     transactionToExec = false
                     locks++
                     CODE_000_SUCCESS
@@ -2778,6 +2792,9 @@ class MMServiceRBACRedis(
                     jTransaction!!.incr(lockUnlockRollbackKey)
                     jTransaction!!.exec()
                     closeAndNullRedis()
+                    jTransaction?.close()
+                    jTransaction = null
+                    jTransaction = transaction!!.multi()
                     CODE_000_SUCCESS
                 } else {
                     closeAndNullRedis()
@@ -2808,10 +2825,10 @@ class MMServiceRBACRedis(
      */
     private fun closeAndNullRedis() {
 //        transaction?.close()
-        jTransaction?.close()
+//        jTransaction?.close()
 //        jQuery?.close()
 //        transaction = null
-        jTransaction = null
+//        jTransaction = null
 //        jQuery = null
     }
 

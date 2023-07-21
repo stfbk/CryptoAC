@@ -15205,7 +15205,7 @@
       tmp1_output.encodeIntElement_utywpf_k$(tmp0_desc, 3, value.symDecKeyVersionNumber_1);
     }
     tmp1_output.encodeSerializableElement_cw68jm_k$(tmp0_desc, 4, tmp2_cached[4], value.enforcement_1);
-    if (tmp1_output.shouldEncodeElementDefault_m92hrm_k$(tmp0_desc, 5) ? true : !(value.token_1 === Companion_getInstance_70().generateRandomToken$default_pmaoxs_k$())) {
+    if (tmp1_output.shouldEncodeElementDefault_m92hrm_k$(tmp0_desc, 5) ? true : !(value.token_1 === value.name_1)) {
       tmp1_output.encodeStringElement_pgmbgj_k$(tmp0_desc, 5, value.token_1);
     }
     tmp1_output.endStructure_e64gd4_k$(tmp0_desc);
@@ -15239,7 +15239,7 @@
       $this.symDecKeyVersionNumber_1 = symDecKeyVersionNumber;
     $this.enforcement_1 = enforcement;
     if (0 === (seen1 & 32))
-      $this.token_1 = Companion_getInstance_70().generateRandomToken$default_pmaoxs_k$();
+      $this.token_1 = $this.name_1;
     else
       $this.token_1 = token;
     Companion_getInstance_48().requirePositiveNumber_f3khrd_k$($this.symEncKeyVersionNumber_1);
@@ -15263,7 +15263,7 @@
     this.symEncKeyVersionNumber_1 = symEncKeyVersionNumber;
     this.symDecKeyVersionNumber_1 = symDecKeyVersionNumber;
     this.enforcement_1 = enforcement;
-    this.token_1 = Companion_getInstance_70().generateRandomToken$default_pmaoxs_k$();
+    this.token_1 = this.name_1;
     Companion_getInstance_48().requirePositiveNumber_f3khrd_k$(this.symEncKeyVersionNumber_1);
     Companion_getInstance_48().requirePositiveNumber_f3khrd_k$(this.symDecKeyVersionNumber_1);
     if (this.symDecKeyVersionNumber_1 > this.symEncKeyVersionNumber_1) {
