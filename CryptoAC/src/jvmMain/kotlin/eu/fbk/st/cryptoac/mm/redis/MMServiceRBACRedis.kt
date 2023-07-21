@@ -1541,24 +1541,37 @@ class MMServiceRBACRedis(
          * the given role and resource name
          */
         if (!isAdmin) {
-            val rolesNameAndToken: HashSet<String> = getRolesNameAndTokenFromUserToken()
+            if (givenRoleName && givenResourceName) {
+                logger.error { "DEBUGGING SESSION - here it means that all is good" }
+                val permissionTupleKey = permissionTupleObjectPrefix +
+                    byRoleAndResourceTokenKeyPrefix +
+                    roleName +
+                    dl +
+                    resourceName
+                keysOfPermissionTuplesToGet.add(permissionTupleKey)
+            } else {
+                logger.error { "DEBUGGING SESSION - if here, there is issue" }
+                val rolesNameAndToken: HashSet<String> = getRolesNameAndTokenFromUserToken()
 
-            rolesNameAndToken.forEach { roleNameAndToken ->
-                val currentRoleName = getNameFromElementNameAndToken(roleNameAndToken)
-                val roleToken = getTokenFromElementNameAndToken(roleNameAndToken)!!
-                if (roleName == null || currentRoleName == roleName) {
+                rolesNameAndToken.forEach { roleNameAndToken ->
+                    val currentRoleName = getNameFromElementNameAndToken(roleNameAndToken)
+                    val roleToken = getTokenFromElementNameAndToken(roleNameAndToken)!!
+                    if (roleName == null || currentRoleName == roleName) {
 
-                    val resourcesNameAndToken = getResourcesNameAndTokenFromRoleToken(roleToken)
-                    resourcesNameAndToken.forEach { resourceNameAndToken ->
-                        val currentResourceName = getNameFromElementNameAndToken(resourceNameAndToken)
-                        val resourceToken = getTokenFromElementNameAndToken(resourceNameAndToken)
-                        if (resourceName == null || currentResourceName == resourceName) {
-                            val permissionTupleKey = permissionTupleObjectPrefix +
-                                byRoleAndResourceTokenKeyPrefix +
-                                roleToken +
-                                dl +
-                                resourceToken
-                            keysOfPermissionTuplesToGet.add(permissionTupleKey)
+                        val resourcesNameAndToken = getResourcesNameAndTokenFromRoleToken(roleToken)
+                        resourcesNameAndToken.forEach { resourceNameAndToken ->
+                            val currentResourceName =
+                                getNameFromElementNameAndToken(resourceNameAndToken)
+                            val resourceToken =
+                                getTokenFromElementNameAndToken(resourceNameAndToken)
+                            if (resourceName == null || currentResourceName == resourceName) {
+                                val permissionTupleKey = permissionTupleObjectPrefix +
+                                        byRoleAndResourceTokenKeyPrefix +
+                                        roleToken +
+                                        dl +
+                                        resourceToken
+                                keysOfPermissionTuplesToGet.add(permissionTupleKey)
+                            }
                         }
                     }
                 }
@@ -1573,7 +1586,7 @@ class MMServiceRBACRedis(
                 val resourcesNameAndToken = hashSetOf<String>()
                 if (roleName == ADMIN) {
                     resourcesNameAndToken.add(
-                        "$resourceName:$resourceName"
+                    "$resourceName:$resourceName"
                     )
                 } else {
                     logger.error { "DEBUGGING SESSION - we should not be here_1" }

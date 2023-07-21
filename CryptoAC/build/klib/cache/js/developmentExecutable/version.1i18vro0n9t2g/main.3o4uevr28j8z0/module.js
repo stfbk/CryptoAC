@@ -15451,7 +15451,7 @@
     if (tmp1_output.shouldEncodeElementDefault_m92hrm_k$(tmp0_desc, 2) ? true : !(value.versionNumber_1 === 1)) {
       tmp1_output.encodeIntElement_utywpf_k$(tmp0_desc, 2, value.versionNumber_1);
     }
-    if (tmp1_output.shouldEncodeElementDefault_m92hrm_k$(tmp0_desc, 3) ? true : !(value.token_1 === Companion_getInstance_70().generateRandomTokenForAdmin$default_tq5gqj_k$(value.name_1))) {
+    if (tmp1_output.shouldEncodeElementDefault_m92hrm_k$(tmp0_desc, 3) ? true : !(value.token_1 === value.name_1)) {
       tmp1_output.encodeStringElement_pgmbgj_k$(tmp0_desc, 3, value.token_1);
     }
     tmp1_output.endStructure_e64gd4_k$(tmp0_desc);
@@ -15483,7 +15483,7 @@
       $this.versionNumber_1 = versionNumber;
     Companion_getInstance_48().requirePositiveNumber_f3khrd_k$($this.versionNumber_1);
     if (0 === (seen1 & 8))
-      $this.token_1 = Companion_getInstance_70().generateRandomTokenForAdmin$default_tq5gqj_k$($this.name_1);
+      $this.token_1 = $this.name_1;
     else
       $this.token_1 = token;
     return $this;
@@ -15504,7 +15504,7 @@
     this.asymSigKeys_1 = asymSigKeys;
     this.versionNumber_1 = versionNumber;
     Companion_getInstance_48().requirePositiveNumber_f3khrd_k$(this.versionNumber_1);
-    this.token_1 = Companion_getInstance_70().generateRandomTokenForAdmin$default_tq5gqj_k$(this.name_1);
+    this.token_1 = this.name_1;
   }
   protoOf(Role).get_name_woqyms_k$ = function () {
     return this.name_1;
