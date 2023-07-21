@@ -1576,6 +1576,7 @@ class MMServiceRBACRedis(
                         "$resourceName:$resourceName"
                     )
                 } else {
+                    logger.error { "DEBUGGING SESSION - we should not be here_1" }
                     jQuery!!.smembers(keyOfPermissionTuplesListByUserAndRole)?.let {
                         resourcesNameAndToken.addAll(it)
                     }
@@ -1609,6 +1610,7 @@ class MMServiceRBACRedis(
                                     dl +
                                     resourceName
                         } else {
+                            logger.error { "DEBUGGING SESSION - we should not be here_2" }
                             permissionTupleObjectPrefix +
                                     byRoleAndResourceTokenKeyPrefix +
                                     getToken(roleName!!, RBACUnitElementTypeWithStatus.ROLE)!! + // TODO optimize get token once
@@ -1703,7 +1705,9 @@ class MMServiceRBACRedis(
         /** Get all permission tuples from the keys collected */
         keysOfPermissionTuplesToGet.forEach { permissionTupleKey ->
             logger.debug { "Retrieving data of permission tuple with key $permissionTupleKey" }
+            logger.error { "DEBUGGING SESSION - before call to REDIS (ts: ${System.currentTimeMillis()})" }
             val permissionTupleValues = jQuery!!.hgetAllCache(permissionTupleKey)
+            logger.error { "DEBUGGING SESSION - after call to REDIS (ts: ${System.currentTimeMillis()})" }
             permissionTuples.add(
                 PermissionTuple(
                     roleName = permissionTupleValues[roleNameField]!!,
@@ -2666,6 +2670,7 @@ class MMServiceRBACRedis(
                 if (jTransaction == null && jQuery == null && transaction == null) {
                     transaction = pool.resource
                     try {
+                        logger.error { "DEBUGGING SESSION - first connection to REDIS)" }
                         transaction!!.auth(usernameRedis, mmRedisServiceParameters.password)
                         transaction!!.watch(lockUnlockRollbackKey)
                         jTransaction = transaction!!.multi()
@@ -2687,7 +2692,7 @@ class MMServiceRBACRedis(
                     }
                 } else {
                     /** A lock has been set but not released */
-                    logger.info { "Connection already established (new version with MySQL)" }
+                    logger.info { "DEBUGGING SESSION - Connection already established (new version with MySQL)" }
                     transactionToExec = false
                     locks++
                     CODE_000_SUCCESS
@@ -2797,6 +2802,7 @@ class MMServiceRBACRedis(
                     jTransaction = transaction!!.multi()
                     CODE_000_SUCCESS
                 } else {
+                    logger.info { "DEBUGGING SESSION - operation has ended" }
                     closeAndNullRedis()
                     CODE_000_SUCCESS
                 }

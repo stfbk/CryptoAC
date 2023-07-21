@@ -279,6 +279,8 @@ class CoreRBACMQTT(
         return runBlocking {
             messageMutex.withLock {
 
+                logger.error { "DEBUGGING SESSION - before publishing message (ts: ${System.currentTimeMillis()})" }
+
                 logger.info { "Publishing a message in topic $resourceName by user ${user.name}" }
 
                 /** Guard clauses */
@@ -356,14 +358,18 @@ class CoreRBACMQTT(
                                 encryptingKey = codeAndKey.key!!,
                                 stream = resourceContent
                             )
-                            endOfMethod(
-                                code = dm.writeResource(
-                                    updatedResource = Resource(
-                                        name = resourceName,
-                                        enforcement = enforcement
-                                    ),
-                                    content = messageStream
+
+                            val writeCode = dm.writeResource(
+                                updatedResource = Resource(
+                                    name = resourceName,
+                                    enforcement = enforcement
                                 ),
+                                content = messageStream
+                            )
+                            logger.error { "DEBUGGING SESSION - after publishing message (ts: ${System.currentTimeMillis()})" }
+
+                            endOfMethod(
+                                code = writeCode,
                                 acLocked = false
                             )
                         }
@@ -567,6 +573,7 @@ class CoreRBACMQTT(
                                 }
                             }
                         } else {
+                            logger.error { "DEBUGGING SESSION - before received message (ts: ${System.currentTimeMillis()})" }
                             logger.debug { "The message is not retained" }
                             if (subscribedTopicsKeysAndMessages.containsKey(topic)) {
 
@@ -679,6 +686,7 @@ class CoreRBACMQTT(
                                     topic = topic,
                                     error = false
                                 )
+                                logger.error { "DEBUGGING SESSION - after received message (ts: ${System.currentTimeMillis()})" }
                                 cacheOrSendMessage(
                                     topic = topic,
                                     message = receivedMessage

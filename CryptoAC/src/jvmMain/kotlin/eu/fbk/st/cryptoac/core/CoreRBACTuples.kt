@@ -14,6 +14,7 @@ import eu.fbk.st.cryptoac.model.tuple.*
 import eu.fbk.st.cryptoac.rm.RMServiceParameters
 import mu.KotlinLogging
 import java.io.InputStream
+import java.security.PublicKey
 
 private val logger = KotlinLogging.logger {}
 
@@ -45,6 +46,8 @@ abstract class CoreRBACTuples(
     protected abstract val asymSigKeyPair: KeyPairCryptoAC
 
     var assignedRoleTuple: RoleTuple? = null
+
+    var adminPublicKey: PublicKeyCryptoAC? = null
 
     /**
      * This function is invoked by the admin, and
@@ -2238,6 +2241,7 @@ abstract class CoreRBACTuples(
         resource: Resource,
         encryptingKey: Boolean,
     ): CodeSymmetricKeyRBAC {
+        logger.error { "DEBUGGING SESSION - before getting sym key (ts: ${System.currentTimeMillis()})" }
         logger.info {"Getting the symmetric key for resource ${resource.name}"}
 
         val assignedRoleTuples = if (assignedRoleTuple == null) {
@@ -2299,6 +2303,7 @@ abstract class CoreRBACTuples(
                 permissionTupleOfResource!!.decryptingSymKey!!
             }
         }
+        logger.error { "DEBUGGING SESSION - after getting sym key (ts: ${System.currentTimeMillis()})" }
         return CodeSymmetricKeyRBAC(
             key = cryptoPKE.decryptSymKey(
                 encryptingKey = roleAsymEncKeys.public,
@@ -2326,19 +2331,25 @@ abstract class CoreRBACTuples(
                 verifyingKey = asymSigKeyPair.public
             )
         } else {
-            val asymSigPublicKeyBytes = mm.getPublicKey(
-                token = tuple.signer,
-                elementType = RBACUnitElementTypeWithKeys.USER,
-                asymKeyType = AsymKeysType.SIG,
-            )
-            val asymSigPublicKey = cryptoPKE.recreateAsymPublicKey(
-                asymPublicKeyBytes = asymSigPublicKeyBytes!!,
-                type = AsymKeysType.SIG
-            )
+             val keyToUse = if (adminPublicKey == null) {
+                val asymSigPublicKeyBytes = mm.getPublicKey(
+                    token = tuple.signer,
+                    elementType = RBACUnitElementTypeWithKeys.USER,
+                    asymKeyType = AsymKeysType.SIG,
+                )
+                cryptoPKE.recreateAsymPublicKey(
+                    asymPublicKeyBytes = asymSigPublicKeyBytes!!,
+                    type = AsymKeysType.SIG
+                )
+            } else {
+                 adminPublicKey!!
+            }
+            adminPublicKey = keyToUse
+
             cryptoPKE.verifySignature(
                 signature = tuple.signature!!,
                 bytes = tuple.getBytesForSignature(),
-                verifyingKey = asymSigPublicKey
+                verifyingKey = keyToUse
             )
         }
     }
