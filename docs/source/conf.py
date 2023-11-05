@@ -2,7 +2,7 @@
 
 # -- Project information
 project = 'CryptoAC'
-copyright = '2022, Fondazione Bruno Kessler'
+copyright = '2023, Fondazione Bruno Kessler'
 author = 'Stefano Berlato'
 
 release = '0.1'
@@ -21,7 +21,6 @@ exclude_patterns = ['roadmap/*', 'research/*']
 
 # -- Options for HTML output
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
 html_logo = "CryptoAC.png"
 html_theme_options = {
     'logo_only': True,

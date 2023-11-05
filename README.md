@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./docs/source/CryptoAC.png" />
+  <img src="./docs/source/CryptoAC.png" width="128" height="128" />
 </p>
 
 # CryptoAC
