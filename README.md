@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./docs/source/CryptoAC.png" />
+</p>
+
 # CryptoAC
 
 CryptoAC (*Cryptographic Access Control*) provides end-to-end protection of sensitive data--such as documents, files and messages--through **cryptographic enforcement of access control policies**.
