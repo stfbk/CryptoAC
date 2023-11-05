@@ -22,11 +22,7 @@ exclude_patterns = ['roadmap/*', 'research/*']
 
 # -- Options for HTML output
 html_theme = 'sphinx_rtd_theme'
-html_logo = "CryptoAC.png"
-html_theme_options = {
-    'logo_only': True,
-    'display_version': False,
-}
+html_logo = "CryptoAC_64.png"
 
 html_theme_options = {
     'navigation_depth': 4,
