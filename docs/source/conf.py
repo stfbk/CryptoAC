@@ -12,6 +12,7 @@ version = '0.1.0'
 extensions = [
     'sphinx.ext.duration',
     'sphinx.ext.autosectionlabel',
+    'sphinx_rtd_theme',
     #'sphinxcontrib.openapi',
     'sphinx_toolbox.collapse'
 ]
