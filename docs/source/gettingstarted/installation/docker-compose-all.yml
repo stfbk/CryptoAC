@@ -77,22 +77,22 @@ services:
      - "${CRYPTOACXACMLHOSTPORT}:${CRYPTOACXACMLXACMLPORT}"
 
 
-  cryptoac_mosquitto_dynsec:
-    networks:
-      test:
-        ipv4_address: "${CRYPTOACMOSQUITTOHOSTIP}"
-    image: cryptoac_mosquitto_dynsec:latest
-    ports:
-      - "${CRYPTOACMOSQUITTOHOSTPORT}:${CRYPTOACMOSQUITTOMOSQUITTOPORT}"
-
-
-  # cryptoac_mosquitto_no_dynsec:
+  # cryptoac_mosquitto_dynsec:
   #   networks:
   #     test:
   #       ipv4_address: "${CRYPTOACMOSQUITTOHOSTIP}"
-  #   image: cryptoac_mosquitto_no_dynsec:latest
+  #   image: cryptoac_mosquitto_dynsec:latest
   #   ports:
   #     - "${CRYPTOACMOSQUITTOHOSTPORT}:${CRYPTOACMOSQUITTOMOSQUITTOPORT}"
+
+
+  cryptoac_mosquitto_no_dynsec:
+    networks:
+      test:
+        ipv4_address: "${CRYPTOACMOSQUITTOHOSTIP}"
+    image: cryptoac_mosquitto_no_dynsec:latest
+    ports:
+      - "${CRYPTOACMOSQUITTOHOSTPORT}:${CRYPTOACMOSQUITTOMOSQUITTOPORT}"
       
 
   cryptoac_redis:
