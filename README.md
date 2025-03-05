@@ -2,6 +2,8 @@
   <img src="./docs/source/CryptoAC.png" width="128" height="128" />
 </p>
 
+> CryptoAC is undergoing refactoring, the new version will be released in 2025; please contact the developers at `sberlato@fbk.eu` for more details
+
 # CryptoAC
 
 CryptoAC (*Cryptographic Access Control*) provides end-to-end protection of sensitive data--such as documents, files and messages--through **cryptographic enforcement of access control policies**.
